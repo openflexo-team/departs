@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+	<groupId>org.openflexo</groupId>
+	<artifactId>openflexo-technology-adapters</artifactId>
+	<version>1.7-SNAPSHOT</version>
+  </parent>
+  <artifactId>fiacreconnector</artifactId>
+  <description>technology Adapter for FIACRE data</description>
+  <url>http://www.openflexo.com/technologyadapter/fiacreconnector</url>
+  <properties>
+    <technology.prefix>FIACRE</technology.prefix>
+    <fiacreVersion>1.0</fiacreVersion>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>org.openflexo</groupId>
+      <artifactId>flexo-foundation</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openflexo</groupId>
+      <artifactId>flexo-foundation</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>fr.ensta</groupId>
+      <artifactId>basics</artifactId>
+      <version>${fiacreVersion}</version>
+    </dependency>
+    <dependency>
+      <groupId>fr.ensta</groupId>
+      <artifactId>beaver-rt</artifactId>
+      <version>${fiacreVersion}</version>
+    </dependency>
+    <dependency>
+      <groupId>fr.ensta.fiacre</groupId>
+      <artifactId>fiacre</artifactId>
+      <version>${fiacreVersion}</version>
+    </dependency>
+  </dependencies>
+</project>
