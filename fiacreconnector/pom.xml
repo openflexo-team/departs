@@ -40,5 +40,10 @@
       <artifactId>fiacre</artifactId>
       <version>${fiacreVersion}</version>
     </dependency>
+    <dependency>
+      <groupId>fr.ensta</groupId>
+      <artifactId>java-cup</artifactId>
+      <version>11a</version>
+    </dependency>
   </dependencies>
 </project>
