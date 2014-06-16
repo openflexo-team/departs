@@ -20,7 +20,6 @@
 
 package org.openflexo.technologyadapter.cdl.model;
 
-import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -33,7 +32,7 @@ import org.openflexo.technologyadapter.cdl.CDLTechnologyAdapter;
 @ModelEntity
 @ImplementationClass(CDLObject.CDLObjectImpl.class)
 @XMLElement(xmlTag = "CDLObject")
-public interface CDLObject extends FlexoObject, TechnologyObject<CDLTechnologyAdapter> {
+public interface CDLObject extends TechnologyObject<CDLTechnologyAdapter> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String NAME_KEY = "name";
