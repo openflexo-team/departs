@@ -24,8 +24,11 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.ontology.IFlexoOntologyObject;
+import org.openflexo.foundation.technologyadapter.DeclareActorReference;
 import org.openflexo.foundation.technologyadapter.DeclareEditionAction;
 import org.openflexo.foundation.technologyadapter.DeclareEditionActions;
+import org.openflexo.foundation.technologyadapter.DeclareFetchRequest;
+import org.openflexo.foundation.technologyadapter.DeclareFetchRequests;
 import org.openflexo.foundation.technologyadapter.DeclarePatternRole;
 import org.openflexo.foundation.technologyadapter.DeclarePatternRoles;
 import org.openflexo.foundation.technologyadapter.FreeModelSlot;
@@ -44,6 +47,9 @@ import org.openflexo.technologyadapter.fiacre.virtualmodel.actions.AddFiacreComp
 import org.openflexo.technologyadapter.fiacre.virtualmodel.actions.AddFiacreProcess;
 import org.openflexo.technologyadapter.fiacre.virtualmodel.actions.AddFiacreState;
 import org.openflexo.technologyadapter.fiacre.virtualmodel.actions.AddFiacreFifo;
+import org.openflexo.technologyadapter.fiacre.virtualmodel.actions.SelectFiacreComponents;
+import org.openflexo.technologyadapter.fiacre.virtualmodel.actions.SelectFiacreProcess;
+import org.openflexo.technologyadapter.fiacre.virtualmodel.actions.SelectFiacreStates;
 
 /**
  * Implementation of the ModelSlot class for the Fiacre technology adapter<br>
@@ -66,6 +72,11 @@ import org.openflexo.technologyadapter.fiacre.virtualmodel.actions.AddFiacreFifo
 	@DeclareEditionAction(FML = "AddFiacreComponent", editionActionClass = AddFiacreComponent.class),
 	@DeclareEditionAction(FML = "AddFiacreState", editionActionClass = AddFiacreState.class),
 	@DeclareEditionAction(FML = "AddFiacreFifo", editionActionClass = AddFiacreFifo.class)
+})
+@DeclareFetchRequests({ // All requests available through this model slot
+	@DeclareFetchRequest(FML = "SelectFiacreProcess", fetchRequestClass = SelectFiacreProcess.class),																	// Sheet
+	@DeclareFetchRequest(FML = "SelectFiacreComponents", fetchRequestClass = SelectFiacreComponents.class),
+	@DeclareFetchRequest(FML = "SelectFiacreStates", fetchRequestClass = SelectFiacreStates.class)
 })
 public interface FiacreProgramModelSlot extends FreeModelSlot<FiacreProgram> {
 

@@ -22,18 +22,23 @@ package org.openflexo.technologyadapter.fiacre.virtualmodel;
 
 import java.lang.reflect.Type;
 
+import org.openflexo.foundation.view.ActorReference;
+import org.openflexo.foundation.view.FlexoConceptInstance;
+import org.openflexo.foundation.view.ModelObjectActorReference;
+import org.openflexo.foundation.view.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.technologyadapter.fiacre.model.FiacreComponent;
 import org.openflexo.technologyadapter.fiacre.model.FiacreProcess;
 
 @ModelEntity
-@ImplementationClass(FiacreComponentRole.FiacreProcessRoleImpl.class)
+@ImplementationClass(FiacreComponentRole.FiacreComponentRoleImpl.class)
 @XMLElement
-public interface FiacreComponentRole extends FlexoRole<FiacreProcess> {
+public interface FiacreComponentRole extends FlexoRole<FiacreComponent> {
 
-	public static abstract class FiacreProcessRoleImpl extends FlexoRoleImpl<FiacreProcess> implements FiacreComponentRole {
+	public static abstract class FiacreComponentRoleImpl extends FlexoRoleImpl<FiacreComponent> implements FiacreComponentRole {
 
 		@Override
 		public Type getType() {
@@ -45,5 +50,15 @@ public interface FiacreComponentRole extends FlexoRole<FiacreProcess> {
 			return FiacreProcess.class.getSimpleName();
 		}
 
+		@Override
+		public ActorReference<FiacreComponent> makeActorReference(FiacreComponent object, FlexoConceptInstance epi) {
+			VirtualModelInstanceModelFactory factory = epi.getFactory();
+			ModelObjectActorReference<FiacreComponent> returned = factory.newInstance(ModelObjectActorReference.class);
+			returned.setFlexoRole(this);
+			returned.setFlexoConceptInstance(epi);
+			returned.setModellingElement(object);
+			return returned;
+		}
+		
 	}
 }

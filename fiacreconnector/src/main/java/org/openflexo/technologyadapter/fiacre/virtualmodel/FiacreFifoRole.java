@@ -22,10 +22,15 @@ package org.openflexo.technologyadapter.fiacre.virtualmodel;
 
 import java.lang.reflect.Type;
 
+import org.openflexo.foundation.view.ActorReference;
+import org.openflexo.foundation.view.FlexoConceptInstance;
+import org.openflexo.foundation.view.ModelObjectActorReference;
+import org.openflexo.foundation.view.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.technologyadapter.fiacre.model.FiacreComponent;
 import org.openflexo.technologyadapter.fiacre.model.FiacreFifo;
 
 @ModelEntity
@@ -44,6 +49,15 @@ public interface FiacreFifoRole extends FlexoRole<FiacreFifo> {
 		public String getPreciseType() {
 			return FiacreFifo.class.getSimpleName();
 		}
-
+		
+		@Override
+		public ActorReference<FiacreFifo> makeActorReference(FiacreFifo object, FlexoConceptInstance epi) {
+			VirtualModelInstanceModelFactory factory = epi.getFactory();
+			ModelObjectActorReference<FiacreFifo> returned = factory.newInstance(ModelObjectActorReference.class);
+			returned.setFlexoRole(this);
+			returned.setFlexoConceptInstance(epi);
+			returned.setModellingElement(object);
+			return returned;
+		}
 	}
 }

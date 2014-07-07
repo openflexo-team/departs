@@ -46,6 +46,9 @@ import org.openflexo.technologyadapter.fiacre.virtualmodel.actions.AddFiacreComp
 import org.openflexo.technologyadapter.fiacre.virtualmodel.actions.AddFiacreFifo;
 import org.openflexo.technologyadapter.fiacre.virtualmodel.actions.AddFiacreProcess;
 import org.openflexo.technologyadapter.fiacre.virtualmodel.actions.AddFiacreState;
+import org.openflexo.technologyadapter.fiacre.virtualmodel.actions.SelectFiacreComponents;
+import org.openflexo.technologyadapter.fiacre.virtualmodel.actions.SelectFiacreProcess;
+import org.openflexo.technologyadapter.fiacre.virtualmodel.actions.SelectFiacreStates;
 import org.openflexo.view.EmptyPanel;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.ControllerActionInitializer;
@@ -125,6 +128,12 @@ public class FiacreAdapterController extends TechnologyAdapterController<FiacreT
 			return IconFactory.getImageIcon(getIconForTechnologyObject(FiacreState.class), IconLibrary.DUPLICATE);
 		} else if (AddFiacreFifo.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(getIconForTechnologyObject(FiacreFifo.class), IconLibrary.DUPLICATE);
+		} else if (SelectFiacreProcess.class.isAssignableFrom(editionActionClass)) {
+			return IconFactory.getImageIcon(getIconForTechnologyObject(FiacreProcess.class), IconLibrary.IMPORT);
+		} else if (SelectFiacreComponents.class.isAssignableFrom(editionActionClass)) {
+			return IconFactory.getImageIcon(getIconForTechnologyObject(FiacreComponent.class), IconLibrary.IMPORT);
+		} else if (SelectFiacreStates.class.isAssignableFrom(editionActionClass)) {
+			return IconFactory.getImageIcon(getIconForTechnologyObject(FiacreState.class), IconLibrary.IMPORT);
 		}
 		return super.getIconForEditionAction(editionActionClass);
 	}
