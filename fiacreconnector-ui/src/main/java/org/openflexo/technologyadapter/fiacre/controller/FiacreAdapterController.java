@@ -27,11 +27,21 @@ import javax.swing.ImageIcon;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
+import org.openflexo.icon.IconFactory;
+import org.openflexo.icon.IconLibrary;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.technologyadapter.fiacre.FiacreTechnologyAdapter;
 import org.openflexo.technologyadapter.fiacre.gui.FiacreIconLibrary;
 import org.openflexo.technologyadapter.fiacre.gui.view.FIBFiacreView;
+import org.openflexo.technologyadapter.fiacre.model.FiacreComponent;
+import org.openflexo.technologyadapter.fiacre.model.FiacreFifo;
+import org.openflexo.technologyadapter.fiacre.model.FiacreProcess;
 import org.openflexo.technologyadapter.fiacre.model.FiacreProgram;
+import org.openflexo.technologyadapter.fiacre.model.FiacreState;
+import org.openflexo.technologyadapter.fiacre.virtualmodel.actions.AddFiacreComponent;
+import org.openflexo.technologyadapter.fiacre.virtualmodel.actions.AddFiacreFifo;
+import org.openflexo.technologyadapter.fiacre.virtualmodel.actions.AddFiacreProcess;
+import org.openflexo.technologyadapter.fiacre.virtualmodel.actions.AddFiacreState;
 import org.openflexo.view.EmptyPanel;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.ControllerActionInitializer;
@@ -86,6 +96,15 @@ public class FiacreAdapterController extends TechnologyAdapterController<FiacreT
 	 */
 	@Override
 	public ImageIcon getIconForEditionAction(Class<? extends EditionAction<?, ?>> editionActionClass) {
+		if (AddFiacreProcess.class.isAssignableFrom(editionActionClass)) {
+			return IconFactory.getImageIcon(getIconForTechnologyObject(FiacreProcess.class), IconLibrary.DUPLICATE);
+		} else if (AddFiacreComponent.class.isAssignableFrom(editionActionClass)) {
+			return IconFactory.getImageIcon(getIconForTechnologyObject(FiacreComponent.class), IconLibrary.DUPLICATE);
+		} else if (AddFiacreState.class.isAssignableFrom(editionActionClass)) {
+			return IconFactory.getImageIcon(getIconForTechnologyObject(FiacreState.class), IconLibrary.DUPLICATE);
+		} else if (AddFiacreFifo.class.isAssignableFrom(editionActionClass)) {
+			return IconFactory.getImageIcon(getIconForTechnologyObject(FiacreFifo.class), IconLibrary.DUPLICATE);
+		}
 		return super.getIconForEditionAction(editionActionClass);
 	}
 

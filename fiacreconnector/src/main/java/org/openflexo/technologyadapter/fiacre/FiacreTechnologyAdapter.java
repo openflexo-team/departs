@@ -48,7 +48,7 @@ import org.openflexo.technologyadapter.fiacre.virtualmodel.bindings.FiacreBindin
  */
 
 @DeclareModelSlots({ // ModelSlot(s) declaration
-@DeclareModelSlot(FML = "FiacreTypeAwareModelSlot", modelSlotClass = FiacreProgramSlot.class), })
+@DeclareModelSlot(FML = "FiacreTypeAwareModelSlot", modelSlotClass = FiacreProgramModelSlot.class), })
 @DeclareRepositoryType({ FiacreProgramRepository.class })
 public class FiacreTechnologyAdapter extends TechnologyAdapter {
 	private static String FIACRE_FILE_EXTENSION = ".fcr";

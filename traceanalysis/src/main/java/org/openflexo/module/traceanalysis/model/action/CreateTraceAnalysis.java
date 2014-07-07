@@ -43,7 +43,7 @@ import org.openflexo.module.traceanalysis.model.TraceAnalysis;
 import org.openflexo.module.traceanalysis.model.TAEProject;
 import org.openflexo.technologyadapter.cdl.CDLModelSlot;
 import org.openflexo.technologyadapter.cdl.CDLTechnologyAdapter;
-import org.openflexo.technologyadapter.fiacre.FiacreProgramSlot;
+import org.openflexo.technologyadapter.fiacre.FiacreProgramModelSlot;
 import org.openflexo.technologyadapter.fiacre.FiacreTechnologyAdapter;
 import org.openflexo.toolbox.StringUtils;
 
@@ -93,7 +93,7 @@ public class CreateTraceAnalysis extends FlexoAction<CreateTraceAnalysis, TAEPro
 		createSystem.setNewVirtualModelInstanceTitle(getTraceAnalysisName());
 		createSystem.setVirtualModel(getFocusedObject().getSystemVirtualModel());
 						
-		FreeModelSlotInstanceConfiguration<?, ?> systemConf = (FreeModelSlotInstanceConfiguration<?, ?>) createSystem.getModelSlotInstanceConfiguration(getFocusedObject().getSystemVirtualModel().getModelSlots(FiacreProgramSlot.class).get(0));
+		FreeModelSlotInstanceConfiguration<?, ?> systemConf = (FreeModelSlotInstanceConfiguration<?, ?>) createSystem.getModelSlotInstanceConfiguration(getFocusedObject().getSystemVirtualModel().getModelSlots(FiacreProgramModelSlot.class).get(0));
 		systemConf.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);
 		systemConf.setResource(getFiacre());	
 		createSystem.doAction();

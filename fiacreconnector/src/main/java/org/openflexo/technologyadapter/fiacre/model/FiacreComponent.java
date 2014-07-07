@@ -46,10 +46,8 @@ public interface FiacreComponent extends FiacreObject, ResourceData<FiacreCompon
 	@PropertyIdentifier(type = FiacreProcess.class, cardinality = Cardinality.LIST)
 	public static final String FIACRE_PROCESS_KEY = "FiacreProcesses";
 
-	// @Getter(value = CDL_UNIT_KEY)
 	public obp.fiacre.model.ComponentDecl getFiacreComponent();
 
-	// @Setter(value = CDL_UNIT_KEY)
 	public void setFiacreComponent(obp.fiacre.model.ComponentDecl fiacreComponent);
 
 	@Getter(value = IS_ROOT_KEY, defaultValue = "false")

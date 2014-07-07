@@ -24,9 +24,9 @@ import org.openflexo.foundation.technologyadapter.FreeModelSlotInstanceConfigura
 import org.openflexo.foundation.view.action.CreateVirtualModelInstance;
 import org.openflexo.technologyadapter.fiacre.model.FiacreProgram;
 
-public class FiacreProgramSlotInstanceConfiguration extends FreeModelSlotInstanceConfiguration<FiacreProgram, FiacreProgramSlot> {
+public class FiacreProgramSlotInstanceConfiguration extends FreeModelSlotInstanceConfiguration<FiacreProgram, FiacreProgramModelSlot> {
 
-	protected FiacreProgramSlotInstanceConfiguration(FiacreProgramSlot ms, CreateVirtualModelInstance action) {
+	protected FiacreProgramSlotInstanceConfiguration(FiacreProgramModelSlot ms, CreateVirtualModelInstance action) {
 		super(ms, action);
 	}
 

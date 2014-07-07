@@ -24,7 +24,9 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.ontology.IFlexoOntologyObject;
+import org.openflexo.foundation.technologyadapter.DeclareEditionAction;
 import org.openflexo.foundation.technologyadapter.DeclareEditionActions;
+import org.openflexo.foundation.technologyadapter.DeclarePatternRole;
 import org.openflexo.foundation.technologyadapter.DeclarePatternRoles;
 import org.openflexo.foundation.technologyadapter.FreeModelSlot;
 import org.openflexo.foundation.view.FreeModelSlotInstance;
@@ -34,6 +36,14 @@ import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.technologyadapter.fiacre.model.FiacreProgram;
+import org.openflexo.technologyadapter.fiacre.virtualmodel.FiacreComponentRole;
+import org.openflexo.technologyadapter.fiacre.virtualmodel.FiacreFifoRole;
+import org.openflexo.technologyadapter.fiacre.virtualmodel.FiacreProcessRole;
+import org.openflexo.technologyadapter.fiacre.virtualmodel.FiacreStateRole;
+import org.openflexo.technologyadapter.fiacre.virtualmodel.actions.AddFiacreComponent;
+import org.openflexo.technologyadapter.fiacre.virtualmodel.actions.AddFiacreProcess;
+import org.openflexo.technologyadapter.fiacre.virtualmodel.actions.AddFiacreState;
+import org.openflexo.technologyadapter.fiacre.virtualmodel.actions.AddFiacreFifo;
 
 /**
  * Implementation of the ModelSlot class for the Fiacre technology adapter<br>
@@ -43,21 +53,28 @@ import org.openflexo.technologyadapter.fiacre.model.FiacreProgram;
  * 
  */
 @ModelEntity
-@ImplementationClass(FiacreProgramSlot.FiacreProgramSlotImpl.class)
+@ImplementationClass(FiacreProgramModelSlot.FiacreProgramSlotImpl.class)
 @XMLElement
 @DeclarePatternRoles({ // All pattern roles available through this model slot
-
+	@DeclarePatternRole(FML = "FiacreProcess", flexoRoleClass = FiacreProcessRole.class),
+	@DeclarePatternRole(FML = "FiacreComponent", flexoRoleClass = FiacreComponentRole.class),
+	@DeclarePatternRole(FML = "FiacreState", flexoRoleClass = FiacreStateRole.class),
+	@DeclarePatternRole(FML = "FiacreFifo", flexoRoleClass = FiacreFifoRole.class)
 })
 @DeclareEditionActions({ // All edition actions available through this modelslot
+	@DeclareEditionAction(FML = "AddFiacreProcess", editionActionClass = AddFiacreProcess.class),
+	@DeclareEditionAction(FML = "AddFiacreComponent", editionActionClass = AddFiacreComponent.class),
+	@DeclareEditionAction(FML = "AddFiacreState", editionActionClass = AddFiacreState.class),
+	@DeclareEditionAction(FML = "AddFiacreFifo", editionActionClass = AddFiacreFifo.class)
 })
-public interface FiacreProgramSlot extends FreeModelSlot<FiacreProgram> {
+public interface FiacreProgramModelSlot extends FreeModelSlot<FiacreProgram> {
 
 	@Override
 	public FiacreTechnologyAdapter getTechnologyAdapter();
 
-	public static abstract class FiacreProgramSlotImpl extends FreeModelSlotImpl<FiacreProgram> implements FiacreProgramSlot {
+	public static abstract class FiacreProgramSlotImpl extends FreeModelSlotImpl<FiacreProgram> implements FiacreProgramModelSlot {
 
-		private static final Logger logger = Logger.getLogger(FiacreProgramSlot.class.getPackage().getName());
+		private static final Logger logger = Logger.getLogger(FiacreProgramModelSlot.class.getPackage().getName());
 
 		@Override
 		public Class<FiacreTechnologyAdapter> getTechnologyAdapterClass() {

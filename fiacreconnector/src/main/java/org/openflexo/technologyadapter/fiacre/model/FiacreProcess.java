@@ -20,24 +20,57 @@
 
 package org.openflexo.technologyadapter.fiacre.model;
 
+import java.util.List;
+import java.util.Vector;
+
 import org.openflexo.foundation.resource.ResourceData;
+import org.openflexo.model.annotations.Adder;
+import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.Remover;
+import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.model.annotations.Getter.Cardinality;
 
 @ModelEntity
 @ImplementationClass(FiacreProcess.FiacreProcessImpl.class)
 @XMLElement(xmlTag = "FiacreProcess")
 public interface FiacreProcess extends FiacreObject, ResourceData<FiacreProcess> {
 
-	// @PropertyIdentifier(type = obp.cdl.FiacreProcess.class)
 	public static final String FIACRE_PROCESS_KEY = "FiacreProcess";
+	
+	public static final String FIACRE_FIFOS_KEY = "FiacreFifos";
+	
+	public static final String FIACRE_STATES_KEY = "FiacreStates";
 
-	// @Getter(value = CDL_UNIT_KEY)
 	public obp.fiacre.model.ProcessDecl getFiacreProcess();
 
-	// @Setter(value = CDL_UNIT_KEY)
 	public void setFiacreProcess(obp.fiacre.model.ProcessDecl fiacreProcess);
+	
+	@Getter(value = FIACRE_FIFOS_KEY, cardinality = Cardinality.LIST)
+	public List<FiacreFifo> getFiacreFifos();
+
+	@Setter(FIACRE_FIFOS_KEY)
+	public void setFiacreFifos(Vector<FiacreFifo> fiacreFifos);
+
+	@Adder(FIACRE_FIFOS_KEY)
+	public void addToFiacreFifos(FiacreFifo fiacreFifo);
+
+	@Remover(FIACRE_FIFOS_KEY)
+	public void removeFromFiacreFifos(FiacreFifo fiacreFifo);
+	
+	@Getter(value = FIACRE_STATES_KEY, cardinality = Cardinality.LIST)
+	public List<FiacreState> getFiacreStates();
+
+	@Setter(FIACRE_STATES_KEY)
+	public void setFiacreStates(Vector<FiacreState> fiacreStates);
+
+	@Adder(FIACRE_STATES_KEY)
+	public void addToFiacreStates(FiacreState fiacreState);
+
+	@Remover(FIACRE_STATES_KEY)
+	public void removeFromFiacreStates(FiacreState fiacreState);
 
 	public static abstract class FiacreProcessImpl extends FiacreObjectImpl implements FiacreProcess {
 

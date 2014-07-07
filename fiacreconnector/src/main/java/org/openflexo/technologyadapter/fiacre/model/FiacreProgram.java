@@ -40,15 +40,14 @@ import org.openflexo.technologyadapter.fiacre.model.io.FiacreProgramConverter;
 @XMLElement(xmlTag = "FiacreProgram")
 public interface FiacreProgram extends FiacreObject, ResourceData<FiacreProgram> {
 
-	// @PropertyIdentifier(type = obp.cdl.FiacreProgram.class)
 	public static final String FIACRE_PROGRAM_KEY = "FiacreProgram";
 	@PropertyIdentifier(type = FiacreProcess.class, cardinality = Cardinality.LIST)
 	public static final String FIACRE_PROCESS_KEY = "FiacreProcesses";
+	@PropertyIdentifier(type = FiacreComponent.class, cardinality = Cardinality.LIST)
+	public static final String FIACRE_COMPONENTS_KEY = "FiacreComponents";
 
-	// @Getter(value = CDL_UNIT_KEY)
 	public obp.fiacre.model.Program getFiacreProgram();
 
-	// @Setter(value = CDL_UNIT_KEY)
 	public void setFiacreProgram(obp.fiacre.model.Program fiacreProgram);
 
 	@Getter(value = FIACRE_PROCESS_KEY, cardinality = Cardinality.LIST)
@@ -62,6 +61,18 @@ public interface FiacreProgram extends FiacreObject, ResourceData<FiacreProgram>
 
 	@Remover(FIACRE_PROCESS_KEY)
 	public void removeFromFiacreProcesses(FiacreProcess fiacreProcess);
+	
+	@Getter(value = FIACRE_COMPONENTS_KEY, cardinality = Cardinality.LIST)
+	public List<FiacreComponent> getFiacreComponents();
+
+	@Setter(FIACRE_COMPONENTS_KEY)
+	public void setFiacreComponents(Vector<FiacreComponent> fiacreComponents);
+
+	@Adder(FIACRE_COMPONENTS_KEY)
+	public void addToFiacreComponents(FiacreComponent fiacreComponent);
+
+	@Remover(FIACRE_COMPONENTS_KEY)
+	public void removeFromFiacreComponents(FiacreComponent fiacreComponent);
 
 	public FiacreProgramConverter getConverter();
 
