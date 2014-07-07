@@ -35,7 +35,7 @@ import org.openflexo.view.controller.FlexoController;
 /**
  * DbEditor module
  * 
- * @author Someone
+ * @author vincent
  */
 public class TAEModule extends FlexoModule<TAEModule> {
 

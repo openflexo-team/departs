@@ -32,10 +32,10 @@ import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.module.traceanalysis.model.TAEProjectNature;
 
 /**
- * This action is used to gives {@link FreeModellingProjectNature} to a {@link FlexoProject}<br>
+ * This action is used to gives {@link TAEProjectNature} to a {@link FlexoProject}<br>
  * 
  * 
- * @author sylvain
+ * @author vincent
  * 
  */
 public class ConvertToTAEProject extends FlexoAction<ConvertToTAEProject, FlexoProject, FlexoObject> {
@@ -79,7 +79,7 @@ public class ConvertToTAEProject extends FlexoAction<ConvertToTAEProject, FlexoP
 	@Override
 	protected void doAction(Object context) throws SaveResourceException {
 
-		logger.info("Convert to FreeModellingProject");
+		logger.info("Convert to TAEProject");
 
 		getTAEProjectNature().givesNature(getFocusedObject(), getEditor());
 

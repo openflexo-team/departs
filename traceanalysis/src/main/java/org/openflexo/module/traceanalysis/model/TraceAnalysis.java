@@ -24,7 +24,6 @@ import java.beans.PropertyChangeListener;
 
 import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.foundation.InvalidArgumentException;
-import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 
 public class TraceAnalysis extends DefaultFlexoObject implements PropertyChangeListener {

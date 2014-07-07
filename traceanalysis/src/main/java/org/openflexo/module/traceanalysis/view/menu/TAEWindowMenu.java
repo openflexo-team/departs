@@ -34,7 +34,7 @@ import org.openflexo.view.menu.WindowMenu;
 /**
  * 'Window' menu for this Module
  * 
- * @author yourname
+ * @author vincent
  */
 public class TAEWindowMenu extends WindowMenu {
 

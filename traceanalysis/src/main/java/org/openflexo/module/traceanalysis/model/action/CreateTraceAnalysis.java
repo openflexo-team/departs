@@ -19,7 +19,6 @@
  */
 package org.openflexo.module.traceanalysis.model.action;
 
-import java.io.File;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -32,17 +31,12 @@ import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.FreeModelSlotInstanceConfiguration;
-import org.openflexo.foundation.technologyadapter.ModelSlot;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
-import org.openflexo.foundation.technologyadapter.TypeAwareModelSlot;
 import org.openflexo.foundation.view.VirtualModelInstance;
-import org.openflexo.foundation.view.VirtualModelModelSlotInstance;
 import org.openflexo.foundation.view.action.CreateBasicVirtualModelInstance;
-import org.openflexo.foundation.view.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.view.action.ModelSlotInstanceConfiguration.DefaultModelSlotInstanceConfigurationOption;
 import org.openflexo.foundation.view.rm.VirtualModelInstanceResource;
-import org.openflexo.foundation.viewpoint.VirtualModelModelSlot;
 import org.openflexo.foundation.viewpoint.VirtualModelModelSlotInstanceConfiguration;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.module.traceanalysis.model.TraceAnalysis;
@@ -51,7 +45,6 @@ import org.openflexo.technologyadapter.cdl.CDLModelSlot;
 import org.openflexo.technologyadapter.cdl.CDLTechnologyAdapter;
 import org.openflexo.technologyadapter.fiacre.FiacreProgramSlot;
 import org.openflexo.technologyadapter.fiacre.FiacreTechnologyAdapter;
-import org.openflexo.technologyadapter.fiacre.virtualmodel.bindings.FiacreBindingFactory;
 import org.openflexo.toolbox.StringUtils;
 
 public class CreateTraceAnalysis extends FlexoAction<CreateTraceAnalysis, TAEProject, FlexoObject> {

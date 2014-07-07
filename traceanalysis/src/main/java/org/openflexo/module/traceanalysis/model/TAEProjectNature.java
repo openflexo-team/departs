@@ -30,7 +30,6 @@ import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.nature.ProjectNatureService;
 import org.openflexo.foundation.view.action.CreateView;
 import org.openflexo.foundation.view.rm.ViewResource;
-import org.openflexo.foundation.viewpoint.action.CreateViewPoint;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.logging.FlexoLogger;
 
