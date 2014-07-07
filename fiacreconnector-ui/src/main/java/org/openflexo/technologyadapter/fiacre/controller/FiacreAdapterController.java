@@ -38,6 +38,10 @@ import org.openflexo.technologyadapter.fiacre.model.FiacreFifo;
 import org.openflexo.technologyadapter.fiacre.model.FiacreProcess;
 import org.openflexo.technologyadapter.fiacre.model.FiacreProgram;
 import org.openflexo.technologyadapter.fiacre.model.FiacreState;
+import org.openflexo.technologyadapter.fiacre.virtualmodel.FiacreComponentRole;
+import org.openflexo.technologyadapter.fiacre.virtualmodel.FiacreFifoRole;
+import org.openflexo.technologyadapter.fiacre.virtualmodel.FiacreProcessRole;
+import org.openflexo.technologyadapter.fiacre.virtualmodel.FiacreStateRole;
 import org.openflexo.technologyadapter.fiacre.virtualmodel.actions.AddFiacreComponent;
 import org.openflexo.technologyadapter.fiacre.virtualmodel.actions.AddFiacreFifo;
 import org.openflexo.technologyadapter.fiacre.virtualmodel.actions.AddFiacreProcess;
@@ -88,6 +92,23 @@ public class FiacreAdapterController extends TechnologyAdapterController<FiacreT
 		return FiacreIconLibrary.iconForObject(objectClass);
 	}
 
+	@Override
+	public ImageIcon getIconForPatternRole(Class<? extends FlexoRole<?>> arg0) {
+		if (FiacreProcessRole.class.isAssignableFrom(arg0)) {
+			return getIconForTechnologyObject(FiacreProcess.class);
+		}
+		if (FiacreComponentRole.class.isAssignableFrom(arg0)) {
+			return getIconForTechnologyObject(FiacreComponent.class);
+		}
+		if (FiacreStateRole.class.isAssignableFrom(arg0)) {
+			return getIconForTechnologyObject(FiacreState.class);
+		}
+		if (FiacreFifoRole.class.isAssignableFrom(arg0)) {
+			return getIconForTechnologyObject(FiacreFifo.class);
+		}
+		return null;
+	}
+	
 	/**
 	 * Return icon representing supplied edition action
 	 * 
@@ -115,11 +136,6 @@ public class FiacreAdapterController extends TechnologyAdapterController<FiacreT
 			return new FIBFiacreView((FiacreProgram) arg0, arg1);
 		}
 		return new EmptyPanel<TechnologyObject<FiacreTechnologyAdapter>>(arg1, arg2, arg0);
-	}
-
-	@Override
-	public ImageIcon getIconForPatternRole(Class<? extends FlexoRole<?>> arg0) {
-		return null;
 	}
 
 	@Override
