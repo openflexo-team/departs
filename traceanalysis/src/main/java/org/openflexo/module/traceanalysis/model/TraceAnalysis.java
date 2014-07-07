@@ -21,6 +21,8 @@ package org.openflexo.module.traceanalysis.model;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.foundation.InvalidArgumentException;
@@ -36,6 +38,7 @@ public class TraceAnalysis extends DefaultFlexoObject implements PropertyChangeL
 	private TAESystem taeSystem ;
 	private TAEContext taeContext;
 	private TAEObserver taeObserver;
+	private ArrayList<TAEObject> taeObjects;
 
 	public TraceAnalysis(View view, TAEProject taeProject) throws InvalidArgumentException {
 		super();
@@ -75,6 +78,19 @@ public class TraceAnalysis extends DefaultFlexoObject implements PropertyChangeL
 	public boolean delete() {
 		super.delete();
 		return true;
+	}
+	
+	public List<TAEObject> getTAEObjects(){
+		
+		if(taeObjects==null){
+			taeObjects = new ArrayList<TAEObject>();
+			taeObjects.add(taeAnalyze);
+			taeObjects.add(taeContext);
+			taeObjects.add(taeObserver);
+			taeObjects.add(taeSystem);
+		}
+		
+		return taeObjects;
 	}
 	
 	public TAESystem getTAESystem() {

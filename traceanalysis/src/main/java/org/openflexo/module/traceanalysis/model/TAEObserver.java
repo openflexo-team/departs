@@ -19,41 +19,16 @@
  */
 package org.openflexo.module.traceanalysis.model;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
-import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.foundation.InvalidArgumentException;
 import org.openflexo.foundation.view.VirtualModelInstance;
 
-public class TAEObserver extends DefaultFlexoObject implements PropertyChangeListener {
+public class TAEObserver extends TAEObject {
 
-	private final VirtualModelInstance virtualModelInstance;
-
-	public TAEObserver(VirtualModelInstance virtualModelInstance) throws InvalidArgumentException {
-		super();
-		this.virtualModelInstance = virtualModelInstance;
-		virtualModelInstance.getPropertyChangeSupport().addPropertyChangeListener(this);
+	public TAEObserver(VirtualModelInstance virtualModelInstance)
+			throws InvalidArgumentException {
+		super(virtualModelInstance);
+		// TODO Auto-generated constructor stub
 	}
 
-	public VirtualModelInstance getVirtualModelInstance() {
-		return virtualModelInstance;
-	}
-
-	public String getName() {
-		return virtualModelInstance.getName();
-	}
 	
-	@Override
-	public boolean delete() {
-		super.delete();
-		return true;
-	}
-
-	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }
