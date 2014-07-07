@@ -75,9 +75,9 @@ public class TAEProjectNature implements ProjectNature<TAEProjectNature, TAEProj
 		if (project.getServiceManager().getViewPointLibrary().getViewPoints().size() == 0) {
 			return false;
 		}
-		if (project.getViewLibrary().getAllResources().size() == 0) {
+		/*if (project.getViewLibrary().getAllResources().size() == 0) {
 			return false;
-		}
+		}*/
 		TAEProject factory = getTAEProject(project);
 		if (factory == null) {
 			return false;
@@ -110,7 +110,7 @@ public class TAEProjectNature implements ProjectNature<TAEProjectNature, TAEProj
 			logger.log(Level.SEVERE, "No trace analysis viewpoint found in resource centers");
 		}
 
-		ViewResource traceAnalysisViewResource = project.getViewLibrary().getResource(
+		/*ViewResource traceAnalysisViewResource = project.getViewLibrary().getResource(
 				project.getURI() + TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
 
 		if (traceAnalysisViewResource == null) {
@@ -120,7 +120,7 @@ public class TAEProjectNature implements ProjectNature<TAEProjectNature, TAEProj
 			action.setViewpointResource(traceAnalysisViewPointResource);
 			action.doAction();
 			traceAnalysisViewResource = (ViewResource) action.getNewView().getResource();
-		}
+		}*/
 
 	}
 

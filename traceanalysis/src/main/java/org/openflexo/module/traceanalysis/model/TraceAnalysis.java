@@ -24,27 +24,32 @@ import java.beans.PropertyChangeListener;
 
 import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.foundation.InvalidArgumentException;
+import org.openflexo.foundation.view.View;
 import org.openflexo.foundation.view.VirtualModelInstance;
 
 public class TraceAnalysis extends DefaultFlexoObject implements PropertyChangeListener {
 
-	private final VirtualModelInstance virtualModelInstance;
+	private final View view;
+
 	private final TAEProject taeProject;
+	private TAEAnalyze taeAnalyze ;
+	private TAESystem taeSystem ;
+	private TAEContext taeContext;
+	private TAEObserver taeObserver;
 
-
-	public TraceAnalysis(VirtualModelInstance virtualModelInstance, TAEProject taeProject) throws InvalidArgumentException {
+	public TraceAnalysis(View view, TAEProject taeProject) throws InvalidArgumentException {
 		super();
 		this.taeProject = taeProject;
-		this.virtualModelInstance = virtualModelInstance;
-		virtualModelInstance.getPropertyChangeSupport().addPropertyChangeListener(this);
+		this.view = view;
+		view.getPropertyChangeSupport().addPropertyChangeListener(this);
 	}
 
 	public TAEProject getTAEProject() {
 		return taeProject;
 	}
 
-	public VirtualModelInstance getVirtualModelInstance() {
-		return virtualModelInstance;
+	public View getView() {
+		return view;
 	}
 
 	public TAEProjectNature getProjectNature() {
@@ -52,7 +57,7 @@ public class TraceAnalysis extends DefaultFlexoObject implements PropertyChangeL
 	}
 
 	public String getName() {
-		return virtualModelInstance.getName();
+		return view.getName();
 	}
 
 	public String getURI() {
@@ -61,7 +66,7 @@ public class TraceAnalysis extends DefaultFlexoObject implements PropertyChangeL
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		if (evt.getSource() == virtualModelInstance) {
+		if (evt.getSource() == view) {
 		
 		}
 	}
@@ -70,5 +75,37 @@ public class TraceAnalysis extends DefaultFlexoObject implements PropertyChangeL
 	public boolean delete() {
 		super.delete();
 		return true;
+	}
+	
+	public TAESystem getTAESystem() {
+		return taeSystem;
+	}
+	
+	public TAEContext getTAEContext() {
+		return taeContext;
+	}
+	
+	public TAEObserver getTAEObserver() {
+		return taeObserver;
+	}
+	
+	public void setTAESystem(TAESystem system) {
+		this.taeSystem = system;
+	}
+
+	public void setTAEContext(TAEContext context) {
+		this.taeContext = context;
+	}
+
+	public void setTAEObserver(TAEObserver observer) {
+		this.taeObserver = observer;
+	}
+
+	public TAEAnalyze getTaeAnalyze() {
+		return taeAnalyze;
+	}
+
+	public void setTaeAnalyze(TAEAnalyze taeAnalyze) {
+		this.taeAnalyze = taeAnalyze;
 	}
 }

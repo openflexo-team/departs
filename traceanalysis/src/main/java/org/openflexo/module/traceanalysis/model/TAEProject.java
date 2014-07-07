@@ -33,6 +33,7 @@ import org.openflexo.foundation.nature.ProjectWrapper;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.view.View;
 import org.openflexo.foundation.view.VirtualModelInstance;
+import org.openflexo.foundation.view.VirtualModelModelSlotInstance;
 import org.openflexo.foundation.view.rm.ViewResource;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.VirtualModel;
@@ -45,8 +46,7 @@ public class TAEProject extends DefaultFlexoObject implements ProjectWrapper<TAE
 	private final TAEProjectNature projectNature;
 	
 	private final ViewPoint traceAnalysisViewPoint;
-	private final View traceAnalysisView;
-	private final Map<VirtualModelInstance, TraceAnalysis> traceAnalysis;
+	private final Map<View, TraceAnalysis> traceAnalysis;
 
 	protected TAEProject(FlexoProject project, TAEProjectNature projectNature) throws FileNotFoundException,
 			ResourceLoadingCancelledException, InvalidArgumentException, FlexoException {
@@ -55,19 +55,19 @@ public class TAEProject extends DefaultFlexoObject implements ProjectWrapper<TAE
 		
 		ViewPointResource taeViewPointResource = getProject().getServiceManager().getViewPointLibrary().getViewPointResource(TAEProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
 
-		ViewResource taeViewResource = project.getViewLibrary().getResource(
-				project.getURI() + TAEProjectNature.TRACE_ANALYSIS_VIEW_RELATIVE_URI);
-
-		if (taeViewResource == null) {
+		/*ViewResource taeViewResource = project.getViewLibrary().getResource(
+				project.getURI() + TAEProjectNature.TRACE_ANALYSIS_VIEW_RELATIVE_URI);*/
+	
+		/*if (taeViewResource == null) {
 			throw new InvalidArgumentException("Could not retrieve TraceAnalysisView resource (searched uri="
 					+ (project.getURI() + TAEProjectNature.TRACE_ANALYSIS_VIEW_RELATIVE_URI) + ")");
-		}
+		}*/
 
-		traceAnalysis = new HashMap<VirtualModelInstance, TraceAnalysis>();
+		traceAnalysis = new HashMap<View, TraceAnalysis>();
 		
 		try {
 			traceAnalysisViewPoint = taeViewPointResource.getResourceData(null);
-			traceAnalysisView = taeViewResource.getResourceData(null);
+			//traceAnalysisView = taeViewResource.getResourceData(null);
 		} catch (Exception e) {
 			throw new FlexoException(e);
 		}
@@ -75,9 +75,9 @@ public class TAEProject extends DefaultFlexoObject implements ProjectWrapper<TAE
 		if (traceAnalysisViewPoint == null) {
 			throw new InvalidArgumentException("Could not load traceAnalysisViewPoint");
 		}
-		if (traceAnalysisView == null) {
+		/*if (traceAnalysisView == null) {
 			throw new InvalidArgumentException("Could not load traceAnalysisView");
-		}
+		}*/
 	}
 
 	public String getName() {
@@ -111,33 +111,36 @@ public class TAEProject extends DefaultFlexoObject implements ProjectWrapper<TAE
 		return getTraceAnaylsisViewPoint().getVirtualModelNamed("SystemVirtualModel");
 	}
 
-	public View getTraceAnalysisView() {
+	/*public View getTraceAnalysisView() {
 		return traceAnalysisView;
-	}
+	}*/
 	
 	public List<TraceAnalysis> getTraceAnalysis() {
-		List<TraceAnalysis> returned = new ArrayList<TraceAnalysis>();
-		for (VirtualModelInstance vmi : getTraceAnalysisView().getVirtualModelInstances()) {
-			try {
-				returned.add(getTraceAnalysis(vmi));
-			} catch (InvalidArgumentException e) {
-				TAEProjectNature.logger.warning(e.getMessage());
+		ArrayList<TraceAnalysis> returned = new ArrayList<TraceAnalysis>();
+	
+		try{
+			for (View view : project.getViewLibrary().getViewsForViewPointWithURI(TAEProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI)) {
+				returned.add(getTraceAnalysis(view));
 			}
 		}
+		catch (InvalidArgumentException e) {
+			TAEProjectNature.logger.warning(e.getMessage());
+		}
+
 		return returned;
 	}
 	
-	public TraceAnalysis getTraceAnalysis(VirtualModelInstance virtualModelInstance) throws InvalidArgumentException {
-		TraceAnalysis returned = traceAnalysis.get(virtualModelInstance);
+	public TraceAnalysis getTraceAnalysis(View view) throws InvalidArgumentException {
+		TraceAnalysis returned = traceAnalysis.get(view);
 		if (returned == null) {
-			returned = new TraceAnalysis(virtualModelInstance, this);
-			traceAnalysis.put(virtualModelInstance, returned);
+			returned = new TraceAnalysis(view, this);
+			traceAnalysis.put(view, returned);
 			getPropertyChangeSupport().firePropertyChange("getTraceAnalysis()", null, traceAnalysis);
 		}
 		return returned;
 	}
 
-	public TraceAnalysis getFreeModel(String traceAnalysisName) {
+	public TraceAnalysis getTraceAnalysis(String traceAnalysisName) {
 		for (TraceAnalysis traceAnalysis : getTraceAnalysis()) {
 			if (traceAnalysis.getName().equals(traceAnalysisName)) {
 				return traceAnalysis;

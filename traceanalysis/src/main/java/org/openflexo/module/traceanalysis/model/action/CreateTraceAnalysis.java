@@ -35,10 +35,17 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.action.CreateBasicVirtualModelInstance;
+import org.openflexo.foundation.view.action.CreateView;
 import org.openflexo.foundation.view.action.ModelSlotInstanceConfiguration.DefaultModelSlotInstanceConfigurationOption;
+import org.openflexo.foundation.view.rm.ViewResource;
 import org.openflexo.foundation.view.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.viewpoint.VirtualModelModelSlotInstanceConfiguration;
+import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.module.traceanalysis.model.TAEAnalyze;
+import org.openflexo.module.traceanalysis.model.TAEContext;
+import org.openflexo.module.traceanalysis.model.TAEObserver;
+import org.openflexo.module.traceanalysis.model.TAESystem;
 import org.openflexo.module.traceanalysis.model.TraceAnalysis;
 import org.openflexo.module.traceanalysis.model.TAEProject;
 import org.openflexo.technologyadapter.cdl.CDLModelSlot;
@@ -86,9 +93,16 @@ public class CreateTraceAnalysis extends FlexoAction<CreateTraceAnalysis, TAEPro
 	protected void doAction(Object context) throws SaveResourceException {
 
 		logger.info("Create trace analysis");
+		// Create the view
+
+		CreateView createView = CreateView.actionType.makeNewAction(getFocusedObject().getProject().getViewLibrary().getRootFolder(), null, getEditor());
+		createView.setNewViewName(getTraceAnalysisName());
+		createView.setNewViewTitle(getTraceAnalysisName());
+		createView.setViewpointResource((ViewPointResource) ((TAEProject)getFocusedObject()).getTraceAnaylsisViewPoint().getResource());
+		createView.doAction();
 		
 		// Create Virtual Model instance for system
-		CreateBasicVirtualModelInstance createSystem = CreateBasicVirtualModelInstance.actionType.makeNewEmbeddedAction(getFocusedObject().getTraceAnalysisView(), null, this);
+		CreateBasicVirtualModelInstance createSystem = CreateBasicVirtualModelInstance.actionType.makeNewEmbeddedAction(createView.getNewView(), null, this);
 		createSystem.setNewVirtualModelInstanceName(getTraceAnalysisName());
 		createSystem.setNewVirtualModelInstanceTitle(getTraceAnalysisName());
 		createSystem.setVirtualModel(getFocusedObject().getSystemVirtualModel());
@@ -100,7 +114,7 @@ public class CreateTraceAnalysis extends FlexoAction<CreateTraceAnalysis, TAEPro
 		VirtualModelInstance systemVM = createSystem.getNewVirtualModelInstance();
 		
 		// Create Virtual Model instance for context
-		CreateBasicVirtualModelInstance createContext = CreateBasicVirtualModelInstance.actionType.makeNewEmbeddedAction(getFocusedObject().getTraceAnalysisView(), null, this);
+		CreateBasicVirtualModelInstance createContext = CreateBasicVirtualModelInstance.actionType.makeNewEmbeddedAction(createView.getNewView(), null, this);
 		createContext.setNewVirtualModelInstanceName(getTraceAnalysisName());
 		createContext.setNewVirtualModelInstanceTitle(getTraceAnalysisName());
 		createContext.setVirtualModel(getFocusedObject().getContextVirtualModel());
@@ -115,7 +129,7 @@ public class CreateTraceAnalysis extends FlexoAction<CreateTraceAnalysis, TAEPro
 		VirtualModelInstance contextVM = createContext.getNewVirtualModelInstance();
 		
 		// Create Virtual Model instance for observer
-		CreateBasicVirtualModelInstance createObserver = CreateBasicVirtualModelInstance.actionType.makeNewEmbeddedAction(getFocusedObject().getTraceAnalysisView(), null, this);
+		CreateBasicVirtualModelInstance createObserver = CreateBasicVirtualModelInstance.actionType.makeNewEmbeddedAction(createView.getNewView(), null, this);
 		createObserver.setNewVirtualModelInstanceName(getTraceAnalysisName());
 		createObserver.setNewVirtualModelInstanceTitle(getTraceAnalysisName());
 		createObserver.setVirtualModel(getFocusedObject().getObserverVirtualModel());
@@ -129,7 +143,7 @@ public class CreateTraceAnalysis extends FlexoAction<CreateTraceAnalysis, TAEPro
 		createObserver.doAction();
 		VirtualModelInstance observerVM = createObserver.getNewVirtualModelInstance();
 		
-		CreateBasicVirtualModelInstance action = CreateBasicVirtualModelInstance.actionType.makeNewEmbeddedAction(getFocusedObject().getTraceAnalysisView(), null, this);
+		CreateBasicVirtualModelInstance action = CreateBasicVirtualModelInstance.actionType.makeNewEmbeddedAction(createView.getNewView(), null, this);
 		action.setNewVirtualModelInstanceName(getTraceAnalysisName());
 		action.setNewVirtualModelInstanceTitle(getTraceAnalysisName());
 		action.setVirtualModel(getFocusedObject().getAnalyzeVirtualModel());
@@ -144,10 +158,16 @@ public class CreateTraceAnalysis extends FlexoAction<CreateTraceAnalysis, TAEPro
 		obsConf.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingVirtualModel);
 		obsConf.setAddressedVirtualModelInstanceResource((VirtualModelInstanceResource)observerVM.getResource());
 		action.doAction();
-		VirtualModelInstance newVirtualModelInstance = action.getNewVirtualModelInstance();
-		// Wrap into FreeModel
+		VirtualModelInstance analyzeVM = action.getNewVirtualModelInstance();
+		
+		
+		// Wrap into TraceAnalysis
 		try {
-			traceAnalysis = getFocusedObject().getTraceAnalysis(newVirtualModelInstance);
+			traceAnalysis = getFocusedObject().getTraceAnalysis(createView.getNewView());
+			traceAnalysis.setTAESystem(new TAESystem(systemVM));
+			traceAnalysis.setTAEContext(new TAEContext(contextVM));
+			traceAnalysis.setTAEObserver(new TAEObserver(observerVM));
+			traceAnalysis.setTaeAnalyze(new TAEAnalyze(analyzeVM));
 		} catch (InvalidArgumentException e) {
 			e.printStackTrace();
 		}

@@ -28,6 +28,7 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.model.undo.CompoundEdit;
 import org.openflexo.module.traceanalysis.TAEIconLibrary;
 import org.openflexo.module.traceanalysis.model.TraceAnalysis;
+import org.openflexo.module.traceanalysis.widget.FIBAnalyzeConceptsBrowser;
 import org.openflexo.module.traceanalysis.widget.FIBTAEProjectBrowser;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.FlexoController;
@@ -38,6 +39,7 @@ public class TAEPerspective extends FlexoPerspective {
 	protected static final Logger logger = Logger.getLogger(TAEPerspective.class.getPackage().getName());
 
 	private FIBTAEProjectBrowser taeProjectBrowser = null;
+	private FIBAnalyzeConceptsBrowser analyzeConceptsBrowser = null;
 
 	/**
 	 * Default constructor taking controller as argument
@@ -47,7 +49,7 @@ public class TAEPerspective extends FlexoPerspective {
 		// _controller = controller;
 
 		taeProjectBrowser = new FIBTAEProjectBrowser(controller.getProject(), controller);
-
+		analyzeConceptsBrowser = new FIBAnalyzeConceptsBrowser(null, controller);
 		setTopLeftView(taeProjectBrowser);
 	}
 
@@ -78,7 +80,8 @@ public class TAEPerspective extends FlexoPerspective {
 
 	public void focusOnTraceAnalysis(TraceAnalysis traceAnalysis) {
 		logger.info("focusOnTraceAnalysis " + traceAnalysis);
-
+		analyzeConceptsBrowser.setFreeModel(traceAnalysis);
+		setBottomLeftView(analyzeConceptsBrowser);
 	}
 
 	@Override
