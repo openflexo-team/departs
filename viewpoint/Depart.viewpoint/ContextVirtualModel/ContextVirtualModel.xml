@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VirtualModel id="0" userID="FLX" useSpecificDescriptions="false" flexoID="-1" name="ContextVirtualModel">
+  <FlexoConcept id="1" userID="FLX" useSpecificDescriptions="false" flexoID="5" name="CDLUnit">
+    <Inspector id="2" flexoID="4" userID="FLX" useSpecificDescriptions="false" inspectorTitle="CDLUnit" />
+  </FlexoConcept>
+  <FlexoConcept id="3" userID="FLX" useSpecificDescriptions="false" flexoID="7" name="CDLActivity">
+    <Inspector id="4" flexoID="6" userID="FLX" useSpecificDescriptions="false" inspectorTitle="CDLActivity" />
+    <CDLActivityRole id="5" flexoID="8" name="activity" useSpecificDescriptions="false" userID="FLX">
+      <CDLModelSlot idref="6" />
+    </CDLActivityRole>
+    <CreationScheme id="7" useSpecificDescriptions="false" width="800" userID="FLX" label="create_activity" definePopupDefaultSize="false" height="600" flexoID="23" skipConfirmationPanel="false" name="create_activity">
+      <TextFieldParameter id="8" flexoID="25" isRequired="false" name="name" userID="FLX" useSpecificDescriptions="false" label="name" />
+      <AddCDLActivity id="9" flexoID="26" assignation="activity" useSpecificDescriptions="false" userID="FLX">
+        <CDLModelSlot idref="6" />
+      </AddCDLActivity>
+    </CreationScheme>
+  </FlexoConcept>
+  <FlexoConcept id="10" userID="FLX" useSpecificDescriptions="false" flexoID="12" name="CDLEvent">
+    <Inspector id="11" flexoID="11" userID="FLX" useSpecificDescriptions="false" inspectorTitle="CDLEvent" />
+    <CDLEventRole id="12" flexoID="14" name="event" useSpecificDescriptions="false" userID="FLX">
+      <CDLModelSlot idref="6" />
+    </CDLEventRole>
+    <FlexoConceptInstanceRole id="13" cloningStratgey="Reference" flexoID="69" name="from" useSpecificDescriptions="false" userID="FLX" flexoConceptTypeURI="http://depart.v1/ContextVirtualModel#ProcessID">
+      <VirtualModelModelSlot idref="14" />
+    </FlexoConceptInstanceRole>
+    <FlexoConceptInstanceRole id="15" cloningStratgey="Reference" flexoID="70" name="to" useSpecificDescriptions="false" userID="FLX" flexoConceptTypeURI="http://depart.v1/ContextVirtualModel#ProcessID">
+      <VirtualModelModelSlot idref="14" />
+    </FlexoConceptInstanceRole>
+    <CreationScheme id="16" useSpecificDescriptions="false" width="800" userID="FLX" label="create_event" definePopupDefaultSize="false" height="600" flexoID="13" skipConfirmationPanel="false" name="create_event">
+      <TextFieldParameter id="17" flexoID="16" isRequired="false" name="eventName" userID="FLX" useSpecificDescriptions="false" label="eventName" />
+      <FlexoConceptInstanceParameter id="18" useSpecificDescriptions="false" userID="FLX" label="from" flexoID="19" isRequired="false" name="from" flexoConceptTypeURI="http://depart.v1/ContextVirtualModel#ProcessID">
+        <VirtualModelModelSlot idref="14" />
+      </FlexoConceptInstanceParameter>
+      <FlexoConceptInstanceParameter id="19" useSpecificDescriptions="false" userID="FLX" label="to" flexoID="20" isRequired="false" name="to" flexoConceptTypeURI="http://depart.v1/ContextVirtualModel#ProcessID">
+        <VirtualModelModelSlot idref="14" />
+      </FlexoConceptInstanceParameter>
+      <AddCDLEvent id="20" fromProcessID="from.processID" useSpecificDescriptions="false" userID="FLX" flexoID="15" assignation="event" toProcessID="to.processID" eventKind="OUTPUT" eventName="parameters.eventName">
+        <CDLModelSlot idref="6" />
+      </AddCDLEvent>
+    </CreationScheme>
+  </FlexoConcept>
+  <FlexoConcept id="21" userID="FLX" useSpecificDescriptions="false" flexoID="38" name="CDLAltActivity">
+    <Inspector id="22" flexoID="37" userID="FLX" useSpecificDescriptions="false" inspectorTitle="CDLAltActivity" />
+    <ParentFlexoConcept idref="3" />
+  </FlexoConcept>
+  <FlexoConcept id="23" userID="FLX" useSpecificDescriptions="false" flexoID="42" name="CDLParActivity">
+    <Inspector id="24" flexoID="39" userID="FLX" useSpecificDescriptions="false" inspectorTitle="CDLParActivity" />
+    <ParentFlexoConcept idref="3" />
+  </FlexoConcept>
+  <FlexoConcept id="25" userID="FLX" useSpecificDescriptions="false" flexoID="44" name="CDLTopActivity">
+    <Inspector id="26" flexoID="43" userID="FLX" useSpecificDescriptions="false" inspectorTitle="CDLTopActivity" />
+    <ParentFlexoConcept idref="3" />
+  </FlexoConcept>
+  <FlexoConcept id="27" userID="FLX" useSpecificDescriptions="false" flexoID="48" name="ProcessID">
+    <Inspector id="28" flexoID="47" userID="FLX" useSpecificDescriptions="false" inspectorTitle="ProcessID" />
+    <FlexoConceptInstanceRole id="29" cloningStratgey="Reference" flexoID="50" name="process" useSpecificDescriptions="false" userID="FLX" flexoConceptTypeURI="http://depart.v1/SystemVirtualModel#Process">
+      <VirtualModelModelSlot idref="30" />
+    </FlexoConceptInstanceRole>
+    <CDLProcessIDRole id="31" flexoID="53" name="processID" useSpecificDescriptions="false" userID="FLX">
+      <CDLModelSlot idref="6" />
+    </CDLProcessIDRole>
+    <CreationScheme id="32" useSpecificDescriptions="false" width="800" userID="FLX" label="create_process" definePopupDefaultSize="false" height="600" flexoID="51" skipConfirmationPanel="false" name="create_process">
+      <FlexoConceptInstanceParameter id="33" useSpecificDescriptions="false" userID="FLX" label="process" flexoID="52" isRequired="false" name="process" flexoConceptTypeURI="http://depart.v1/SystemVirtualModel#Process">
+        <VirtualModelModelSlot idref="30" />
+      </FlexoConceptInstanceParameter>
+      <AddCDLProcessID id="34" flexoID="54" useSpecificDescriptions="false" userID="FLX">
+        <CDLModelSlot idref="6" />
+      </AddCDLProcessID>
+      <DeclareFlexoRole id="35" userID="FLX" useSpecificDescriptions="false" object="parameters.process" flexoID="55" assignation="process" />
+    </CreationScheme>
+  </FlexoConcept>
+  <FlexoConcept id="36" userID="FLX" useSpecificDescriptions="false" flexoID="59" name="CDLEventReference">
+    <Inspector id="37" flexoID="58" userID="FLX" useSpecificDescriptions="false" inspectorTitle="CDLEventReference" />
+    <ParentFlexoConcept idref="3" />
+    <CDLActivityRole id="38" flexoID="63" name="eventReference" useSpecificDescriptions="false" userID="FLX">
+      <CDLModelSlot idref="6" />
+    </CDLActivityRole>
+    <FlexoConceptInstanceRole id="39" cloningStratgey="Reference" flexoID="64" name="event" useSpecificDescriptions="false" userID="FLX" flexoConceptTypeURI="http://depart.v1/ContextVirtualModel#CDLEvent">
+      <VirtualModelModelSlot idref="14" />
+    </FlexoConceptInstanceRole>
+    <CreationScheme id="40" useSpecificDescriptions="false" width="800" userID="FLX" label="create_event_reference" definePopupDefaultSize="false" height="600" flexoID="60" skipConfirmationPanel="false" name="create_event_reference">
+      <FlexoConceptInstanceParameter id="41" useSpecificDescriptions="false" userID="FLX" label="event" flexoID="61" isRequired="false" name="event" flexoConceptTypeURI="http://depart.v1/ContextVirtualModel#CDLEvent">
+        <VirtualModelModelSlot idref="14" />
+      </FlexoConceptInstanceParameter>
+      <TextFieldParameter id="42" flexoID="62" isRequired="false" name="name" userID="FLX" useSpecificDescriptions="false" label="name" />
+      <AddCDLActivity id="43" flexoID="65" assignation="eventReference" useSpecificDescriptions="false" userID="FLX">
+        <CDLModelSlot idref="6" />
+      </AddCDLActivity>
+      <DeclareFlexoRole id="44" userID="FLX" useSpecificDescriptions="false" object="parameters.event" flexoID="66" assignation="event" />
+    </CreationScheme>
+  </FlexoConcept>
+  <Inspector id="45" flexoID="-1" userID="FLX" useSpecificDescriptions="false" inspectorTitle="ContextVirtualModel" />
+  <ModelSlot_VirtualModelModelSlot id="14" cloningStratgey="Reference" flexoID="1" isRequired="false" userID="FLX" useSpecificDescriptions="false" name="virtualModelInstance" isReadOnly="false" virtualModelURI="http://depart.v1/ContextVirtualModel" />
+  <ModelSlot_CDLModelSlot id="6" cloningStratgey="Reference" flexoID="3" isRequired="true" name="cdlModelSlot" useSpecificDescriptions="false" userID="FLX" isReadOnly="false" />
+  <ModelSlot_VirtualModelModelSlot id="30" cloningStratgey="Reference" flexoID="2" isRequired="true" userID="FLX" useSpecificDescriptions="false" name="systemModelSlot" isReadOnly="false" virtualModelURI="http://depart.v1/SystemVirtualModel" />
+</VirtualModel>
