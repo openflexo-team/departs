@@ -80,7 +80,7 @@ public class TAEPerspective extends FlexoPerspective {
 
 	public void focusOnTraceAnalysis(TraceAnalysis traceAnalysis) {
 		logger.info("focusOnTraceAnalysis " + traceAnalysis);
-		analyzeConceptsBrowser.setFreeModel(traceAnalysis);
+		analyzeConceptsBrowser.setTraceAnalysis(traceAnalysis);
 		setBottomLeftView(analyzeConceptsBrowser);
 	}
 

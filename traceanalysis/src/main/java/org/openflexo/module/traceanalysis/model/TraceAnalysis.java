@@ -26,8 +26,10 @@ import java.util.List;
 
 import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.foundation.InvalidArgumentException;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.View;
 import org.openflexo.foundation.view.VirtualModelInstance;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 
 public class TraceAnalysis extends DefaultFlexoObject implements PropertyChangeListener {
 
@@ -84,24 +86,48 @@ public class TraceAnalysis extends DefaultFlexoObject implements PropertyChangeL
 		
 		if(taeObjects==null){
 			taeObjects = new ArrayList<TAEObject>();
-			taeObjects.add(taeAnalyze);
-			taeObjects.add(taeContext);
-			taeObjects.add(taeObserver);
-			taeObjects.add(taeSystem);
+			taeObjects.add(getTaeAnalyze());
+			taeObjects.add(getTAEContext());
+			taeObjects.add(getTAEObserver());
+			taeObjects.add(getTAESystem());
 		}
 		
 		return taeObjects;
 	}
 	
 	public TAESystem getTAESystem() {
+		if(taeSystem==null){
+			try {
+				taeSystem=new TAESystem(getVirtualModelInstanceConformToNamedVirtualModel("SystemVirtualModel"));
+			} catch (InvalidArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		return taeSystem;
 	}
 	
 	public TAEContext getTAEContext() {
+		if(taeContext==null){
+			try {
+				taeContext=new TAEContext(getVirtualModelInstanceConformToNamedVirtualModel("ContextVirtualModel"));
+			} catch (InvalidArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		return taeContext;
 	}
 	
 	public TAEObserver getTAEObserver() {
+		if(taeObserver==null){
+			try {
+				taeObserver=new TAEObserver(getVirtualModelInstanceConformToNamedVirtualModel("ObserverVirtualModel"));
+			} catch (InvalidArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		return taeObserver;
 	}
 	
@@ -118,10 +144,33 @@ public class TraceAnalysis extends DefaultFlexoObject implements PropertyChangeL
 	}
 
 	public TAEAnalyze getTaeAnalyze() {
+		if(taeAnalyze==null){
+			try {
+				taeAnalyze=new TAEAnalyze(getVirtualModelInstanceConformToNamedVirtualModel("AnalyzeVirtualModel"));
+			} catch (InvalidArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		return taeAnalyze;
 	}
 
 	public void setTaeAnalyze(TAEAnalyze taeAnalyze) {
 		this.taeAnalyze = taeAnalyze;
 	}
+	
+	private VirtualModelInstance getVirtualModelInstanceConformToNamedVirtualModel(String name){
+		for (VirtualModelInstance vmi : getView().getVirtualModelInstances()) {
+			if(vmi.getVirtualModel().getName().equals(name)){
+				return vmi;
+			}
+		}
+		return null;
+	}
+	
+	public List<FlexoConceptInstance> getInstances(FlexoConcept concept) {
+		return getVirtualModelInstanceConformToNamedVirtualModel(concept.getVirtualModel().getName()).getFlexoConceptInstances(concept);
+	}
+	
+	
 }

@@ -39,7 +39,7 @@ public class FIBAnalyzeConceptsBrowser extends FIBBrowserView<TraceAnalysis> {
 		// System.out.println("Showing browser with " + project);
 	}
 
-	public void setFreeModel(TraceAnalysis traceAnalysis) {
+	public void setTraceAnalysis(TraceAnalysis traceAnalysis) {
 		setDataObject(traceAnalysis);
 	}
 }
