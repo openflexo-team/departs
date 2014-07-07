@@ -105,7 +105,7 @@ public class TAEController extends FlexoController {
 	@Override
 	public void selectAndFocusObject(FlexoObject object) {
 		if (object != null) {
-			if (object instanceof TraceAnalysis) {
+			if (object instanceof FlexoObject) {
 				setCurrentEditedObjectAsModuleView(object);
 			}
 			if (getCurrentPerspective() == TAE_PERSPECTIVE) {
