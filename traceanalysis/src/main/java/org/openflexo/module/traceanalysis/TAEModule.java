@@ -53,7 +53,7 @@ public class TAEModule extends FlexoModule<TAEModule> {
 	@Override
 	public Module<TAEModule> getModule() {
 		// TODO Auto-generated method stub
-		return TraceAnalysis.INSTANCE;
+		return TraceAnalysisModule.INSTANCE;
 	}
 
 	@Override

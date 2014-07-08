@@ -27,7 +27,7 @@ package org.openflexo.module.traceanalysis.view.menu;
  */
 import java.util.logging.Logger;
 
-import org.openflexo.module.traceanalysis.TraceAnalysis;
+import org.openflexo.module.traceanalysis.TraceAnalysisModule;
 import org.openflexo.module.traceanalysis.controller.TAEController;
 import org.openflexo.view.menu.WindowMenu;
 
@@ -53,7 +53,7 @@ public class TAEWindowMenu extends WindowMenu {
 	// ==========================================================================
 
 	public TAEWindowMenu(TAEController controller) {
-		super(controller, TraceAnalysis.INSTANCE);
+		super(controller, TraceAnalysisModule.INSTANCE);
 		taeController = controller;
 		// Put your actions here
 	}

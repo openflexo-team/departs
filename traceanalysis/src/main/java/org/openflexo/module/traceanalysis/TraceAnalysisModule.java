@@ -22,11 +22,11 @@ package org.openflexo.module.traceanalysis;
 
 import org.openflexo.module.Module;
 
-public class TraceAnalysis extends Module<TAEModule> {
+public class TraceAnalysisModule extends Module<TAEModule> {
 
 	public static Module<TAEModule> INSTANCE = null;
 
-	public TraceAnalysis() {
+	public TraceAnalysisModule() {
 			
 		super(TAEModule.TAE_MODULE_NAME, TAEModule.TAE_MODULE_NAME, TAEModule.class, TAEPreferences.class, "",
 				null , "TAE", TAEIconLibrary.TAE_SMALL_ICON, TAEIconLibrary.TAE_MEDIUM_ICON, TAEIconLibrary.TAE_MEDIUM_ICON,

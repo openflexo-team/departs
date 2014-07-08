@@ -22,7 +22,7 @@ package org.openflexo.module.traceanalysis.view.menu;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.menu.FlexoMenuBar;
 import org.openflexo.module.traceanalysis.controller.TAEController;
-import org.openflexo.module.traceanalysis.TraceAnalysis;
+import org.openflexo.module.traceanalysis.TraceAnalysisModule;
 
 /**
  * Class representing menus related to traceAnalysis window
@@ -34,7 +34,7 @@ public class TAEMenuBar extends FlexoMenuBar {
 	private TAEFileMenu _fileMenu;
 
 	public TAEMenuBar(TAEController controller) {
-		super(controller, TraceAnalysis.INSTANCE);
+		super(controller, TraceAnalysisModule.INSTANCE);
 	}
 	
 	/**
