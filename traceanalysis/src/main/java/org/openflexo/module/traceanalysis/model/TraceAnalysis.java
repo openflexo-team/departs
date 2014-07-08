@@ -23,6 +23,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.foundation.InvalidArgumentException;
@@ -32,6 +34,8 @@ import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 
 public class TraceAnalysis extends DefaultFlexoObject implements PropertyChangeListener {
+	
+	private static final Logger logger = Logger.getLogger(TraceAnalysis.class.getPackage().getName());
 
 	private final View view;
 
@@ -41,11 +45,14 @@ public class TraceAnalysis extends DefaultFlexoObject implements PropertyChangeL
 	private TAEContext taeContext;
 	private TAEObserver taeObserver;
 	private ArrayList<TAEObject> taeObjects;
+	
+	private List<TraceExplorationMask> traceExplorationMasks;
 
 	public TraceAnalysis(View view, TAEProject taeProject) throws InvalidArgumentException {
 		super();
 		this.taeProject = taeProject;
 		this.view = view;
+		setTraceExplorationMasks(new ArrayList<TraceExplorationMask>());
 		view.getPropertyChangeSupport().addPropertyChangeListener(this);
 	}
 
@@ -76,10 +83,17 @@ public class TraceAnalysis extends DefaultFlexoObject implements PropertyChangeL
 		}
 	}
 	
-	@Override
-	public boolean delete() {
-		super.delete();
-		return true;
+	private VirtualModelInstance getVirtualModelInstanceConformToNamedVirtualModel(String name){
+		for (VirtualModelInstance vmi : getView().getVirtualModelInstances()) {
+			if(vmi.getVirtualModel().getName().equals(name)){
+				return vmi;
+			}
+		}
+		return null;
+	}
+	
+	public List<FlexoConceptInstance> getInstances(FlexoConcept concept) {
+		return getVirtualModelInstanceConformToNamedVirtualModel(concept.getVirtualModel().getName()).getFlexoConceptInstances(concept);
 	}
 	
 	public List<TAEObject> getTAEObjects(){
@@ -100,8 +114,7 @@ public class TraceAnalysis extends DefaultFlexoObject implements PropertyChangeL
 			try {
 				taeSystem=new TAESystem(getVirtualModelInstanceConformToNamedVirtualModel("SystemVirtualModel"));
 			} catch (InvalidArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.log(Level.SEVERE, "No System found");
 			}
 		}
 		return taeSystem;
@@ -112,8 +125,7 @@ public class TraceAnalysis extends DefaultFlexoObject implements PropertyChangeL
 			try {
 				taeContext=new TAEContext(getVirtualModelInstanceConformToNamedVirtualModel("ContextVirtualModel"));
 			} catch (InvalidArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.log(Level.SEVERE, "No Context found");
 			}
 		}
 		return taeContext;
@@ -124,11 +136,21 @@ public class TraceAnalysis extends DefaultFlexoObject implements PropertyChangeL
 			try {
 				taeObserver=new TAEObserver(getVirtualModelInstanceConformToNamedVirtualModel("ObserverVirtualModel"));
 			} catch (InvalidArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.log(Level.SEVERE, "No Observer found");
 			}
 		}
 		return taeObserver;
+	}
+	
+	public TAEAnalyze getTaeAnalyze() {
+		if(taeAnalyze==null){
+			try {
+				taeAnalyze=new TAEAnalyze(getVirtualModelInstanceConformToNamedVirtualModel("AnalyzeVirtualModel"));
+			} catch (InvalidArgumentException e) {
+				logger.log(Level.SEVERE, "No Analyze found");
+			}
+		}
+		return taeAnalyze;
 	}
 	
 	public void setTAESystem(TAESystem system) {
@@ -143,33 +165,22 @@ public class TraceAnalysis extends DefaultFlexoObject implements PropertyChangeL
 		this.taeObserver = observer;
 	}
 
-	public TAEAnalyze getTaeAnalyze() {
-		if(taeAnalyze==null){
-			try {
-				taeAnalyze=new TAEAnalyze(getVirtualModelInstanceConformToNamedVirtualModel("AnalyzeVirtualModel"));
-			} catch (InvalidArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return taeAnalyze;
-	}
-
 	public void setTaeAnalyze(TAEAnalyze taeAnalyze) {
 		this.taeAnalyze = taeAnalyze;
 	}
 	
-	private VirtualModelInstance getVirtualModelInstanceConformToNamedVirtualModel(String name){
-		for (VirtualModelInstance vmi : getView().getVirtualModelInstances()) {
-			if(vmi.getVirtualModel().getName().equals(name)){
-				return vmi;
-			}
-		}
-		return null;
+	@Override
+	public boolean delete() {
+		super.delete();
+		return true;
 	}
-	
-	public List<FlexoConceptInstance> getInstances(FlexoConcept concept) {
-		return getVirtualModelInstanceConformToNamedVirtualModel(concept.getVirtualModel().getName()).getFlexoConceptInstances(concept);
+
+	public List<TraceExplorationMask> getTraceExplorationMasks() {
+		return traceExplorationMasks;
+	}
+
+	public void setTraceExplorationMasks(List<TraceExplorationMask> traceExplorationMasks) {
+		this.traceExplorationMasks = traceExplorationMasks;
 	}
 	
 	

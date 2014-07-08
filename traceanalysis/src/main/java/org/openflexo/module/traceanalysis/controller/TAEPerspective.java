@@ -28,6 +28,9 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.model.undo.CompoundEdit;
 import org.openflexo.module.traceanalysis.TAEIconLibrary;
 import org.openflexo.module.traceanalysis.model.TraceAnalysis;
+import org.openflexo.module.traceanalysis.model.TraceExplorationMask;
+import org.openflexo.module.traceanalysis.view.TraceAnalysisModuleView;
+import org.openflexo.module.traceanalysis.view.TraceExplorationMaskModuleView;
 import org.openflexo.module.traceanalysis.widget.FIBAnalyzeConceptsBrowser;
 import org.openflexo.module.traceanalysis.widget.FIBTAEProjectBrowser;
 import org.openflexo.view.ModuleView;
@@ -119,6 +122,8 @@ public class TAEPerspective extends FlexoPerspective {
 	public boolean hasModuleViewForObject(FlexoObject object) {
 		if (object instanceof TraceAnalysis) {
 			return true;
+		}else if (object instanceof TraceExplorationMask) {
+			return true;
 		}
 		return super.hasModuleViewForObject(object);
 	}
@@ -126,7 +131,9 @@ public class TAEPerspective extends FlexoPerspective {
 	@Override
 	public ModuleView<?> createModuleViewForObject(FlexoObject object, boolean editable) {
 		if (object instanceof TraceAnalysis) {
-			return null;
+			return new TraceAnalysisModuleView((TraceAnalysis) object,getController(), this);
+		} else if(object instanceof TraceExplorationMask){
+			return new TraceExplorationMaskModuleView((TraceExplorationMask) object,getController(), this);
 		}
 		return super.createModuleViewForObject(object, editable);
 	}
