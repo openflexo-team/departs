@@ -1,0 +1,71 @@
+const NA: int is 250
+const NB: int is 200
+process counterA [start: out int, stop: out int, c: out int] is
+states idle, counting
+var 
+	count: int 
+init count := 0;
+to idle
+
+from idle
+	start! 10;
+	count := 0;
+	to counting
+
+from counting
+	select
+		if (count < NA) then
+			count := (count + 1);
+			to counting
+		else 
+			stop! 20;
+			to idle
+		end if
+	[]
+		c! 15;
+		to counting
+	end select;
+	to idle
+
+
+process counterB [start: in int, stop: in int, c: in int] is
+states idle, counting
+var 
+	count: int 
+init count := 0;
+to idle
+
+from idle
+	start? count;
+	to counting
+
+from counting
+	select
+		if (count < NB) then
+			count := (count + 1);
+			to counting
+		else 
+			stop? any;
+			to idle
+		end if
+	[]
+		c? any;
+		to counting
+	end select;
+	/* main component */
+	to idle
+
+
+component main is
+port 
+	start: in out int, 
+	stop: in out int, 
+	c: in out int
+
+par 
+	start, stop, c -> counterA[start, stop, c] 
+	 || start, stop, c -> counterB[start, stop, c] 
+end par
+
+
+main

@@ -1,0 +1,639 @@
+/* settings */
+
+const MAX_HMI: nat is 5
+type t_idHMI is 0..(MAX_HMI - 1)
+const DEFAULT_t_idHMI: t_idHMI is 0
+type t_nbHMI is 0..MAX_HMI
+const DEFAULT_t_nbHMI: t_nbHMI is 0
+
+const MAX_OP: nat is 3
+type t_userName is 0..(MAX_OP - 1)
+const DEFAULT_t_userName: t_userName is 0
+
+const SIZE_inputFifo: nat is 1 /* input and output are from SM's point of vue */
+const SIZE_outputFifo: nat is 1
+const SIZE_outputBuffer: nat is 10
+
+const SIZE_fifoAuth: nat is 1
+const SIZE_fifoEqM: nat is 1
+
+/* missions */
+
+const NB_MISSION: nat is 5
+type t_mission is 0..(NB_MISSION-1)
+const MISSION_administrate: t_mission is 0
+const MISSION_maintain: t_mission is 1
+const MISSION_control_defense_solution: t_mission is 2
+const MISSION_control_air_picture: t_mission is 3
+const MISSION_control_replay_visualization: t_mission is 4
+const DEFAULT_t_mission: t_mission is 0
+
+type t_arrayMission is array NB_MISSION of bool
+const DEFAULT_t_arrayMission: t_arrayMission is [false, false, false, false, false]
+
+type t_currentMission is -1..(NB_MISSION-1)
+const MISSION_idle: t_currentMission is -1
+
+/* roles */
+
+const NB_ROLE: nat is 4
+type t_role is 0..(NB_ROLE-1)
+const ROLE_administrate: t_role is 0
+const ROLE_maintain: t_role is 1
+const ROLE_produce_air_picture: t_role is 2
+const ROLE_control_engagement: t_role is 3
+const DEFAULT_t_role: t_role is 0
+
+type t_arrayRole is array NB_ROLE of bool
+const DEFAULT_t_arrayRole: t_arrayRole is [false, false, false, false]
+
+/* Messages parameters */
+
+type t_userActivity is union
+	ACT_EMPTY
+|	ACT_LOGIN
+|	ACT_MISSION_SELECTION
+|	ACT_PREPARATION /* (?) role selection */
+|	ACT_OPERATIONAL
+end union
+
+type t_contextMode is union
+	CTXM_PEACETIME
+|	CTXM_WARTIME
+end union
+
+type t_operatingMode is union
+	OPM_COMBAT
+|	OPM_TRAINING
+end union
+
+type t_command is union
+	CMD_ALL
+|	CMD_LOGIN
+|	CMD_LOGOUT
+|	CMD_CHANGE_PASSWORD
+|	CMD_SWITCH_TO_PAP_ACTIVITY
+|	CMD_SWITCH_TO_CE_ACTIVITY
+|	CMD_STOP_MISSION
+|	CMD_SHUTDOWN
+|	CMD_CHANGE_OPERATOR
+|	CMD_SWITCH_TO_OPERATION
+|	CMD_SWITCH_TO_PREPARATION
+end union
+
+type t_activeSubstate is union
+	ASUB_PREPARATION
+|	ASUB_OPERATION
+end union
+
+/* Data structures */
+
+type t_HMI is record
+	available: bool,
+	user: t_userName
+end record
+const DEFAULT_t_HMI: t_HMI is {available = false, user = 0}
+
+type t_arrayHMI is array MAX_HMI of t_HMI
+const DEFAULT_t_arrayHMI: t_arrayHMI is [DEFAULT_t_HMI, DEFAULT_t_HMI, DEFAULT_t_HMI, DEFAULT_t_HMI, DEFAULT_t_HMI]
+
+type t_arrayOp is array MAX_OP of t_arrayRole
+const DEFAULT_t_arrayOp: t_arrayOp is [DEFAULT_t_arrayRole, DEFAULT_t_arrayRole, DEFAULT_t_arrayRole]
+/* messages to HMI */
+
+type t_paramsCurrentActivity is record
+	activity: t_userActivity,
+	enabled: bool
+end record
+const DEFAULT_t_paramsCurrentActivity: t_paramsCurrentActivity is {activity = ACT_EMPTY, enabled = true}
+
+type t_paramsCurrentMission is record
+	mission: t_currentMission,
+	ctxm: t_contextMode,
+	opm: t_operatingMode
+end record
+const DEFAULT_t_paramsCurrentMission: t_paramsCurrentMission is {mission = 0, ctxm = CTXM_PEACETIME, opm = OPM_COMBAT}
+
+type t_paramsCommandStatus is record
+	cmd: t_command,
+	status: bool
+end record
+const DEFAULT_t_paramsCommandStatus: t_paramsCommandStatus is {cmd = CMD_LOGIN, status = true}
+
+type t_bodyMsgToHMIs is union
+	ack of bool
+|	currentActivity of t_paramsCurrentActivity
+|	currentMission of t_paramsCurrentMission
+|	commandStatus of t_paramsCommandStatus
+|	currentUser of t_userName
+|	availableMissions of t_arrayMission
+|	availableRoles of t_arrayRole
+|	reset
+end union
+
+type t_msgToHMIs is record
+	id: t_idHMI,
+	body: t_bodyMsgToHMIs
+end record
+const DEFAULT_t_msgToHMIs: t_msgToHMIs is {id = 0, body = ack true}
+
+/* SM's output buffer and fifo */
+
+type t_outputBuffer is queue SIZE_outputBuffer of t_msgToHMIs
+type t_outputFifo is queue SIZE_outputFifo of t_msgToHMIs
+/* messages to Auth */
+
+type t_bodyMsgToAuth is union
+	setRights of t_arrayOp
+|	checkRights of bool
+|	checkRole of t_role
+|	checkWartimePassword of bool
+|	getAuthorizedMissions
+|	getAuthorizedRoles
+end union
+
+type t_msgToAuth is record
+	userName: t_userName,
+	body: t_bodyMsgToAuth
+end record
+const DEFAULT_t_msgToAuth: t_msgToAuth is {userName = 0, body = getAuthorizedRoles}
+
+/* Auth's fifo */
+
+type t_fifoAuth is queue SIZE_fifoAuth of t_msgToAuth
+/* messages to EqM */
+
+type t_msgToEqM is union
+	setNbHMI of t_nbHMI
+|	goInitialization
+|	ackAddConsole
+end union
+
+/* EqM's fifo */
+
+type t_fifoEqM is queue SIZE_fifoEqM of t_msgToEqM
+/* Messages from EqM */
+
+type t_msgFromEqM is union
+	ackInit
+|	addConsole of t_idHMI
+end union
+const DEFAULT_t_msgFromEqM: t_msgFromEqM is ackInit
+
+/* Messages from Auth */
+
+type t_bodyMsgFromAuth is union
+	ackLogin of bool
+|	ackWartPW of bool
+|	ackRole of bool
+|	authorizedMissions of t_arrayMission
+|	authorizedRoles of t_arrayRole
+end union
+
+type t_msgFromAuth is record
+	userName: t_idHMI,
+	body: t_bodyMsgFromAuth
+end record
+const DEFAULT_t_msgFromAuth: t_msgFromAuth is {userName = 0, body = ackLogin true}
+
+/* Messages from HMI */
+
+type t_paramsLogin is record
+	userName: t_userName,
+	auth: bool
+end record
+const DEFAULT_t_paramsLogin: t_paramsLogin is {userName = 0, auth = true}
+
+type t_paramsMission is record
+	mission: t_mission,
+	ctxm: t_contextMode,
+	opm: t_operatingMode,
+	wartimePW: bool
+end record
+
+type t_requestFromHMI is union
+	login of t_paramsLogin
+|	logout
+|	mission of t_paramsMission
+|	role of t_arrayRole
+|	stopMission
+|	activeSubstate of t_activeSubstate
+|	shutdown
+/* TODO, missing some messages but all those used by JUnits are supported */
+end union
+
+type t_msgFromHMI is record
+	id: t_idHMI,
+	request: t_requestFromHMI
+end record
+const DEFAULT_t_msgFromHMI: t_msgFromHMI is {id = 0, request = logout}
+
+/* Messages from ctx (EqM, Auth, HMI and start) */
+
+type t_msgFromCtx is union
+	fromEqM of t_msgFromEqM
+|	fromAuth of t_msgFromAuth
+|	fromHMI of t_msgFromHMI
+|	powerOn
+end union
+
+/* fifo */
+
+type t_inputFifo is queue SIZE_inputFifo of t_msgFromCtx
+const SIZE_fifo: nat is 10
+
+type t_msg is union
+	toHMI of t_msgToHMIs
+|	toAuth of t_msgToAuth
+|	toEqM of t_msgToEqM
+|	toSM of t_msgFromCtx
+end union
+
+const DEFAULT_t_msg: t_msg is toSM powerOn
+
+type t_fifo is queue SIZE_fifo of t_msg
+type t_SMState is union
+	STATE_OFF
+|	STATE_INITIALIZATION
+|	STATE_STANDBY
+end union
+
+process sessionManager(& input: t_fifo, & output: t_fifo, & fifoAuth: t_fifo, & fifoEqM: t_fifo) is
+
+states
+	off,
+	initialization,
+	sending,
+	standby,
+	error
+	
+var
+	/* globals */
+	HMIs: t_arrayHMI,
+	nextState: t_SMState,
+	outputBuffer: t_outputBuffer,
+	
+	/* locals */
+	id: t_idHMI,
+	rights: t_arrayOp,
+	msgFromEqM: t_msgFromEqM,
+	msgFromHMI: t_msgFromHMI,
+	paramsLogin: t_paramsLogin
+	
+init
+	/* init globals */
+	HMIs := DEFAULT_t_arrayHMI;
+	nextState := STATE_OFF;
+	outputBuffer := {||};
+	
+	/* init locals */
+	id := DEFAULT_t_idHMI;
+	rights := DEFAULT_t_arrayOp;
+	msgFromEqM := DEFAULT_t_msgFromEqM;
+	msgFromHMI := DEFAULT_t_msgFromHMI;
+	paramsLogin := DEFAULT_t_paramsLogin;
+	
+	to off
+from off
+	/* Make sure outputBuffer is empty, as SM isn't turned on yet */
+	if not(empty outputBuffer) then
+		outputBuffer := {||}
+	end if;
+	/* Wait for a message and for EqM to be ready */
+	if empty input or full fifoEqM then
+		loop
+	end if;
+	/* Only accept the powerOn message */
+	case first input of
+		toSM powerOn ->
+			fifoEqM := enqueue(fifoEqM, toEqM goInitialization);
+			nextState := STATE_INITIALIZATION
+	|	any -> null
+	end case;
+	input := dequeue input;
+	/* branch to the next appropriate state */
+	case nextState of
+		STATE_INITIALIZATION-> to initialization
+	|	any -> loop
+	end case
+	
+	
+	
+from initialization
+	/* send next message in buffer if any, loop */
+	if not(empty outputBuffer) then
+		if not(full output) then
+			output := enqueue(output, first outputBuffer);
+			outputBuffer := dequeue outputBuffer
+		end if;
+		loop
+	/* if process isn't ready to read next input, loop */
+	elsif empty input or full fifoAuth or full fifoEqM then
+		loop
+	end if;
+	/* read next input */
+	case first input of
+		toSM (fromEqM msgFromEqM) ->
+			case msgFromEqM of
+				addConsole id ->
+					HMIs[id].available := true;
+					fifoEqM := enqueue(fifoEqM, ackAddConsole)
+			|	ackInit ->
+					foreach id do
+						if HMIs[id].available then
+							outputBuffer := enqueue(outputBuffer, toHMI ({id = id, body =
+								currentActivity ({activity = ACT_LOGIN, enabled = true})
+							}));
+							outputBuffer := enqueue(outputBuffer, toHMI ({id = id, body =
+								currentMission ({mission = MISSION_idle, ctxm = CTXM_PEACETIME, opm = OPM_COMBAT})
+							}));
+							outputBuffer := enqueue(outputBuffer, toHMI ({id = id, body =
+								commandStatus ({cmd = CMD_ALL, status = false})
+							}));
+							outputBuffer := enqueue(outputBuffer, toHMI ({id = id, body =
+								commandStatus ({cmd = CMD_LOGIN, status = true})
+							}))
+						end if
+					end foreach;
+					nextState := STATE_STANDBY
+			end case
+	|	any -> null
+	end case;
+	input := dequeue input;
+	/* set all "local" variables to their default value */
+	id := DEFAULT_t_idHMI;
+	msgFromEqM := DEFAULT_t_msgFromEqM;
+	/* branch to the next appropriate state */
+	case nextState of
+		STATE_STANDBY -> to standby
+	|	any -> loop
+	end case
+from standby
+	/* send next message in buffer if any, loop */
+	if not(empty outputBuffer) then
+		if not(full output) then
+			output := enqueue(output, first outputBuffer);
+			outputBuffer := dequeue outputBuffer
+		end if;
+		loop
+	/* if process isn't ready to read next input, loop */
+	elsif empty input or full fifoAuth or full fifoEqM then
+		loop
+	end if;
+	/* read next input */
+	case first input of
+		toSM (fromHMI msgFromHMI) ->
+			id := msgFromHMI.id;
+			if HMIs[id].available then 
+				outputBuffer := enqueue(outputBuffer, {id = id, body = ack false})
+			end if
+	|	any -> null
+	end case;
+	input := dequeue input;
+	/* set all "local" variables to their default value */
+	id := DEFAULT_t_idHMI;
+	msgFromHMI := DEFAULT_t_msgFromHMI;
+	/* branch to the next appropriate state */
+	case nextState of
+		STATE_STANDBY -> to standby
+	|	any -> loop
+	end case
+process EqM(& input: t_fifo, & output: t_fifo) is
+
+states
+	waitingForInit,
+	initializing,
+	waitingForAck
+	
+var
+	nbId: t_nbHMI,
+	curId: t_idHMI
+
+init
+	nbId := DEFAULT_t_nbHMI;
+	curId := DEFAULT_t_idHMI;
+	to waitingForInit
+
+from waitingForInit
+	if empty input then
+		loop
+	end if;
+	case first input of
+		toEqM (setNbHMI nbId) ->
+			if nbId > MAX_HMI then
+				nbId := $ MAX_HMI
+			end if;
+			curId := 0;
+			input := dequeue input
+	|	toEqM goInitialization ->
+			input := dequeue input;
+			to initializing
+	|	any ->
+			input := dequeue input
+	end case;
+	loop
+	
+from initializing
+	if full output then
+		loop
+	end if;
+	if curId < nbId then
+		output := enqueue(output, toSM (fromEqM (addConsole curId)));
+		curId := curId + 1;
+		to waitingForAck
+	else
+		output := enqueue(output, fromEqM ackInit);
+		nbId := DEFAULT_t_nbHMI;
+		curId := DEFAULT_t_idHMI;
+		to waitingForInit
+	end if
+
+from waitingForAck
+	if empty input then
+		loop
+	end if;
+	case first input of
+		toEqM ackAddConsole ->
+			input := dequeue input;
+			to initializing
+	|	any ->
+		input := dequeue input;
+		loop
+	end case
+process auth(& input: t_fifoAuth, & output: t_inputFifo) is
+
+states
+	waitingForInquiry
+
+var
+	/* globals */
+	ops: t_arrayOp,
+	
+	/* locals */
+	op: t_userName,
+	msg: t_msgToAuth,
+	opRole: t_role,
+	opRight: bool,
+	missions: t_arrayMission
+
+init
+	/* init globals */
+	ops := DEFAULT_t_arrayOp;
+	
+	/* init locals */
+	op := DEFAULT_t_userName;
+	msg := DEFAULT_t_msgToAuth;
+	opRole := DEFAULT_t_role;
+	opRight := false;
+	missions := DEFAULT_t_arrayMission;
+
+	to waitingForInquiry
+	
+from waitingForInquiry
+	if empty input or full output then
+		loop
+	end if;
+	case first input of
+		toAuth msg -> null
+	|	any -> null
+	end case;
+	op := msg.userName;
+	case msg.body of
+		setRights ops -> null
+	|	checkRights opRight ->
+			output := enqueue(output, fromAuth ({userName = op, body = ackLogin opRight}));
+			opRight := false
+	|	checkRole opRole ->
+			output := enqueue(output, fromAuth ({userName = op, body = ackRole ops[op][opRole]}));
+			opRole := DEFAULT_t_role
+	|	checkWartimePassword opRight ->
+			output := enqueue(output, fromAuth ({userName = op, body = ackWartPW opRight}));
+			opRight := false
+	|	getAuthorizedMissions ->
+			missions[MISSION_administrate] := ops[op][ROLE_administrate];
+			missions[MISSION_maintain] := ops[op][ROLE_maintain];
+			missions[MISSION_control_defense_solution] := ops[op][ROLE_produce_air_picture] or ops[op][ROLE_control_engagement];
+			missions[MISSION_control_air_picture] := ops[op][ROLE_produce_air_picture];
+			missions[MISSION_control_replay_visualization] := ops[op][ROLE_control_engagement];
+			output := enqueue(output, fromAuth ({userName = op, body = authorizedMissions missions}));
+			missions := DEFAULT_t_arrayMission
+	|	getAuthorizedRoles ->
+			output := enqueue(output, fromAuth ({userName = op, body = authorizedRoles ops[op]}))
+	end case;
+	op := DEFAULT_t_userName;
+	input := dequeue input;
+	loop
+
+/* Params */
+const PARAM_rights_only_admin: t_arrayRole is [true, false, false, false]
+const PARAM_rights_all: t_arrayRole is [true, true, true, true]
+const PARAM_opRights: t_arrayOp is [PARAM_rights_only_admin, PARAM_rights_only_admin, PARAM_rights_all]
+
+const PARAM_nbHMI: t_nbHMI is 3
+
+const PARAM_idHMI0: t_idHMI is 0
+const PARAM_idHMI1: t_idHMI is 1
+
+const PARAM_userNameOp0: t_userName is 0
+const PARAM_userNameOp1: t_userName is 1
+const PARAM_userNameOp2: t_userName is 2
+
+const PARAM_mission_admin: t_requestFromHMI is mission ({mission = MISSION_administrate, ctxm = CTXM_PEACETIME, opm = OPM_COMBAT, wartimePW = true})
+const PARAM_mission_maintain: t_requestFromHMI is mission ({mission = MISSION_maintain, ctxm = CTXM_PEACETIME, opm = OPM_COMBAT, wartimePW = true})
+const PARAM_mission_CDS: t_requestFromHMI is mission ({mission = MISSION_control_defense_solution, ctxm = CTXM_PEACETIME, opm = OPM_COMBAT, wartimePW = true})
+const PARAM_mission_CAP: t_requestFromHMI is mission ({mission = MISSION_control_air_picture, ctxm = CTXM_PEACETIME, opm = OPM_COMBAT, wartimePW = true})
+const PARAM_mission_CRV: t_requestFromHMI is mission ({mission = MISSION_control_replay_visualization, ctxm = CTXM_PEACETIME, opm = OPM_COMBAT, wartimePW = true})
+
+const PARAM_role_admin: t_requestFromHMI is role ([true, false, false, false])
+const PARAM_role_maintain: t_requestFromHMI is role ([false, true, false, false])
+const PARAM_role_airPicture: t_requestFromHMI is role ([false, false, true, false])
+const PARAM_role_engagement: t_requestFromHMI is role ([false, false, false, true])
+
+/* Auth and EqM parameters initialization, power on */
+const SIGNAL_PARAM_auth_opRights: t_msg is toSM ({userName = DEFAULT_t_userName, body = setRights PARAM_opRights})
+const SIGNAL_PARAM_EqM_nbHMI: t_msg is toSM (setNbHMI PARAM_nbHMI)
+const SIGNAL_POWERON: t_msg is toSM powerOn
+
+/* Acknowledgements from session manager */
+const SIGNAL_toHMI0_ack_true: t_msg is toHMI ({id = PARAM_idHMI0, body = ack true})
+const SIGNAL_toHMI0_ack_false: t_msg is toHMI ({id = PARAM_idHMI0, body = ack false})
+const SIGNAL_toHMI1_ack_true: t_msg is toHMI ({id = PARAM_idHMI1, body = ack true})
+const SIGNAL_toHMI1_ack_false: t_msg is toHMI ({id = PARAM_idHMI1, body = ack false})
+
+/* HMI (login) */
+const SIGNAL_fromHMI0_op0_login_true: t_msg is toSM (fromHMI ({id = PARAM_idHMI0, request = login ({userName = PARAM_userNameOp0, auth = true})}))
+const SIGNAL_fromHMI0_op2_login_true: t_msg is toSM (fromHMI ({id = PARAM_idHMI0, request = login ({userName = PARAM_userNameOp2, auth = true})}))
+const SIGNAL_fromHMI0_op2_login_false: t_msg is toSM (fromHMI ({id = PARAM_idHMI0, request = login ({userName = PARAM_userNameOp2, auth = false})}))
+const SIGNAL_fromHMI1_op1_login_true: t_msg is toSM (fromHMI ({id = PARAM_idHMI1, request = login ({userName = PARAM_userNameOp1, auth = true})}))
+const SIGNAL_fromHMI1_op2_login_true: t_msg is toSM (fromHMI ({id = PARAM_idHMI1, request = login ({userName = PARAM_userNameOp2, auth = true})}))
+const SIGNAL_fromHMI1_op2_login_false: t_msg is toSM (fromHMI ({id = PARAM_idHMI1, request = login ({userName = PARAM_userNameOp2, auth = false})}))
+
+/* HMI (logout) */
+const SIGNAL_fromHMI0_logout: t_msg is toSM (fromHMI ({id = PARAM_idHMI0, request = logout}))
+const SIGNAL_fromHMI1_logout: t_msg is toSM (fromHMI ({id = PARAM_idHMI1, request = logout}))
+
+/* HMI (mission) */
+const SIGNAL_fromHMI0_mission_admin: t_msg is toSM (fromHMI ({id = PARAM_idHMI0, request = PARAM_mission_admin}))
+const SIGNAL_fromHMI0_mission_maintain: t_msg is toSM (fromHMI ({id = PARAM_idHMI0, request = PARAM_mission_maintain}))
+const SIGNAL_fromHMI0_mission_CDS: t_msg is toSM (fromHMI ({id = PARAM_idHMI0, request = PARAM_mission_CDS}))
+const SIGNAL_fromHMI0_mission_CAP: t_msg is toSM (fromHMI ({id = PARAM_idHMI0, request = PARAM_mission_CAP}))
+const SIGNAL_fromHMI0_mission_CRV: t_msg is toSM (fromHMI ({id = PARAM_idHMI0, request = PARAM_mission_CRV}))
+const SIGNAL_fromHMI1_mission_admin: t_msg is toSM (fromHMI ({id = PARAM_idHMI1, request = PARAM_mission_admin}))
+const SIGNAL_fromHMI1_mission_maintain: t_msg is toSM (fromHMI ({id = PARAM_idHMI1, request = PARAM_mission_maintain}))
+const SIGNAL_fromHMI1_mission_CDS: t_msg is toSM (fromHMI ({id = PARAM_idHMI1, request = PARAM_mission_CDS}))
+const SIGNAL_fromHMI1_mission_CAP: t_msg is toSM (fromHMI ({id = PARAM_idHMI1, request = PARAM_mission_CAP}))
+const SIGNAL_fromHMI1_mission_CRV: t_msg is toSM (fromHMI ({id = PARAM_idHMI1, request = PARAM_mission_CRV}))
+
+/* HMI (role selection) */
+const SIGNAL_fromHMI0_role_admin: t_msg is toSM (fromHMI ({id = PARAM_idHMI0, request = PARAM_role_admin}))
+const SIGNAL_fromHMI0_role_maintain: t_msg is toSM (fromHMI ({id = PARAM_idHMI0, request = PARAM_role_maintain}))
+const SIGNAL_fromHMI0_role_airPicture: t_msg is toSM (fromHMI ({id = PARAM_idHMI0, request = PARAM_role_airPicture}))
+const SIGNAL_fromHMI0_role_engagement: t_msg is toSM (fromHMI ({id = PARAM_idHMI0, request = PARAM_role_engagement}))
+const SIGNAL_fromHMI1_role_admin: t_msg is toSM (fromHMI ({id = PARAM_idHMI1, request = PARAM_role_admin}))
+const SIGNAL_fromHMI1_role_maintain: t_msg is toSM (fromHMI ({id = PARAM_idHMI1, request = PARAM_role_maintain}))
+const SIGNAL_fromHMI1_role_airPicture: t_msg is toSM (fromHMI ({id = PARAM_idHMI1, request = PARAM_role_airPicture}))
+const SIGNAL_fromHMI1_role_engagement: t_msg is toSM (fromHMI ({id = PARAM_idHMI1, request = PARAM_role_engagement}))
+
+/* HMI (stop mission) */
+const SIGNAL_fromHMI0_stopMission: t_msg is toSM (fromHMI ({id = PARAM_idHMI0, request = stopMission}))
+const SIGNAL_fromHMI1_stopMission: t_msg is toSM (fromHMI ({id = PARAM_idHMI1, request = stopMission}))
+
+/* HMI (activeSubstate) */
+const SIGNAL_fromHMI0_activeSubstate_preparation: t_msg is toSM (fromHMI ({id = PARAM_idHMI0, request = activeSubstate ASUB_PREPARATION}))
+const SIGNAL_fromHMI0_activeSubstate_operation: t_msg is toSM (fromHMI ({id = PARAM_idHMI0, request = activeSubstate ASUB_OPERATION}))
+const SIGNAL_fromHMI1_activeSubstate_preparation: t_msg is toSM (fromHMI ({id = PARAM_idHMI1, request = activeSubstate ASUB_PREPARATION}))
+const SIGNAL_fromHMI1_activeSubstate_operation: t_msg is toSM (fromHMI ({id = PARAM_idHMI1, request = activeSubstate ASUB_OPERATION}))
+
+/* HMI (shutdown) */
+const SIGNAL_fromHMI0_shutdown: t_msg is toSM (fromHMI ({id = PARAM_idHMI0, request = shutdown}))
+const SIGNAL_fromHMI1_shutdown: t_msg is toSM (fromHMI ({id = PARAM_idHMI1, request = shutdown}))
+process Context (& fifoCtx: t_outputFifo) is
+states running
+init to running
+from running loop
+
+/***************
+* Main component
+***************/
+
+component main is
+
+var
+	inputFifo: t_inputFifo,
+	outputFifo: t_outputFifo,
+	fifoAuth: t_fifoAuth,
+	fifoEqM: t_fifoEqM
+
+init
+	inputFifo := {||};
+	outputFifo := {||};
+	fifoAuth := {||};
+	fifoEqM := {||}
+
+par
+	sessionManager(& inputFifo, & outputFifo, & fifoAuth, & fifoEqM)
+||	EqM(& fifoEqM, & inputFifo)
+||	auth(& fifoAuth, & inputFifo)
+end
+
+main

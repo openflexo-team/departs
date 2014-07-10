@@ -1,0 +1,21 @@
+/* Test of type reference */
+type data is 0..9
+type fifo is queue 4 of data 
+
+type fifo_array is array 2 of fifo
+
+process toto is 
+states start
+var 
+	fa: fifo_array
+init 
+	fa := [ {||}, {||} ];
+to start
+ 
+from start
+	if not (empty fa[0]) then
+		fa := fa
+	end;
+to start
+
+toto

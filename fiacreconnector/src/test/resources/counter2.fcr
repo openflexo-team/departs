@@ -1,0 +1,89 @@
+
+/******************************************************************************
+ * Counter
+ * Example for comparison tests.
+ * 
+ * 15th of december 2010.
+ * authors:
+ * - Jean-Charles Roger
+ *****************************************************************************/
+
+const NA: int is 250
+const NB: int is 200
+
+process counterA [start : out int, stop : out int, c : out int ] is
+
+states 
+	idle, 
+	counting
+	
+var 
+	count : int
+init 
+	count := 0;
+to idle
+
+from idle
+	start ! 10;
+ 	count := 0;
+to counting
+
+from counting
+	select
+		if ( count < NA ) then
+			count := count + 1;
+			to counting
+		else 
+			stop ! 20;
+			to idle
+		end
+	[]
+		c ! 15;
+		to counting
+	end;
+to idle
+
+process counterB [start : in int, stop : in int, c : in int ] is
+
+states 
+	idle, 
+	counting
+	
+var 
+	count : int
+init 
+	count := 0;
+to idle
+
+from idle
+	start ? count;
+to counting
+
+from counting
+	select
+		if ( count < NB ) then
+			count := count + 1;
+			to counting
+		else 
+			stop ? any;
+			to idle
+		end
+	[]
+		c ? any;
+		to counting
+	end;
+to idle
+
+/* main component */
+component main is
+port 
+	start :  int /* in[0,0] */ ,
+	stop  :  int /* in[0,0] */ ,
+	c :  int /* in[0,0] */ 
+	
+par 
+		start, stop, c -> counterA[start, stop, c] 
+	||	start, stop, c -> counterB[start, stop, c]
+end
+
+main

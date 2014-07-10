@@ -1,0 +1,4 @@
+/* First test */
+type fifo is queue 4 of int 
+type data_type is 0..9
+

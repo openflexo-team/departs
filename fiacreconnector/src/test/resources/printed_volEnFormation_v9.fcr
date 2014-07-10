@@ -1,0 +1,4311 @@
+const NUL: int is 0
+const NO_SIGNAL: int is 10
+const D: int is 0
+const M: int is 1
+const TC_CmdCtrl_toFormation: int is 91
+const TC_OBC_ON: int is 92
+const TC_GNC_toACM: int is 93
+const TC_GNC_toOCM: int is 94
+const TC_PL_toOp: int is 95
+const TC_EIU_ON: int is 96
+const TCM_GNC_toACM: int is 81
+const TCM_GNC_toOCM: int is 82
+const TCM_CmdCtrl_toFormation: int is 83
+const TCM_OBC_ON: int is 84
+const TCM_EIU_ON: int is 85
+const OBC_TFail: int is 61
+const OBC_PFail: int is 62
+const Battery_FailDischarged: int is 63
+const Battery_FailParamConsist: int is 64
+const Ampli_PFail: int is 65
+const Ampli_TFail: int is 66
+const SAS_PFail: int is 67
+const SAS_TFail: int is 68
+const STR_PFail: int is 69
+const STR_TFail: int is 70
+const Transponder_TFail: int is 71
+const Transponder_PFail: int is 72
+const GasProp_Fail: int is 73
+const System_Fail: int is 74
+const IMU_PFail: int is 75
+const IMU_TFail: int is 76
+const PCDU_PFail: int is 77
+const PCDU_TFail: int is 78
+type SIGNAL is record 
+	type_signal: int
+	, val_signal: int end record
+
+type fifo is queue 10 of SIGNAL
+
+const TC_GNC_toOCM_D: SIGNAL is {type_signal = TC_GNC_toOCM, val_signal = D}
+const TCM_GNC_toOCm: SIGNAL is {type_signal = TCM_GNC_toOCM, val_signal = M}
+const TC_CmdCtrl_toFormation_D: SIGNAL is {type_signal = TC_CmdCtrl_toFormation, val_signal = D}
+const TC_CmdCtrl_toFormation_M: SIGNAL is {type_signal = TC_CmdCtrl_toFormation, val_signal = M}
+const TCM_OBC_On: SIGNAL is {type_signal = TCM_OBC_ON, val_signal = M}
+const TC_OBC_ON_D: SIGNAL is {type_signal = TC_OBC_ON, val_signal = D}
+const TC_GNC_toACM_D: SIGNAL is {type_signal = TC_GNC_toACM, val_signal = D}
+const TCM_GNC_toACm: SIGNAL is {type_signal = TC_GNC_toACM, val_signal = M}
+const TC_EIU_ON_D: SIGNAL is {type_signal = TC_EIU_ON, val_signal = D}
+const TCM_EIU_On: SIGNAL is {type_signal = TC_EIU_ON, val_signal = M}
+const TC_PL_toOP: SIGNAL is {type_signal = TC_PL_toOp, val_signal = D}
+const IMU_PFail_M: SIGNAL is {type_signal = IMU_PFail, val_signal = M}
+const IMU_TFail_M: SIGNAL is {type_signal = IMU_TFail, val_signal = M}
+const STR_TFail_M: SIGNAL is {type_signal = STR_TFail, val_signal = M}
+const STR_PFail_M: SIGNAL is {type_signal = STR_PFail, val_signal = M}
+const Ampli_PFail_M: SIGNAL is {type_signal = Ampli_PFail, val_signal = M}
+const Ampli_TFail_M: SIGNAL is {type_signal = Ampli_TFail, val_signal = M}
+const Transponder_PFail_M: SIGNAL is {type_signal = Transponder_PFail, val_signal = M}
+const Transponder_TFail_M: SIGNAL is {type_signal = Transponder_TFail, val_signal = M}
+const OBC_PFail_M: SIGNAL is {type_signal = OBC_PFail, val_signal = M}
+const OBC_TFail_M: SIGNAL is {type_signal = OBC_TFail, val_signal = M}
+const SAS_PFail_M: SIGNAL is {type_signal = SAS_PFail, val_signal = M}
+const SAS_TFail_M: SIGNAL is {type_signal = SAS_TFail, val_signal = M}
+const PCDU_PFail_M: SIGNAL is {type_signal = PCDU_PFail, val_signal = M}
+const PCDU_TFail_M: SIGNAL is {type_signal = PCDU_TFail, val_signal = M}
+const System_Fail_M: SIGNAL is {type_signal = System_Fail, val_signal = M}
+const Battery_FailDischarge_M: SIGNAL is {type_signal = Battery_FailDischarged, val_signal = M}
+const Battery_FailParamConsist_M: SIGNAL is {type_signal = Battery_FailParamConsist, val_signal = M}
+const IMU_PFail_D: SIGNAL is {type_signal = IMU_PFail, val_signal = D}
+const IMU_TFail_D: SIGNAL is {type_signal = IMU_TFail, val_signal = D}
+const STR_TFail_D: SIGNAL is {type_signal = STR_TFail, val_signal = D}
+const STR_PFail_D: SIGNAL is {type_signal = STR_PFail, val_signal = D}
+const Ampli_PFail_D: SIGNAL is {type_signal = Ampli_PFail, val_signal = D}
+const Ampli_TFail_D: SIGNAL is {type_signal = Ampli_TFail, val_signal = D}
+const Transponder_PFail_D: SIGNAL is {type_signal = Transponder_PFail, val_signal = D}
+const Transponder_TFail_D: SIGNAL is {type_signal = Transponder_TFail, val_signal = D}
+const OBC_PFail_D: SIGNAL is {type_signal = OBC_PFail, val_signal = D}
+const OBC_TFail_D: SIGNAL is {type_signal = OBC_TFail, val_signal = D}
+const SAS_PFail_D: SIGNAL is {type_signal = SAS_PFail, val_signal = D}
+const SAS_TFail_D: SIGNAL is {type_signal = SAS_TFail, val_signal = D}
+const PCDU_PFail_D: SIGNAL is {type_signal = PCDU_PFail, val_signal = D}
+const PCDU_TFail_D: SIGNAL is {type_signal = PCDU_TFail, val_signal = D}
+const System_Fail_D: SIGNAL is {type_signal = System_Fail, val_signal = D}
+const Battery_FailDischarge_D: SIGNAL is {type_signal = Battery_FailDischarged, val_signal = D}
+const Battery_FailParamConsist_D: SIGNAL is {type_signal = Battery_FailParamConsist, val_signal = D}
+type STRUCT_SYNC is record 
+	GNC_ASM_ON: bool
+	, GNC_ACM_ON: bool
+	, GNC_OCM_ON: bool
+	, GNC_FCM_ON: bool
+	, ARO: bool
+	, CAM: bool
+	, CmdCtrl_Auto_ON: bool
+	, Transponder_Failed: bool
+	, Ampli_Failed: bool
+	, ChemProp_Failed: bool
+	, SAS_Failed: bool
+	, IMU_Failed: bool
+	, STR_Failed: bool
+	, GasProp_Failed: bool
+	, RF_Failed: bool
+	, LatSens_Failed: bool
+	, FDIR_ToPLSafe: bool
+	, Reconf_Order_fromTranspondeur: bool
+	, Reconf_Order_fromEIU: bool
+	, Reconf_Order_toEIU: bool
+	, Reconf_Order_fromAmpli: bool
+	, LatSensSurveillance_Detected: bool
+	, TC_GNC_toFCM: bool
+	, ChemProp_TFail: bool
+	, ChemProp_PFail: bool
+	, GasProp_TFail: bool
+	, GasProp_PFail: bool
+	, RF_TFail: bool
+	, RF_PFail: bool
+	, EIU_TFail: bool
+	, EIU_PFail: bool
+	, LatSens_TFail: bool
+	, LatSens_PFail: bool end record
+
+type STRUCT_VAR is record 
+	id: int
+	, EIU_redundance: int
+	, ChemProp_redundance: int
+	, GasProp_redundance: int
+	, GNC_mode: int
+	, GNC_modeDelayed: int
+	, CmdCtrl_mode: int
+	, CmdCtrl_modeDelayed: int
+	, Payload_mode: int
+	, Payload_modeDelayed: int
+	, RF_mode: int
+	, RF_modeDelayed: int
+	, Formation_mode: int
+	, ChemProp_isON: bool
+	, IMU_isON: bool
+	, STR_isON: bool
+	, SAS_isON: bool
+	, OBC_isON: bool
+	, Battery_isON: bool
+	, EIU_isON: bool
+	, PCDU_isON: bool
+	, GasProp_isON: bool
+	, LatSens_isON: bool
+	, Transponder_isON: bool
+	, Ampli_isON: bool
+	, SatSafeMode: int
+	, SatSafeModeDelayed: int
+	, RFSurveillance_Detected: bool
+	, CmdCtrl_isFormation: bool
+	, EIU_isFailed: bool
+	, GNC_toACM_engaged: bool
+	, GNC_toOCM_engaged: bool
+	, GNC_toFCM_engaged: bool end record
+
+type STRUCT_GLOBAL is record 
+	synD: STRUCT_SYNC
+	, synM: STRUCT_SYNC
+	, varD: STRUCT_VAR
+	, varM: STRUCT_VAR end record
+
+process SAS [BUS_SAS: in SIGNAL] (&g: STRUCT_GLOBAL, id: int) is
+states Failing, Failed, ON
+var 
+	event: SIGNAL, 
+	redundance: int, 
+	t_ON: int 
+init redundance := 0;
+event := {val_signal = 0, type_signal = 0};
+t_ON := 0;
+/* ------------------------------------------------
+              
+-------------------------------------------------*/
+to ON
+
+from ON
+	if ((id = D) and g.synD.Reconf_Order_fromEIU) then
+		g.varD.SAS_isON := false;
+		t_ON := 0;
+		to Failing
+	else 
+		if ((id = M) and g.synM.Reconf_Order_fromEIU) then
+			g.varM.SAS_isON := false;
+			redundance := (redundance - 1);
+			t_ON := 0;
+			to Failing
+		else 
+			if true then
+				BUS_SAS? event;
+				to Failing
+			else 
+				/* ------------------------------------------------
+              
+-------------------------------------------------*/
+				to ON
+			end if
+		end if
+	end if
+
+from Failing
+	if ((id = M) and (id = event.val_signal)) then
+		if (event.type_signal = SAS_TFail) then
+			g.varM.SAS_isON := false;
+			t_ON := 0;
+			g.synD.SAS_Failed := true;
+			to Failed
+		else 
+			if (event.type_signal = SAS_PFail) then
+				g.varM.SAS_isON := false;
+				redundance := (redundance - 1);
+				t_ON := 0;
+				g.synM.Reconf_Order_toEIU := true;
+				g.synD.SAS_Failed := true;
+				to Failed
+			else 
+				null
+			end if
+		end if
+	end if;
+	if ((id = D) and (id = event.val_signal)) then
+		BUS_SAS? event;
+		if (event.type_signal = SAS_TFail) then
+			g.varD.SAS_isON := false;
+			t_ON := 0;
+			g.synD.SAS_Failed := true;
+			to Failed
+		else 
+			if (event.type_signal = SAS_PFail) then
+				g.varD.SAS_isON := false;
+				redundance := (redundance - 1);
+				t_ON := 0;
+				g.synD.Reconf_Order_toEIU := true;
+				g.synD.SAS_Failed := true;
+				to Failed
+			else 
+				null
+			end if
+		end if
+	end if;
+	/* ------------------------------------------------
+              
+-------------------------------------------------*/
+	to Failing
+
+from Failed
+	if (((id = D) and (t_ON >= 1)) and (redundance > 0)) then
+		g.varD.SAS_isON := true;
+		to ON
+	else 
+		if (((id = M) and (t_ON >= 1)) and (redundance > 0)) then
+			g.varM.SAS_isON := true;
+			to ON
+		else 
+			if (((id = D) and g.synD.ARO) and (redundance > 0)) then
+				g.varD.SAS_isON := true;
+				to ON
+			else 
+				if (((id = M) and g.synM.ARO) and (redundance > 0)) then
+					g.varM.SAS_isON := true;
+					to ON
+				else 
+					/* ------------- Fin SAS ----------------------*/
+					/*--------------------Fin--------------------*/
+					/*=============================================
+			ISL 
+===============================================*/
+					/*--------------------Debut--------------------*/
+					to Failed
+				end if
+			end if
+		end if
+	end if
+
+
+process ISL [BUS_ISL: in SIGNAL, ISL_BUS: out SIGNAL] (&g: STRUCT_GLOBAL) is
+states Transmitting, Waiting, Committed_to_Transmitting, Committed_to_Waiting
+var 
+	event: SIGNAL, 
+	tc: int, 
+	TCdelay: int, 
+	change: int, 
+	id: int, 
+	OldCmdCtrl_mode_D: int, 
+	OldCmdCtrl_mode_M: int, 
+	OldGNC_mode_D: int, 
+	OldGNC_mode_M: int, 
+	OldPayload_mode: int, 
+	OldRF_mode_D: int, 
+	OldRF_mode_M: int, 
+	OldSatSafeMode_D: int, 
+	OldSatSafeMode_M: int 
+init event := {val_signal = 0, type_signal = 0};
+tc := 0;
+TCdelay := 0;
+change := 0;
+id := D;
+OldCmdCtrl_mode_D := 0;
+OldCmdCtrl_mode_M := 0;
+OldGNC_mode_D := 0;
+OldGNC_mode_M := 0;
+OldPayload_mode := 0;
+OldRF_mode_D := 0;
+OldRF_mode_M := 0;
+OldSatSafeMode_D := 0;
+OldSatSafeMode_M := 0;
+/* ------------------------------------------------
+              
+-------------------------------------------------*/
+to Waiting
+
+from Transmitting
+	if ((tc = 7) and (TCdelay > 2)) then
+		g.synD.CAM := true;
+		to Waiting
+	else 
+		if ((tc = 6) and (TCdelay > 2)) then
+			g.synM.LatSensSurveillance_Detected := true;
+			to Waiting
+		else 
+			if ((g.varD.RFSurveillance_Detected = true) or (g.varM.RFSurveillance_Detected = true)) then
+				to Waiting
+			else 
+				if ((tc = 3) and (TCdelay > 2)) then
+					if ((change = 1) and (id = D)) then
+						/* updateDelayModes */
+						g.varD.GNC_modeDelayed := g.varD.GNC_mode
+					end if;
+					if ((change = 1) and (id = M)) then
+						g.varM.GNC_modeDelayed := g.varM.GNC_mode
+					end if;
+					if ((change = 2) and (id = D)) then
+						g.varD.CmdCtrl_modeDelayed := g.varD.CmdCtrl_mode
+					end if;
+					if ((change = 2) and (id = M)) then
+						g.varM.CmdCtrl_modeDelayed := g.varM.CmdCtrl_mode
+					end if;
+					if ((change = 3) and (id = D)) then
+						g.varD.RF_modeDelayed := g.varD.RF_mode
+					end if;
+					if ((change = 3) and (id = M)) then
+						g.varM.RF_modeDelayed := g.varM.RF_mode
+					end if;
+					if (change = 4) then
+						g.varD.Payload_modeDelayed := g.varD.Payload_mode
+					end if;
+					if ((change = 5) and (id = D)) then
+						g.varD.SatSafeModeDelayed := g.varD.SatSafeMode
+					end if;
+					if ((change = 5) and (id = M)) then
+						g.varM.SatSafeModeDelayed := g.varM.SatSafeMode
+					end if;
+					to Waiting
+				else 
+					if true then
+						to Committed_to_Waiting
+					else 
+						/* ------------------------------------------------
+              
+-------------------------------------------------*/
+						to Transmitting
+					end if
+				end if
+			end if
+		end if
+	end if
+
+from Waiting
+	if ((g.varD.RFSurveillance_Detected = false) and (g.varM.RFSurveillance_Detected = false)) then
+		g.synM.LatSensSurveillance_Detected := true;
+		tc := 6;
+		TCdelay := 0;
+		to Transmitting
+	else 
+		if ((g.varD.RFSurveillance_Detected = false) and (g.varM.RFSurveillance_Detected = false)) then
+			g.synM.CAM := true;
+			tc := 7;
+			TCdelay := 0;
+			to Transmitting
+		else 
+			if (((g.varD.RFSurveillance_Detected = false) and (g.varM.RFSurveillance_Detected = false)) and (((((g.varD.GNC_mode <> OldGNC_mode_D) or (g.varD.CmdCtrl_mode <> OldCmdCtrl_mode_D)) or (g.varD.RF_mode <> OldRF_mode_D)) or (g.varD.Payload_mode <> OldPayload_mode)) or (g.varD.SatSafeMode <> OldSatSafeMode_D))) then
+				TCdelay := 0;
+				id := D;
+				if (g.varD.GNC_mode <> OldGNC_mode_D) then
+					change := 1;
+					OldGNC_mode_D := g.varD.GNC_mode
+				end if;
+				if (g.varD.CmdCtrl_mode <> OldCmdCtrl_mode_D) then
+					change := 2;
+					OldCmdCtrl_mode_D := g.varD.CmdCtrl_mode
+				end if;
+				if (g.varD.RF_mode <> OldRF_mode_D) then
+					change := 3;
+					OldRF_mode_D := g.varD.RF_mode
+				end if;
+				if (g.varD.Payload_mode <> OldPayload_mode) then
+					change := 4;
+					OldPayload_mode := g.varD.Payload_mode
+				end if;
+				if (g.varD.SatSafeMode <> OldSatSafeMode_D) then
+					change := 5;
+					OldSatSafeMode_D := g.varD.SatSafeMode
+				end if;
+				tc := 3;
+				to Transmitting
+			else 
+				if (((g.varD.RFSurveillance_Detected = false) and (g.varM.RFSurveillance_Detected = false)) and (((((g.varM.GNC_mode <> OldGNC_mode_M) or (g.varM.CmdCtrl_mode <> OldCmdCtrl_mode_M)) or (g.varM.RF_mode <> OldRF_mode_M)) or (g.varD.Payload_mode <> OldPayload_mode)) or (g.varM.SatSafeMode <> OldSatSafeMode_M))) then
+					TCdelay := 0;
+					id := M;
+					if (g.varM.GNC_mode <> OldGNC_mode_M) then
+						change := 1;
+						OldGNC_mode_M := g.varM.GNC_mode
+					end if;
+					if (g.varM.CmdCtrl_mode <> OldCmdCtrl_mode_M) then
+						change := 2;
+						OldCmdCtrl_mode_M := g.varM.CmdCtrl_mode
+					end if;
+					if (g.varM.RF_mode <> OldRF_mode_M) then
+						change := 3;
+						OldRF_mode_M := g.varM.RF_mode
+					end if;
+					if (g.varD.Payload_mode <> OldPayload_mode) then
+						change := 4;
+						OldPayload_mode := g.varD.Payload_mode
+					end if;
+					if (g.varM.SatSafeMode <> OldSatSafeMode_M) then
+						change := 5;
+						OldSatSafeMode_M := g.varM.SatSafeMode
+					end if;
+					tc := 3;
+					to Transmitting
+				else 
+					if (((((tc = 1) or (tc = 2)) or (tc = 4)) or (tc = 5)) and (TCdelay > 2)) then
+						BUS_ISL? event;
+						to Committed_to_Transmitting
+					else 
+						/* ------------------------------------------------
+              
+-------------------------------------------------*/
+						to Waiting
+					end if
+				end if
+			end if
+		end if
+	end if
+
+from Committed_to_Transmitting
+	if ((((event.type_signal = TCM_GNC_toOCM) and (event.val_signal = M)) and (g.varD.RFSurveillance_Detected = false)) and (g.varM.RFSurveillance_Detected = false)) then
+		TCdelay := 0;
+		tc := 1;
+		to Transmitting
+	else 
+		if ((((event.type_signal = TCM_GNC_toACM) and (event.val_signal = M)) and (g.varD.RFSurveillance_Detected = false)) and (g.varM.RFSurveillance_Detected = false)) then
+			TCdelay := 0;
+			tc := 2;
+			to Transmitting
+		else 
+			if ((((event.type_signal = TCM_EIU_ON) and (event.val_signal = M)) and (g.varD.RFSurveillance_Detected = false)) and (g.varM.RFSurveillance_Detected = false)) then
+				TCdelay := 0;
+				tc := 4;
+				to Transmitting
+			else 
+				if ((((event.type_signal = TCM_OBC_ON) and (event.val_signal = M)) and (g.varD.RFSurveillance_Detected = false)) and (g.varM.RFSurveillance_Detected = false)) then
+					TCdelay := 0;
+					tc := 5;
+					to Transmitting
+				else 
+					/* ------------------------------------------------
+              
+-------------------------------------------------*/
+					to Waiting
+				end if
+			end if
+		end if
+	end if
+
+from Committed_to_Waiting
+	ISL_BUS! event;
+	/* ------------- Fin ISL ----------------------*/
+	/*--------------------Fin--------------------*/
+	/*=============================================
+			PCDU 
+===============================================*/
+	/*--------------------Debut--------------------*/
+	to Waiting
+
+
+process PCDU [BUS_PCDU: in SIGNAL] (&g: STRUCT_GLOBAL, id: int) is
+states ARO, Failed, ON
+var 
+	event: SIGNAL, 
+	redundance: int, 
+	t_ON: int 
+init redundance := 2;
+event := {val_signal = 0, type_signal = 0};
+t_ON := 0;
+/* ------------------------------------------------
+              
+-------------------------------------------------*/
+to ON
+
+from ON
+	BUS_PCDU? event;
+	if (event.type_signal <> NO_SIGNAL) then
+		to Failed
+	else 
+		/* ------------------------------------------------
+              
+-------------------------------------------------*/
+		to ON
+	end if
+
+from Failed
+	if (((event.type_signal = PCDU_PFail) and (id = D)) and (event.val_signal = D)) then
+		g.varD.PCDU_isON := false;
+		t_ON := 0;
+		redundance := (redundance - 1);
+		g.synD.ARO := true;
+		to ARO
+	else 
+		if (((event.type_signal = PCDU_PFail) and (id = M)) and (event.val_signal = M)) then
+			g.varM.PCDU_isON := false;
+			t_ON := 0;
+			redundance := (redundance - 1);
+			g.synM.ARO := true;
+			to ARO
+		else 
+			if (((event.type_signal = PCDU_TFail) and (id = D)) and (event.val_signal = D)) then
+				g.varD.PCDU_isON := false;
+				t_ON := 0;
+				g.synD.ARO := true;
+				to ARO
+			else 
+				if (((event.type_signal = PCDU_TFail) and (id = M)) and (event.val_signal = M)) then
+					g.varM.PCDU_isON := false;
+					t_ON := 0;
+					g.synD.ARO := true;
+					to ARO
+				else 
+					/* ------------------------------------------------
+              
+-------------------------------------------------*/
+					to Failed
+				end if
+			end if
+		end if
+	end if
+
+from ARO
+	if ((t_ON >= 1) and (redundance > 0)) then
+		if (id = M) then
+			g.varM.PCDU_isON := true
+		end if;
+		if (id = D) then
+			g.varD.PCDU_isON := true
+		end if;
+		to ON
+	else 
+		/* ------------- Fin PCDU ----------------------*/
+		/*--------------------Fin--------------------*/
+		/*=============================================
+			GNC 
+===============================================*/
+		/*--------------------Debut--------------------*/
+		to ARO
+	end if
+
+
+process GNC [BUS_GNC: in SIGNAL] (&g: STRUCT_GLOBAL, id: int) is
+states OFF, CollisionAvoidance_deg, CollisionAvoidance, ASM, ASM_deg, ACM, ACM_deg, FCM, FCM_deg, OCM, OCM_deg, Start, Committed_ACM, sendACM, waitACM, sendFCM, waitFCM, CAM, Committed_OCM, sendOCM, waitOCM
+var 
+	event: SIGNAL, 
+	mode: int, 
+	t_CAM: int 
+init mode := 0;
+event := {val_signal = 0, type_signal = 0};
+t_CAM := 0;
+/* ------------------------------------------------
+              
+-------------------------------------------------*/
+to OFF
+
+from OFF
+	if (id = D) then
+		g.synD.GNC_ASM_ON := true
+	end if;
+	if (id = M) then
+		g.synM.GNC_ASM_ON := true
+	end if;
+	/* ------------------------------------------------
+              
+-------------------------------------------------*/
+	to Start
+
+from Start
+	if (id = D) then
+		g.synD.GNC_ASM_ON := false
+	end if;
+	if (id = M) then
+		g.synM.GNC_ASM_ON := false
+	end if;
+	if ((((id = D) and g.varD.ChemProp_isON) and g.varD.SAS_isON) and g.varD.IMU_isON) then
+		g.varD.GNC_mode := 1;
+		to ASM
+	else 
+		if ((((id = M) and g.varM.ChemProp_isON) and g.varM.SAS_isON) and g.varM.IMU_isON) then
+			g.varM.GNC_mode := 1;
+			to ASM
+		else 
+			if ((id = D) and g.synD.ARO) then
+				g.varD.GNC_mode := 0;
+				to OFF
+			else 
+				if ((id = M) and g.synM.ARO) then
+					g.varM.GNC_mode := 0;
+					to OFF
+				else 
+					/* ------------------------------------------------
+              
+-------------------------------------------------*/
+					to Start
+				end if
+			end if
+		end if
+	end if
+
+from ASM
+	if ((id = D) and ((g.synD.SAS_Failed or g.synD.IMU_Failed) or g.synD.ChemProp_Failed)) then
+		to ASM_deg
+	else 
+		if ((id = M) and ((g.synM.SAS_Failed or g.synM.IMU_Failed) or g.synM.ChemProp_Failed)) then
+			to ASM_deg
+		else 
+			if ((((id = D) and g.varD.ChemProp_isON) and g.varD.SAS_isON) and g.varD.IMU_isON) then
+				/* toASM */
+				g.varD.GNC_toACM_engaged := true;
+				to Committed_ACM
+			else 
+				if ((((id = M) and g.varM.ChemProp_isON) and g.varM.SAS_isON) and g.varM.IMU_isON) then
+					g.varM.GNC_toACM_engaged := true;
+					to Committed_ACM
+				else 
+					if ((id = D) and g.synD.ARO) then
+						g.varD.GNC_mode := 0;
+						to OFF
+					else 
+						if ((id = M) and g.synM.ARO) then
+							g.varM.GNC_mode := 0;
+							to OFF
+						else 
+							/* ------------------------------------------------
+              
+-------------------------------------------------*/
+							to ASM
+						end if
+					end if
+				end if
+			end if
+		end if
+	end if
+
+from ASM_deg
+	if ((((id = D) and g.varD.ChemProp_isON) and g.varD.SAS_isON) and g.varD.IMU_isON) then
+		g.varD.GNC_mode := 1;
+		to ASM
+	else 
+		if ((((id = M) and g.varM.ChemProp_isON) and g.varM.SAS_isON) and g.varM.IMU_isON) then
+			g.varM.GNC_mode := 1;
+			to ASM
+		else 
+			/* ------------------------------------------------
+              
+-------------------------------------------------*/
+			to ASM_deg
+		end if
+	end if
+
+from Committed_ACM
+	BUS_GNC? event;
+	if (event.type_signal = TCM_GNC_toACM) then
+		to sendACM
+	else 
+		/* ------------------------------------------------
+              
+-------------------------------------------------*/
+		to ASM
+	end if
+
+from sendACM
+	if ((id = D) and g.synD.ARO) then
+		g.varD.GNC_mode := 0;
+		g.varD.GNC_toACM_engaged := false;
+		to OFF
+	else 
+		if ((id = M) and g.synM.ARO) then
+			g.varM.GNC_mode := 0;
+			g.varM.GNC_toACM_engaged := false;
+			to OFF
+		else 
+			if (id = D) then
+				g.synD.GNC_ACM_ON := true
+			end if;
+			if (id = M) then
+				g.synM.GNC_ACM_ON := true
+			end if;
+			/* ------------------------------------------------
+              
+-------------------------------------------------*/
+			to waitACM
+		end if
+	end if
+
+from waitACM
+	if (id = D) then
+		g.synD.GNC_ACM_ON := false
+	end if;
+	if (id = M) then
+		g.synM.GNC_ACM_ON := false
+	end if;
+	if ((id = D) and g.synD.ARO) then
+		g.varD.GNC_mode := 0;
+		g.varD.GNC_toACM_engaged := false;
+		to OFF
+	else 
+		if ((id = M) and g.synM.ARO) then
+			g.varM.GNC_mode := 0;
+			g.varM.GNC_toACM_engaged := false;
+			to OFF
+		else 
+			if (((id = D) and g.synD.CAM) and (g.varD.GNC_mode <> 1)) then
+				g.varD.GNC_mode := 5;
+				t_CAM := 0;
+				to CAM
+			else 
+				if (((id = M) and g.synM.CAM) and (g.varM.GNC_mode <> 1)) then
+					g.varM.GNC_mode := 5;
+					t_CAM := 0;
+					to CAM
+				else 
+					if (((id = M) and g.varM.STR_isON) and (g.varM.RF_mode = 3)) then
+						g.varM.GNC_mode := 2;
+						g.varM.GNC_toACM_engaged := false;
+						to ACM
+					else 
+						if ((id = D) and g.varD.STR_isON) then
+							g.varD.GNC_mode := 2;
+							g.varD.GNC_toACM_engaged := false;
+							to ACM
+						else 
+							/* ------------------------------------------------
+              
+-------------------------------------------------*/
+							to waitACM
+						end if
+					end if
+				end if
+			end if
+		end if
+	end if
+
+from ACM
+	if ((id = M) and g.synM.RF_Failed) then
+		to ACM_deg
+	else 
+		if (((id = D) and g.synD.STR_Failed) or ((id = M) and g.synM.STR_Failed)) then
+			to ACM_deg
+		else 
+			if (((id = D) and g.varD.STR_isON) and g.synD.TC_GNC_toFCM) then
+				g.varD.GNC_toFCM_engaged := true;
+				to sendFCM
+			else 
+				if (((id = D) and g.varD.STR_isON) and g.synD.LatSensSurveillance_Detected) then
+					g.varD.GNC_toFCM_engaged := true;
+					to waitFCM
+				else 
+					if ((id = D) and g.varD.STR_isON) then
+						/* toACM */
+						g.varD.GNC_toOCM_engaged := true;
+						to Committed_OCM
+					else 
+						if (((id = M) and g.varM.STR_isON) and (g.varM.RF_mode = 3)) then
+							g.varM.GNC_toOCM_engaged := true;
+							to Committed_OCM
+						else 
+							if ((id = D) and g.synD.CAM) then
+								g.varD.GNC_mode := 5;
+								to CAM
+							else 
+								if ((id = M) and g.synM.CAM) then
+									g.varM.GNC_mode := 5;
+									to CAM
+								else 
+									if ((id = D) and g.synD.ARO) then
+										g.varD.GNC_mode := 0;
+										to OFF
+									else 
+										if ((id = M) and g.synM.ARO) then
+											g.varM.GNC_mode := 0;
+											to OFF
+										else 
+											/* ------------------------------------------------
+              
+-------------------------------------------------*/
+											to ACM
+										end if
+									end if
+								end if
+							end if
+						end if
+					end if
+				end if
+			end if
+		end if
+	end if
+
+from ACM_deg
+	if (((id = D) and g.varD.STR_isON) or (((id = M) and g.varM.STR_isON) and (g.varM.RF_mode = 3))) then
+		/* toACM */
+		g.varD.GNC_mode := 2;
+		to Committed_ACM
+	else 
+		if ((id = D) and g.synD.CAM) then
+			g.varD.GNC_mode := 5;
+			to CAM
+		else 
+			if ((id = M) and g.synM.CAM) then
+				g.varM.GNC_mode := 5;
+				to CAM
+			else 
+				if ((id = D) and g.synD.ARO) then
+					g.varD.GNC_mode := 0;
+					to OFF
+				else 
+					if ((id = M) and g.synM.ARO) then
+						g.varM.GNC_mode := 0;
+						to OFF
+					else 
+						/* ------------------------------------------------
+              
+-------------------------------------------------*/
+						to ACM_deg
+					end if
+				end if
+			end if
+		end if
+	end if
+
+from sendFCM
+	if (id = D) then
+		g.synD.GNC_FCM_ON := true;
+		to waitFCM
+	else 
+		if (id = M) then
+			g.synM.GNC_FCM_ON := true;
+			to waitFCM
+		else 
+			if ((id = D) and g.synD.CAM) then
+				g.varD.GNC_mode := 5;
+				g.varD.GNC_toFCM_engaged := false;
+				to CAM
+			else 
+				if ((id = M) and g.synM.CAM) then
+					g.varM.GNC_toFCM_engaged := false;
+					g.varM.GNC_mode := 5;
+					to CAM
+				else 
+					if ((id = D) and g.synD.ARO) then
+						g.varD.GNC_mode := 0;
+						g.varD.GNC_toFCM_engaged := false;
+						to OFF
+					else 
+						if ((id = M) and g.synM.ARO) then
+							g.varM.GNC_mode := 0;
+							g.varM.GNC_toFCM_engaged := false;
+							to OFF
+						else 
+							/* ------------------------------------------------
+              
+-------------------------------------------------*/
+							to sendFCM
+						end if
+					end if
+				end if
+			end if
+		end if
+	end if
+
+from waitFCM
+	if (id = D) then
+		g.synD.GNC_FCM_ON := false
+	end if;
+	if (id = M) then
+		g.synM.GNC_FCM_ON := false
+	end if;
+	if (((((id = D) and g.varD.STR_isON) and g.varD.GasProp_isON) and (g.varD.RF_mode = 3)) and g.varD.LatSens_isON) then
+		/* toFCM */
+		g.varD.GNC_mode := 4;
+		g.varD.GNC_toFCM_engaged := false;
+		to FCM
+	else 
+		if (((((id = M) and g.varM.STR_isON) and g.varM.GasProp_isON) and (g.varM.RF_mode = 3)) and g.varM.LatSens_isON) then
+			g.varM.GNC_mode := 4;
+			g.varM.GNC_toFCM_engaged := false;
+			to FCM
+		else 
+			if ((id = D) and g.synD.CAM) then
+				g.varD.GNC_mode := 5;
+				g.varD.GNC_toFCM_engaged := false;
+				to CAM
+			else 
+				if ((id = M) and g.synM.CAM) then
+					g.varM.GNC_toFCM_engaged := false;
+					g.varM.GNC_mode := 5;
+					to CAM
+				else 
+					if ((id = D) and g.synD.ARO) then
+						g.varD.GNC_mode := 0;
+						g.varD.GNC_toFCM_engaged := false;
+						to OFF
+					else 
+						if ((id = M) and g.synM.ARO) then
+							g.varM.GNC_mode := 0;
+							g.varM.GNC_toFCM_engaged := false;
+							to OFF
+						else 
+							/* ------------------------------------------------
+              
+-------------------------------------------------*/
+							to waitFCM
+						end if
+					end if
+				end if
+			end if
+		end if
+	end if
+
+from CollisionAvoidance_deg
+	if ((id = D) and g.synD.ARO) then
+		g.varD.GNC_mode := 0;
+		to OFF
+	else 
+		if ((id = M) and g.synM.ARO) then
+			g.varM.GNC_mode := 0;
+			to OFF
+		else 
+			if ((((id = D) and g.varD.STR_isON) and g.varD.ChemProp_isON) and (g.varD.RF_mode = 2)) then
+				to CollisionAvoidance
+			else 
+				if ((((id = M) and g.varM.STR_isON) and g.varM.ChemProp_isON) and (g.varM.RF_mode = 2)) then
+					to CollisionAvoidance
+				else 
+					/* ------------------------------------------------
+              
+-------------------------------------------------*/
+					to CollisionAvoidance_deg
+				end if
+			end if
+		end if
+	end if
+
+from CollisionAvoidance
+	if ((id = D) and g.synD.ARO) then
+		g.varD.GNC_mode := 0;
+		to OFF
+	else 
+		if ((id = M) and g.synM.ARO) then
+			g.varM.GNC_mode := 0;
+			to OFF
+		else 
+			if ((id = D) and ((g.synD.STR_Failed or g.synD.ChemProp_Failed) or g.synD.RF_Failed)) then
+				to CollisionAvoidance_deg
+			else 
+				if ((id = M) and ((g.synM.STR_Failed or g.synM.ChemProp_Failed) or g.synM.RF_Failed)) then
+					to CollisionAvoidance_deg
+				else 
+					if ((t_CAM > 2) and (id = D)) then
+						g.varD.GNC_mode := 2;
+						to ACM
+					else 
+						if ((t_CAM > 2) and (id = M)) then
+							g.varM.GNC_mode := 2;
+							to ACM
+						else 
+							/* ------------------------------------------------
+              
+-------------------------------------------------*/
+							to CollisionAvoidance
+						end if
+					end if
+				end if
+			end if
+		end if
+	end if
+
+from FCM
+	if ((id = D) and (((g.synD.GasProp_Failed or g.synD.LatSens_Failed) or g.synD.RF_Failed) or g.synD.STR_Failed)) then
+		to FCM_deg
+	else 
+		if ((id = M) and (((g.synM.GasProp_Failed or g.synM.LatSens_Failed) or g.synM.RF_Failed) or g.synM.STR_Failed)) then
+			to FCM_deg
+		else 
+			if ((id = D) and g.synD.CAM) then
+				g.varD.GNC_mode := 5;
+				to CAM
+			else 
+				if ((id = M) and g.synM.CAM) then
+					g.varM.GNC_mode := 5;
+					to CAM
+				else 
+					if ((id = D) and g.synD.ARO) then
+						g.varD.GNC_mode := 0;
+						to OFF
+					else 
+						if ((id = M) and g.synM.ARO) then
+							g.varM.GNC_mode := 0;
+							to OFF
+						else 
+							if (((((id = D) and g.varD.STR_isON) and g.varD.GasProp_isON) and (g.varD.RF_mode = 3)) and g.varD.LatSens_isON) then
+								g.varD.GNC_toACM_engaged := true;
+								to Committed_ACM
+							else 
+								if (((((id = M) and g.varM.STR_isON) and g.varM.GasProp_isON) and (g.varM.RF_mode = 3)) and g.varM.LatSens_isON) then
+									g.varM.GNC_toACM_engaged := true;
+									to Committed_ACM
+								else 
+									/* ------------------------------------------------
+              
+-------------------------------------------------*/
+									to FCM
+								end if
+							end if
+						end if
+					end if
+				end if
+			end if
+		end if
+	end if
+
+from FCM_deg
+	if (((((id = D) and g.varD.STR_isON) and g.varD.GasProp_isON) and (g.varD.RF_mode = 3)) and g.varD.LatSens_isON) then
+		/* toFCM */
+		g.varD.GNC_mode := 4;
+		to FCM
+	else 
+		if (((((id = M) and g.varM.STR_isON) and g.varM.GasProp_isON) and (g.varM.RF_mode = 3)) and g.varM.LatSens_isON) then
+			g.varM.GNC_mode := 4;
+			to FCM
+		else 
+			if ((id = D) and g.synD.CAM) then
+				g.varD.GNC_mode := 5;
+				to CAM
+			else 
+				if ((id = M) and g.synM.CAM) then
+					g.varM.GNC_mode := 5;
+					to CAM
+				else 
+					if ((id = D) and g.synD.ARO) then
+						g.varD.GNC_mode := 0;
+						to OFF
+					else 
+						if ((id = M) and g.synM.ARO) then
+							g.varM.GNC_mode := 0;
+							to OFF
+						else 
+							/* ------------------------------------------------
+              
+-------------------------------------------------*/
+							to FCM_deg
+						end if
+					end if
+				end if
+			end if
+		end if
+	end if
+
+from Committed_OCM
+	BUS_GNC? event;
+	if (event.type_signal = TCM_GNC_toOCM) then
+		to sendOCM
+	else 
+		/* ------------------------------------------------
+              
+-------------------------------------------------*/
+		to ACM
+	end if
+
+from sendOCM
+	if ((id = D) and g.synD.ARO) then
+		g.varD.GNC_mode := 0;
+		to OFF
+	else 
+		if ((id = M) and g.synM.ARO) then
+			g.varM.GNC_mode := 0;
+			to OFF
+		else 
+			if ((id = D) and g.synD.CAM) then
+				g.varD.GNC_mode := 5;
+				g.varD.GNC_toACM_engaged := false;
+				to OFF
+			else 
+				if ((id = M) and g.synM.CAM) then
+					g.varM.GNC_mode := 5;
+					g.varM.GNC_toACM_engaged := false;
+					to OFF
+				else 
+					if (id = D) then
+						g.synD.GNC_OCM_ON := true
+					end if;
+					if (id = M) then
+						g.synM.GNC_OCM_ON := true
+					end if;
+					/* ------------------------------------------------
+              
+-------------------------------------------------*/
+					to waitOCM
+				end if
+			end if
+		end if
+	end if
+
+from waitOCM
+	if (id = D) then
+		g.synD.GNC_OCM_ON := false
+	end if;
+	if (id = M) then
+		g.synM.GNC_OCM_ON := false
+	end if;
+	if ((id = D) and g.synD.ARO) then
+		g.varD.GNC_mode := 0;
+		to OFF
+	else 
+		if ((id = M) and g.synM.ARO) then
+			g.varM.GNC_mode := 0;
+			to OFF
+		else 
+			if ((id = D) and g.synD.CAM) then
+				g.varD.GNC_mode := 5;
+				to CAM
+			else 
+				if ((id = M) and g.synM.CAM) then
+					g.varM.GNC_mode := 5;
+					to CAM
+				else 
+					if (((id = M) and g.varM.STR_isON) and g.varM.ChemProp_isON) then
+						g.varM.GNC_mode := 3;
+						g.varM.GNC_toOCM_engaged := false;
+						to OCM
+					else 
+						if (((id = D) and g.varD.STR_isON) and g.varM.ChemProp_isON) then
+							g.varD.GNC_mode := 3;
+							g.varD.GNC_toOCM_engaged := false;
+							to OCM
+						else 
+							/* ------------------------------------------------
+              
+-------------------------------------------------*/
+							to waitOCM
+						end if
+					end if
+				end if
+			end if
+		end if
+	end if
+
+from OCM
+	if ((id = D) and g.synD.CAM) then
+		g.varD.GNC_mode := 5;
+		to CAM
+	else 
+		if ((id = M) and g.synM.CAM) then
+			g.varM.GNC_mode := 5;
+			to CAM
+		else 
+			if ((id = D) and g.synD.ARO) then
+				g.varD.GNC_mode := 0;
+				to OFF
+			else 
+				if ((id = M) and g.synM.ARO) then
+					g.varM.GNC_mode := 0;
+					to OFF
+				else 
+					if ((id = D) and (g.synD.STR_Failed or g.synD.ChemProp_Failed)) then
+						to OCM_deg
+					else 
+						if ((id = M) and (g.synM.STR_Failed or g.synM.ChemProp_Failed)) then
+							to OCM_deg
+						else 
+							if (((id = D) and g.varD.STR_isON) and g.varD.ChemProp_isON) then
+								g.varD.GNC_toACM_engaged := true;
+								to Committed_ACM
+							else 
+								if (((id = M) and g.varM.STR_isON) and g.varM.ChemProp_isON) then
+									g.varM.GNC_toACM_engaged := true;
+									to Committed_ACM
+								else 
+									/* ------------------------------------------------
+              
+-------------------------------------------------*/
+									to OCM
+								end if
+							end if
+						end if
+					end if
+				end if
+			end if
+		end if
+	end if
+
+from OCM_deg
+	if (((id = M) and g.varM.STR_isON) and g.varM.ChemProp_isON) then
+		g.varM.GNC_mode := 3;
+		to OCM
+	else 
+		if (((id = D) and g.varD.STR_isON) and g.varM.ChemProp_isON) then
+			g.varD.GNC_mode := 3;
+			to OCM
+		else 
+			if ((id = D) and g.synD.CAM) then
+				g.varD.GNC_mode := 5;
+				to CAM
+			else 
+				if ((id = M) and g.synM.CAM) then
+					g.varM.GNC_mode := 5;
+					to CAM
+				else 
+					if ((id = D) and g.synD.ARO) then
+						g.varD.GNC_mode := 0;
+						to OFF
+					else 
+						if ((id = M) and g.synM.ARO) then
+							g.varM.GNC_mode := 0;
+							to OFF
+						else 
+							/* ------------------------------------------------
+              
+-------------------------------------------------*/
+							to OCM_deg
+						end if
+					end if
+				end if
+			end if
+		end if
+	end if
+
+from CAM
+	if ((id = D) and g.synD.ARO) then
+		g.varD.GNC_mode := 0;
+		to OFF
+	else 
+		if ((id = M) and g.synM.ARO) then
+			g.varM.GNC_mode := 0;
+			to OFF
+		else 
+			if ((((id = D) and g.varD.STR_isON) and g.varD.ChemProp_isON) and (g.varD.RF_mode = 2)) then
+				t_CAM := 0;
+				to CollisionAvoidance
+			else 
+				if ((((id = M) and g.varM.STR_isON) and g.varM.ChemProp_isON) and (g.varM.RF_mode = 2)) then
+					t_CAM := 0;
+					to CollisionAvoidance
+				else 
+					/* ------------- Fin GNC ----------------------*/
+					/*--------------------Fin--------------------*/
+					/*=============================================
+			Payload 
+===============================================*/
+					/*--------------------Debut--------------------*/
+					to CAM
+				end if
+			end if
+		end if
+	end if
+
+
+process Payload [BUS_Payload: in SIGNAL] (&g: STRUCT_GLOBAL) is
+states OFF, Safe, Op, Committed, Committed2, Suspend
+var 
+	event: SIGNAL 
+init event := {val_signal = 0, type_signal = 0};
+/* ------------------------------------------------
+              
+-------------------------------------------------*/
+to OFF
+
+from OFF
+	if (g.synD.GNC_ASM_ON = true) then
+		g.varD.Payload_mode := 1;
+		to Safe
+	else 
+		/* ------------------------------------------------
+              
+-------------------------------------------------*/
+		to OFF
+	end if
+
+from Safe
+	if g.synD.ARO then
+		g.varD.Payload_mode := 0;
+		to OFF
+	else 
+		/* ------------------------------------------------
+              
+-------------------------------------------------*/
+		to Committed
+	end if
+
+from Committed
+	BUS_Payload? event;
+	if (event.type_signal = TC_PL_toOp) then
+		g.varD.Payload_mode := 2;
+		to Op
+	else 
+		/* ------------------------------------------------
+              
+-------------------------------------------------*/
+		to Safe
+	end if
+
+from Op
+	if (g.synD.FDIR_ToPLSafe or g.synD.CAM) then
+		g.varD.Payload_mode := 1;
+		to Safe
+	else 
+		if (g.synD.ARO or g.synM.ARO) then
+			g.varD.Payload_mode := 0;
+			to OFF
+		else 
+			if (g.synD.LatSensSurveillance_Detected or g.varD.RFSurveillance_Detected) then
+				g.varD.Payload_mode := 3;
+				to Suspend
+			else 
+				/* ------------------------------------------------
+              
+-------------------------------------------------*/
+				to Op
+			end if
+		end if
+	end if
+
+from Suspend
+	if (g.synD.FDIR_ToPLSafe or g.synD.CAM) then
+		g.varD.Payload_mode := 1;
+		to Safe
+	else 
+		if (g.synD.ARO or g.synM.ARO) then
+			g.varD.Payload_mode := 0;
+			to OFF
+		else 
+			/* ------------------------------------------------
+              
+-------------------------------------------------*/
+			to Committed2
+		end if
+	end if
+
+from Committed2
+	BUS_Payload? event;
+	if (event.type_signal = TC_PL_toOp) then
+		g.varD.Payload_mode := 2;
+		to Op
+	else 
+		/* ------------- Fin Payload ----------------------*/
+		/*--------------------Fin--------------------*/
+		/*=============================================
+			CmdCtrl 
+===============================================*/
+		/*--------------------Debut--------------------*/
+		to Suspend
+	end if
+
+
+process CmdCtrl [BUS_CmdCtrl: in SIGNAL] (&g: STRUCT_GLOBAL, id: int) is
+states OFF, Committed, Auto, Auto_bis, Formation, Formation_bis, Formation_deg, Auto_deg
+var 
+	event: SIGNAL 
+init event := {val_signal = 0, type_signal = 0};
+/* ------------------------------------------------
+              
+-------------------------------------------------*/
+to OFF
+
+from OFF
+	if (((g.synD.GNC_ASM_ON = true) and (id = D)) and (g.synD.ARO = true)) then
+		g.varD.CmdCtrl_mode := 0;
+		to OFF
+	else 
+		if (((g.synM.GNC_ASM_ON = true) and (id = M)) and (g.synM.ARO = true)) then
+			g.varM.CmdCtrl_mode := 0;
+			to OFF
+		else 
+			if (((g.synD.GNC_ASM_ON = true) and (id = D)) and (g.synD.ARO = true)) then
+				g.varD.CmdCtrl_mode := 0;
+				to Committed
+			else 
+				if (((g.synM.GNC_ASM_ON = true) and (id = M)) and (g.synM.ARO = true)) then
+					g.varM.CmdCtrl_mode := 0;
+					to Committed
+				else 
+					/* -----------------------------------------------------------
+         
+------------------------------------------------------------*/
+					to OFF
+				end if
+			end if
+		end if
+	end if
+
+from Committed
+	if (((id = D) and g.varD.Transponder_isON) and g.varD.Ampli_isON) then
+		g.varD.CmdCtrl_mode := 0;
+		to Auto
+	else 
+		if (((id = M) and g.varM.Transponder_isON) and g.varM.Ampli_isON) then
+			g.varM.CmdCtrl_mode := 0;
+			to Auto
+		else 
+			if (id = D) then
+				g.synD.CmdCtrl_Auto_ON := true;
+				to OFF
+			else 
+				if (id = M) then
+					g.synM.CmdCtrl_Auto_ON := true;
+					to OFF
+				else 
+					/* -----------------------------------------------------------
+         
+------------------------------------------------------------*/
+					to Committed
+				end if
+			end if
+		end if
+	end if
+
+from Formation
+	if ((g.synD.ARO = true) and (id = D)) then
+		g.varD.CmdCtrl_mode := 0;
+		g.varD.CmdCtrl_isFormation := false;
+		to OFF
+	else 
+		if ((g.synM.ARO = true) and (id = M)) then
+			g.varM.CmdCtrl_mode := 0;
+			g.varM.CmdCtrl_isFormation := false;
+			to OFF
+		else 
+			if ((g.synD.CAM = true) and (id = D)) then
+				g.varD.CmdCtrl_mode := 0;
+				to Auto
+			else 
+				if ((g.synM.CAM = true) and (id = M)) then
+					g.varM.CmdCtrl_mode := 0;
+					to Auto
+				else 
+					if ((id = D) and (g.synD.Transponder_Failed = true)) then
+						to Formation_deg
+					else 
+						if ((id = D) and (g.synD.Ampli_Failed = true)) then
+							to Formation_deg
+						else 
+							/* -----------------------------------------------------------
+         
+------------------------------------------------------------*/
+							to Formation
+						end if
+					end if
+				end if
+			end if
+		end if
+	end if
+
+from Auto
+	if true then
+		BUS_CmdCtrl? event;
+		if (event.type_signal = TC_CmdCtrl_toFormation) then
+			to Formation_bis
+		else 
+			null
+		end if
+	end if;
+	/* -----------------------------------------------------------
+         
+------------------------------------------------------------*/
+	to Auto_bis
+
+from Auto_bis
+	if ((g.synD.ARO = true) and (id = D)) then
+		g.varD.CmdCtrl_mode := 0;
+		to OFF
+	else 
+		if ((g.synM.ARO = true) and (id = M)) then
+			g.varM.CmdCtrl_mode := 0;
+			to OFF
+		else 
+			if ((id = D) and (g.synD.Transponder_Failed = true)) then
+				to Auto_deg
+			else 
+				if ((id = D) and (g.synD.Ampli_Failed = true)) then
+					to Auto_deg
+				else 
+					if ((id = M) and (g.synM.Transponder_Failed = true)) then
+						to Auto_deg
+					else 
+						if ((id = M) and (g.synM.Ampli_Failed = true)) then
+							to Auto_deg
+						else 
+							/* -----------------------------------------------------------
+         
+------------------------------------------------------------*/
+							to Auto
+						end if
+					end if
+				end if
+			end if
+		end if
+	end if
+
+from Formation_bis
+	if (((id = D) and (g.varM.CmdCtrl_modeDelayed >= 1)) and (event.val_signal = id)) then
+		g.varD.CmdCtrl_isFormation := true;
+		g.varD.CmdCtrl_mode := 2;
+		to Formation
+	else 
+		if (((id = M) and (g.varD.CmdCtrl_modeDelayed >= 1)) and (event.val_signal = id)) then
+			g.varM.CmdCtrl_isFormation := true;
+			g.varM.CmdCtrl_mode := 2;
+			to Formation
+		else 
+			/* -----------------------------------------------------------
+         
+------------------------------------------------------------*/
+			to Auto
+		end if
+	end if
+
+from Auto_deg
+	if ((g.synD.ARO = true) and (id = D)) then
+		g.varD.CmdCtrl_mode := 0;
+		g.varD.CmdCtrl_isFormation := true;
+		to OFF
+	else 
+		if ((g.synM.ARO = true) and (id = M)) then
+			g.varM.CmdCtrl_mode := 0;
+			g.varM.CmdCtrl_isFormation := false;
+			to OFF
+		else 
+			if (((id = D) and g.varD.Transponder_isON) and g.varD.Ampli_isON) then
+				g.varD.CmdCtrl_mode := 0;
+				to Auto
+			else 
+				if (((id = M) and g.varM.Transponder_isON) and g.varM.Ampli_isON) then
+					g.varM.CmdCtrl_mode := 0;
+					to Auto
+				else 
+					/* ------------- Fin CmdCtrl ----------------------*/
+					/*--------------------Fin--------------------*/
+					/*=============================================
+			OBC
+===============================================*/
+					/*--------------------Debut--------------------*/
+					/* je garde volontairement la structure en 
+variable globale pour ne pas trop augmenter mon nombre de variable et d'�tats */
+					to Auto_deg
+				end if
+			end if
+		end if
+	end if
+
+
+process OBC [BUS_OBC: in SIGNAL] (&g: STRUCT_GLOBAL, id: int) is
+states ON, Starting, OFF, Committed, Failed
+var 
+	restore: int, 
+	t_ON: int, 
+	event: SIGNAL, 
+	redundance: int 
+init restore := 0;
+t_ON := 0;
+event := {val_signal = 0, type_signal = 0};
+redundance := 0;
+/* ------------------------------------------------
+              
+-------------------------------------------------*/
+to ON
+
+from ON
+	if ((g.synD.ARO = true) and (id = D)) then
+		g.varD.OBC_isON := false;
+		to OFF
+	else 
+		if ((g.synM.ARO = true) and (id = M)) then
+			g.varM.OBC_isON := false;
+			to OFF
+		else 
+			if true then
+				BUS_OBC? event;
+				if ((event.val_signal = id) and (event.type_signal = OBC_TFail)) then
+					t_ON := 0;
+					to Committed
+				else 
+					if ((event.val_signal = id) and (event.type_signal = OBC_PFail)) then
+						t_ON := 0;
+						redundance := (redundance - 1);
+						to Committed
+					else 
+						null
+					end if
+				end if
+			end if;
+			/* ------------------------------------------------
+              
+-------------------------------------------------*/
+			to ON
+		end if
+	end if
+
+from Committed
+	if ((id = D) and (event.val_signal = D)) then
+		g.varD.OBC_isON := false;
+		t_ON := 0;
+		g.synD.ARO := true;
+		to Failed
+	else 
+		if ((id = M) and (event.val_signal = M)) then
+			g.varM.OBC_isON := false;
+			t_ON := 0;
+			g.synM.ARO := true;
+			to Failed
+		else 
+			/* ------------------------------------------------
+              
+-------------------------------------------------*/
+			to Committed
+		end if
+	end if
+
+from Starting
+	if ((t_ON >= 30) and (id = D)) then
+		g.varD.OBC_isON := false;
+		to ON
+	else 
+		if ((t_ON >= 30) and (id = M)) then
+			g.varM.OBC_isON := false;
+			to ON
+		else 
+			if ((g.synD.ARO = true) and (id = D)) then
+				to OFF
+			else 
+				if ((g.synM.ARO = true) and (id = M)) then
+					to OFF
+				else 
+					/* ------------------------------------------------
+              
+-------------------------------------------------*/
+					to Starting
+				end if
+			end if
+		end if
+	end if
+
+from OFF
+	if (restore = 1) then
+		to Starting
+	else 
+		if true then
+			BUS_OBC? event;
+			if ((event.val_signal = id) and (event.type_signal = TC_OBC_ON)) then
+				t_ON := 0;
+				restore := 0;
+				to Starting
+			else 
+				null
+			end if
+		end if;
+		/* ------------------------------------------------
+              
+-------------------------------------------------*/
+		to OFF
+	end if
+
+from Failed
+	if ((t_ON >= 10) and (redundance > 0)) then
+		restore := 1;
+		to OFF
+	else 
+		/* ------------- Fin OBC ----------------------*/
+		/*--------------------Fin--------------------*/
+		/*=============================================
+			GasProp
+===============================================*/
+		/*--------------------Debut--------------------*/
+		to Failed
+	end if
+
+
+process GasProp (&g: STRUCT_GLOBAL, id: int) is
+states ON, Starting, OFF, Failed
+var 
+	restore: int, 
+	t_ON: int, 
+	event: SIGNAL 
+init restore := 0;
+t_ON := 0;
+event := {val_signal = 0, type_signal = 0};
+/* ------------------------------------------------
+              
+-------------------------------------------------*/
+to OFF
+
+from ON
+	if ((g.synD.ARO or g.synD.GNC_ACM_ON) and (id = D)) then
+		g.varD.GasProp_isON := false;
+		to OFF
+	else 
+		if ((g.synM.ARO or g.synM.GNC_ACM_ON) and (id = M)) then
+			g.varM.GasProp_isON := false;
+			to OFF
+		else 
+			if (g.synD.Reconf_Order_fromEIU and (id = D)) then
+				g.varD.GasProp_isON := false;
+				t_ON := 0;
+				g.varD.GasProp_redundance := (g.varD.GasProp_redundance - 1);
+				g.synD.GasProp_Failed := true;
+				to Failed
+			else 
+				if (g.synM.Reconf_Order_fromEIU and (id = M)) then
+					g.varM.GasProp_isON := false;
+					t_ON := 0;
+					g.varM.GasProp_redundance := (g.varM.GasProp_redundance - 1);
+					g.synM.GasProp_Failed := true;
+					to Failed
+				else 
+					if ((id = D) and g.synD.GasProp_TFail) then
+						g.varD.GasProp_isON := false;
+						t_ON := 0;
+						g.synD.GasProp_Failed := true;
+						to Failed
+					else 
+						if ((id = M) and g.synD.GasProp_TFail) then
+							g.varM.GasProp_isON := false;
+							t_ON := 0;
+							g.synM.GasProp_Failed := true;
+							to Failed
+						else 
+							if ((id = D) and g.synD.GasProp_PFail) then
+								g.varD.GasProp_isON := false;
+								t_ON := 0;
+								g.synD.GasProp_Failed := true;
+								g.varD.GasProp_redundance := (g.varD.GasProp_redundance - 1);
+								g.synD.Reconf_Order_toEIU := true;
+								to Failed
+							else 
+								if ((id = M) and g.synD.GasProp_PFail) then
+									g.varM.GasProp_isON := false;
+									t_ON := 0;
+									g.synM.GasProp_Failed := true;
+									g.varM.GasProp_redundance := (g.varM.GasProp_redundance - 1);
+									g.synD.Reconf_Order_toEIU := true;
+									to Failed
+								else 
+									/* ------------------------------------------------
+              
+-------------------------------------------------*/
+									to ON
+								end if
+							end if
+						end if
+					end if
+				end if
+			end if
+		end if
+	end if
+
+from Starting
+	if (t_ON >= 30) then
+		g.varD.GasProp_isON := true;
+		to ON
+	else 
+		if (g.synD.ARO and (id = D)) then
+			g.varD.GasProp_isON := false;
+			to OFF
+		else 
+			if (g.synM.ARO and (id = M)) then
+				g.varM.GasProp_isON := false;
+				to OFF
+			else 
+				/* ------------------------------------------------
+              
+-------------------------------------------------*/
+				to Starting
+			end if
+		end if
+	end if
+
+from OFF
+	if (restore = 1) then
+		t_ON := 0;
+		restore := 0;
+		to Starting
+	else 
+		if (g.synD.GNC_FCM_ON and (id = D)) then
+			t_ON := 0;
+			to Starting
+		else 
+			if (g.synM.GNC_FCM_ON and (id = M)) then
+				t_ON := 0;
+				to Starting
+			else 
+				/* ------------------------------------------------
+              
+-------------------------------------------------*/
+				to OFF
+			end if
+		end if
+	end if
+
+from Failed
+	if (((t_ON >= 5) and (g.varD.GasProp_redundance > 0)) and (id = D)) then
+		restore := 1;
+		g.varD.GasProp_isON := false;
+		to OFF
+	else 
+		if (((t_ON >= 5) and (g.varM.GasProp_redundance > 0)) and (id = M)) then
+			restore := 1;
+			g.varM.GasProp_isON := false;
+			to OFF
+		else 
+			if (((g.varD.GasProp_redundance > 0) and (id = D)) and g.synD.ARO) then
+				g.varD.GasProp_isON := false;
+				to OFF
+			else 
+				if (((g.varM.GasProp_redundance > 0) and (id = M)) and g.synM.ARO) then
+					g.varM.GasProp_isON := false;
+					to OFF
+				else 
+					/* ------------- Fin GasProp ----------------------*/
+					/*--------------------Fin--------------------*/
+					/*=============================================
+			STR
+===============================================*/
+					/*--------------------Debut--------------------*/
+					to Failed
+				end if
+			end if
+		end if
+	end if
+
+
+process STR [BUS_STR: in SIGNAL] (&g: STRUCT_GLOBAL, id: int) is
+states ON, Starting, OFF, Failed, Committed
+var 
+	restore: int, 
+	t_ON: int, 
+	event: SIGNAL, 
+	redundance: int 
+init restore := 0;
+t_ON := 0;
+event := {val_signal = 0, type_signal = 0};
+redundance := 2;
+/* ------------------------------------------------
+              
+-------------------------------------------------*/
+to OFF
+
+from ON
+	if (g.synD.ARO and (id = D)) then
+		g.varD.STR_isON := false;
+		to OFF
+	else 
+		if (g.synM.ARO and (id = M)) then
+			g.varM.STR_isON := false;
+			to OFF
+		else 
+			if true then
+				BUS_STR? event;
+				if ((event.val_signal = id) and (event.type_signal = STR_TFail)) then
+					t_ON := 0;
+					to Committed
+				else 
+					if ((event.val_signal = id) and (event.type_signal = STR_PFail)) then
+						t_ON := 0;
+						redundance := (redundance - 1);
+						to Committed
+					else 
+						null
+					end if
+				end if
+			end if;
+			/* ------------------------------------------------
+              
+-------------------------------------------------*/
+			to ON
+		end if
+	end if
+
+from Starting
+	if ((t_ON >= 30) and (id = D)) then
+		g.varD.STR_isON := true;
+		to ON
+	else 
+		if ((t_ON >= 30) and (id = M)) then
+			g.varM.STR_isON := true;
+			to ON
+		else 
+			if (g.synD.ARO and (id = D)) then
+				g.varD.STR_isON := false;
+				to OFF
+			else 
+				if (g.synM.ARO and (id = M)) then
+					g.varM.STR_isON := false;
+					to OFF
+				else 
+					/* ------------------------------------------------
+              
+-------------------------------------------------*/
+					to Starting
+				end if
+			end if
+		end if
+	end if
+
+from OFF
+	if (restore = 1) then
+		restore := 0;
+		to Starting
+	else 
+		if (g.synD.GNC_ACM_ON and (id = D)) then
+			t_ON := 0;
+			to Starting
+		else 
+			if (g.synM.GNC_ACM_ON and (id = M)) then
+				t_ON := 0;
+				to Starting
+			else 
+				/* ------------------------------------------------
+              
+-------------------------------------------------*/
+				to OFF
+			end if
+		end if
+	end if
+
+from Failed
+	if (((t_ON >= 10) and (redundance > 0)) and (id = D)) then
+		restore := 1;
+		g.varD.STR_isON := false;
+		to OFF
+	else 
+		if (((t_ON >= 10) and (redundance > 0)) and (id = M)) then
+			restore := 1;
+			g.varM.STR_isON := false;
+			to OFF
+		else 
+			if (((redundance > 0) and (id = D)) and g.synD.ARO) then
+				g.varD.STR_isON := false;
+				to OFF
+			else 
+				if (((redundance > 0) and (id = M)) and g.synM.ARO) then
+					g.varM.STR_isON := false;
+					to OFF
+				else 
+					/* ------------------------------------------------
+              
+-------------------------------------------------*/
+					to Failed
+				end if
+			end if
+		end if
+	end if
+
+from Committed
+	if ((id = D) and (event.val_signal = D)) then
+		g.varD.STR_isON := false;
+		t_ON := 0;
+		g.synD.STR_Failed := true;
+		to Failed
+	else 
+		if ((id = M) and (event.val_signal = M)) then
+			g.varM.STR_isON := false;
+			t_ON := 0;
+			g.synM.STR_Failed := true;
+			to Failed
+		else 
+			/* ------------- Fin STR ----------------------*/
+			/*--------------------Fin--------------------*/
+			/*=============================================
+			LatSens_DSC
+===============================================*/
+			/*--------------------Debut--------------------*/
+			to Committed
+		end if
+	end if
+
+
+process LatSens_DSC (&g: STRUCT_GLOBAL, id: int) is
+states ON, Starting, OFF, Failed
+var 
+	restore: int, 
+	t_ON: int, 
+	event: SIGNAL, 
+	redundance: int 
+init restore := 0;
+t_ON := 0;
+event := {val_signal = 0, type_signal = 0};
+redundance := 2;
+/* ------------------------------------------------
+              
+-------------------------------------------------*/
+to OFF
+
+from OFF
+	if (restore = 1) then
+		restore := 0;
+		to Starting
+	else 
+		if ((g.synD.ARO = true) and (id = D)) then
+			g.varD.LatSens_isON := false;
+			to Starting
+		else 
+			if ((g.synM.ARO = true) and (id = M)) then
+				g.varM.LatSens_isON := false;
+				to Starting
+			else 
+				if ((g.synD.TC_GNC_toFCM = true) and (id = D)) then
+					t_ON := 0;
+					to Starting
+				else 
+					if ((g.synM.TC_GNC_toFCM = true) and (id = M)) then
+						t_ON := 0;
+						to Starting
+					else 
+						/* ------------------------------------------------
+              
+-------------------------------------------------*/
+						to OFF
+					end if
+				end if
+			end if
+		end if
+	end if
+
+from Starting
+	if ((t_ON >= 30) and (D = id)) then
+		g.varD.LatSens_isON := true;
+		to ON
+	else 
+		if ((t_ON >= 30) and (M = id)) then
+			g.varM.LatSens_isON := true;
+			to ON
+		else 
+			/* ------------------------------------------------
+              
+-------------------------------------------------*/
+			to Starting
+		end if
+	end if
+
+from ON
+	if ((g.synD.ARO or g.synD.GNC_ACM_ON) and (id = D)) then
+		g.varD.LatSens_isON := false;
+		to OFF
+	else 
+		if ((g.synM.ARO or g.synM.GNC_ACM_ON) and (id = M)) then
+			g.varM.LatSens_isON := false;
+			to OFF
+		else 
+			if ((id = D) and g.synD.LatSens_TFail) then
+				g.varD.LatSens_isON := false;
+				t_ON := 0;
+				g.synD.LatSens_Failed := true;
+				to Failed
+			else 
+				if ((id = M) and g.synD.LatSens_TFail) then
+					g.varM.LatSens_isON := false;
+					t_ON := 0;
+					g.synM.LatSens_Failed := true;
+					to Failed
+				else 
+					if ((id = D) and g.synD.LatSens_PFail) then
+						g.varD.LatSens_isON := false;
+						t_ON := 0;
+						g.synD.LatSens_Failed := true;
+						redundance := (redundance - 1);
+						g.synD.Reconf_Order_toEIU := true;
+						to Failed
+					else 
+						if ((id = M) and g.synD.LatSens_PFail) then
+							g.varM.LatSens_isON := false;
+							t_ON := 0;
+							g.synM.LatSens_Failed := true;
+							redundance := (redundance - 1);
+							g.synD.Reconf_Order_toEIU := true;
+							to Failed
+						else 
+							/* ------------------------------------------------
+              
+-------------------------------------------------*/
+							to ON
+						end if
+					end if
+				end if
+			end if
+		end if
+	end if
+
+from Failed
+	if ((g.synD.ARO or g.synD.GNC_ACM_ON) and (id = D)) then
+		g.varD.LatSens_isON := false;
+		to OFF
+	else 
+		if ((g.synM.ARO or g.synM.GNC_ACM_ON) and (id = M)) then
+			g.varM.LatSens_isON := false;
+			to OFF
+		else 
+			/* ------------- Fin LatSens ----------------------*/
+			/*--------------------Fin--------------------*/
+			/*=============================================
+			EIU
+===============================================*/
+			/*--------------------Debut--------------------*/
+			to Failed
+		end if
+	end if
+
+
+process EIU [BUS_EIU: in SIGNAL] (&g: STRUCT_GLOBAL, id: int) is
+states ON, Starting, OFF, Failed
+var 
+	restore: int, 
+	t_ON: int, 
+	event: SIGNAL 
+init restore := 0;
+t_ON := 0;
+event := {val_signal = 0, type_signal = 0};
+/* ------------------------------------------------
+              
+-------------------------------------------------*/
+to ON
+
+from ON
+	if (g.synD.ARO and (id = D)) then
+		g.varD.EIU_isON := false;
+		to OFF
+	else 
+		if (g.synM.ARO and (id = M)) then
+			g.varM.EIU_isON := false;
+			to OFF
+		else 
+			if (g.synD.Reconf_Order_toEIU and (id = D)) then
+				g.varD.EIU_isON := false;
+				t_ON := 0;
+				g.varD.EIU_isFailed := true;
+				g.varD.EIU_redundance := (g.varD.EIU_redundance - 1);
+				to Failed
+			else 
+				if (g.synM.Reconf_Order_toEIU and (id = M)) then
+					g.varM.EIU_isON := false;
+					t_ON := 0;
+					g.varM.EIU_isFailed := true;
+					g.varM.EIU_redundance := (g.varM.EIU_redundance - 1);
+					to Failed
+				else 
+					if ((id = D) and g.synD.EIU_TFail) then
+						g.varD.EIU_isON := false;
+						t_ON := 0;
+						g.varD.EIU_isFailed := true;
+						to Failed
+					else 
+						if ((id = M) and g.synD.EIU_TFail) then
+							g.varM.EIU_isON := false;
+							t_ON := 0;
+							g.varD.EIU_isFailed := true;
+							to Failed
+						else 
+							if ((id = D) and g.synD.EIU_PFail) then
+								g.varD.EIU_isON := false;
+								t_ON := 0;
+								g.varD.EIU_isFailed := true;
+								g.varD.EIU_redundance := (g.varD.EIU_redundance - 1);
+								g.synD.Reconf_Order_fromEIU := true;
+								to Failed
+							else 
+								if ((id = M) and g.synD.EIU_PFail) then
+									g.varM.EIU_isON := false;
+									t_ON := 0;
+									g.varD.EIU_isFailed := true;
+									g.varM.EIU_redundance := (g.varM.EIU_redundance - 1);
+									g.synD.Reconf_Order_fromEIU := true;
+									to Failed
+								else 
+									/* ------------------------------------------------
+              
+-------------------------------------------------*/
+									to ON
+								end if
+							end if
+						end if
+					end if
+				end if
+			end if
+		end if
+	end if
+
+from Starting
+	if (t_ON >= 10) then
+		g.varD.EIU_isON := true;
+		to ON
+	else 
+		if (g.synD.ARO and (id = D)) then
+			to OFF
+		else 
+			if (g.synM.ARO and (id = M)) then
+				to OFF
+			else 
+				/* ------------------------------------------------
+              
+-------------------------------------------------*/
+				to Starting
+			end if
+		end if
+	end if
+
+from OFF
+	if (restore = 1) then
+		t_ON := 0;
+		restore := 0;
+		to Starting
+	else 
+		if true then
+			BUS_EIU? event;
+			if ((event.val_signal = id) and (event.type_signal = TC_EIU_ON)) then
+				t_ON := 0;
+				to Starting
+			else 
+				null
+			end if
+		end if;
+		/* ------------------------------------------------
+              
+-------------------------------------------------*/
+		to OFF
+	end if
+
+from Failed
+	if (((t_ON >= 10) and (g.varD.EIU_redundance > 0)) and (id = D)) then
+		restore := 1;
+		g.varD.EIU_isFailed := true;
+		g.varD.EIU_isON := false;
+		to OFF
+	else 
+		if (((t_ON >= 10) and (g.varM.EIU_redundance > 0)) and (id = M)) then
+			restore := 1;
+			g.varM.EIU_isFailed := true;
+			g.varM.EIU_isON := false;
+			to OFF
+		else 
+			if (((g.varD.EIU_redundance > 0) and (id = D)) and g.synD.ARO) then
+				g.varD.EIU_isON := false;
+				to OFF
+			else 
+				if (((g.varM.EIU_redundance > 0) and (id = M)) and g.synM.ARO) then
+					g.varM.EIU_isON := false;
+					to OFF
+				else 
+					/* ------------- Fin EIU ----------------------*/
+					/*--------------------Fin--------------------*/
+					/*=============================================
+			LatSensSurveillance
+===============================================*/
+					/*--------------------Debut--------------------*/
+					to Failed
+				end if
+			end if
+		end if
+	end if
+
+
+process LatSensSurveillance (&g: STRUCT_GLOBAL) is
+states Waiting
+var 
+	event: SIGNAL 
+init event := {val_signal = 0, type_signal = 0};
+/* ------------------------------------------------
+              
+-------------------------------------------------*/
+to Waiting
+
+from Waiting
+	if g.synD.LatSens_PFail then
+		g.synD.LatSensSurveillance_Detected := true
+	end if;
+	if g.synD.LatSens_TFail then
+		g.varD.LatSens_isON := false;
+		g.synD.LatSensSurveillance_Detected := true
+	end if;
+	/* ------------- Fin LatSensSurveillance ----------------------*/
+	/*--------------------Fin--------------------*/
+	/*=============================================
+			System_Surveillance
+===============================================*/
+	/*--------------------Debut--------------------*/
+	to Waiting
+
+
+process System_Surveillance [BUS_System_Surveillance: in SIGNAL] (&g: STRUCT_GLOBAL, id: int) is
+states Waiting, Detected
+var 
+	event: SIGNAL 
+init event := {val_signal = 0, type_signal = 0};
+/* ------------------------------------------------
+              
+-------------------------------------------------*/
+to Waiting
+
+from Waiting
+	BUS_System_Surveillance? event;
+	/* ------------------------------------------------
+              
+-------------------------------------------------*/
+	to Detected
+
+from Detected
+	if (event.type_signal = System_Fail) then
+		if (id = D) then
+			g.synD.ARO := true
+		end if;
+		if (id = M) then
+			g.synM.ARO := true
+		end if
+	end if;
+	/* ------------- Fin System_Surveillance ----------------------*/
+	/*--------------------Fin--------------------*/
+	/*=============================================
+			RelPosSurveillance_DSC
+===============================================*/
+	/*--------------------Debut--------------------*/
+	to Waiting
+
+
+process RelPosSurveillance_DSC (&g: STRUCT_GLOBAL) is
+states Waiting, Detected
+var 
+	event: SIGNAL, 
+	ISLdelay: int 
+init event := {val_signal = 0, type_signal = 0};
+ISLdelay := 0;
+/* ------------------------------------------------
+              
+-------------------------------------------------*/
+to Waiting
+
+from Waiting
+	if ((g.synD.ChemProp_TFail and g.varD.ChemProp_isON) and (g.varM.Formation_mode = 5)) then
+		to Detected
+	else 
+		if ((g.synD.ChemProp_PFail and g.varD.ChemProp_isON) and (g.varM.Formation_mode = 5)) then
+			to Detected
+		else 
+			if ((g.synD.EIU_TFail and g.varD.EIU_isON) and (g.varM.Formation_mode = 5)) then
+				to Detected
+			else 
+				if ((g.synD.EIU_PFail and g.varD.EIU_isON) and (g.varM.Formation_mode = 5)) then
+					to Detected
+				else 
+					if ((g.synM.ChemProp_TFail and g.varM.ChemProp_isON) and (g.varM.Formation_mode = 5)) then
+						to Detected
+					else 
+						if ((g.synM.ChemProp_PFail and g.varM.ChemProp_isON) and (g.varM.Formation_mode = 5)) then
+							to Detected
+						else 
+							/* ------------------------------------------------
+              
+-------------------------------------------------*/
+							to Waiting
+						end if
+					end if
+				end if
+			end if
+		end if
+	end if
+
+from Detected
+	if (((g.varD.EIU_redundance = 0) or (g.varD.ChemProp_redundance = 0)) or (g.varM.ChemProp_redundance = 0)) then
+		g.synD.CAM := true;
+		to Waiting
+	else 
+		if (((g.varD.EIU_redundance = 0) or (g.varD.ChemProp_redundance = 0)) or (g.varM.ChemProp_redundance = 0)) then
+			to Waiting
+		else 
+			/* ------------- Fin RelPosSurveillance_DSC ----------------------*/
+			/*--------------------Fin--------------------*/
+			/*=============================================
+			RelPosSurveillance_MSC
+===============================================*/
+			/*--------------------Debut--------------------*/
+			to Detected
+		end if
+	end if
+
+
+process RelPosSurveillance_MSC (&g: STRUCT_GLOBAL) is
+states Waiting, Detected
+var 
+	event: SIGNAL, 
+	ISLdelay: int 
+init event := {val_signal = 0, type_signal = 0};
+ISLdelay := 0;
+/* ------------------------------------------------
+              
+-------------------------------------------------*/
+to Waiting
+
+from Waiting
+	if ((g.synD.ChemProp_TFail and g.varD.ChemProp_isON) and (g.varM.Formation_mode = 5)) then
+		to Detected
+	else 
+		if ((g.synD.ChemProp_PFail and g.varD.ChemProp_isON) and (g.varM.Formation_mode = 5)) then
+			to Detected
+		else 
+			if ((g.synD.EIU_TFail and g.varD.EIU_isON) and (g.varM.Formation_mode = 5)) then
+				to Detected
+			else 
+				if ((g.synD.EIU_PFail and g.varD.EIU_isON) and (g.varM.Formation_mode = 5)) then
+					to Detected
+				else 
+					if ((g.synM.ChemProp_TFail and g.varM.ChemProp_isON) and (g.varM.Formation_mode = 5)) then
+						to Detected
+					else 
+						if ((g.synM.ChemProp_PFail and g.varM.ChemProp_isON) and (g.varM.Formation_mode = 5)) then
+							to Detected
+						else 
+							/* ------------------------------------------------
+              
+-------------------------------------------------*/
+							to Waiting
+						end if
+					end if
+				end if
+			end if
+		end if
+	end if
+
+from Detected
+	if (((g.varD.EIU_redundance = 0) or (g.varD.ChemProp_redundance = 0)) or (g.varM.ChemProp_redundance = 0)) then
+		g.synD.CAM := true;
+		to Waiting
+	else 
+		if (((g.varD.EIU_redundance = 0) or (g.varD.ChemProp_redundance = 0)) or (g.varM.ChemProp_redundance = 0)) then
+			to Waiting
+		else 
+			/* ------------- Fin RelPosSurveillance_MSC ----------------------*/
+			/*--------------------Fin--------------------*/
+			/*=============================================
+			ProximitySurveillance
+===============================================*/
+			/*--------------------Debut--------------------*/
+			to Detected
+		end if
+	end if
+
+
+process ProximitySurveillance (&g: STRUCT_GLOBAL, id: int) is
+states Waiting, Detected
+var 
+	event: SIGNAL 
+init event := {val_signal = 0, type_signal = 0};
+/* ------------------------------------------------
+              
+-------------------------------------------------*/
+to Waiting
+
+from Waiting
+	if (((id = M) and (g.varM.Formation_mode > 1)) and (g.varD.SatSafeModeDelayed = 1)) then
+		to Detected
+	else 
+		if ((((id = M) and (g.varM.Formation_mode > 1)) and g.synD.EIU_PFail) and g.varM.EIU_isON) then
+			to Detected
+		else 
+			if ((((id = M) and (g.varM.Formation_mode > 1)) and g.synD.EIU_TFail) and g.varM.EIU_isON) then
+				to Detected
+			else 
+				if ((((id = D) and (g.varD.Formation_mode > 1)) and g.synD.EIU_PFail) and g.varD.EIU_isON) then
+					to Detected
+				else 
+					if ((((id = D) and (g.varD.Formation_mode > 1)) and g.synD.EIU_TFail) and g.varD.EIU_isON) then
+						to Detected
+					else 
+						if ((((id = M) and (g.varM.Formation_mode > 1)) and g.synD.ChemProp_PFail) and g.varM.ChemProp_isON) then
+							to Detected
+						else 
+							if ((((id = M) and (g.varM.Formation_mode > 1)) and g.synD.ChemProp_TFail) and g.varM.ChemProp_isON) then
+								to Detected
+							else 
+								if ((((id = D) and (g.varD.Formation_mode > 1)) and g.synD.ChemProp_PFail) and g.varD.ChemProp_isON) then
+									to Detected
+								else 
+									if ((((id = D) and (g.varD.Formation_mode > 1)) and g.synD.ChemProp_TFail) and g.varD.ChemProp_isON) then
+										to Detected
+									else 
+										/* ------------------------------------------------
+              
+-------------------------------------------------*/
+										to Waiting
+									end if
+								end if
+							end if
+						end if
+					end if
+				end if
+			end if
+		end if
+	end if
+
+from Detected
+	if (id = D) then
+		g.synD.CAM := true
+	end if;
+	if (id = M) then
+		g.synM.CAM := true
+	end if;
+	/* ------------- Fin ProximitySurveillance ----------------------*/
+	/*--------------------Fin--------------------*/
+	/*=============================================
+			RF_Surveillance
+===============================================*/
+	/*--------------------Debut--------------------*/
+	to Waiting
+
+
+process RF_Surveillance (&g: STRUCT_GLOBAL) is
+states Waiting, Detected
+var 
+	event: SIGNAL 
+init event := {val_signal = 0, type_signal = 0};
+/* ------------------------------------------------
+              
+-------------------------------------------------*/
+to Waiting
+
+from Waiting
+	if ((g.varM.Formation_mode > 1) and (g.varD.Formation_mode > 1)) then
+		if (g.varD.RF_mode = 3) then
+			if (g.synD.RF_TFail or g.synD.RF_TFail) then
+				g.varD.RFSurveillance_Detected := true;
+				to Detected
+			end if
+		end if;
+		if (g.varM.RF_mode = 3) then
+			if (g.synM.RF_PFail or g.synM.RF_TFail) then
+				g.varM.RFSurveillance_Detected := true;
+				to Detected
+			end if
+		end if;
+		if g.varD.EIU_isON then
+			if (g.synD.EIU_TFail or g.synD.EIU_TFail) then
+				g.varD.RFSurveillance_Detected := true;
+				to Detected
+			end if
+		end if;
+		if g.varM.EIU_isON then
+			if (g.synM.EIU_PFail or g.synM.EIU_TFail) then
+				g.varM.RFSurveillance_Detected := true;
+				to Detected
+			end if
+		end if
+	end if;
+	/* ------------------------------------------------
+              
+-------------------------------------------------*/
+	to Waiting
+
+from Detected
+	if (((g.varD.EIU_isON and (g.varD.RF_mode = 3)) and g.varM.EIU_isON) and (g.varM.RF_mode = 3)) then
+		g.varD.RFSurveillance_Detected := false;
+		g.varM.RFSurveillance_Detected := false;
+		to Waiting
+	else 
+		if true then
+			g.synD.CAM := true;
+			g.synM.CAM := true;
+			g.varD.RFSurveillance_Detected := false;
+			g.varM.RFSurveillance_Detected := false;
+			to Waiting
+		else 
+			/* ------------- Fin RF_Surveillance ----------------------*/
+			/*--------------------Fin--------------------*/
+			/*=============================================
+			Satellite_DSC
+===============================================*/
+			/*--------------------Debut--------------------*/
+			to Detected
+		end if
+	end if
+
+
+process Satellite_DSC (&g: STRUCT_GLOBAL) is
+states StandBy, Init, Launch, Safe, Normal, CollisionAvoidance, Suspend, Operational
+var 
+	event: SIGNAL, 
+	firstAcq: bool 
+init event := {val_signal = 0, type_signal = 0};
+firstAcq := true;
+/* ------------------------------------------------
+              
+-------------------------------------------------*/
+to StandBy
+
+from StandBy
+	if ((g.varD.CmdCtrl_mode = 1) and (g.varD.Payload_mode = 1)) then
+		g.varD.SatSafeMode := 0;
+		to Init
+	else 
+		/* ------------------------------------------------
+              
+-------------------------------------------------*/
+		to StandBy
+	end if
+
+from Init
+	if (((g.varD.CmdCtrl_mode = 1) and (g.varD.Payload_mode = 1)) and firstAcq) then
+		firstAcq := false;
+		to Launch
+	else 
+		if g.synD.ARO then
+			to StandBy
+		else 
+			if ((((firstAcq = false) and (g.varD.GNC_mode = 1)) and (g.varD.CmdCtrl_mode = 1)) and (g.varD.Payload_mode = 1)) then
+				g.varD.SatSafeMode := 1;
+				to Safe
+			else 
+				/* ------------------------------------------------
+              
+-------------------------------------------------*/
+				to Init
+			end if
+		end if
+	end if
+
+from Launch
+	if (((g.varD.GNC_mode = 1) and (g.varD.CmdCtrl_mode = 1)) and (g.varD.Payload_mode = 1)) then
+		g.varD.SatSafeMode := 1;
+		to Safe
+	else 
+		if g.synD.ARO then
+			to StandBy
+		else 
+			/* ------------------------------------------------
+              
+-------------------------------------------------*/
+			to Launch
+		end if
+	end if
+
+from Safe
+	if ((((g.varD.GNC_mode = 2) or (g.varD.GNC_mode = 3)) and ((g.varD.CmdCtrl_mode = 1) or (g.varD.CmdCtrl_mode = 2))) and (g.varD.Payload_mode = 1)) then
+		g.varD.SatSafeMode := 2;
+		to Normal
+	else 
+		if g.synD.ARO then
+			to StandBy
+		else 
+			/* ------------------------------------------------
+              
+-------------------------------------------------*/
+			to Safe
+		end if
+	end if
+
+from Normal
+	if g.synD.CAM then
+		to CollisionAvoidance
+	else 
+		if g.synD.ARO then
+			to StandBy
+		else 
+			if (((g.varD.GNC_mode = 4) and (g.varD.CmdCtrl_mode = 2)) and (g.varD.Payload_mode = 2)) then
+				to Operational
+			else 
+				/* ------------------------------------------------
+              
+-------------------------------------------------*/
+				to Normal
+			end if
+		end if
+	end if
+
+from CollisionAvoidance
+	if ((((g.varD.GNC_mode = 2) or (g.varD.GNC_mode = 3)) and ((g.varD.CmdCtrl_mode = 1) or (g.varD.CmdCtrl_mode = 2))) and (g.varD.Payload_mode = 1)) then
+		to Normal
+	else 
+		if g.synD.ARO then
+			to StandBy
+		else 
+			/* ------------------------------------------------
+              
+-------------------------------------------------*/
+			to CollisionAvoidance
+		end if
+	end if
+
+from Operational
+	if ((((g.varD.GNC_mode = 2) or (g.varD.GNC_mode = 3)) and ((g.varD.CmdCtrl_mode = 1) or (g.varD.CmdCtrl_mode = 2))) and (g.varD.Payload_mode = 1)) then
+		to Normal
+	else 
+		if g.synD.CAM then
+			to CollisionAvoidance
+		else 
+			if g.synD.ARO then
+				to StandBy
+			else 
+				if ((g.synD.LatSensSurveillance_Detected or g.synD.FDIR_ToPLSafe) or g.varD.RFSurveillance_Detected) then
+					to Suspend
+				else 
+					/* ------------------------------------------------
+              
+-------------------------------------------------*/
+					to Operational
+				end if
+			end if
+		end if
+	end if
+
+from Suspend
+	if g.synD.CAM then
+		to CollisionAvoidance
+	else 
+		if g.synD.ARO then
+			to StandBy
+		else 
+			if (((g.varD.GNC_mode = 4) and (g.varD.CmdCtrl_mode = 2)) and (g.varD.Payload_mode = 2)) then
+				to Operational
+			else 
+				/* ------------- Fin Satellite_DSC ----------------------*/
+				/*--------------------Fin--------------------*/
+				/*=============================================
+			Satellite_MSC
+===============================================*/
+				/*--------------------Debut--------------------*/
+				to Suspend
+			end if
+		end if
+	end if
+
+
+process Satellite_MSC (&g: STRUCT_GLOBAL) is
+states StandBy, Init, Launch, Safe, Normal, CollisionAvoidance, Suspend
+var 
+	event: SIGNAL, 
+	firstAcq: bool 
+init event := {val_signal = 0, type_signal = 0};
+firstAcq := true;
+/* ------------------------------------------------
+              
+-------------------------------------------------*/
+to StandBy
+
+from StandBy
+	if (g.varM.CmdCtrl_mode = 1) then
+		g.varM.SatSafeMode := 0;
+		to Init
+	else 
+		/* ------------------------------------------------
+              
+-------------------------------------------------*/
+		to StandBy
+	end if
+
+from Init
+	if ((g.varM.CmdCtrl_mode = 1) and firstAcq) then
+		firstAcq := false;
+		to Launch
+	else 
+		if g.synM.ARO then
+			to StandBy
+		else 
+			if (((firstAcq = false) and (g.varM.GNC_mode = 1)) and (g.varM.CmdCtrl_mode = 1)) then
+				g.varM.SatSafeMode := 1;
+				to Safe
+			else 
+				/* ------------------------------------------------
+              
+-------------------------------------------------*/
+				to Init
+			end if
+		end if
+	end if
+
+from Launch
+	if ((g.varM.GNC_mode = 1) and (g.varM.CmdCtrl_mode = 1)) then
+		g.varM.SatSafeMode := 1;
+		to Safe
+	else 
+		if g.synM.ARO then
+			to StandBy
+		else 
+			/* ------------------------------------------------
+              
+-------------------------------------------------*/
+			to Launch
+		end if
+	end if
+
+from Safe
+	if (((g.varM.GNC_mode = 2) or (g.varM.GNC_mode = 3)) and ((g.varM.CmdCtrl_mode = 1) or (g.varM.CmdCtrl_mode = 2))) then
+		g.varM.SatSafeMode := 2;
+		to Normal
+	else 
+		if g.synM.ARO then
+			to StandBy
+		else 
+			/* ------------------------------------------------
+              
+-------------------------------------------------*/
+			to Safe
+		end if
+	end if
+
+from Normal
+	if g.synM.CAM then
+		to CollisionAvoidance
+	else 
+		if g.synM.ARO then
+			to StandBy
+		else 
+			if (g.synM.LatSensSurveillance_Detected or g.varM.RFSurveillance_Detected) then
+				to Suspend
+			else 
+				/* ------------------------------------------------
+              
+-------------------------------------------------*/
+				to Normal
+			end if
+		end if
+	end if
+
+from CollisionAvoidance
+	if (((g.varM.GNC_mode = 2) or (g.varM.GNC_mode = 3)) and ((g.varM.CmdCtrl_mode = 1) or (g.varM.CmdCtrl_mode = 2))) then
+		to Normal
+	else 
+		if g.synM.ARO then
+			to StandBy
+		else 
+			/* ------------------------------------------------
+              
+-------------------------------------------------*/
+			to CollisionAvoidance
+		end if
+	end if
+
+from Suspend
+	if g.synM.CAM then
+		to CollisionAvoidance
+	else 
+		if g.synM.ARO then
+			to StandBy
+		else 
+			if ((((g.varM.GNC_mode = 2) or (g.varM.GNC_mode = 3)) and ((g.varM.CmdCtrl_mode = 1) or (g.varM.CmdCtrl_mode = 2))) and (g.varM.RFSurveillance_Detected = false)) then
+				to Normal
+			else 
+				/* ------------- Fin Satellite_MSC ----------------------*/
+				/*--------------------Fin--------------------*/
+				/*=============================================
+			Ampli
+===============================================*/
+				/*--------------------Debut--------------------*/
+				to Suspend
+			end if
+		end if
+	end if
+
+
+process Ampli [BUS_Ampli: in SIGNAL] (&g: STRUCT_GLOBAL, id: int) is
+states ON, Starting, OFF, Failed, Committed
+var 
+	restore: int, 
+	t_ON: int, 
+	event: SIGNAL, 
+	redundance: int 
+init restore := 0;
+t_ON := 0;
+event := {val_signal = 0, type_signal = 0};
+redundance := 2;
+/* ------------------------------------------------
+              
+-------------------------------------------------*/
+to OFF
+
+from ON
+	if (g.synD.ARO and (id = D)) then
+		g.varD.Ampli_isON := false;
+		to OFF
+	else 
+		if (g.synM.ARO and (id = M)) then
+			g.varM.Ampli_isON := false;
+			to OFF
+		else 
+			if (g.synD.Reconf_Order_fromTranspondeur and (id = D)) then
+				g.varD.Ampli_isON := false;
+				t_ON := 0;
+				redundance := (redundance - 1);
+				g.synD.Ampli_Failed := true;
+				to Failed
+			else 
+				if (g.synM.Reconf_Order_fromTranspondeur and (id = M)) then
+					g.varM.Ampli_isON := false;
+					t_ON := 0;
+					redundance := (redundance - 1);
+					g.synM.Ampli_Failed := true;
+					to Failed
+				else 
+					if true then
+						BUS_Ampli? event;
+						if ((event.val_signal = id) and (event.type_signal = Ampli_TFail)) then
+							t_ON := 0;
+							to Committed
+						else 
+							if ((event.val_signal = id) and (event.type_signal = Ampli_PFail)) then
+								t_ON := 0;
+								redundance := (redundance - 1);
+								to Committed
+							else 
+								null
+							end if
+						end if
+					end if;
+					/* ------------------------------------------------
+              
+-------------------------------------------------*/
+					to ON
+				end if
+			end if
+		end if
+	end if
+
+from Starting
+	if ((t_ON >= 30) and (id = D)) then
+		t_ON := 0;
+		g.varD.Ampli_isON := true;
+		to ON
+	else 
+		if ((t_ON >= 30) and (id = M)) then
+			t_ON := 0;
+			g.varM.Ampli_isON := true;
+			to ON
+		else 
+			if (g.synD.ARO and (id = D)) then
+				g.varD.Ampli_isON := false;
+				to OFF
+			else 
+				if (g.synM.ARO and (id = M)) then
+					g.varM.Ampli_isON := false;
+					to OFF
+				else 
+					/* ------------------------------------------------
+              
+-------------------------------------------------*/
+					to Starting
+				end if
+			end if
+		end if
+	end if
+
+from OFF
+	if (restore = 1) then
+		t_ON := 0;
+		restore := 0;
+		to Starting
+	else 
+		if ((g.synM.CmdCtrl_Auto_ON and (id = M)) or ((id = D) and g.synD.CmdCtrl_Auto_ON)) then
+			t_ON := 0;
+			to Starting
+		else 
+			/* ------------------------------------------------
+              
+-------------------------------------------------*/
+			to OFF
+		end if
+	end if
+
+from Committed
+	if ((id = D) and (event.val_signal = D)) then
+		g.varD.Ampli_isON := false;
+		t_ON := 0;
+		g.synD.Ampli_Failed := true;
+		to Failed
+	else 
+		if ((id = M) and (event.val_signal = M)) then
+			g.varM.Ampli_isON := false;
+			t_ON := 0;
+			g.synM.Ampli_Failed := true;
+			to Failed
+		else 
+			/* ------------------------------------------------
+              
+-------------------------------------------------*/
+			to Committed
+		end if
+	end if
+
+from Failed
+	if (((t_ON >= 10) and (redundance > 0)) and (id = D)) then
+		restore := 1;
+		g.varD.Ampli_isON := false;
+		to OFF
+	else 
+		if (((t_ON >= 10) and (redundance > 0)) and (id = M)) then
+			restore := 1;
+			g.varM.Ampli_isON := false;
+			to OFF
+		else 
+			if (((redundance > 0) and (id = D)) and g.synD.ARO) then
+				to OFF
+			else 
+				if (((redundance > 0) and (id = M)) and g.synM.ARO) then
+					to OFF
+				else 
+					/* ------------- Fin Ampli ----------------------*/
+					/*--------------------Fin--------------------*/
+					/*=============================================
+			ChemProp
+===============================================*/
+					/*--------------------Debut--------------------*/
+					to Failed
+				end if
+			end if
+		end if
+	end if
+
+
+process ChemProp (&g: STRUCT_GLOBAL, id: int) is
+states ON, Starting, OFF, Failed
+var 
+	restore: int, 
+	t_ON: int, 
+	event: SIGNAL 
+init restore := 0;
+t_ON := 0;
+event := {val_signal = 0, type_signal = 0};
+/* ------------------------------------------------
+              
+-------------------------------------------------*/
+to OFF
+
+from ON
+	if ((g.synD.ARO or g.synD.GNC_ACM_ON) and (id = D)) then
+		g.varD.ChemProp_isON := false;
+		to OFF
+	else 
+		if ((g.synM.ARO or g.synM.GNC_ACM_ON) and (id = M)) then
+			g.varM.ChemProp_isON := false;
+			to OFF
+		else 
+			if (g.synD.Reconf_Order_fromEIU and (id = D)) then
+				g.varD.ChemProp_isON := false;
+				t_ON := 0;
+				g.varD.ChemProp_redundance := (g.varD.ChemProp_redundance - 1);
+				g.synD.ChemProp_Failed := true;
+				to Failed
+			else 
+				if (g.synM.Reconf_Order_fromEIU and (id = M)) then
+					g.varM.ChemProp_isON := false;
+					t_ON := 0;
+					g.varM.ChemProp_redundance := (g.varM.ChemProp_redundance - 1);
+					g.synM.ChemProp_Failed := true;
+					to Failed
+				else 
+					if ((id = D) and g.synD.ChemProp_TFail) then
+						g.varD.ChemProp_isON := false;
+						t_ON := 0;
+						g.synD.ChemProp_Failed := true;
+						to Failed
+					else 
+						if ((id = M) and g.synD.ChemProp_TFail) then
+							g.varM.ChemProp_isON := false;
+							t_ON := 0;
+							g.synM.ChemProp_Failed := true;
+							to Failed
+						else 
+							if ((id = D) and g.synD.ChemProp_PFail) then
+								g.varD.ChemProp_isON := false;
+								t_ON := 0;
+								g.synD.ChemProp_Failed := true;
+								g.varD.ChemProp_redundance := (g.varD.ChemProp_redundance - 1);
+								to Failed
+							else 
+								if ((id = M) and g.synD.ChemProp_PFail) then
+									g.varM.ChemProp_isON := false;
+									t_ON := 0;
+									g.synM.ChemProp_Failed := true;
+									g.varM.ChemProp_redundance := (g.varM.ChemProp_redundance - 1);
+									to Failed
+								else 
+									/* ------------------------------------------------
+              
+-------------------------------------------------*/
+									to ON
+								end if
+							end if
+						end if
+					end if
+				end if
+			end if
+		end if
+	end if
+
+from Starting
+	if (t_ON >= 1200) then
+		g.varD.ChemProp_isON := true;
+		to ON
+	else 
+		if (g.synD.ARO and (id = D)) then
+			g.varD.ChemProp_isON := false;
+			to OFF
+		else 
+			if (g.synM.ARO and (id = M)) then
+				g.varM.ChemProp_isON := false;
+				to OFF
+			else 
+				/* ------------------------------------------------
+              
+-------------------------------------------------*/
+				to Starting
+			end if
+		end if
+	end if
+
+from OFF
+	if (restore = 1) then
+		t_ON := 0;
+		restore := 0;
+		to Starting
+	else 
+		if ((g.synD.GNC_ASM_ON or g.synD.GNC_OCM_ON) and (id = D)) then
+			t_ON := 0;
+			to Starting
+		else 
+			if ((g.synM.GNC_ASM_ON or g.synM.GNC_OCM_ON) and (id = M)) then
+				t_ON := 0;
+				to Starting
+			else 
+				if (g.synD.CAM and (id = D)) then
+					t_ON := 0;
+					to Starting
+				else 
+					if (g.synM.CAM and (id = M)) then
+						t_ON := 0;
+						to Starting
+					else 
+						/* ------------------------------------------------
+              
+-------------------------------------------------*/
+						to OFF
+					end if
+				end if
+			end if
+		end if
+	end if
+
+from Failed
+	if (((t_ON >= 900) and (g.varD.ChemProp_redundance > 0)) and (id = D)) then
+		restore := 1;
+		g.varD.ChemProp_isON := false;
+		to OFF
+	else 
+		if (((t_ON >= 900) and (g.varM.ChemProp_redundance > 0)) and (id = M)) then
+			restore := 1;
+			g.varM.ChemProp_isON := false;
+			to OFF
+		else 
+			if (((g.varD.ChemProp_redundance > 0) and (id = D)) and g.synD.ARO) then
+				to OFF
+			else 
+				if (((g.varM.ChemProp_redundance > 0) and (id = M)) and g.synD.ARO) then
+					to OFF
+				else 
+					/* ------------- Fin ChemProp ----------------------*/
+					/*--------------------Fin--------------------*/
+					/*=============================================
+			Transponder
+===============================================*/
+					/*--------------------Debut--------------------*/
+					to Failed
+				end if
+			end if
+		end if
+	end if
+
+
+process Transponder [BUS_Transponder: in SIGNAL] (&g: STRUCT_GLOBAL, id: int) is
+states ON, Starting, OFF, Failed, Committed
+var 
+	restore: int, 
+	t_ON: int, 
+	event: SIGNAL, 
+	redundance: int 
+init restore := 0;
+t_ON := 0;
+event := {val_signal = 0, type_signal = 0};
+redundance := 2;
+/* ------------------------------------------------
+              
+-------------------------------------------------*/
+to OFF
+
+from ON
+	if (g.synD.ARO and (id = D)) then
+		g.varD.Transponder_isON := false;
+		to OFF
+	else 
+		if (g.synM.ARO and (id = M)) then
+			g.varM.Transponder_isON := false;
+			to OFF
+		else 
+			if (g.synD.Reconf_Order_fromAmpli and (id = D)) then
+				g.varD.Transponder_isON := false;
+				t_ON := 0;
+				redundance := (redundance - 1);
+				g.synD.Transponder_Failed := true;
+				to Failed
+			else 
+				if (g.synM.Reconf_Order_fromAmpli and (id = M)) then
+					g.varM.Transponder_isON := false;
+					t_ON := 0;
+					redundance := (redundance - 1);
+					g.synM.Transponder_Failed := true;
+					to Failed
+				else 
+					if true then
+						BUS_Transponder? event;
+						if ((event.val_signal = id) and (event.type_signal = Transponder_TFail)) then
+							t_ON := 0;
+							to Committed
+						else 
+							if ((event.val_signal = id) and (event.type_signal = Transponder_PFail)) then
+								t_ON := 0;
+								redundance := (redundance - 1);
+								to Committed
+							else 
+								null
+							end if
+						end if
+					end if;
+					/* ------------------------------------------------
+              
+-------------------------------------------------*/
+					to ON
+				end if
+			end if
+		end if
+	end if
+
+from Starting
+	if ((t_ON >= 120) and (id = D)) then
+		t_ON := 0;
+		g.varD.Transponder_isON := true;
+		to ON
+	else 
+		if ((t_ON >= 120) and (id = M)) then
+			t_ON := 0;
+			g.varM.Transponder_isON := true;
+			to ON
+		else 
+			if (g.synD.ARO and (id = D)) then
+				g.varD.Transponder_isON := false;
+				to OFF
+			else 
+				if (g.synM.ARO and (id = M)) then
+					g.varM.Transponder_isON := false;
+					to OFF
+				else 
+					/* ------------------------------------------------
+              
+-------------------------------------------------*/
+					to Starting
+				end if
+			end if
+		end if
+	end if
+
+from OFF
+	if (restore = 1) then
+		t_ON := 0;
+		restore := 0;
+		to Starting
+	else 
+		if ((g.synM.CmdCtrl_Auto_ON and (id = M)) or ((id = D) and g.synD.CmdCtrl_Auto_ON)) then
+			t_ON := 0;
+			to Starting
+		else 
+			/* ------------------------------------------------
+              
+-------------------------------------------------*/
+			to OFF
+		end if
+	end if
+
+from Committed
+	if (id = D) then
+		g.varD.Transponder_isON := false;
+		t_ON := 0;
+		g.synD.Transponder_Failed := true;
+		if (event.type_signal = Transponder_PFail) then
+			g.synD.Reconf_Order_fromTranspondeur := true
+		end if;
+		to Failed
+	else 
+		if (id = M) then
+			g.varM.Transponder_isON := false;
+			t_ON := 0;
+			g.synM.Transponder_Failed := true;
+			if (event.type_signal = Transponder_PFail) then
+				g.synM.Reconf_Order_fromTranspondeur := true
+			end if;
+			to Failed
+		else 
+			/* ------------------------------------------------
+              
+-------------------------------------------------*/
+			to Committed
+		end if
+	end if
+
+from Failed
+	if (((t_ON >= 90) and (redundance > 0)) and (id = D)) then
+		restore := 1;
+		g.varD.Transponder_isON := false;
+		to OFF
+	else 
+		if (((t_ON >= 90) and (redundance > 0)) and (id = M)) then
+			restore := 1;
+			g.varM.Transponder_isON := false;
+			to OFF
+		else 
+			if (((redundance > 0) and (id = D)) and g.synD.ARO) then
+				g.varD.Transponder_isON := false;
+				to OFF
+			else 
+				if (((redundance > 0) and (id = M)) and g.synM.ARO) then
+					g.varM.Transponder_isON := false;
+					to OFF
+				else 
+					/* ------------- Fin Transponder ----------------------*/
+					/*--------------------Fin--------------------*/
+					/*=============================================
+			Battery
+===============================================*/
+					/*--------------------Debut--------------------*/
+					to Failed
+				end if
+			end if
+		end if
+	end if
+
+
+process Battery [BUS_Battery: in SIGNAL] (&g: STRUCT_GLOBAL, id: int) is
+states ON, Failed, Committed_Faulty, Committed_Failed
+var 
+	t_ON: int, 
+	event: SIGNAL 
+init t_ON := 0;
+event := {val_signal = 0, type_signal = 0};
+/* ------------------------------------------------
+              
+-------------------------------------------------*/
+to ON
+
+from ON
+	BUS_Battery? event;
+	if (((event.val_signal = D) and (id = D)) and (event.type_signal = Battery_FailDischarged)) then
+		t_ON := 0;
+		to Committed_Faulty
+	else 
+		if ((event.val_signal = id) and (event.type_signal = Battery_FailParamConsist)) then
+			t_ON := 0;
+			to Committed_Failed
+		else 
+			/* ------------------------------------------------
+              
+-------------------------------------------------*/
+			to ON
+		end if
+	end if
+
+from Failed
+	if ((id = D) and (t_ON >= 1)) then
+		g.varD.Battery_isON := true;
+		to ON
+	else 
+		if ((id = M) and (t_ON >= 1)) then
+			g.varM.Battery_isON := true;
+			to ON
+		else 
+			/* ------------------------------------------------
+              
+-------------------------------------------------*/
+			to Failed
+		end if
+	end if
+
+from Committed_Failed
+	if ((id = D) and (event.val_signal = D)) then
+		g.varD.Battery_isON := false;
+		t_ON := 0;
+		g.synD.ARO := true;
+		to Failed
+	else 
+		if ((id = M) and (event.val_signal = M)) then
+			g.varM.Battery_isON := false;
+			t_ON := 0;
+			g.synM.ARO := true;
+			to Failed
+		else 
+			/* ------------------------------------------------
+              
+-------------------------------------------------*/
+			to Committed_Failed
+		end if
+	end if
+
+from Committed_Faulty
+	if ((id = D) and (event.val_signal = D)) then
+		g.varD.Battery_isON := false;
+		t_ON := 0;
+		g.synD.FDIR_ToPLSafe := true;
+		to Failed
+	else 
+		/* ------------- Fin Battery ----------------------*/
+		/*--------------------Fin--------------------*/
+		/*=============================================
+			Formation
+===============================================*/
+		/*--------------------Debut--------------------*/
+		to Committed_Faulty
+	end if
+
+
+process Formation (&g: STRUCT_GLOBAL, id: int) is
+states Launch, FreeFlying, SecuredFreeFlying, FormationAcq, CoarseFormation, FineFormation, Repointing, CollisionAvoidance
+var 
+	event: SIGNAL 
+init event := {val_signal = 0, type_signal = 0};
+/* ------------------------------------------------
+              
+-------------------------------------------------*/
+to Launch
+
+from Launch
+	if (((((id = D) and (g.varD.CmdCtrl_mode = 1)) and (g.varM.CmdCtrl_modeDelayed = 1)) and (g.varD.GNC_mode <> 4)) and (g.varD.Payload_mode = 1)) then
+		g.varD.Formation_mode := 1;
+		to FreeFlying
+	else 
+		if (((((id = M) and (g.varM.CmdCtrl_mode = 1)) and (g.varD.CmdCtrl_modeDelayed = 1)) and (g.varD.GNC_modeDelayed <> 4)) and (g.varD.Payload_modeDelayed = 1)) then
+			g.varM.Formation_mode := 1;
+			to FreeFlying
+		else 
+			/* ------------------------------------------------
+              
+-------------------------------------------------*/
+			to Launch
+		end if
+	end if
+
+from FreeFlying
+	if ((id = D) and g.synD.ARO) then
+		g.varD.Formation_mode := 0;
+		to Launch
+	else 
+		if ((id = M) and g.synM.ARO) then
+			g.varM.Formation_mode := 0;
+			to Launch
+		else 
+			if (((id = D) and g.synD.CAM) and (g.varD.SatSafeMode <> 1)) then
+				g.varD.Formation_mode := 6;
+				to CollisionAvoidance
+			else 
+				if (((id = M) and g.synM.CAM) and (g.varM.SatSafeMode <> 1)) then
+					g.varM.Formation_mode := 6;
+					to CollisionAvoidance
+				else 
+					if (((((id = D) and ((g.varD.CmdCtrl_mode = 1) and (g.varM.CmdCtrl_modeDelayed = 1))) and (g.varD.GNC_mode <> 4)) and (g.varD.Payload_mode = 1)) and (((g.varD.RF_mode = 2) or (g.varD.RF_mode = 3)) and ((g.varM.RF_modeDelayed = 2) or (g.varM.RF_modeDelayed = 3)))) then
+						g.varD.Formation_mode := 2;
+						to SecuredFreeFlying
+					else 
+						if (((((id = M) and ((g.varM.CmdCtrl_mode = 1) and (g.varD.CmdCtrl_modeDelayed = 1))) and (g.varD.GNC_modeDelayed <> 4)) and (g.varD.Payload_modeDelayed = 1)) and (((g.varD.RF_modeDelayed = 2) or (g.varD.RF_modeDelayed = 3)) and ((g.varM.RF_mode = 2) or (g.varM.RF_mode = 3)))) then
+							g.varM.Formation_mode := 2;
+							to SecuredFreeFlying
+						else 
+							/* ------------------------------------------------
+              
+-------------------------------------------------*/
+							to FreeFlying
+						end if
+					end if
+				end if
+			end if
+		end if
+	end if
+
+from SecuredFreeFlying
+	if ((id = D) and g.synD.ARO) then
+		g.varD.Formation_mode := 0;
+		to Launch
+	else 
+		if ((id = M) and g.synM.ARO) then
+			g.varM.Formation_mode := 0;
+			to Launch
+		else 
+			if (((id = D) and g.synD.CAM) and (g.varD.SatSafeMode <> 1)) then
+				g.varD.Formation_mode := 6;
+				to CollisionAvoidance
+			else 
+				if (((id = M) and g.synM.CAM) and (g.varM.SatSafeMode <> 1)) then
+					g.varM.Formation_mode := 6;
+					to CollisionAvoidance
+				else 
+					if ((id = D) and ((((((g.varD.GNC_mode = 2) or (g.varD.GNC_mode = 3)) and ((g.varM.GNC_modeDelayed = 2) or (g.varM.GNC_modeDelayed = 3))) and ((g.varD.CmdCtrl_mode = 2) and (g.varM.CmdCtrl_modeDelayed = 2))) and (g.varD.Payload_mode = 1)) and ((g.varD.RF_mode = 3) and (g.varM.RF_modeDelayed = 3)))) then
+						g.varD.Formation_mode := 3;
+						to FormationAcq
+					else 
+						if ((id = M) and ((((((g.varD.GNC_modeDelayed = 2) or (g.varD.GNC_modeDelayed = 3)) and ((g.varM.GNC_mode = 2) or (g.varM.GNC_mode = 3))) and ((g.varM.CmdCtrl_mode = 2) and (g.varD.CmdCtrl_modeDelayed = 2))) and (g.varD.Payload_modeDelayed = 1)) and ((g.varM.RF_mode = 3) and (g.varD.RF_modeDelayed = 3)))) then
+							g.varD.Formation_mode := 3;
+							to FormationAcq
+						else 
+							/* ------------------------------------------------
+              
+-------------------------------------------------*/
+							to SecuredFreeFlying
+						end if
+					end if
+				end if
+			end if
+		end if
+	end if
+
+from FormationAcq
+	if ((id = D) and g.synD.ARO) then
+		g.varD.Formation_mode := 0;
+		to Launch
+	else 
+		if ((id = M) and g.synM.ARO) then
+			g.varM.Formation_mode := 0;
+			to Launch
+		else 
+			if ((id = D) and g.synD.CAM) then
+				g.varD.Formation_mode := 6;
+				to CollisionAvoidance
+			else 
+				if ((id = M) and g.synM.CAM) then
+					g.varM.Formation_mode := 6;
+					to CollisionAvoidance
+				else 
+					if ((id = M) and (((((g.varD.GNC_modeDelayed = 4) and (g.varM.GNC_mode = 2)) and ((g.varD.CmdCtrl_modeDelayed = 2) and (g.varM.CmdCtrl_mode = 2))) and ((g.varD.Payload_mode = 1) or (g.varD.Payload_mode = 3))) and ((g.varD.RF_modeDelayed = 3) and (g.varM.RF_mode = 3)))) then
+						g.varD.Formation_mode := 4;
+						to CoarseFormation
+					else 
+						if ((id = D) and (((((g.varD.GNC_mode = 4) and (g.varM.GNC_modeDelayed = 2)) and ((g.varD.CmdCtrl_mode = 2) and (g.varM.CmdCtrl_modeDelayed = 2))) and ((g.varD.Payload_modeDelayed = 1) or (g.varD.Payload_modeDelayed = 3))) and ((g.varD.RF_mode = 3) and (g.varM.RF_modeDelayed = 3)))) then
+							g.varD.Formation_mode := 4;
+							to CoarseFormation
+						else 
+							/* ------------------------------------------------
+              
+-------------------------------------------------*/
+							to FormationAcq
+						end if
+					end if
+				end if
+			end if
+		end if
+	end if
+
+from CoarseFormation
+	if ((id = D) and g.synD.ARO) then
+		g.varD.Formation_mode := 0;
+		to Launch
+	else 
+		if ((id = M) and g.synM.ARO) then
+			g.varM.Formation_mode := 0;
+			to Launch
+		else 
+			if ((id = D) and g.synD.CAM) then
+				g.varD.Formation_mode := 6;
+				to CollisionAvoidance
+			else 
+				if ((id = M) and g.synM.CAM) then
+					g.varM.Formation_mode := 6;
+					to CollisionAvoidance
+				else 
+					if ((id = D) and (((((g.varD.GNC_mode = 4) and (g.varM.GNC_modeDelayed = 2)) and ((g.varD.CmdCtrl_mode = 2) and (g.varM.CmdCtrl_modeDelayed = 2))) and (g.varD.Payload_mode <> 0)) and ((g.varD.RF_mode = 3) and (g.varM.RF_modeDelayed = 3)))) then
+						g.varD.Formation_mode := 5;
+						to FineFormation
+					else 
+						if ((id = M) and (((((g.varD.GNC_modeDelayed = 4) and (g.varM.GNC_mode = 2)) and ((g.varM.CmdCtrl_mode = 2) and (g.varD.CmdCtrl_modeDelayed = 2))) and (g.varD.Payload_modeDelayed <> 0)) and ((g.varM.RF_mode = 3) and (g.varD.RF_modeDelayed = 3)))) then
+							g.varD.Formation_mode := 5;
+							to FineFormation
+						else 
+							/* ------------------------------------------------
+              
+-------------------------------------------------*/
+							to CoarseFormation
+						end if
+					end if
+				end if
+			end if
+		end if
+	end if
+
+from FineFormation
+	if ((id = D) and g.synD.ARO) then
+		g.varD.Formation_mode := 0;
+		to Launch
+	else 
+		if ((id = M) and g.synM.ARO) then
+			g.varM.Formation_mode := 0;
+			to Launch
+		else 
+			if ((id = D) and g.synD.CAM) then
+				g.varD.Formation_mode := 6;
+				to CollisionAvoidance
+			else 
+				if ((id = M) and g.synM.CAM) then
+					g.varM.Formation_mode := 6;
+					to CollisionAvoidance
+				else 
+					if ((id = D) and g.synD.LatSensSurveillance_Detected) then
+						g.varD.Formation_mode := 4;
+						to CoarseFormation
+					else 
+						if ((id = M) and g.synM.LatSensSurveillance_Detected) then
+							g.varD.Formation_mode := 4;
+							to CoarseFormation
+						else 
+							if ((id = D) and ((((((g.varD.GNC_mode = 2) or (g.varD.GNC_mode = 3)) and (g.varM.GNC_modeDelayed = 2)) and ((g.varD.CmdCtrl_mode = 2) and (g.varM.CmdCtrl_modeDelayed = 2))) and (g.varD.Payload_mode = 2)) and ((g.varD.RF_mode = 3) and (g.varM.RF_modeDelayed = 3)))) then
+								g.varD.Formation_mode := 6;
+								to Repointing
+							else 
+								if ((id = M) and ((((((g.varD.GNC_modeDelayed = 2) or (g.varD.GNC_modeDelayed = 3)) and (g.varM.GNC_mode = 2)) and ((g.varD.CmdCtrl_modeDelayed = 2) and (g.varM.CmdCtrl_mode = 2))) and (g.varD.Payload_modeDelayed = 2)) and ((g.varD.RF_modeDelayed = 3) and (g.varM.RF_mode = 3)))) then
+									g.varD.Formation_mode := 6;
+									to Repointing
+								else 
+									/* ------------------------------------------------
+              
+-------------------------------------------------*/
+									to FineFormation
+								end if
+							end if
+						end if
+					end if
+				end if
+			end if
+		end if
+	end if
+
+from CollisionAvoidance
+	if ((id = D) and g.synD.ARO) then
+		g.varD.Formation_mode := 0;
+		to Launch
+	else 
+		if ((id = M) and g.synM.ARO) then
+			g.varM.Formation_mode := 0;
+			to Launch
+		else 
+			if (((((id = D) and (g.varD.CmdCtrl_mode = 1)) and (g.varM.CmdCtrl_modeDelayed = 1)) and (g.varD.GNC_mode <> 4)) and (g.varD.Payload_mode = 1)) then
+				g.varD.Formation_mode := 1;
+				to FreeFlying
+			else 
+				if (((((id = M) and (g.varM.CmdCtrl_mode = 1)) and (g.varD.CmdCtrl_modeDelayed = 1)) and (g.varD.GNC_modeDelayed <> 4)) and (g.varD.Payload_modeDelayed = 1)) then
+					g.varM.Formation_mode := 1;
+					to FreeFlying
+				else 
+					/* ------------------------------------------------
+              
+-------------------------------------------------*/
+					to CollisionAvoidance
+				end if
+			end if
+		end if
+	end if
+
+from Repointing
+	if ((id = D) and g.synD.ARO) then
+		g.varD.Formation_mode := 0;
+		to Launch
+	else 
+		if ((id = M) and g.synM.ARO) then
+			g.varM.Formation_mode := 0;
+			to Launch
+		else 
+			if ((id = D) and g.synD.CAM) then
+				g.varD.Formation_mode := 6;
+				to CollisionAvoidance
+			else 
+				if ((id = M) and g.synM.CAM) then
+					g.varM.Formation_mode := 6;
+					to CollisionAvoidance
+				else 
+					if ((id = D) and (((((g.varD.GNC_mode = 4) and (g.varM.GNC_modeDelayed = 2)) and ((g.varD.CmdCtrl_mode = 2) and (g.varM.CmdCtrl_modeDelayed = 2))) and (g.varD.Payload_mode <> 0)) and ((g.varD.RF_mode = 3) and (g.varM.RF_modeDelayed = 3)))) then
+						g.varD.Formation_mode := 5;
+						to FormationAcq
+					else 
+						if ((id = M) and (((((g.varD.GNC_modeDelayed = 4) and (g.varM.GNC_mode = 2)) and ((g.varM.CmdCtrl_mode = 2) and (g.varD.CmdCtrl_modeDelayed = 2))) and (g.varD.Payload_modeDelayed <> 0)) and ((g.varM.RF_mode = 3) and (g.varD.RF_modeDelayed = 3)))) then
+							g.varD.Formation_mode := 5;
+							to FormationAcq
+						else 
+							if ((id = D) and g.synD.LatSensSurveillance_Detected) then
+								g.varD.Formation_mode := 4;
+								to CoarseFormation
+							else 
+								if ((id = M) and g.synM.LatSensSurveillance_Detected) then
+									g.varD.Formation_mode := 4;
+									to CoarseFormation
+								else 
+									/* ------------- Fin Formation ----------------------*/
+									/*--------------------Fin--------------------*/
+									/*=============================================
+			RF
+===============================================*/
+									/*--------------------Debut--------------------*/
+									to Repointing
+								end if
+							end if
+						end if
+					end if
+				end if
+			end if
+		end if
+	end if
+
+
+process RF (&g: STRUCT_GLOBAL, id: int) is
+states Acq, OFF, Coarse, Fine, Failed
+var 
+	t_ON: int, 
+	event: SIGNAL, 
+	restore: int, 
+	redundance: int 
+init t_ON := 0;
+event := {val_signal = 0, type_signal = 0};
+restore := 0;
+redundance := 2;
+/* ------------------------------------------------
+              
+-------------------------------------------------*/
+to OFF
+
+from OFF
+	if ((t_ON >= 1) and (id = D)) then
+		t_ON := 0;
+		g.varD.RF_mode := 1;
+		to Acq
+	else 
+		if ((t_ON >= 1) and (id = M)) then
+			t_ON := 0;
+			g.varM.RF_mode := 1;
+			to Acq
+		else 
+			/* ------------------------------------------------
+              
+-------------------------------------------------*/
+			to OFF
+		end if
+	end if
+
+from Acq
+	if ((t_ON >= 900) and (id = D)) then
+		g.varD.RF_mode := 2;
+		to Coarse
+	else 
+		if ((t_ON >= 900) and (id = M)) then
+			g.varM.RF_mode := 2;
+			to Coarse
+		else 
+			/* ------------------------------------------------
+              
+-------------------------------------------------*/
+			to Acq
+		end if
+	end if
+
+from Coarse
+	if ((restore = 1) and (id = D)) then
+		g.varD.RF_mode := 3;
+		restore := 0;
+		to Fine
+	else 
+		if ((restore = 1) and (id = M)) then
+			g.varM.RF_mode := 3;
+			restore := 0;
+			to Fine
+		else 
+			if (g.synD.GNC_ACM_ON and (id = D)) then
+				g.varD.RF_mode := 3;
+				to Fine
+			else 
+				if (g.synD.GNC_ACM_ON and (id = M)) then
+					g.varM.RF_mode := 3;
+					to Fine
+				else 
+					if (g.synD.Reconf_Order_fromEIU and (id = D)) then
+						g.varM.RF_mode := 4;
+						t_ON := 0;
+						redundance := (redundance - 1);
+						g.synD.RF_Failed := true;
+						to Failed
+					else 
+						if (g.synM.Reconf_Order_fromEIU and (id = M)) then
+							g.varM.RF_mode := 4;
+							t_ON := 0;
+							redundance := (redundance - 1);
+							g.synM.RF_Failed := true;
+							to Failed
+						else 
+							if (id = M) then
+								if g.synM.RF_TFail then
+									g.varM.RF_mode := 4;
+									t_ON := 0;
+									g.synM.RF_Failed := true;
+									to Failed
+								else 
+									if g.synM.RF_PFail then
+										g.varM.RF_mode := 4;
+										redundance := (redundance - 1);
+										t_ON := 0;
+										g.synM.Reconf_Order_toEIU := true;
+										g.synM.RF_Failed := true;
+										to Failed
+									else 
+										null
+									end if
+								end if
+							end if;
+							if (id = D) then
+								if g.synD.RF_TFail then
+									g.varD.RF_mode := 4;
+									t_ON := 0;
+									g.synD.RF_Failed := true;
+									to Failed
+								else 
+									if g.synD.RF_PFail then
+										g.varD.RF_mode := 4;
+										redundance := (redundance - 1);
+										t_ON := 0;
+										g.synD.Reconf_Order_toEIU := true;
+										g.synD.RF_Failed := true;
+										to Failed
+									else 
+										null
+									end if
+								end if
+							end if;
+							/* ------------------------------------------------
+              
+-------------------------------------------------*/
+							to Coarse
+						end if
+					end if
+				end if
+			end if
+		end if
+	end if
+
+from Fine
+	if (g.synD.Reconf_Order_fromEIU and (id = D)) then
+		g.varM.RF_mode := 4;
+		t_ON := 0;
+		redundance := (redundance - 1);
+		g.synD.RF_Failed := true;
+		to Failed
+	else 
+		if (g.synM.Reconf_Order_fromEIU and (id = M)) then
+			g.varM.RF_mode := 4;
+			t_ON := 0;
+			redundance := (redundance - 1);
+			g.synM.RF_Failed := true;
+			to Failed
+		else 
+			if (id = M) then
+				if g.synM.RF_TFail then
+					g.varM.RF_mode := 4;
+					t_ON := 0;
+					g.synM.RF_Failed := true;
+					to Failed
+				else 
+					if g.synM.RF_PFail then
+						g.varM.RF_mode := 4;
+						redundance := (redundance - 1);
+						t_ON := 0;
+						g.synM.Reconf_Order_toEIU := true;
+						g.synM.RF_Failed := true;
+						to Failed
+					else 
+						null
+					end if
+				end if
+			end if;
+			if (id = D) then
+				if g.synD.RF_TFail then
+					g.varD.RF_mode := 4;
+					t_ON := 0;
+					g.synD.RF_Failed := true;
+					to Failed
+				else 
+					if g.synD.RF_PFail then
+						g.varD.RF_mode := 4;
+						redundance := (redundance - 1);
+						t_ON := 0;
+						g.synD.Reconf_Order_toEIU := true;
+						g.synD.RF_Failed := true;
+						to Failed
+					else 
+						null
+					end if
+				end if
+			end if;
+			/* ------------------------------------------------
+              
+-------------------------------------------------*/
+			to Fine
+		end if
+	end if
+
+from Failed
+	if (((t_ON >= 400) and (redundance > 0)) and (id = D)) then
+		restore := 1;
+		g.varD.RF_mode := 0;
+		t_ON := 0;
+		to OFF
+	else 
+		if (((t_ON >= 400) and (redundance > 0)) and (id = M)) then
+			restore := 1;
+			g.varM.RF_mode := 0;
+			t_ON := 0;
+			to OFF
+		else 
+			/* ------------- Fin RF ----------------------*/
+			/*--------------------Fin--------------------*/
+			/*=============================================
+			IMU
+===============================================*/
+			/*--------------------Debut--------------------*/
+			to Failed
+		end if
+	end if
+
+
+process IMU [BUS_IMU: in SIGNAL] (&g: STRUCT_GLOBAL, id: int) is
+states OFF
+var 
+	restore: int, 
+	t_ON: int, 
+	event: SIGNAL, 
+	redundance: int 
+init restore := 0;
+t_ON := 0;
+event := {val_signal = 0, type_signal = 0};
+redundance := 2;
+/* ------------------------------------------------
+              
+-------------------------------------------------*/
+to OFF
+
+from OFF
+	BUS_IMU? event;
+	/* ------------- Fin IMU ----------------------*/
+	/*--------------------Fin--------------------*/
+	/*=============================================
+            Context
+===============================================*/
+	/*--------------------Debut--------------------*/
+	to OFF
+
+
+process Context (&to_context: fifo, &to_bus: fifo) is
+states running
+
+init to running
+
+from running
+	/* ------------- Fin Context ----------------------*/
+	/*--------------------Fin--------------------*/
+	/*=============================================
+            BUS		
+===============================================*/
+	/*--------------------Debut--------------------*/
+	to running
+
+
+process BUS [BUS_CmdCtrl: out SIGNAL, BUS_OBC: out SIGNAL, BUS_Battery: out SIGNAL, BUS_Ampli: out SIGNAL, BUS_EIU: out SIGNAL, BUS_GNC: out SIGNAL, BUS_IMU: out SIGNAL, BUS_ISL: out SIGNAL, BUS_PCDU: out SIGNAL, BUS_Payload: out SIGNAL, BUS_SAS: out SIGNAL, ISL_BUS: in SIGNAL, BUS_STR: out SIGNAL, BUS_System_Surveillance: out SIGNAL, BUS_Transponder: out SIGNAL] (&g: STRUCT_GLOBAL, &to_context: fifo, &to_bus: fifo) is
+states waitSignal, sendAmpli_PFail, sendAmpli_TFail, sendBattery_FailDischarged, sendBattery_FailParamConsist, sendIMU_PFail, sendIMU_TFail, sendOBC_PFail, sendOBC_TFail, sendPCDU_PFail, sendPCDU_TFail, sendSAS_PFail, sendSAS_TFail, sendSTR_PFail, sendSTR_TFail, sendSystem_Fail, sendTCM_GNC_toACM, sendTCM_GNC_toOCM, sendTC_CmdCtrl_toFormation, sendTC_EIU_ON, sendTC_OBC_ON, sendTC_PL_toOp, sendTransponder_PFail, sendTransponder_TFail
+var 
+	id: int, 
+	received: SIGNAL 
+init id := 0;
+received := {type_signal = NO_SIGNAL, val_signal = 0};
+to waitSignal
+
+from waitSignal
+	while ((not (empty to_bus)) and (received.type_signal = NO_SIGNAL)) do
+		received := (first to_bus);
+		to_bus := (dequeue to_bus)
+		end while;
+	if (received.type_signal = TC_CmdCtrl_toFormation) then
+		to sendTC_CmdCtrl_toFormation
+	else 
+		if (received.type_signal = Ampli_PFail) then
+			to sendAmpli_PFail
+		else 
+			if (received.type_signal = Ampli_TFail) then
+				to sendAmpli_TFail
+			else 
+				if (received.type_signal = Battery_FailDischarged) then
+					to sendBattery_FailDischarged
+				else 
+					if (received.type_signal = Battery_FailParamConsist) then
+						to sendBattery_FailParamConsist
+					else 
+						if (received.type_signal = IMU_PFail) then
+							to sendIMU_PFail
+						else 
+							if (received.type_signal = IMU_TFail) then
+								to sendIMU_TFail
+							else 
+								if (received.type_signal = OBC_PFail) then
+									to sendOBC_PFail
+								else 
+									if (received.type_signal = OBC_TFail) then
+										to sendOBC_TFail
+									else 
+										if (received.type_signal = PCDU_PFail) then
+											to sendPCDU_PFail
+										else 
+											if (received.type_signal = PCDU_TFail) then
+												to sendPCDU_TFail
+											else 
+												if (received.type_signal = SAS_PFail) then
+													to sendSAS_PFail
+												else 
+													if (received.type_signal = SAS_TFail) then
+														to sendSAS_TFail
+													else 
+														if (received.type_signal = STR_PFail) then
+															to sendSTR_PFail
+														else 
+															if (received.type_signal = STR_TFail) then
+																to sendSTR_TFail
+															else 
+																if (received.type_signal = System_Fail) then
+																	to sendSystem_Fail
+																else 
+																	if (received.type_signal = TCM_GNC_toACM) then
+																		to sendTCM_GNC_toACM
+																	else 
+																		if (received.type_signal = TCM_GNC_toOCM) then
+																			to sendTCM_GNC_toOCM
+																		else 
+																			if (received.type_signal = TC_EIU_ON) then
+																				to sendTC_EIU_ON
+																			else 
+																				if (received.type_signal = TC_OBC_ON) then
+																					to sendTC_OBC_ON
+																				else 
+																					if (received.type_signal = TC_PL_toOp) then
+																						to sendTC_PL_toOp
+																					else 
+																						if (received.type_signal = Transponder_PFail) then
+																							to sendTransponder_PFail
+																						else 
+																							if (received.type_signal = Transponder_TFail) then
+																								to sendTransponder_TFail
+																							else 
+																								to waitSignal
+																							end if
+																						end if
+																					end if
+																				end if
+																			end if
+																		end if
+																	end if
+																end if
+															end if
+														end if
+													end if
+												end if
+											end if
+										end if
+									end if
+								end if
+							end if
+						end if
+					end if
+				end if
+			end if
+		end if
+	end if
+
+from sendTC_CmdCtrl_toFormation
+	BUS_IMU! received;
+	received.type_signal := NO_SIGNAL;
+	to waitSignal
+
+from sendTC_OBC_ON
+	BUS_GNC! received;
+	received.type_signal := NO_SIGNAL;
+	to waitSignal
+
+from sendOBC_PFail
+	BUS_GNC! received;
+	received.type_signal := NO_SIGNAL;
+	to waitSignal
+
+from sendOBC_TFail
+	BUS_GNC! received;
+	received.type_signal := NO_SIGNAL;
+	to waitSignal
+
+from sendAmpli_PFail
+	BUS_OBC! received;
+	received.type_signal := NO_SIGNAL;
+	to waitSignal
+
+from sendAmpli_TFail
+	BUS_OBC! received;
+	received.type_signal := NO_SIGNAL;
+	to waitSignal
+
+from sendBattery_FailDischarged
+	BUS_Ampli! received;
+	received.type_signal := NO_SIGNAL;
+	to waitSignal
+
+from sendBattery_FailParamConsist
+	BUS_Ampli! received;
+	received.type_signal := NO_SIGNAL;
+	to waitSignal
+
+from sendTCM_GNC_toACM
+	BUS_Battery! received;
+	received.type_signal := NO_SIGNAL;
+	to waitSignal
+
+from sendTCM_GNC_toOCM
+	BUS_GNC! received;
+	received.type_signal := NO_SIGNAL;
+	to waitSignal
+
+from sendTC_EIU_ON
+	BUS_EIU! received;
+	received.type_signal := NO_SIGNAL;
+	to waitSignal
+
+from sendTC_PL_toOp
+	BUS_Payload! received;
+	received.type_signal := NO_SIGNAL;
+	to waitSignal
+
+from sendPCDU_PFail
+	BUS_PCDU! received;
+	received.type_signal := NO_SIGNAL;
+	to waitSignal
+
+from sendPCDU_TFail
+	BUS_PCDU! received;
+	received.type_signal := NO_SIGNAL;
+	to waitSignal
+
+from sendSAS_PFail
+	BUS_SAS! received;
+	received.type_signal := NO_SIGNAL;
+	to waitSignal
+
+from sendSAS_TFail
+	BUS_SAS! received;
+	received.type_signal := NO_SIGNAL;
+	to waitSignal
+
+from sendSTR_PFail
+	BUS_STR! received;
+	received.type_signal := NO_SIGNAL;
+	to waitSignal
+
+from sendSTR_TFail
+	BUS_STR! received;
+	received.type_signal := NO_SIGNAL;
+	to waitSignal
+
+from sendTransponder_PFail
+	BUS_Transponder! received;
+	received.type_signal := NO_SIGNAL;
+	to waitSignal
+
+from sendTransponder_TFail
+	BUS_Transponder! received;
+	received.type_signal := NO_SIGNAL;
+	to waitSignal
+
+from sendSystem_Fail
+	BUS_System_Surveillance! received;
+	received.type_signal := NO_SIGNAL;
+	to waitSignal
+
+from sendIMU_PFail
+	BUS_IMU! received;
+	received.type_signal := NO_SIGNAL;
+	to waitSignal
+
+from sendIMU_TFail
+	BUS_IMU! received;
+	received.type_signal := NO_SIGNAL;
+	/* ------------- Fin BUS ----------------------*/
+	/*--------------------Fin--------------------*/
+	/*=============================================
+            Composant a valider
+===============================================*/
+	/*--------------------Debut--------------------*/
+	to waitSignal
+
+
+component main is
+var 
+	
+	g: STRUCT_GLOBAL, 
+	
+	ToBus: fifo, 
+	
+	ToContext: fifo
+
+port 
+	BUS_CmdCtrl: in out SIGNAL, 
+	BUS_OBC: in out SIGNAL, 
+	BUS_Battery: in out SIGNAL, 
+	BUS_Ampli: in out SIGNAL, 
+	BUS_EIU: in out SIGNAL, 
+	BUS_ISL: in out SIGNAL, 
+	BUS_IMU: in out SIGNAL, 
+	BUS_PCDU: in out SIGNAL, 
+	BUS_Payload: in out SIGNAL, 
+	BUS_SAS: in out SIGNAL, 
+	BUS_STR: in out SIGNAL, 
+	BUS_System_Surveillance: in out SIGNAL, 
+	BUS_Transponder: in out SIGNAL, 
+	BUS_GNC: in out SIGNAL, 
+	ISL_BUS: in out SIGNAL
+
+init ToBus := {||};
+ToContext := {||};
+/* Broadcast */
+/* Broadcast */
+/* need global var for redundancies of ChemProp, GasProp, 
+			EIU for visibility to Relative Position Surveillance */
+/* check equipments are ON */
+/* check Sat in safe mode */
+/* notify equipment failures to trigger transition to degraded mode */
+/* formation or not (necessary to know if the TCs are going through the ISL) */
+/* for surveillances --> notify failure */
+/* avoid sending twice the same TC
+			(possible since we have intermediate modes that are not numbered) */
+/* need global var for redundancies of ChemProp, GasProp, 
+			EIU for visibility to Relative Position Surveillance */
+/* check equipments are ON */
+/* check Sat in safe mode */
+/* notify equipment failures to trigger transition to degraded mode */
+/* formation or not (necessary to know if the TCs are going through the ISL) */
+/* for surveillances --> notify failure */
+/* avoid sending twice the same TC
+			(possible since we have intermediate modes that are not numbered) */
+/*--------------------Fin--------------------*/
+g := {synD = {GNC_ASM_ON = false, GNC_ACM_ON = false, GNC_OCM_ON = false, GNC_FCM_ON = false, ARO = false, CAM = false, CmdCtrl_Auto_ON = false, Transponder_Failed = false, Ampli_Failed = false, ChemProp_Failed = false, SAS_Failed = false, IMU_Failed = false, STR_Failed = false, GasProp_Failed = false, RF_Failed = false, LatSens_Failed = false, FDIR_ToPLSafe = false, Reconf_Order_fromTranspondeur = false, Reconf_Order_fromEIU = false, Reconf_Order_toEIU = false, Reconf_Order_fromAmpli = false, LatSensSurveillance_Detected = false, TC_GNC_toFCM = false, ChemProp_TFail = false, ChemProp_PFail = false, GasProp_TFail = false, GasProp_PFail = false, RF_TFail = false, RF_PFail = false, EIU_TFail = false, EIU_PFail = false, LatSens_TFail = false, LatSens_PFail = false}, synM = {GNC_ASM_ON = false, GNC_ACM_ON = false, GNC_OCM_ON = false, GNC_FCM_ON = false, ARO = false, CAM = false, CmdCtrl_Auto_ON = false, Transponder_Failed = false, Ampli_Failed = false, ChemProp_Failed = false, SAS_Failed = false, IMU_Failed = false, STR_Failed = false, GasProp_Failed = false, RF_Failed = false, LatSens_Failed = false, FDIR_ToPLSafe = false, Reconf_Order_fromTranspondeur = false, Reconf_Order_fromEIU = false, Reconf_Order_toEIU = false, Reconf_Order_fromAmpli = false, LatSensSurveillance_Detected = false, TC_GNC_toFCM = false, ChemProp_TFail = false, ChemProp_PFail = false, GasProp_TFail = false, GasProp_PFail = false, RF_TFail = false, RF_PFail = false, EIU_TFail = false, EIU_PFail = false, LatSens_TFail = false, LatSens_PFail = false}, varD = {id = D, EIU_redundance = 2, ChemProp_redundance = 2, GasProp_redundance = 2, GNC_mode = 0, GNC_modeDelayed = 0, CmdCtrl_mode = 0, CmdCtrl_modeDelayed = 0, Payload_mode = 0, Payload_modeDelayed = 0, RF_mode = 0, RF_modeDelayed = 0, Formation_mode = 0, ChemProp_isON = false, IMU_isON = false, STR_isON = false, SAS_isON = true, OBC_isON = true, Battery_isON = true, EIU_isON = true, PCDU_isON = true, GasProp_isON = false, LatSens_isON = false, Transponder_isON = false, Ampli_isON = false, SatSafeMode = 0, SatSafeModeDelayed = 0, RFSurveillance_Detected = false, CmdCtrl_isFormation = false, EIU_isFailed = false, GNC_toACM_engaged = false, GNC_toOCM_engaged = false, GNC_toFCM_engaged = false}, varM = {id = M, EIU_redundance = 2, ChemProp_redundance = 2, GasProp_redundance = 2, GNC_mode = 0, GNC_modeDelayed = 0, CmdCtrl_mode = 0, CmdCtrl_modeDelayed = 0, Payload_mode = 0, Payload_modeDelayed = 0, RF_mode = 0, RF_modeDelayed = 0, Formation_mode = 0, ChemProp_isON = false, IMU_isON = false, STR_isON = false, SAS_isON = true, OBC_isON = true, Battery_isON = true, EIU_isON = true, PCDU_isON = true, GasProp_isON = false, LatSens_isON = false, Transponder_isON = false, Ampli_isON = false, SatSafeMode = 0, SatSafeModeDelayed = 0, RFSurveillance_Detected = false, CmdCtrl_isFormation = false, EIU_isFailed = false, GNC_toACM_engaged = false, GNC_toOCM_engaged = false, GNC_toFCM_engaged = false}}
+par 
+	BUS_CmdCtrl -> CmdCtrl[BUS_CmdCtrl] (&g, D) 
+	 || BUS_CmdCtrl -> CmdCtrl[BUS_CmdCtrl] (&g, M) 
+	 || BUS_OBC -> OBC[BUS_OBC] (&g, D) 
+	 || BUS_OBC -> OBC[BUS_OBC] (&g, M) 
+	 || BUS_Ampli -> Ampli[BUS_Ampli] (&g, D) 
+	 || BUS_Ampli -> Ampli[BUS_Ampli] (&g, M) 
+	 || BUS_Battery -> Battery[BUS_Battery] (&g, D) 
+	 || BUS_Battery -> Battery[BUS_Battery] (&g, M) 
+	 || ChemProp(&g, D) 
+	 || ChemProp(&g, M) 
+	 || BUS_EIU -> EIU[BUS_EIU] (&g, D) 
+	 || BUS_EIU -> EIU[BUS_EIU] (&g, M) 
+	 || Formation(&g, D) 
+	 || Formation(&g, M) 
+	 || BUS_GNC -> GNC[BUS_GNC] (&g, D) 
+	 || BUS_GNC -> GNC[BUS_GNC] (&g, M) 
+	 || GasProp(&g, D) 
+	 || BUS_IMU -> IMU[BUS_IMU] (&g, D) 
+	 || BUS_IMU -> IMU[BUS_IMU] (&g, M) 
+	 || BUS_ISL, ISL_BUS -> ISL[BUS_ISL, ISL_BUS] (&g) 
+	 || LatSensSurveillance(&g) 
+	 || LatSens_DSC(&g, D) 
+	 || BUS_PCDU -> PCDU[BUS_PCDU] (&g, D) 
+	 || BUS_PCDU -> PCDU[BUS_PCDU] (&g, M) 
+	 || BUS_Payload -> Payload[BUS_Payload] (&g) 
+	 || ProximitySurveillance(&g, D) 
+	 || ProximitySurveillance(&g, M) 
+	 || RF(&g, D) 
+	 || RF(&g, M) 
+	 || RF_Surveillance(&g) 
+	 || RelPosSurveillance_DSC(&g) 
+	 || RelPosSurveillance_MSC(&g) 
+	 || BUS_SAS -> SAS[BUS_SAS] (&g, D) 
+	 || BUS_SAS -> SAS[BUS_SAS] (&g, M) 
+	 || BUS_STR -> STR[BUS_STR] (&g, D) 
+	 || BUS_STR -> STR[BUS_STR] (&g, M) 
+	 || Satellite_DSC(&g) 
+	 || Satellite_MSC(&g) 
+	 || BUS_System_Surveillance -> System_Surveillance[BUS_System_Surveillance] (&g, D) 
+	 || BUS_System_Surveillance -> System_Surveillance[BUS_System_Surveillance] (&g, M) 
+	 || BUS_Transponder -> Transponder[BUS_Transponder] (&g, D) 
+	 || BUS_Transponder -> Transponder[BUS_Transponder] (&g, M) 
+	 || BUS_CmdCtrl, BUS_OBC, BUS_Battery, BUS_Ampli, BUS_GNC, BUS_ISL, BUS_STR, BUS_PCDU, BUS_SAS, ISL_BUS, BUS_Payload, BUS_IMU, BUS_EIU, BUS_System_Surveillance, BUS_Transponder -> BUS[BUS_CmdCtrl, BUS_OBC, BUS_Battery, BUS_Ampli, BUS_GNC, BUS_ISL, BUS_STR, BUS_PCDU, BUS_SAS, ISL_BUS, BUS_Payload, BUS_IMU, BUS_EIU, BUS_System_Surveillance, BUS_Transponder] (&g, &ToContext, &ToBus) 
+	 || Context(&ToContext, &ToBus) 
+end par
+
+
+main

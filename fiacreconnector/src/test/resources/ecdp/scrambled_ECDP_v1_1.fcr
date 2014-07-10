@@ -1,0 +1,500 @@
+const c0: nat is 2
+const c1: nat is 5
+const c2: nat is 2
+type t3 is 0..(c0 - 1)
+
+const c4: nat is 5
+type t5 is 0..(c4 - 1)
+
+const c6: t5 is 0
+const c7: t5 is 1
+const c8: t5 is 2
+const c9: t5 is 3
+const c10: t5 is 4
+type t11 is array c4 of bool
+
+const c12: t11 is [false, false, false, false, false]
+const c13: nat is 4
+type t14 is 0..(c13 - 1)
+
+const c15: t14 is 0
+const c16: t14 is 1
+const c17: t14 is 2
+const c18: t14 is 3
+type t19 is array c13 of bool
+
+const c20: t19 is [false, false, false, false]
+type t21 is (- 1)..(c13 - 1)
+
+const c22: t21 is (- 1)
+type t23 is record 
+	fe24: bool
+	, fe25: bool end record
+
+const c26: t23 is {fe24 = true, fe25 = false}
+const c27: t23 is {fe24 = false, fe25 = false}
+const c28: t23 is {fe24 = true, fe25 = true}
+const c29: t23 is {fe24 = false, fe25 = true}
+const c30: nat is 6
+type t31 is 0..(c30 - 1)
+
+const c32: t31 is 0
+const c33: t31 is 1
+const c34: t31 is 2
+const c35: t31 is 3
+const c36: t31 is 4
+const c37: t31 is 5
+type t38 is array c30 of bool
+
+const c39: t38 is [false, false, false, false, false, false]
+type t40 is union co41| co42| co43 end union
+
+type t44 is record 
+	fe45: t3
+	, fe46: t40 end record
+
+const c47: t44 is {fe45 = 0, fe46 = co41}
+type t48 is record 
+	fe45: t3
+	, fe49: t5 end record
+
+const c50: t48 is {fe45 = 0, fe49 = 0}
+type t51 is record 
+	fe45: t3
+	, fe52: t14 end record
+
+const c53: t51 is {fe45 = 0, fe52 = 0}
+type t54 is union co55| co56 of t44| co57 of t3| co58 of t48| co59 of t51| co60 of t3| co61 of t3 end union
+
+type t62 is record 
+	fe63: t31
+	, fe64: bool end record
+
+const c65: t62 is {fe63 = 0, fe64 = false}
+type t66 is union co67| co68 of bool| co69 of t62| co70 of t11| co71 of t19 end union
+
+type t72 is queue c2 of t54
+
+type t73 is queue c1 of t66
+
+type t74 is array c0 of t73
+
+type t75 is record 
+	fe76: t19
+	, fe77: t11
+	, fe52: t21
+	, fe78: bool end record
+
+const c79: t75 is {fe76 = c20, fe52 = c22, fe77 = c12, fe78 = false}
+type t80 is array c0 of t75
+
+const c81: t11 is [true, true, true, true, true]
+const c82: array c4 of t19 is [[true, false, false, false], [false, true, false, false], [false, false, true, true], [false, false, true, false], [false, false, false, true]]
+process proc83 (v84: t3, v85: t23, &v86: t74, &v87: t72) is
+states s88, s89
+var 
+	/* locals (value should always be reset after use to avoid configuration duplication) */
+	v90: t66, 
+	v91: bool, 
+	v92: t62, 
+	/* globals */
+	v93: t11, 
+	v94: t19, 
+	v95: bool, 
+	v96: t38 
+init v90 := co67;
+v91 := false;
+v92 := c65;
+v93 := c12;
+v94 := c20;
+v95 := false;
+v96 := c39;
+to s88
+
+from s88
+	if (not (empty v86[v84])) then
+		/* Read and discard next input if any */
+		v90 := (first v86[v84]);
+		case v90 of
+		co69 (v92) -> /* Update allowed commands accordingly */
+			v96[v92.fe63] := v92.fe64;
+			if ((v92.fe63 = c34) and (not v92.fe64)) then
+				/* Fixes to avoid useless state duplication */
+				v93 := c12
+			else 
+				if ((v92.fe63 = c35) and (not v92.fe64)) then
+					v94 := c20
+				end if
+			end if;
+			/* Update allowed missions accordingly (done simply by matching) */
+			v92 := c65
+		| co70 (v93) -> /* Update allowed roles accordingly (done simply by matching) */
+			null
+		| co71 (v94) -> /* If anything else, don't do a thing (message still will be discarded) */
+			null
+		| any -> null
+		end case;
+		v86[v84] := (dequeue v86[v84]);
+		/* If no input, send or not a command to the session manager */
+		v90 := co67
+	else 
+		if (not (full v87)) then
+			select
+				if (v85.fe25 or v96[c32]) then
+					select
+						/* Login */
+						v87 := (enqueue(v87, co56 ({fe45 = v84, fe46 = co41})))
+					[]
+						v87 := (enqueue(v87, co56 ({fe45 = v84, fe46 = co42})))
+					[]
+						v87 := (enqueue(v87, co56 ({fe45 = v84, fe46 = co43})))
+					end select;
+					if (not v85.fe25) then
+						v95 := true
+					end if
+				end if
+			[]
+				if (v85.fe25 or v96[c33]) then
+					/* Logout */
+					v87 := (enqueue(v87, co57 (v84)));
+					if (not v85.fe25) then
+						v95 := true
+					end if
+				end if
+			[]
+				if (v85.fe25 or v96[c34]) then
+					select
+						if (v85.fe25 or v93[c6]) then
+							/* Request a mission */
+							v87 := (enqueue(v87, co58 ({fe45 = v84, fe49 = c6})));
+							if (not v85.fe25) then
+								v95 := true
+							end if
+						end if
+					[]
+						if (v85.fe25 or v93[c7]) then
+							v87 := (enqueue(v87, co58 ({fe45 = v84, fe49 = c7})));
+							if (not v85.fe25) then
+								v95 := true
+							end if
+						end if
+					[]
+						if (v85.fe25 or v93[c8]) then
+							v87 := (enqueue(v87, co58 ({fe45 = v84, fe49 = c8})));
+							if (not v85.fe25) then
+								v95 := true
+							end if
+						end if
+					[]
+						if (v85.fe25 or v93[c9]) then
+							v87 := (enqueue(v87, co58 ({fe45 = v84, fe49 = c9})));
+							if (not v85.fe25) then
+								v95 := true
+							end if
+						end if
+					[]
+						if (v85.fe25 or v93[c10]) then
+							v87 := (enqueue(v87, co58 ({fe45 = v84, fe49 = c10})));
+							if (not v85.fe25) then
+								v95 := true
+							end if
+						end if
+					end select
+				end if
+			[]
+				if (v85.fe25 or v96[c35]) then
+					select
+						if (v85.fe25 or v94[c15]) then
+							/* Request a role */
+							v87 := (enqueue(v87, co59 ({fe45 = v84, fe52 = c15})));
+							if (not v85.fe25) then
+								v95 := true
+							end if
+						end if
+					[]
+						if (v85.fe25 or v94[c16]) then
+							v87 := (enqueue(v87, co59 ({fe45 = v84, fe52 = c16})));
+							if (not v85.fe25) then
+								v95 := true
+							end if
+						end if
+					[]
+						if (v85.fe25 or v94[c17]) then
+							v87 := (enqueue(v87, co59 ({fe45 = v84, fe52 = c17})));
+							if (not v85.fe25) then
+								v95 := true
+							end if
+						end if
+					[]
+						if (v85.fe25 or v94[c18]) then
+							v87 := (enqueue(v87, co59 ({fe45 = v84, fe52 = c18})));
+							if (not v85.fe25) then
+								v95 := true
+							end if
+						end if
+					end select
+				end if
+			[]
+				if (v85.fe25 or v96[c36]) then
+					/* Request mission to start */
+					v87 := (enqueue(v87, co60 (v84)));
+					if (not v85.fe25) then
+						v95 := true
+					end if
+				end if
+			[]
+				if (v85.fe25 or v96[c37]) then
+					/* Stop the mission */
+					v87 := (enqueue(v87, co61 (v84)));
+					if (not v85.fe25) then
+						v95 := true
+					end if
+				end if
+			[]
+				/* Nothing */
+				null
+			end select
+		end if
+	end if;
+	case v95 of
+	true -> /* Pick the next state */
+		to s89
+	| false -> to s88
+	end case
+
+from s89
+	if (not (empty v86[v84])) then
+		/* Read and discard next input if any */
+		v90 := (first v86[v84]);
+		case v90 of
+		co68 (v91) -> /* Don't wait for an acknowledgement anymore */
+			v95 := false;
+			/* If anything else, don't do a thing (message still will be discarded) */
+			v91 := false
+		| any -> null
+		end case;
+		v86[v84] := (dequeue v86[v84]);
+		v90 := co67
+	end if;
+	/* Session Manager
+*****************/
+	case v95 of
+	true -> /* Pick the next state */
+		to s89
+	| false -> to s88
+	end case
+
+
+type t97 is union co98| co99| co100| co101| co102 end union
+
+process proc103 (v104: t80, &v105: t72, &v106: t74) is
+states s107, s108, s109, s110, s111, s112
+var 
+	/* See notes in the header about this state */
+	/* locals (value should always be reset after use to avoid configuration duplication) */
+	v113: t3, 
+	v114: t5, 
+	v115: t14, 
+	v116: bool, 
+	v117: t54, 
+	v118: t44, 
+	v119: t48, 
+	v120: t51, 
+	v121: bool, 
+	v122: t19, 
+	/* globals */
+	v123: t5, 
+	v124: t19, 
+	v125: t97 
+init v113 := 0;
+v114 := 0;
+v115 := 0;
+v116 := false;
+v117 := co55;
+v118 := c47;
+v119 := c50;
+v120 := c53;
+v121 := false;
+v122 := c20;
+v123 := 0;
+v124 := c20;
+v125 := co98;
+to s107
+
+from s107
+	foreach v113 do
+		/* Allow operators to login (broadcast) and initialize allowed missions (variable) */
+		/* Note: assumes operators (consoles) are offline and have all command disabled */
+		v106[v113] := (enqueue(v106[v113], co69 ({fe63 = c32, fe64 = true})));
+		foreach v114 do
+			v104[v113].fe77[v114] := false;
+			if c81[v114] then
+				foreach v115 do
+					if (v104[v113].fe76[v115] and c82[v114][v115]) then
+						v104[v113].fe77[v114] := true
+					end if
+				end foreach;
+				v115 := 0
+			end if
+		end foreach;
+		v114 := 0
+	end foreach;
+	v113 := 0;
+	/* Pick the next state */
+	v125 := co99;
+	to s108
+
+from s108
+	if (not (empty v105)) then
+		/* Read and discard next input if any */
+		v117 := (first v105);
+		case v117 of
+		co56 (v118) -> /* Login requested, keep in mind the same code can be found in some other state */
+			v113 := v118.fe45;
+			case v118.fe46 of
+			co41 -> v106[v113] := (enqueue(v106[v113], co68 (true)));
+				v106[v113] := (enqueue(v106[v113], co70 (v104[v113].fe77)));
+				v106[v113] := (enqueue(v106[v113], co69 ({fe63 = c33, fe64 = true})));
+				v106[v113] := (enqueue(v106[v113], co69 ({fe63 = c34, fe64 = true})));
+				v106[v113] := (enqueue(v106[v113], co69 ({fe63 = c32, fe64 = false})));
+				v104[v113].fe78 := true;
+				v125 := co100
+			| co42 -> v121 := true
+			| co43 -> v121 := true
+			end case;
+			/* If anything else, deny */
+			v118 := c47
+		| co57 (v113) -> v121 := true
+		| co58 (v119) -> v113 := v119.fe45;
+			v119 := c50;
+			v121 := true
+		| co59 (v120) -> v113 := v120.fe45;
+			v120 := c53;
+			v121 := true
+		| co60 (v113) -> v121 := true
+		| co61 (v113) -> v121 := true
+		end case;
+		if v121 then
+			v106[v113] := (enqueue(v106[v113], co68 (false)))
+		end if;
+		v121 := false;
+		v113 := 0;
+		v105 := (dequeue v105);
+		v117 := co55
+	end if;
+	case v125 of
+	co100 -> /* Pick the next state */
+		to s109
+	| any -> to s108
+	end case
+
+from s109
+	if (not (empty v105)) then
+		/* Read and discard next input if any */
+		v117 := (first v105);
+		case v117 of
+		co56 (v118) -> /* Login requested, keep in mind the same code can be found in some other state */
+			v113 := v118.fe45;
+			case v118.fe46 of
+			co41 -> v106[v113] := (enqueue(v106[v113], co68 (true)));
+				v106[v113] := (enqueue(v106[v113], co70 (v104[v113].fe77)));
+				v106[v113] := (enqueue(v106[v113], co69 ({fe63 = c33, fe64 = true})));
+				v106[v113] := (enqueue(v106[v113], co69 ({fe63 = c34, fe64 = true})));
+				v106[v113] := (enqueue(v106[v113], co69 ({fe63 = c32, fe64 = false})));
+				v104[v113].fe78 := true
+			| co42 -> v121 := true
+			| co43 -> v121 := true
+			end case;
+			/* Logout requested */
+			v118 := c47
+		| co57 (v113) -> if v104[v113].fe78 then
+				v106[v113] := (enqueue(v106[v113], co68 (true)));
+				v106[v113] := (enqueue(v106[v113], co69 ({fe63 = c33, fe64 = false})));
+				v106[v113] := (enqueue(v106[v113], co69 ({fe63 = c34, fe64 = false})));
+				v106[v113] := (enqueue(v106[v113], co69 ({fe63 = c32, fe64 = true})));
+				v104[v113].fe78 := false;
+				v125 := co99;
+				foreach v113 do
+					if v104[v113].fe78 then
+						v125 := co100
+					end if
+				end foreach
+			end if
+		| co58 (v119) -> v113 := v119.fe45;
+			v114 := v119.fe49;
+			v119 := c50;
+			/* If anything else, deny */
+			if v104[v113].fe77[v114] then
+				v123 := v114;
+				v106[v113] := (enqueue(v106[v113], co68 (true)));
+				v124 := c82[v114];
+				foreach v115 do
+					v122[v115] := (v104[v113].fe76[v115] and v124[v115])
+				end foreach;
+				v115 := 0;
+				v106[v113] := (enqueue(v106[v113], co71 (v122)));
+				v106[v113] := (enqueue(v106[v113], co69 ({fe63 = c34, fe64 = false})));
+				v106[v113] := (enqueue(v106[v113], co69 ({fe63 = c35, fe64 = true})));
+				v125 := co101
+			else 
+				v121 := true
+			end if
+		| co59 (v120) -> v113 := v120.fe45;
+			v120 := c53;
+			v121 := true
+		| co60 (v113) -> v121 := true
+		| co61 (v113) -> v121 := true
+		end case;
+		if v121 then
+			v106[v113] := (enqueue(v106[v113], co68 (false)))
+		end if;
+		v121 := false;
+		v113 := 0;
+		v114 := 0;
+		v122 := c20;
+		v117 := co55;
+		v105 := (dequeue v105)
+	end if;
+	/***************
+* Main component
+***************/
+	case v125 of
+	co99 -> /* Pick the next state */
+		to s108
+	| co101 -> to s110
+	| any -> to s109
+	end case
+
+
+component comp126 is
+var 
+	
+	v127: t3, 
+	
+	v128: t72, 
+	
+	v129: t74, 
+	
+	v130: t11, 
+	
+	v131: t19, 
+	
+	v132: t80
+
+init v128 := {||};
+foreach v127 do
+	v129[v127] := {||};
+	v132[v127] := c79
+end foreach;
+foreach v127 do
+	/* The following is part of the context */
+	v132[v127].fe76 := [true, true, true, true]
+end foreach
+par 
+	proc83(0, c26, &v129, &v128) 
+	 || proc83(1, c26, &v129, &v128) 
+	 || proc103(v132, &v128, &v129) 
+end par
+
+
+comp126

@@ -1,0 +1,369 @@
+/* notes:
+- current version force operator to have an empty input before sending anything. Is it reasonable?
+- Something seems off with the current mission/role settings.
++ On the same note, current implementation forces exactly one operator for each role. Might not be a correct behavior.
+- Need stop mission in preparation state
+- variable currentMission currently isn't used
+- Because our fifos have limited size, some configurations aren't reachable. That's what the outOfScope state is used for.
+*/
+
+/******************** 
+* Topology & Settings
+********************/
+
+/* Don't forget to add/remove instance(s) of the operator process and allowed roles */
+const NB_OPERATOR: nat is 2
+
+/* As of date, session manager can send up to 5 messages at the same time */
+const OP_FIFO_SIZE: nat is 5
+
+const SM_FIFO_SIZE: nat is 2
+
+/********************************************
+* Types, constantes and enums
+* - Using unions for cases (like messages)
+* - Using enums (constantes) for dictionaries (like roles)
+* All defined types have prefixes:
+* - 'i_'    -> interval, mostly used for id or as an index for a given enum
+* - 'fifo_' -> queue of messages (cmd_ or msg_)
+* - 'rec_'  -> records
+* - 'ar_'   -> array
+* - 'u_'    -> union
+********************************************/
+
+/* Ids */
+
+type i_opId is 0..(NB_OPERATOR - 1)
+
+/* Missions */
+
+const NB_MISSION: nat is 5
+type i_mission is 0..(NB_MISSION-1)
+const MISSION_administrate: i_mission is 0
+const MISSION_maintain: i_mission is 1
+const MISSION_control_defense_solution: i_mission is 2
+const MISSION_control_air_picture: i_mission is 3
+const MISSION_control_replay_visualization: i_mission is 4
+
+type ar_mission is array NB_MISSION of bool
+const DEFAULT_ar_mission: ar_mission is [false, false, false, false, false]
+
+/* Roles */
+
+const NB_ROLE: nat is 4
+type i_role is 0..(NB_ROLE-1)
+const ROLE_administrate: i_role is 0
+const ROLE_maintain: i_role is 1
+const ROLE_produce_air_picture: i_role is 2
+const ROLE_control_engagement: i_role is 3
+
+type ar_role is array NB_ROLE of bool
+const DEFAULT_ar_role: ar_role is [false, false, false, false]
+
+type i_opRole is -1..(NB_ROLE-1)
+const ROLE_none: i_opRole is -1
+
+/* Operator's behavior */
+
+type rec_behavior is record
+	/* Defines if the operator waits for acknowledgement after a request */
+	waitForAck: bool,
+	/* Defines if the operator tries (resp. request) all commands (resp. roles and/or missions) or only the allowed ones */
+	tryAll: bool
+end record
+
+const BEHAVIOR_PASSIVE: rec_behavior is {waitForAck = true, tryAll = false}
+const BEHAVIOR_IMPATIENT: rec_behavior is {waitForAck = false, tryAll = false}
+const BEHAVIOR_HACKER: rec_behavior is {waitForAck = true, tryAll = true}
+const BEHAVIOR_MONKEY: rec_behavior is {waitForAck = false, tryAll = true}
+
+/* Commands, i.e. messages sent by an operator to the session manager */
+
+const NB_COMMAND: nat is 6
+type i_command is 0..(NB_COMMAND-1)
+const COMMAND_requestLogin: i_command is 0
+const COMMAND_requestLogout: i_command is 1
+const COMMAND_requestMission: i_command is 2
+const COMMAND_requestRole: i_command is 3
+const COMMAND_requestActiveSubstate: i_command is 4
+const COMMAND_requestStopMission: i_command is 5
+
+type ar_command is array NB_COMMAND of bool
+const DEFAULT_ar_command: ar_command is [false, false, false, false, false, false]
+
+type u_authentification is union CORRECT | WRONG_USERNAME | WRONG_PASSWORD end union
+
+type rec_requestLogin is record
+	id: i_opId,
+	auth: u_authentification
+end record
+const DEFAULT_rec_requestLogin: rec_requestLogin is {id = 0, auth = CORRECT}
+
+type rec_requestMission is record
+	id: i_opId,
+	mission: i_mission
+end record
+const DEFAULT_rec_requestMission: rec_requestMission is {id = 0, mission = 0}
+
+type rec_requestRole is record
+	id: i_opId,
+	role: i_role
+end record
+const DEFAULT_rec_requestRole: rec_requestRole is {id = 0, role = 0}
+
+type u_command is union
+	noCommand
+|	requestLogin of rec_requestLogin		/* EvtRequestLoginHmi */
+|	requestLogout of i_opId					/* EvtRequestLogoutHmi */
+|	requestMission of rec_requestMission	/* EvtRequestMissionHmi */
+|	requestRole of rec_requestRole			/* EvtRequestRoleHmi */
+|	requestActiveSubstate of i_opId			/* EvtRequestActiveSubstateHmi, TODO atm only operation */
+|	requestStopMission of i_opId			/* EvtStopMissionHmi */
+end union
+
+/* Messages, those sent by the session manager to operators */
+
+type rec_commandStatus is record
+	cmd: i_command,
+	status: bool
+end record
+const DEFAULT_rec_commandStatus: rec_commandStatus is {cmd = 0, status = false}
+
+type u_message is union
+	noMessage
+|	ack of bool                        /* EvtAckHmi, stands for acknowledge */
+|	commandStatus of rec_commandStatus /* EvtCommandStatusHmi */
+|	availableMissions of ar_mission    /* EvtAvailableMissionsHmi */
+|	availableRoles of ar_role          /* EvtAvailableRolesHmi */
+end union
+
+/* Session manager's input */
+
+type fifo_SMInput is queue SM_FIFO_SIZE of u_command
+
+/* Operators' input */
+
+type fifo_opInput is queue OP_FIFO_SIZE of u_message
+
+type ar_fifo_opInput is array NB_OPERATOR of fifo_opInput
+
+/* Informations about operators */
+
+type rec_operator is record
+	rights: ar_role,
+	authorizedMissions: ar_mission,
+	role: i_opRole,
+	logged: bool
+end record
+const DEFAULT_rec_operator: rec_operator is {rights = DEFAULT_ar_role, role = ROLE_none, authorizedMissions = DEFAULT_ar_mission, logged = false}
+
+type ar_rec_operator is array NB_OPERATOR of rec_operator
+
+/****************
+* System settings
+****************/
+
+const REACHABLE_MISSIONS: ar_mission is [
+	true,	/* Administrate ECS */
+	true,	/* Maintain ECS */
+	true,	/* Control Defense Solution */
+	true,	/* Control Air Picture */
+	true	/* Control Replay Visualization */
+]
+
+const REQUIRED_ROLES: array NB_MISSION of ar_role is [
+/*		admin 	maintain 	picture 	engagement */
+	[	true,	false,		false,		false],	/* Administrate ECS */
+	[	false,	true,		false,		false],	/* Maintain ECS */
+	[	false,	false, 		true,		true],	/* Control Defense Solution */
+	[	false,	false,		true,		false],	/* Control Air Picture */
+	[	false,	false,		false,		true]	/* Control Replay Visualization */
+]
+
+/**********
+* Processes
+**********/
+
+/* Operator 
+***********/
+
+process operator(
+	id: i_opId,
+	behavior: rec_behavior,
+	& input: ar_fifo_opInput,
+	& output: fifo_SMInput
+) is
+
+states
+	ready,
+	waitingForAck
+
+var
+	
+	/* locals (value should always be reset after use to avoid configuration duplication) */
+	currentMessage: u_message,
+	ackData: bool,
+	commandStatusData: rec_commandStatus,
+
+	/* globals */
+	allowedMissions: ar_mission,
+	allowedRoles: ar_role,
+	waitForAck: bool,
+	allowedCommands: ar_command
+
+init
+	currentMessage := noMessage;
+	ackData := false;
+	commandStatusData := DEFAULT_rec_commandStatus;
+	allowedMissions := DEFAULT_ar_mission;
+	allowedRoles := DEFAULT_ar_role;
+	waitForAck := false;
+	allowedCommands := DEFAULT_ar_command;
+	to ready
+
+from ready
+
+	/* Read and discard next input if any */
+	if not(empty input[id]) then
+		currentMessage := first input[id];
+		case currentMessage of
+			/* Update allowed commands accordingly */
+			commandStatus commandStatusData ->
+				allowedCommands[commandStatusData.cmd] := commandStatusData.status;
+				/* Fixes to avoid useless state duplication */
+				if commandStatusData.cmd = COMMAND_requestMission and not(commandStatusData.status) then
+					allowedMissions := DEFAULT_ar_mission
+				elsif commandStatusData.cmd = COMMAND_requestRole and not(commandStatusData.status) then
+					allowedRoles := DEFAULT_ar_role
+				end if;
+				commandStatusData := DEFAULT_rec_commandStatus
+			/* Update allowed missions accordingly (done simply by matching) */
+		|	availableMissions allowedMissions -> null
+			/* Update allowed roles accordingly (done simply by matching) */
+		|   availableRoles allowedRoles -> null
+			/* If anything else, don't do a thing (message still will be discarded) */
+		|	any -> null
+		end case;
+		input[id] := dequeue input[id];
+		currentMessage := noMessage
+	end;
+	loop
+
+
+/* Session Manager
+*****************/
+
+type u_state is union
+	sInitialization
+|	sStandby
+|	sMissionSelection
+|	sPreparation
+|	sOperational
+end union
+
+process sessionManager(
+	opsData:  ar_rec_operator,
+	& input: fifo_SMInput,
+	& output: ar_fifo_opInput
+) is
+
+states
+	initialization,
+	standby,
+	missionSelection,
+	preparation,
+	operational,
+	outOfScope /* See notes in the header about this state */
+
+var
+
+	/* locals (value should always be reset after use to avoid configuration duplication) */
+	id: i_opId,
+	mission: i_mission,
+	role: i_role,
+	test: bool,
+	currentCommand: u_command,
+	requestLoginData: rec_requestLogin,
+	requestMissionData: rec_requestMission,
+	requestRoleData: rec_requestRole,
+	deny: bool,
+	roles: ar_role,
+
+	/* globals */
+	currentMission: i_mission,
+	missingRoles: ar_role,
+	nextState: u_state
+
+init
+	id := 0;
+	mission := 0;
+	role := 0;
+	test := false;
+	currentCommand := noCommand;
+	requestLoginData := DEFAULT_rec_requestLogin;
+	requestMissionData := DEFAULT_rec_requestMission;
+	requestRoleData := DEFAULT_rec_requestRole;
+	deny := false;
+	roles := DEFAULT_ar_role;
+	currentMission := 0;
+	missingRoles := DEFAULT_ar_role;
+	nextState := sInitialization;
+	to initialization
+
+from initialization
+
+	/* Allow operators to login (broadcast) and initialize allowed missions (variable) */
+	/* Note: assumes operators (consoles) are offline and have all command disabled */
+	foreach id do
+		output[id] := enqueue(output[id], commandStatus ({cmd = COMMAND_requestLogin, status = true}));
+		foreach mission do
+			opsData[id].authorizedMissions[mission] := false;
+			if REACHABLE_MISSIONS[mission] then
+				foreach role do
+					if opsData[id].rights[role] and REQUIRED_ROLES[mission][role] then
+						opsData[id].authorizedMissions[mission] := true
+					end if
+				end foreach; role := 0
+			end if
+		end foreach; mission :=0
+	end foreach; id := 0;
+
+	/* Pick the next state */
+	nextState := sStandby;
+	to standby
+
+
+
+/***************
+* Main component
+***************/
+
+component main is
+
+var
+	id: i_opId,
+	SMInput: fifo_SMInput,
+	opInput: ar_fifo_opInput,
+	reachableMissions: ar_mission,
+	requiredRoles: ar_role,
+	opsData: ar_rec_operator
+
+init
+	SMInput := {||};
+	foreach id do
+		opInput[id] := {||};
+		opsData[id] := DEFAULT_rec_operator
+	end foreach;
+
+	/* The following is part of the context */
+	foreach id do
+		opsData[id].rights := [true, true, true, true]
+	end foreach
+
+par
+	operator(0, BEHAVIOR_PASSIVE, & opInput, & SMInput)
+||	operator(1, BEHAVIOR_PASSIVE, & opInput, & SMInput)
+||	sessionManager(opsData, & SMInput, & opInput)
+end
+
+main
