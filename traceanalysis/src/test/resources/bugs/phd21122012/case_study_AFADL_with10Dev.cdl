@@ -1,0 +1,695 @@
+/*====================================================
+Case_study_AFADL_With10Dev_20dec12.cdl
+
+Le 20 Dec 2012  Version avec 10 acteurs dans Env
+
+====================================================*/
+
+
+
+//====================================================
+//       Properties  pour tracer l'execution 
+//====================================================
+
+
+//-------------------------------------------------------------
+predicate SchedulerErreur 		is {{Scheduler}1@Error }
+event evt_SchedulerErreur  		is {SchedulerErreur becomes true}
+
+property pte_SchedulerErreur is 
+{
+	start -- / 	/ evt_SchedulerErreur  /  -> reject
+}
+//------------------------------------------------------
+
+predicate SchedulerFin    		is {{Scheduler}1@fin}
+event evt_SchedulerFin  		is {SchedulerFin becomes true} 
+
+property pte_SchedulerFin is 
+{
+	start -- / 	/ evt_SchedulerFin  /  -> success
+}
+//------------------------------------------------------
+
+predicate ComputErreur 			is {{Comput}1@Error }
+event evt_ComputErreur  		is {ComputErreur becomes true}
+
+property pte_ComputErreur is 
+{
+	start -- / 	/ evt_ComputErreur  /  -> reject
+}
+
+//====================================================
+//====================================================
+
+Predicate nbBoucle_1  is { {Scheduler}1:nbBoucle = 1 }
+event evt_nbBoucle_1  is { nbBoucle_1 becomes true }
+Predicate nbBoucle_2  is { {Scheduler}1:nbBoucle = 2 }
+event evt_nbBoucle_2  is { nbBoucle_2 becomes true }
+Predicate nbBoucle_3  is { {Scheduler}1:nbBoucle = 3 }
+event evt_nbBoucle_3  is { nbBoucle_3 becomes true }
+Predicate nbBoucle_4  is { {Scheduler}1:nbBoucle = 4 }
+event evt_nbBoucle_4  is { nbBoucle_4 becomes true }
+
+//---- controle l'incrementation de nbBoucle = --> 1
+
+property  pty_nbBoucle_1  is
+    {
+	    start  --  / / evt_nbBoucle_1 /  -> success
+	}
+
+//---- controle l'incrementation de nbBoucle = --> 2
+
+property  pty_nbBoucle_2  is
+    {
+	    start  --  / / evt_nbBoucle_2 /  -> success
+	}
+//---- controle l'incrementation de nbBoucle = --> 3
+
+property  pty_nbBoucle_3  is
+    {
+	    start  --  / / evt_nbBoucle_3 /  -> success
+	}
+		
+//---- controle l'incrementation de nbBoucle = --> 4
+
+property  pty_nbBoucle_4  is
+    {
+	    start  --  / / evt_nbBoucle_4 /  -> success
+	}
+		
+		
+	
+//====================================================
+//====================================================
+
+//---- controle la sequence acq1 et acq2 --> envoi vers Comput
+
+Predicate Acq1_s2  is { {Acq}1@s2 }
+event evt_Acq1_s2  is { Acq1_s2 becomes true }
+Predicate Acq2_s2  is { {Acq}2@s2 }
+event evt_Acq2_s2  is { Acq2_s2 becomes true }
+
+property  pty_seqAcq1_Acq2_send  is
+    {
+	    start  --  / / evt_Acq1_s2 /  -> wait1;		// Acq 1 a emis la valeur
+	    start  --  / / evt_Acq2_s2 /  -> wait2;		// Acq 2 a emis la valeur
+		wait1  --  / / evt_Acq2_s2 /  -> success;
+		wait2  --  / / evt_Acq1_s2 /  -> success
+	}
+
+//====================================================
+//====================================================
+
+
+event evt_sync_pr1 		is 	{ sync sync_pr1 (any) from {Scheduler}1 to {Acq}1}   
+event evt_sync_pr2 		is 	{ sync sync_pr2 (any) from {Scheduler}1 to {Acq}2}
+event evt_sync_pw1 		is 	{ sync sync_pw1 (any) from {Scheduler}1 to {Sensor}1}
+event evt_sync_pw2 		is 	{ sync sync_pw2 (any) from {Scheduler}1 to {Sensor}2}
+event evt_sync_comput  	is  { sync sync_comput (any) from {Scheduler}1 to {Comput}1}
+event evt_sync_filter  	is  { sync sync_filter (any) from {Scheduler}1 to {Filter}1}
+
+event evt_sync_Acq1_Comput is { sync port_Acq_Comput1 (any) from {Acq}1 to {Comput}1}
+event evt_sync_Acq2_Comput is { sync port_Acq_Comput2 (any) from {Acq}2 to {Comput}1}
+
+
+//---- controle la seq pw1 --> pr1 --> sync Acq1-Comput
+
+property  pty_seq_pw1_pr1_sync_Acq1Comput  is
+   {
+	// mode nominal
+	    start    --  / / evt_sync_pr1 /  -> waitPw1;
+	    waitPw1  --  / / evt_sync_pw1 /  -> waitSync;		
+		waitSync --  / / evt_sync_Acq1_Comput /  -> success 
+ }
+
+ 
+//---- controle la seq pw2 --> pr2 --> sync Acq2-Comput
+
+property  pty_seq_pw2_pr2_sync_Acq2Comput  is
+   {
+	// mode nominal
+	    start    --  / / evt_sync_pr2 /  -> waitPw2;
+	    waitPw2  --  / / evt_sync_pw2 /  -> waitSync;		
+		waitSync --  / / evt_sync_Acq2_Comput /  -> success
+ }
+
+//-----------------------------------------------------------------
+
+//----- controle que les 2 synchro Acq-Comput sont executees
+
+property  pty_sync_Acq_Comput  is
+    {
+	    start  --  / / evt_sync_Acq1_Comput /  -> wait1;	// Acq 1 se synchronise avec Comput
+	    start  --  / / evt_sync_Acq2_Comput /  -> wait2;	// Acq 2 se synchronise avec Comput
+		wait1  --  / / evt_sync_Acq2_Comput /  -> success;
+		wait2  --  / / evt_sync_Acq1_Comput /  -> success
+	}
+	
+//====================================================
+//====================================================
+
+// controle les valeurs en entree de Sensor 1 : valeurs 1, 2, ... 
+
+Predicate Sensor1_data1  	is { {Sensor}1:data = 1 }
+event evt_Sensor1_data1  	is { Sensor1_data1 becomes true }
+
+Predicate Sensor1_data2  	is { {Sensor}1:data = 2 }
+event evt_Sensor1_data2  	is { Sensor1_data2 becomes true }
+
+property  pty_Sensor1_data_1_2  is
+    {
+	    start  --  / / evt_Sensor1_data1 /  -> wait2;
+		start  --  / / evt_Sensor1_data2 /  -> reject;
+		wait2  --  / / evt_Sensor1_data2 /  -> success
+	}
+
+//====================================================
+// controle les valeurs en entree de Sensor 2 : valeurs 1, 2, ... 
+
+Predicate Sensor2_data1  	is { {Sensor}2:data = 1 }
+event evt_Sensor2_data1  	is { Sensor2_data1 becomes true }
+
+Predicate Sensor2_data2  	is { {Sensor}2:data = 2 }
+event evt_Sensor2_data2  	is { Sensor2_data2 becomes true }
+
+property  pty_Sensor2_data_1_2  is
+    {
+	    start  --  / / evt_Sensor2_data1 /  -> wait2;
+		start  --  / / evt_Sensor2_data2 /  -> reject;
+		wait2  --  / / evt_Sensor2_data2 /  -> success
+	}
+
+	
+//====================================================
+//====================================================
+
+// controle les valeurs en entree de Acq 1 : valeurs 1, 2, ... 
+
+Predicate Acq1_data1  	is { {Acq}1:data = 1 }
+event evt_Acq1_data1  	is { Acq1_data1 becomes true }
+
+Predicate Acq1_data2  	is { {Acq}1:data = 2 }
+event evt_Acq1_data2  	is { Acq1_data2 becomes true }
+
+property  pty_Acq1_data_1_2  is
+    {
+	    start  --  / / evt_Acq1_data1 /  -> wait2;
+		start  --  / / evt_Acq1_data2 /  -> reject;
+		wait2  --  / / evt_Acq1_data2 /  -> success
+	}
+
+//====================================================
+// controle les valeurs en entree de Acq 2 : valeurs 1, 2, ... 
+
+Predicate Acq2_data1  	is { {Acq}2:data = 1 }
+event evt_Acq2_data1  	is { Acq2_data1 becomes true }
+
+Predicate Acq2_data2  	is { {Acq}2:data = 2 }
+event evt_Acq2_data2  	is { Acq2_data2 becomes true }
+
+property  pty_Acq2_data_1_2  is
+    {
+	    start  --  / / evt_Acq2_data1 /  -> wait2;
+		start  --  / / evt_Acq2_data2 /  -> reject;
+		wait2  --  / / evt_Acq2_data2 /  -> success
+	}
+	
+
+//====================================================
+//====================================================
+
+// controle les valeurs en sortie de Comput : valeurs 2, 4, ... 
+
+Predicate Comput_result2  	is { {Comput}1:result = 2 }
+event evt_Comput_result2  	is { Comput_result2 becomes true }
+
+Predicate Comput_result4  	is { {Comput}1:result = 4 }
+event evt_Comput_result4  	is { Comput_result4 becomes true }
+
+property  pty_Comput_result_2  is
+    {
+	    start  --  / / evt_Comput_result2 /  -> success
+	}
+
+property  pty_Comput_result_2_4  is
+    {
+	    start  --  / / evt_Comput_result2 /  -> wait4;
+		start  --  / / evt_Comput_result4 /  -> reject;
+		wait4  --  / / evt_Comput_result4 /  -> success
+	}
+	
+//====================================================
+//====================================================
+	
+// controle les valeurs en entree de Filter : valeurs 2, 4, ... 
+
+Predicate Filter_data2  	is { {Filter}1:data = 2 }
+event evt_Filter_data2  	is { Filter_data2 becomes true }
+
+Predicate Filter_data4  	is { {Filter}1:data = 4 }
+event evt_Filter_data4  	is { Filter_data4 becomes true }
+
+property  pty_Filter_data_2  is
+    {
+	    start  --  / / evt_Filter_data2 /  -> success
+	}
+	
+property  pty_Filter_data_2_4  is
+    {
+	    start  --  / / evt_Filter_data2 /  -> wait4;
+		start  --  / / evt_Filter_data4 /  -> reject;
+		wait4  --  / / evt_Filter_data4 /  -> success
+	}
+
+//====================================================
+//====================================================
+	
+// controle que toutes les valeurs ont ete lues par Comput 	
+
+Predicate Comput_Toutes_data_lus  is  { {Comput}1:toutesLesDataLues = true }	
+event evt_Comput_Toutes_data_lus	 is  {Comput_Toutes_data_lus becomes true}
+
+property  pty_Comput_Toutes_data_lus  is
+    {
+	    start  --  / / evt_Comput_Toutes_data_lus /  -> success
+	}
+	
+//====================================================
+//====================================================
+	
+// controle les valeurs recues par l'environnement :  10, 20, 30, ... 
+
+// event evt_recv_result10	 is     {receive DATA_10 from {Filter}1}
+// idem
+event evt_recv_result10	 is     {send DATA_10 from {Filter}1 to {env}1} 
+
+event evt_recv_result20	 is     {receive DATA_20 from {Filter}1}
+event evt_recv_result30	 is     {receive DATA_30 from {Filter}1}
+
+property  pty_Env_recv_result_10  is
+    {
+	    start  --  / / evt_recv_result10 /  -> success
+	}
+
+property  pty_Env_recv_result_10_20  is
+    {
+	    start  --  / / evt_recv_result10 /  -> wait20;
+		start  --  / / evt_recv_result20 /  -> reject;
+		wait20  --  / / evt_recv_result20 /  -> success
+	}	
+
+property  pty_Env_recv_result_10_20_30  is
+    {
+	    start  --  / / evt_recv_result10 /  -> wait20;
+		start  --  / / evt_recv_result20 /  -> reject;
+		wait20  --  / / evt_recv_result20 /  -> wait30;
+		wait30  --  / / evt_recv_result30 /  -> success
+	}	
+
+	
+//====================================================
+//             Properties  pour les contraintes
+//====================================================
+
+predicate Inst_true   is {{Scheduler}1: inst = true}
+predicate Inst_false  is {{Scheduler}1: inst = false}
+
+predicate act_tick_0_true is {{Comp}1:tab_Clocks [0].act_tick = true} 
+predicate act_tick_1_true is {{Comp}1:tab_Clocks [1].act_tick = true} 
+predicate act_tick_2_true is {{Comp}1:tab_Clocks [2].act_tick = true} 
+predicate act_tick_3_true is {{Comp}1:tab_Clocks [3].act_tick = true} 
+predicate act_tick_4_true is {{Comp}1:tab_Clocks [4].act_tick = true} 
+predicate act_tick_5_true is {{Comp}1:tab_Clocks [5].act_tick = true} 
+
+predicate act_tick_0_false is {{Comp}1:tab_Clocks [0].act_tick = false} 
+predicate act_tick_1_false is {{Comp}1:tab_Clocks [1].act_tick = false} 
+predicate act_tick_2_false is {{Comp}1:tab_Clocks [2].act_tick = false} 
+predicate act_tick_3_false is {{Comp}1:tab_Clocks [3].act_tick = false} 
+predicate act_tick_4_false is {{Comp}1:tab_Clocks [4].act_tick = false} 
+predicate act_tick_5_false is {{Comp}1:tab_Clocks [4].act_tick = false} 
+
+
+predicate act_tick_2 is {({Comp}1:tab_Clocks [0].act_tick = true) and 
+					     ({Comp}1:tab_Clocks [2].act_tick = true)} 
+						 
+predicate act_tick_3 is {({Comp}1:tab_Clocks [1].act_tick = true) and 
+					     ({Comp}1:tab_Clocks [3].act_tick = true)} 
+						 
+predicate not_act_tick_2 is	{not act_tick_2}		 
+predicate not_act_tick_3 is	{not act_tick_3}
+
+//-------------------------------------------------------------------------
+event evt_act_tick_0_true is	{ act_tick_0_true becomes true} 
+event evt_act_tick_1_true is	{ act_tick_1_true becomes true} 
+event evt_act_tick_0_false is	{ act_tick_0_false becomes true} 
+event evt_act_tick_1_false is	{ act_tick_1_false becomes true} 
+
+event evt_act_tick_2_true is	{ act_tick_2_true becomes true} 
+event evt_act_tick_3_true is	{ act_tick_3_true becomes true} 
+event evt_act_tick_2_false is	{ act_tick_2_false becomes true} 
+event evt_act_tick_3_false is	{ act_tick_3_false becomes true}
+
+event evt_act_tick_4_true is	{ act_tick_4_true becomes true}
+event evt_act_tick_5_true is	{ act_tick_5_true becomes true}
+
+event evt_act_tick_4_false is	{ act_tick_4_true becomes false}
+event evt_act_tick_5_false is	{ act_tick_5_true becomes false}
+ 
+event evt_inst_true        is {Inst_true becomes true}
+event evt_inst_false       is {Inst_false becomes true}
+
+event evt_2_act_tick  is  		{ act_tick_2 becomes true} 
+event evt_2_Notact_tick  is     { not_act_tick_2 becomes true} 
+
+event evt_3_act_tick  is  		{ act_tick_3 becomes true} 
+event evt_3_Notact_tick  is     { not_act_tick_3 becomes true} 
+
+	
+//----------------------Pour la contrainte StrictPrecedence 1 ---------------------------------
+
+predicate Decalage_cA_egale_cB  is {{Comp}1:tab_Clocks [4].nb_tick = {Comp}1:tab_Clocks [0].nb_tick}  
+predicate Decalage_cA_sup_cB  is {{Comp}1:tab_Clocks [4].nb_tick < {Comp}1:tab_Clocks [0].nb_tick}  
+predicate Decalage_cA_cB  is {Decalage_cA_egale_cB or Decalage_cA_egale_cB}  
+predicate not_Decalage_cA_cB is {not Decalage_cA_cB}
+
+//----------------------Pour la contrainte StrictPrecedence 2---------------------------------
+
+predicate Decalage_cA1_egale_cB1  is {{Comp}1:tab_Clocks [2].nb_tick = {Comp}1:tab_Clocks [4].nb_tick}  
+predicate Decalage_cA1_sup_cB1  is {{Comp}1:tab_Clocks [4].nb_tick < {Comp}1:tab_Clocks [0].nb_tick}  
+predicate Decalage_cA1_cB1  is {Decalage_cA1_egale_cB1 or Decalage_cA1_egale_cB1}  
+predicate not_Decalage_cA1_cB1 is {not Decalage_cA1_cB1}
+
+//--------------------Pour la contrainte FiltredBy------------------------------------------
+
+predicate Decisions_states	is 	{{Scheduler}1@runUserArch}
+
+
+//---------------------------------------------------
+
+//---- controle l'alternance sur Mem 1
+property  pty_Altern1  is
+    {
+	// mode nominal
+	    start   --  / / evt_inst_false /  -> wait11;
+	    wait11  --  / / evt_act_tick_1_true /  -> waitW;	// tic de l'horloge_1	
+		waitW   --  / / evt_sync_pw1 /  -> wait2;   					// ecriture de Mem
+		wait2   --  / / evt_inst_true / -> wait33;
+		wait33  --  / / evt_inst_false / -> wait3;
+		wait3   --  / / evt_act_tick_0_true / -> waitR;  	// tic de l'horloge_0	
+		waitR   --  / / evt_sync_pr1 / -> wait5;      					// lecture de Mem             
+		wait5   --  / / evt_inst_true  / -> start;
+		
+	// erreurs		
+		waitW   --  / / evt_sync_pr1 /  -> reject;  
+		wait3   --  / / evt_act_tick_1_true  / -> reject;  
+		waitR    --  / / evt_sync_pw1 / -> reject
+ }
+
+ 
+//---- controle l'alternance sur Mem 2
+property  pty_Altern2  is
+    {
+	    start   --  / / evt_inst_false /  -> wait11;
+	    wait11  --  / / evt_act_tick_3_true /  -> waitW;	// tic de l'horloge_1	
+		waitW   --  / / evt_sync_pw2 /  -> wait2;   					// ecriture de Mem
+		wait2   --  / / evt_inst_true / -> wait33;
+		wait33  --  / / evt_inst_false / -> wait3;
+		wait3   --  / / evt_act_tick_2_true / -> waitR;  	// tic de l'horloge_0	
+		waitR   --  / / evt_sync_pr2 / -> wait5;      					// lecture de Mem             
+		wait5   --  / / evt_inst_true  / -> start;
+		
+	// erreurs		
+	
+		waitW   --  / / evt_sync_pr2 /  -> reject;  
+		wait3   --  / / evt_act_tick_3_true  / -> reject;  
+		waitR   --  / / evt_sync_pw2 / -> reject
+		}
+ 
+
+		
+property  pty_StrictPrecedence1  is
+    {
+	// mode nominal
+	    
+		//erreur
+		start   --  /not_Decalage_cA_cB /  evt_act_tick_1_true /  -> reject ;
+         start  --  / Decalage_cA_cB/ evt_act_tick_1_true /  -> success		
+	}
+		
+property  pty_StrictPrecedence2 is
+    {
+	// mode nominal
+	    
+		//erreur
+		start   --  /not_Decalage_cA1_cB1 /  evt_act_tick_1_true /  -> reject ;
+        start  --  / Decalage_cA1_cB1/ evt_act_tick_1_true /  -> success		
+	}		
+
+property  pty_FiltredBy  is
+    {
+	// mode nominal
+	    
+	   start  --  / / evt_act_tick_4_true /  -> wait1;
+	   wait1  --  /Decisions_states / evt_act_tick_5_true/  -> wait2;        
+	    
+		wait2 --  / / evt_act_tick_4_true /  -> wait3;
+		wait3 --  /Decisions_states / evt_act_tick_5_false/  -> wait4;  
+	
+        wait4 --  / / evt_act_tick_4_true		/  -> wait5;
+		wait5  --  /Decisions_states / evt_act_tick_5_false/  -> wait6;                
+		
+        wait6 --  / / evt_act_tick_4_true /  -> wait7;
+		wait7  --  /Decisions_states / evt_act_tick_5_true/  -> wait8;                
+		
+        wait8  --  / / evt_act_tick_4_true /  -> wait9;
+		wait9 --  /Decisions_states / evt_act_tick_5_false/  -> success;                
+	
+	// erreurs		
+	   wait1  --  /Decisions_states / evt_act_tick_5_false/  -> reject;
+	   wait3  --  /Decisions_states / evt_act_tick_5_false/  -> reject;
+       wait5  --  /Decisions_states / evt_act_tick_5_true/  -> reject; 
+       wait7  --  /Decisions_states / evt_act_tick_5_false/  -> reject;  
+       wait9  --  /Decisions_states / evt_act_tick_5_true/  -> reject	   
+	}
+ 
+ 
+//====================================================
+//    Events and activites for contexts
+//====================================================
+
+// send to Scheduler
+event evt_send_go is     	{send GO to {Scheduler}1}
+
+// send to system 	 
+event evt_send_data1_sensor1 is     	{send DATA_1 to {Sensor}1}
+event evt_send_data2_sensor1 is     	{send DATA_2 to {Sensor}1}
+event evt_send_data3_sensor1 is     	{send DATA_3 to {Sensor}1}
+event evt_send_data4_sensor1 is     	{send DATA_4 to {Sensor}1}
+event evt_send_data5_sensor1 is     	{send DATA_5 to {Sensor}1}
+
+event evt_send_data1_sensor2 is     	{send DATA_1 to {Sensor}2}
+event evt_send_data2_sensor2 is     	{send DATA_2 to {Sensor}2}
+event evt_send_data3_sensor2 is     	{send DATA_3 to {Sensor}2}
+event evt_send_data4_sensor2 is     	{send DATA_4 to {Sensor}2}
+event evt_send_data5_sensor2 is     	{send DATA_5 to {Sensor}2}
+
+event evt_send_data1_sensor3 is     	{send DATA_1 to {Sensor}3}
+event evt_send_data2_sensor3 is     	{send DATA_2 to {Sensor}3}
+event evt_send_data3_sensor3 is     	{send DATA_3 to {Sensor}3}
+event evt_send_data4_sensor3 is     	{send DATA_4 to {Sensor}3}
+event evt_send_data5_sensor3 is     	{send DATA_5 to {Sensor}3}
+
+event evt_send_data1_sensor4 is     	{send DATA_1 to {Sensor}4}
+event evt_send_data2_sensor4 is     	{send DATA_2 to {Sensor}4}
+event evt_send_data3_sensor4 is     	{send DATA_3 to {Sensor}4}
+event evt_send_data4_sensor4 is     	{send DATA_4 to {Sensor}4}
+event evt_send_data5_sensor4 is     	{send DATA_5 to {Sensor}4}
+
+event evt_send_data1_sensor5 is     	{send DATA_1 to {Sensor}5}
+event evt_send_data2_sensor5 is     	{send DATA_2 to {Sensor}5}
+event evt_send_data3_sensor5 is     	{send DATA_3 to {Sensor}5}
+event evt_send_data4_sensor5 is     	{send DATA_4 to {Sensor}5}
+event evt_send_data5_sensor5 is     	{send DATA_5 to {Sensor}5}
+
+event evt_send_data1_sensor6 is     	{send DATA_1 to {Sensor}6}
+event evt_send_data2_sensor6 is     	{send DATA_2 to {Sensor}6}
+event evt_send_data3_sensor6 is     	{send DATA_3 to {Sensor}6}
+event evt_send_data4_sensor6 is     	{send DATA_4 to {Sensor}6}
+event evt_send_data5_sensor6 is     	{send DATA_5 to {Sensor}6}
+
+event evt_send_data1_sensor7 is     	{send DATA_1 to {Sensor}7}
+event evt_send_data2_sensor7 is     	{send DATA_2 to {Sensor}7}
+event evt_send_data3_sensor7 is     	{send DATA_3 to {Sensor}7}
+event evt_send_data4_sensor7 is     	{send DATA_4 to {Sensor}7}
+event evt_send_data5_sensor7 is     	{send DATA_5 to {Sensor}7}
+
+event evt_send_data1_sensor8 is     	{send DATA_1 to {Sensor}8}
+event evt_send_data2_sensor8 is     	{send DATA_2 to {Sensor}8}
+event evt_send_data3_sensor8 is     	{send DATA_3 to {Sensor}8}
+event evt_send_data4_sensor8 is     	{send DATA_4 to {Sensor}8}
+event evt_send_data5_sensor8 is     	{send DATA_5 to {Sensor}8}
+
+event evt_send_data1_sensor9 is     	{send DATA_1 to {Sensor}9}
+event evt_send_data2_sensor9 is     	{send DATA_2 to {Sensor}9}
+event evt_send_data3_sensor9 is     	{send DATA_3 to {Sensor}9}
+event evt_send_data4_sensor9 is     	{send DATA_4 to {Sensor}9}
+event evt_send_data5_sensor9 is     	{send DATA_5 to {Sensor}9}
+
+event evt_send_data1_sensor10 is     	{send DATA_1 to {Sensor}10}
+event evt_send_data2_sensor10 is     	{send DATA_2 to {Sensor}10}
+event evt_send_data3_sensor10 is     	{send DATA_3 to {Sensor}10}
+event evt_send_data4_sensor10 is     	{send DATA_4 to {Sensor}10}
+event evt_send_data5_sensor10 is     	{send DATA_5 to {Sensor}10}
+
+
+// receive from system
+event evt_recv_dataOut_2 is     	{receive DATA_2 from {Filter}1 to {env}1} 
+event evt_recv_dataOut_4 is     	{receive DATA_4 from {Filter}1 to {env}1} 
+
+event evt_recv_dataOut is     	{receive ANY from {Filter}1 to {env}1} 
+
+activity go is			{ event evt_send_go }
+activity data1_1 is		{ event evt_send_data1_sensor1 }
+activity data1_2 is		{ event evt_send_data1_sensor2 }
+
+
+activity DEV1 is
+{
+	event evt_send_data1_sensor1;
+	event evt_send_data2_sensor1;
+	event evt_send_data3_sensor1;
+	event evt_send_data4_sensor1
+	// event evt_send_data5_sensor1
+	}
+ 
+activity DEV2 is
+{
+	event evt_send_data1_sensor2;
+	event evt_send_data2_sensor2;
+	event evt_send_data3_sensor2;
+	event evt_send_data4_sensor2
+	// event evt_send_data5_sensor2
+}
+
+activity DEV3 is
+{
+	event evt_send_data1_sensor3;
+	event evt_send_data2_sensor3;
+	event evt_send_data3_sensor3;
+	event evt_send_data4_sensor3
+	// event evt_send_data5_sensor3
+}
+
+activity DEV4 is
+{
+	event evt_send_data1_sensor4;
+	event evt_send_data2_sensor4;
+	event evt_send_data3_sensor4;
+	event evt_send_data4_sensor4
+	// event evt_send_data5_sensor4
+}
+
+activity DEV5 is
+{
+	event evt_send_data1_sensor5;
+	event evt_send_data2_sensor5;
+	event evt_send_data3_sensor5;
+	event evt_send_data4_sensor5
+	// event evt_send_data5_sensor5
+}
+
+activity DEV6 is
+{
+	event evt_send_data1_sensor6;
+	event evt_send_data2_sensor6;
+	event evt_send_data3_sensor6;
+	event evt_send_data4_sensor6
+	// event evt_send_data5_sensor6
+}
+
+activity DEV7 is
+{
+	event evt_send_data1_sensor7;
+	event evt_send_data2_sensor7;
+	event evt_send_data3_sensor7;
+	event evt_send_data4_sensor7
+	// event evt_send_data5_sensor7
+}
+
+activity DEV8 is
+{
+	event evt_send_data1_sensor8;
+	event evt_send_data2_sensor8;
+	event evt_send_data3_sensor8;
+	event evt_send_data4_sensor8
+	// event evt_send_data5_sensor8
+}
+
+activity DEV9 is
+{
+	event evt_send_data1_sensor9;
+	event evt_send_data2_sensor9;
+	event evt_send_data3_sensor9;
+	event evt_send_data4_sensor9
+	// event evt_send_data5_sensor9
+}
+
+activity DEV10 is
+{
+	event evt_send_data1_sensor10;
+	event evt_send_data2_sensor10;
+	event evt_send_data3_sensor10;
+	event evt_send_data4_sensor10
+	// event evt_send_data5_sensor10
+}
+
+
+activity DEVOUT is
+{
+	loop 10 { event evt_recv_dataOut }
+}
+
+
+	
+//====================================================
+//             Contexts 
+//====================================================	
+ 
+ 
+cdl cdl_test is {
+
+	main is { 	skip }
+ 
+}
+
+cdl cdl_10dev is {
+
+	properties  	pte_SchedulerFin, 
+					pte_SchedulerErreur, 
+					pte_ComputErreur, 
+					// controle qu'une fois toutes les valeurs ont recues par Comput
+					pty_Comput_Toutes_data_lus,
+					//----- controle les valeurs recues par l'environnement :  10, 20, 30, ... 
+					pty_Env_recv_result_10, 
+					pty_Env_recv_result_10_20, 
+					pty_Env_recv_result_10_20_30
+
+	init is { go }
+	main is { 	
+		DEV1 || 
+		DEV2 || 
+		DEV3 || 
+		DEV4 || 
+		DEV5 || 
+		DEV6 || 
+		DEV7 || 
+		DEV8 || 
+		DEV9 || 
+		loop 9 { event evt_recv_dataOut }
+	}
+
+}
+ 
+ 
+

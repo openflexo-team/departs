@@ -1,0 +1,65 @@
+activity HMI0_login is {
+	event {send t_msg {id = 0, body = t_body.login(true)} to {SM}1}
+}
+
+activity HMI1_login is {
+	event {send t_msg {id = 1, body = t_body.login(true)} to {SM}1}
+}
+
+activity HMI0_logout is {
+	event {send t_msg {id = 0, body = t_body.logout} to {SM}1}
+}
+
+activity HMI1_logout is {
+	event {send t_msg {id = 1, body = t_body.logout} to {SM}1}
+}
+
+activity HMI0_operate is {
+	event {send t_msg {id = 0, body = t_body.operate} to {SM}1}
+}
+
+activity HMI1_operate is {
+	event {send t_msg {id = 1, body = t_body.operate} to {SM}1}
+}
+
+activity HMI0_login_operate_and_logout is {
+	HMI0_login;
+	HMI0_operate;
+	HMI0_logout
+}
+
+activity HMI1_login_operate_and_logout is {
+	HMI1_login;
+	HMI1_operate;
+	HMI1_logout
+}
+
+
+event ack_HMI0 is {receive t_msg {id = 0, body = t_body.ack(true)} from {SM}1}
+event nack_HMI0 is {receive t_msg {id = 0, body = t_body.ack(false)} from {SM}1}
+event ack_HMI1 is {receive t_msg {id = 1, body = t_body.ack(true)} from {SM}1}
+event nack_HMI1 is {receive t_msg {id = 1, body = t_body.ack(false)} from {SM}1}
+
+event operate_Ack is {informal #operateAck#}
+event operate_Nack is {informal #operateNack#}
+
+event context_informal is {informal #context informal#}
+
+
+property matches_any_informal is {
+	start -- / / operate_Ack / -> success;
+	start -- / / operate_Nack / -> success;
+	start -- / / context_informal / -> success
+}
+
+
+cdl test is {
+	properties
+		matches_any_informal
+
+	main is {
+		HMI0_login_operate_and_logout
+	||	HMI1_login_operate_and_logout
+	||	event context_informal
+	}
+}

@@ -1,0 +1,48 @@
+
+type msg is union p1 | p2 of int | p3 of 0..4 end
+
+function urgent (m : msg) : bool is
+  // begin return m=p1 end
+  begin
+  case m of
+     p1 -> return true
+  | any -> return false
+  end
+  end
+
+type mbuff is queue 7 of msg
+
+function reorder (q: mbuff, n: mbuff) : mbuff is
+  begin
+  if empty q then
+     return n
+  else
+     if urgent (first q) then
+	 return append (reorder (dequeue q, n), first q)
+     else
+	 return reorder (dequeue q, enqueue (n,first q))
+     end
+  end
+  end
+
+process P is
+  states s1, s2, s3
+  var q : mbuff := {||}, k: 0..2
+  from s1
+     if full q then
+	 to s2
+     else 
+	 select
+	    q := enqueue (q,p1)
+	 [] q := enqueue (q,p2 5)
+	 [] k := 0; q := enqueue (q,p3 k)
+	 [] k := 1; q := enqueue (q,p3 k)
+	 [] k := 2; q := enqueue (q,p3 k)
+	 end;
+	 to s1
+     end
+  from s2
+     q := reorder (q,{||});
+     to s3
+
+P

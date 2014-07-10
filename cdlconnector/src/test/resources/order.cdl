@@ -1,0 +1,23 @@
+event event1 is {
+	send a to {p}1
+}
+
+event event2 is {
+	send b to {p}1
+}
+
+
+activity seq3 is {
+	event event1;
+	event event2
+}
+
+predicate scope4 is {
+	{p}1:f1.f2.f3 = true
+}
+
+variable variable5 is { value1, value2, value3 }
+
+cdl cdl6 is {
+	main is { event event1 }
+}

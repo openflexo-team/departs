@@ -1,0 +1,32 @@
+extern func1 (read write int, read int) : int is "read"
+extern func2 (read int, read int) : int is "func1"
+extern func3 (write int, read int) : int is "sin"
+extern func4 (int, int) : int is "my_func"
+
+
+process p is
+states s0, s1, s2, s3
+var 
+	x: int := 0,
+	aa : int := 4
+from s0
+	x := func1(aa, 3);
+	to s1
+from s1
+	x := func2(aa, 3);
+	to s2
+from s2
+	x := func3(aa, 3);
+	to s3
+from s3
+	x := func4(aa, 3);
+	to s0
+
+
+component main is
+par 
+	p
+end par
+
+
+main

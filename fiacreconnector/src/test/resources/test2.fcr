@@ -1,0 +1,13 @@
+/* Test of multiple line comment and multiple comment depth */
+
+
+/*  Comment  
+
+/* Inner Comment */
+
+const a:int is 3
+Out of inner comment
+*/
+
+type data is int
+

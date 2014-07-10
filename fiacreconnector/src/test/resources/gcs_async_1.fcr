@@ -1,0 +1,168 @@
+/*______________gcs_async_jcr.fcr ___________________________________________*/
+
+type fifo is queue 4 of int 
+type data_type is 0..9
+
+/*__________________________________________________________*/
+
+
+/*=============================================================*/
+
+process IHM (& toGC:read write fifo,& fromGC:read write fifo, req: int)
+is 
+
+states idle, wait_data
+
+var
+	data : int
+init
+	data := 0;
+to idle
+
+/*______Ecriture du signal req dans la fifo IHM_GC_________*/
+
+from idle
+	if  ( not (full toGC) ) then
+		toGC := enqueue(toGC, req)
+	else
+		loop
+	end;
+to wait_data
+
+/*______Recherche du signal data dans la fifo GC_IHM_______*/
+
+from wait_data
+	if ( not(empty(fromGC)) ) then
+		data, fromGC := first(fromGC), dequeue fromGC
+	else
+		loop
+	end;
+to idle
+
+/*=============================================================*/
+
+process GC (
+		& toIHM :read write fifo,
+		& toCS:read write fifo,
+		& fromIHM:read write fifo, 
+		& fromCS :read write fifo
+	) is
+ 
+states idle, send_req, wait_data, send_data 
+
+var 
+	dataGC	: int,
+	reqGC	: int
+init
+	dataGC 	:= 3;
+	reqGC  	:= 4;
+to idle 
+
+/*_____Recherche du signal reqGC dans la fifo IHM_GC________*/
+
+from idle
+	if( not(empty fromIHM) ) then
+		reqGC, fromIHM := first fromIHM, dequeue (fromIHM)
+	else
+		loop
+	end; 
+to send_req
+
+/*____Ecriture du signal reqGC dans la fifo GC_CS___________*/
+
+from send_req
+	if( not(full(toCS)) ) then
+		toCS := enqueue(toCS, reqGC)
+	else
+		loop
+	end;
+to wait_data
+
+/*____Recherche du signal dataGC dans la fifo CS_GC_________*/
+
+from wait_data
+	if( not(empty fromCS) ) then
+		dataGC, fromCS := first fromCS, dequeue fromCS
+	else
+		loop
+	end;
+to send_data
+
+/*______Ecriture du signal dataGC dans la fifo GC_IHM_______*/
+
+from send_data
+	if(not(full toIHM))then
+		toIHM :=enqueue(toIHM, dataGC)
+	else
+		loop
+	end;
+to idle
+
+/*=============================================================*/
+
+process CS ( &toGC:read write fifo, &fromGC:read write fifo )is
+
+states idle, treat_data, send_data
+var 
+	reqCS:int,
+	dataCS:int
+
+init
+	reqCS :=5;
+	dataCS:=6;
+
+to idle
+
+/*_______Recherche du signal reqCS dans la fifo GC_CS____*/
+
+from idle
+	if(not(empty(fromGC)))then
+		reqCS:=first(fromGC);
+		fromGC:=dequeue fromGC
+	else
+		loop
+	end;
+to treat_data
+
+from treat_data
+	select 
+		dataCS := 0
+	[]
+		dataCS := 1
+	end;
+to send_data
+	
+/*_____Ecriture du signal dataCS dans la fifo CS_GC______*/
+
+from send_data
+	if(not(full(toGC)))then
+		toGC:=enqueue(toGC, dataCS)
+	else
+		loop
+	end;
+to idle	
+
+/*=============================================================*/
+ 
+component main is
+
+var  
+	IHM_GC		: fifo,
+	GC_IHM		: fifo,
+	GC_CS		: fifo, 
+	CS_GC		: fifo
+	
+init
+	IHM_GC := {||};
+	GC_IHM := {||};
+	CS_GC := {||};
+	GC_CS := {||}
+
+par     
+		IHM (&IHM_GC,&GC_IHM, 10)
+	||  CS(&CS_GC,&GC_CS)
+	||	GC (&GC_IHM, &GC_CS, &IHM_GC, &CS_GC)
+end
+
+
+main

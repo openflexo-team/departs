@@ -1,0 +1,46 @@
+ (       *           
+ )\ )  (  `       )  
+(()/(  )\))(   ( /(  
+ /(_))((_)()\  )\()) 
+(_))  (_()((_)((_)\  
+/ __| |  \/  | / (_) 
+\__ \ | |\/| | | |   
+|___/ |_|  |_| |_|   
+
+- Au maximum 3 HMIs.
+- Les HMIs peuvent se logger, se délogger, demander le lancement d'une opération.
+- Une requête est toujours suivie d'un acknowledgement, positif ou négatif.
+- Une demande d'opération est ponctuelle, résolue immédiatement.
+- Le SM n'a qu'un état.
+                      ____               
+  .--.--.           ,'  , `.    ,----,   
+ /  /    '.      ,-+-,.' _ |  .'   .' \  
+|  :  /`. /   ,-+-. ;   , ||,----,'    | 
+;  |  |--`   ,--.'|'   |  ;||    :  .  ; 
+|  :  ;_    |   |  ,', |  ':;    |.'  /  
+ \  \    `. |   | /  | |  ||`----'/  ;   
+  `----.   \'   | :  | :  |,  /  ;  /    
+  __ \  \  |;   . |  ; |--'  ;  /  /-,   
+ /  /`--'  /|   : |  | ,    /  /  /.`|   
+'--'.     / |   : '  |/   ./__;      :   
+  `--'---'  ;   | |`-'    |   :    .'    
+            |   ;/        ;   | .'       
+            '---'         `---'
+
+- Une nouvelle requête pour les HMIs pour stoper l'opération en cour
+- Une demande d'opération provoque un changement d'état pour le SM
+- Une seule opération peut être en cour à un moment donné
+- En opération, les HMIs peuvent se logger, se délogger ...
+- ... Sauf si il s'agit de la dernière HMI loggée.                
+                                  
+ .M"""bgd `7MMM.     ,MMF'        
+,MI    "Y   MMMb    dPMM          
+`MMb.       M YM   ,M MM  pd""b.  
+  `YMMNq.   M  Mb  M' MM (O)  `8b 
+.     `MM   M  YM.P'  MM      ,89 
+Mb     dM   M  `YM'   MM    ""Yb. 
+P"Ybmmd"  .JML. `'  .JMML.     88 
+                         (O)  .M' 
+                          bmmmd'  
+
+- Rajout d'un processus system, l'authentification

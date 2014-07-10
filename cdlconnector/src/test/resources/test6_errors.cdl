@@ -1,0 +1,49 @@
+
+event Ev1 is {informal #ErrorOverflowMailBox# }
+event Ev is {send sample() to {moteur}0}
+event Ev3 is { send sample(3) to {moteur}0}
+event Ev4 is { receive sample(3) from any}
+event Ev5 is {receive sample(3) from any}
+event Debut is {send debut(1) to {moteur}0}
+event Sample is {send sample() to {moteur}0}
+event Sample2 is { send sample(2) to {moteur}0}
+event sample3 is {send sample(3) to {moteur}0}
+event send2 is { send avance(1) to {moteur}0}
+event ack1 is { receive OK(1) from any}
+event ack2 is { receive OK(2) from any}
+
+erreur
+
+activity SEQniveau1 is {
+	event Debut;
+	{ 
+		any -> loop 3 event Sample2
+	[]	any -> 
+		{
+			event sample3;
+			{
+				any -> event ack1 
+			[]	any -> event ack2  
+			}
+		}
+	}
+}
+
+activity SEQniveau2 is {
+	event Ev;
+	{ 
+		any -> loop 3 event Ev 
+	[]	any -> event ack1 
+	[]	any -> 
+		{
+			any ->	event Ev3  
+		[]	any ->	event Ev4
+		[]	any ->	{ event Sample; event Ev5 } 
+		}
+	}
+}
+
+cdl test6 is {
+	main is { SEQniveau1 || SEQniveau2 }
+}
+

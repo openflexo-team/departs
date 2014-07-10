@@ -1,0 +1,35 @@
+
+event A1 is {send As1 to {sys}0}
+event A2 is {send As2 to {sys}0}
+event B11 is {send Bs11 to {sys}0}
+event B12 is {send Bs12 to {sys}0}
+event B13 is {send Bs13 to {sys}0}
+event B21 is {send Bs21 to {sys}0}
+event B22 is {send Bs22 to {sys}0}
+
+// B1 := B11 [] B12 [] B13
+activity B1 is {
+	any -> 	event B11
+[]	any ->	event B12
+[]	any ->	event B13
+}
+
+// B2 := B21 [] B22
+activity B2 is {
+	any -> 	event B21
+[]	any ->	event B22
+}
+
+// A := A1 [] A2
+activity actorA is {any -> event A1 [] any -> event A2}
+
+// B := B1 ; B2
+activity actorB is {B1; B2}
+	
+cdl altbis is {
+	// (A1 [] A2) || ((B11 [] B12 [] B13) ; (B21 [] B22))
+	// Unfolded into 12 states
+	// Contains 36 paths
+	main is { actorA || actorB }
+	
+}

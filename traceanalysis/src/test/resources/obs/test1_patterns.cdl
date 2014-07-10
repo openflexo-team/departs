@@ -1,0 +1,49 @@
+/* 
+	System:
+		s0 -- ?a, !b -> s0
+		
+	CDL:
+		!a; !a
+	
+	Trace (+: simultané):
+		?a + !b; ?a + !b
+	
+	Observer:
+		start -- ?a -> wait
+		wait -- ?a -> reject
+		wait -- !b -> start
+		
+	Notes:
+		En état de rejet ssi !b n'est pas matché.
+		?a et !b sont générés de façon simultanée.
+*/
+
+activity send_a is {
+	event {send t_msg.a to {system}1}
+}
+
+cdl seq_aa is {
+	properties 
+		existence_all_ordered
+
+	init is {
+		send_a;
+		send_a
+	}
+	
+	main is {
+		skip
+	}
+}
+
+event receive_a is {receive t_msg.a from {env}1 to {system}1}
+event send_b is {send t_msg.b from {system}1 to {env}1}
+
+property existence_all_ordered is {
+	all ordered {
+		exactly one occurrence of receive_a;
+		exactly one occurrence of send_b;
+		exactly one occurrence of receive_a;
+		exactly one occurrence of send_b
+	} occurs 
+}

@@ -1,0 +1,32 @@
+type t_interval_0_4 is 0..4
+
+type t_array2_ofBool is array 2 of bool
+
+type t_record is record
+	myInterval: t_interval_0_4, 
+	myArray: t_array2_ofBool
+end record
+
+type t_union is union
+	aConstr
+|	anInterval of t_interval_0_4
+|	aRecord of t_record
+end union
+
+type t_array3_ofUnion is array 3 of t_union
+
+type t_record_of_death is record
+	myRecord: t_record,
+	myUnion: t_union,
+	myArray: t_array3_ofUnion
+end record
+
+process doNothing is
+states
+	idle
+init
+	to idle
+from idle
+	loop
+	
+doNothing 

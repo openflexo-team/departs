@@ -1,0 +1,167 @@
+const MAX_HMI: nat is 3
+const FIFO_SIZE: nat is 5
+
+type t_id is 0..(MAX_HMI - 1)
+const DEFAULT_t_id: t_id is 0
+
+type t_body is union
+	ack of bool
+|	login of bool
+|	logout
+|	startOperate
+|	stopOperate
+end union
+const DEFAULT_t_body: t_body is ack false
+
+type t_msg is record
+	id: t_id,
+	body: t_body
+end record
+const DEFAULT_t_msg: t_msg is {id = DEFAULT_t_id, body = DEFAULT_t_body}
+
+type t_fifo is queue FIFO_SIZE of t_msg
+
+type t_HMI is record
+	logged: bool
+end record
+const DEFAULT_t_HMI: t_HMI is {logged = false}
+
+type t_HMI_array is array MAX_HMI of t_HMI
+const DEFAULT_t_HMI_array: t_HMI_array is [DEFAULT_t_HMI, DEFAULT_t_HMI, DEFAULT_t_HMI]
+
+function ackId (
+	id: t_id,
+	test: bool)
+	: t_msg is
+begin
+	return {id = id, body = ack test}
+end
+
+function countLogged(HMIs: t_HMI_array) : nat is
+var
+	result: nat := 0,
+	id: t_id := 0
+begin
+	foreach id do
+		if HMIs[id].logged then
+			result := result + 1
+		end if
+	end foreach;
+	return result
+end
+
+type t_SM_state is union
+	state_idle
+|	state_operate
+end union
+
+process SM (& input: t_fifo, & output: t_fifo) is
+states
+	idle,
+	operate
+var
+	nextState: t_SM_state,
+	HMIs: t_HMI_array,
+	id: t_id,
+	body: t_body,
+	test: bool
+init
+	nextState := state_idle;
+	HMIs := DEFAULT_t_HMI_array;
+	id := DEFAULT_t_id;
+	body := DEFAULT_t_body;
+	test := false;
+	to idle
+	
+from idle
+	if (full output) or (empty input) then
+		loop
+	end if;
+	id := (first input).id;
+	body := (first input).body;
+	input := dequeue input;
+	case body of
+		login test->
+			if test and (not HMIs[id].logged) then
+				output := enqueue(output, ackId(id, true));
+				HMIs[id].logged := true
+			else
+				output := enqueue(output, ackId(id, false))
+			end if
+	|	logout ->
+			if HMIs[id].logged then
+				output := enqueue(output, ackId(id, true));
+				HMIs[id].logged := false
+			else
+				output := enqueue(output, ackId(id, false))
+			end if
+	|	startOperate ->
+			if HMIs[id].logged then
+				output := enqueue(output, ackId(id, true));
+				nextState := state_operate
+			else
+				output := enqueue(output, ackId(id, false))
+			end if
+	|	any ->
+			output := enqueue(output, ackId(id, false))
+	end case;
+	id := DEFAULT_t_id;
+	body := DEFAULT_t_body;
+	test := false;
+	case nextState of
+		state_operate -> to operate
+	|	any -> loop
+	end case
+
+from operate
+	if (full output) or (empty input) then
+		loop
+	end if;
+	id := (first input).id;
+	body := (first input).body;
+	input := dequeue input;
+	case body of
+		login test->
+			if test and (not HMIs[id].logged) then
+				output := enqueue(output, ackId(id, true));
+				HMIs[id].logged := true
+			else
+				output := enqueue(output, ackId(id, false))
+			end if
+	|	logout ->
+			if HMIs[id].logged and countLogged(HMIs) > 1 then
+				output := enqueue(output, ackId(id, true));
+				HMIs[id].logged := false
+			else
+				output := enqueue(output, ackId(id, false))
+			end if
+	|	stopOperate ->
+			if HMIs[id].logged then
+				output := enqueue(output, ackId(id, true));
+				nextState := state_idle
+			else
+				output := enqueue(output, ackId(id, false))
+			end if
+	|	any ->
+			output := enqueue(output, ackId(id, false))		
+	end case;
+	id := DEFAULT_t_id;
+	body := DEFAULT_t_body;
+	test := false;
+	case nextState of
+		state_idle -> to idle
+	|	any -> loop
+	end case
+	
+component root is
+var
+	SM_1: t_fifo,
+	toContext: t_fifo
+init
+	SM_1 := {||};
+	toContext := {||}
+par
+	SM(& SM_1, & toContext)
+end
+
+root

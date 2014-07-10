@@ -1,0 +1,355 @@
+/******************************************************************************
+ * Train/Gate/Controller
+ * Example from Xavier Dumas Phd Thesis
+ * 
+ * 17th of january 2011.
+ * authors:
+ * - Jean-Charles Roger
+ *****************************************************************************/
+
+const no_signal: int is 0
+const e1: int is		1
+const e2: int is		2
+const s1: int is		3
+const s2: int is		4
+const open: int is		5
+const close: int is		6
+const up: int is		7
+const down: int is		8
+const tick: int is		9
+
+/* Fifo for signals (without values) */
+type fifo is queue 10 of int 
+
+process GB (
+	& input:read write fifo
+)
+is
+
+states 
+	idle, 
+	busy1, 
+	busy2, 
+	busy12, 
+	tempo, 
+	safe
+
+var 
+	received : int,
+	tmp_received : int,
+	tmp_input : fifo,
+	tmp_saved : fifo
+	
+init 
+	received := no_signal;
+	tmp_received := no_signal;
+	tmp_input :=  {||};
+	tmp_saved :=  {||};
+to idle
+
+from idle
+	/* work on input copy */
+	tmp_input := input;
+	
+	/* searches for input signals and saved signals */
+	while (not (empty tmp_input) and received = no_signal) do
+		tmp_received := first tmp_input;
+		tmp_input := dequeue tmp_input;
+		
+		if ( 	tmp_received = e1 or 
+				tmp_received = e2 or 
+				tmp_received = close		) then
+				
+			received := tmp_received
+		end		
+	end;
+	 /*@Fin*/
+	if ( received = no_signal ) then
+		/* if no signal found clear tmp vars and loop */
+		tmp_input := {||};
+		tmp_saved := {||};
+		tmp_received := no_signal;
+		received := no_signal
+	else 
+		/* if signal found, apply on input and clear tmp vars */
+		input := tmp_input;
+		tmp_saved := {||};
+		tmp_input := {||};
+		tmp_received := no_signal;
+
+		/* select next state */
+		if ( received = e1) then
+			/* TODO send down and light on */
+			received := no_signal;
+			to busy1		
+		elsif ( received = e2 ) then
+			/* TODO send down and light on */
+			received := no_signal;
+			to busy2
+		elsif ( received = close ) then
+			/* TODO send down and light on */
+			received := no_signal;
+			to safe
+		end if
+	end if;
+to idle
+
+from busy1
+	/* work on input copy */
+	tmp_input := input;
+	
+	/* searches for input signals and saved signals */
+	while (not (empty tmp_input) and received = no_signal) do
+		tmp_received := first tmp_input;
+		tmp_input := dequeue tmp_input;
+		
+		if ( 	tmp_received = e2 or 
+				tmp_received = s1 		) then
+				
+			received := tmp_received
+			
+		elsif (	tmp_received = open or 
+				tmp_received = close	) then
+				
+			tmp_saved := enqueue(tmp_saved, tmp_received)
+		end		
+	end;
+	
+	if ( received = no_signal ) then
+		/* if no signal found clear tmp vars and loop */
+		tmp_input := {||};
+		tmp_saved := {||};
+		tmp_received := no_signal;
+		received := no_signal
+	else 
+		/* if signal found, apply on input and clear tmp vars */
+		input := tmp_saved;
+		while ( not (empty tmp_input) ) do 
+			input := enqueue(input, first(tmp_input));
+			tmp_input := dequeue(tmp_input)
+		end;
+		tmp_saved := {||};
+		tmp_input := {||};
+		tmp_received := no_signal;
+
+		/* select next state */
+		if ( received = e2) then
+			received := no_signal;
+			to busy12		
+		elsif ( received = s1 ) then
+			received := no_signal;
+			to tempo
+		end if
+	end if;
+to busy1
+
+from busy2
+	/* work on input copy */
+	tmp_input := input;
+	
+	/* searches for input signals and saved signals */
+	while (not (empty tmp_input) and received = no_signal) do
+		tmp_received := first tmp_input;
+		tmp_input := dequeue tmp_input;
+		
+		if ( 	tmp_received = e1 or 
+				tmp_received = s2 		) then
+				
+			received := tmp_received
+			
+		elsif (	tmp_received = open or 
+				tmp_received = close	) then
+				
+			tmp_saved := enqueue(tmp_saved, tmp_received)
+		end		
+	end;
+	
+	if ( received = no_signal ) then
+		/* if no signal found clear tmp vars and loop */
+		tmp_input := {||};
+		tmp_saved := {||};
+		tmp_received := no_signal;
+		received := no_signal
+	else 
+		/* if signal found, apply on input and clear tmp vars */
+		input := tmp_saved;
+		while ( not (empty tmp_input) ) do 
+			input := enqueue(input, first(tmp_input));
+			tmp_input := dequeue(tmp_input)
+		end;
+		tmp_saved := {||};
+		tmp_input := {||};
+		tmp_received := no_signal;
+
+		/* select next state */
+		if ( received = e1) then
+			received := no_signal;
+			to busy12		
+		elsif ( received = s2 ) then
+			received := no_signal;
+			to tempo
+		end if
+	end if;
+to busy2
+
+from busy12
+	/* work on input copy */
+	tmp_input := input;
+	
+	/* searches for input signals and saved signals */
+	while (not (empty tmp_input) and received = no_signal) do
+		tmp_received := first tmp_input;
+		tmp_input := dequeue tmp_input;
+		
+		if ( 	tmp_received = s1 or 
+				tmp_received = s2 		) then
+				
+			received := tmp_received
+			
+		elsif (	tmp_received = open or 
+				tmp_received = close	) then
+				
+			tmp_saved := enqueue(tmp_saved, tmp_received)
+		end		
+	end;
+	
+	if ( received = no_signal ) then
+		/* if no signal found clear tmp vars and loop */
+		tmp_input := {||};
+		tmp_saved := {||};
+		tmp_received := no_signal;
+		received := no_signal
+	else 
+		/* if signal found, apply on input and clear tmp vars */
+		input := tmp_saved;
+		while ( not (empty tmp_input) ) do 
+			input := enqueue(input, first(tmp_input));
+			tmp_input := dequeue(tmp_input)
+		end;
+		tmp_saved := {||};
+		tmp_input := {||};
+		tmp_received := no_signal;
+
+		/* select next state */
+		if ( received = s1) then
+			received := no_signal;
+			to busy2		
+		elsif ( received = s2 ) then
+			received := no_signal;
+			to busy1
+		end if
+	end if;
+to busy12
+
+from tempo
+	/* work on input copy */
+	tmp_input := input;
+	
+	/* searches for input signals and saved signals */
+	while (not (empty tmp_input) and received = no_signal) do
+		tmp_received := first tmp_input;
+		tmp_input := dequeue tmp_input;
+		
+		if ( 	tmp_received = e1 or 
+				tmp_received = e2 or 
+				tmp_received = close or 
+				tmp_received = tick		) then
+				
+			received := tmp_received
+		end		
+	end;
+	
+	if ( received = no_signal ) then
+		/* if no signal found clear tmp vars and loop */
+		tmp_input := {||};
+		tmp_saved := {||};
+		tmp_received := no_signal;
+		received := no_signal
+	else 
+		/* if signal found, apply on input and clear tmp vars */
+		input := tmp_input;
+		tmp_saved := {||};
+		tmp_input := {||};
+		tmp_received := no_signal;
+
+		/* select next state */
+		if ( received = e1) then
+			received := no_signal;
+			to busy1		
+		elsif ( received = e2 ) then
+			received := no_signal;
+			to busy2
+		elsif ( received = close ) then
+			received := no_signal;
+			to safe
+		elsif ( received = tick ) then
+			/* TODO send ip and light off */
+			received := no_signal;
+			to idle
+		end if
+	end if;
+to tempo
+
+from safe
+	/* work on input copy */
+	tmp_input := input;
+			
+	/* searches for input signals and saved signals */
+	while (not (empty tmp_input) and received = no_signal) do
+		tmp_received := first tmp_input;
+		tmp_input := dequeue tmp_input;
+		
+		if ( 	tmp_received = open	) then
+			received := tmp_received
+			
+		elsif (	tmp_received = s1 or 
+				tmp_received = s2 or 
+				tmp_received = e1 or 
+				tmp_received = e2	) then
+				
+			tmp_saved := enqueue(tmp_saved, tmp_received)
+		end		
+	end;
+	
+	if ( received = no_signal ) then
+		/* if no signal found clear tmp vars and loop */
+		tmp_input := {||};
+		tmp_saved := {||};
+		tmp_received := no_signal;
+		received := no_signal
+	else 
+		/* if signal found, apply on input and clear tmp vars */
+		input := tmp_saved;
+		while ( not (empty tmp_input) ) do 
+		 
+			input := enqueue(input, first(tmp_input));
+			tmp_input := dequeue(tmp_input)
+		end;
+		tmp_saved := {||};
+		tmp_input := {||};
+		tmp_received := no_signal;
+
+		/* select next state */
+		if ( received = open) then
+			received := no_signal;
+			to tempo		
+		end if
+	end if;
+to safe
+
+component main is
+
+var  
+	GB_1: fifo,
+	toContext: fifo
+		
+init
+	GB_1 := {||};
+	toContext := {||}
+	
+par     
+	GB(&GB_1)
+end
+
+
+main

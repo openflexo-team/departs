@@ -1,0 +1,257 @@
+/*------------------------------------------
+   calcul2_synchro_asynchro.fcr  version 21 jan 12
+   
+   3 processus de calcul : For, While, Until
+   communication des données asynchrone entre les processus
+   et declenchement des processus de maniere synchrone sur ck.
+   Clock et Proc_While se syncronisent en plus avec ck_while pour
+   les calculs internes de Proc_While
+   
+   la valeur echangee est de type structure t_data {index, value}
+   Iteration sur :
+     - ProcFor transmet le couple (i, i*i)
+     - ProcWhile calcule et transmet le couple (i, racine carre de i*i)
+     - ProcUntil receptionne le couple (i, i)
+
+-------------------
+Exploration 
+-------------------
+Processus synchronises sur ck 
+nb data max dans fifoFor2While et fifoWhile2Until = 0 ou 1
+
+nb_sync : nombre de syncho Clk + Clk_While 
+
+pour NVAL_MAX = 1    : nb_sync:       5 Explored      11 states and      10 transitions in  0,2 seconds.
+pour NVAL_MAX = 30   : nb_sync:     556 Explored     678 states and     677 transitions in  0,33 seconds.
+pour NVAL_MAX = 100  : nb_sync:   5 351 Explored   5 753 states and   5 752 transitions in  0,403 seconds.
+pour NVAL_MAX = 1000 : nb_sync: 503 501 Explored 507 503 states and 507 502 transitions in 11,494 seconds.
+
+------------------------------------------ 
+  Ph. Dhaussy Ensta-Bretagne  	  
+-------------------------------------------*/
+
+const NVAL_MAX  		: nat is 3
+const NVAL_MAX_PLUS_1   : nat is NVAL_MAX + 1
+
+const SIZE_FIFO  : nat is 10
+
+type t_data is record
+	index   : int,    /* value index */
+	value   : int     /* value  */
+end
+
+type t_fifo is queue SIZE_FIFO of t_data
+
+//------ pour les events et properties du CDL ----
+
+// la 1ere donnee  : ProcFor --> (1,1) --> ProcWhile --> (1,1) --> ProcUntil
+const data1   	: t_data  is {index = 1, value = 1}
+
+// la derniere donnee : ProcFor --> (NVAL_MAX, NVAL_MAX * NVAL_MAX) --> ProcWhile --> (NVAL_MAX, NVAL_MAX) --> ProcUntil
+const last_data_For	: t_data  is {index = NVAL_MAX, value = NVAL_MAX * NVAL_MAX}
+const last_data_While	: t_data  is {index = NVAL_MAX, value = NVAL_MAX}
+
+
+/*====================== ProcFor ================================*/
+// Envoi des valeurs 1 a NVAL_MAX inclus au carre
+//=================================================================
+process ProcFor [ck : in none] (&output : t_fifo)
+is 
+
+states Start, S1, End
+var
+	noVal  : int,
+	n  : int,
+	data : t_data
+init
+	noVal  := 0;
+	n  := 0;
+	data := {index = 0, value = 0};
+	to Start
+   
+/*-----------------------*/
+from Start
+	ck;  			/* synchro Clk */
+	if noVal >= NVAL_MAX  then
+	     to End
+	end;
+	noVal := noVal + 1;
+	to S1
+
+from S1
+	//---- envoi de data si fifo non pleine ---
+	if (full (output)) then  loop  end;
+	/*@ For: ecrire */	
+    n := noVal*noVal;
+	data.index := noVal;
+	data.value := n; 
+	output := enqueue (output, data);
+    to Start
+ 
+from End 
+	loop
+ 
+/*====================== ProcWhile ================================*/
+
+process ProcWhile [ck : in none, ck_while : in none] ( &input : t_fifo, &output : t_fifo ) 
+is 
+
+states Start, lire_data, S1, S2, S3
+var
+	noVal  : int,
+	n  : int,
+	r  : int,
+	s  : int,
+	data : t_data
+
+init 
+	noVal := 0;
+	n  := 0;
+	s  := 0;
+    r  := 0;
+	data := {index = 0, value = 0};
+	to Start
+  
+/*-----------------------*/
+from Start
+	ck;
+	to lire_data
+	
+from lire_data
+
+	//----- attente si fifo vide et reception de data  -------				
+	if (empty input) then loop end;
+	/*@ While: lire */
+	data := first input;
+	input := dequeue (input);
+
+	noVal := data.index;
+	n := data.value;
+	s := 1;
+    r := 3;
+	to S1
+	
+from S1
+	/*@ While: calculer */
+	ck_while;
+    if (s <= n) then
+      s := s+r;
+      r := r+2;
+      loop
+    else
+      to S2  
+    end
+
+from S2
+	ck_while;
+	to S3
+
+from S3
+	//---- envoi de data si fifo non pleine ---
+	if (full (output)) then  loop  end;
+
+	r := r/2 - 1;
+	data.value := r; 
+	/*@ While: ecrire */
+	output := enqueue (output, data);
+    to Start
+
+	
+//================== procUntil ==============================
+// reception des NVAL_MAX valeurs 
+//  data.index et data.value doivent etre toujours egaux
+///=================================================================
+
+process ProcUntil [ck : in none] ( &input : t_fifo ) 
+is
+  
+states
+    Start, lire_data, End
+var
+	b : bool,
+	noVal  : int,
+	n  : int,
+	data : t_data
+init
+	b := true;
+	noVal  := 0;
+	n  := 0;
+	data := {index = 0, value = 0};
+	to Start
+	
+from Start
+	ck;
+	/*@ TOTOTOTO */
+	to lire_data
+	
+from lire_data
+
+	if noVal >= NVAL_MAX  then
+	     to End
+	else
+		//----- attente si fifo vide et reception de data  -------				
+		if (empty input) then loop end;
+		/*@ Until: lire */
+		data := first input;
+		input := dequeue (input);
+		noVal := noVal + 1;
+		to Start
+	end
+ 
+from End 
+	loop
+		
+	
+// ========= process for clock tick ========
+
+process Clock [ck : out none, ck_while : out none] is
+
+states
+     run
+var
+	nb_sync : int
+init
+	nb_sync := 0;
+     to run
+	 
+ from run
+	select
+		ck;
+		nb_sync := nb_sync + 1
+	[]
+		ck_while;
+		nb_sync := nb_sync + 1
+	end;
+    loop
+   
+/*======================================================*/
+
+component Comp is
+
+var  
+	fifoFor2While     : t_fifo,	
+	fifoWhile2Until   : t_fifo
+
+port 
+	Clk :  none,
+	Clk_While :  none
+	
+init
+	fifoFor2While 	:= {||};
+	fifoWhile2Until := {||}
+	
+par
+	  	Clk            -> ProcFor [Clk] (&fifoFor2While)
+	 ||	Clk, Clk_While -> ProcWhile [Clk, Clk_While] (&fifoFor2While, &fifoWhile2Until)
+	 ||	Clk            -> ProcUntil [Clk] (&fifoWhile2Until)
+	 ||	Clk, Clk_While -> Clock [Clk, Clk_While]
+end
+
+Comp
+
+
+
+
+
+
+

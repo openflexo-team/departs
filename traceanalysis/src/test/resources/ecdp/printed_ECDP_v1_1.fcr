@@ -1,0 +1,524 @@
+const NB_OPERATOR: nat is 2
+const OP_FIFO_SIZE: nat is 5
+const SM_FIFO_SIZE: nat is 2
+type i_opId is 0..(NB_OPERATOR - 1)
+
+const NB_MISSION: nat is 5
+type i_mission is 0..(NB_MISSION - 1)
+
+const MISSION_administrate: i_mission is 0
+const MISSION_maintain: i_mission is 1
+const MISSION_control_defense_solution: i_mission is 2
+const MISSION_control_air_picture: i_mission is 3
+const MISSION_control_replay_visualization: i_mission is 4
+type ar_mission is array NB_MISSION of bool
+
+const DEFAULT_ar_mission: ar_mission is [false, false, false, false, false]
+const NB_ROLE: nat is 4
+type i_role is 0..(NB_ROLE - 1)
+
+const ROLE_administrate: i_role is 0
+const ROLE_maintain: i_role is 1
+const ROLE_produce_air_picture: i_role is 2
+const ROLE_control_engagement: i_role is 3
+type ar_role is array NB_ROLE of bool
+
+const DEFAULT_ar_role: ar_role is [false, false, false, false]
+type i_opRole is (- 1)..(NB_ROLE - 1)
+
+const ROLE_none: i_opRole is (- 1)
+type rec_behavior is record 
+	waitForAck: bool
+	, tryAll: bool end record
+
+const BEHAVIOR_PASSIVE: rec_behavior is {waitForAck = true, tryAll = false}
+const BEHAVIOR_IMPATIENT: rec_behavior is {waitForAck = false, tryAll = false}
+const BEHAVIOR_HACKER: rec_behavior is {waitForAck = true, tryAll = true}
+const BEHAVIOR_MONKEY: rec_behavior is {waitForAck = false, tryAll = true}
+const NB_COMMAND: nat is 6
+type i_command is 0..(NB_COMMAND - 1)
+
+const COMMAND_requestLogin: i_command is 0
+const COMMAND_requestLogout: i_command is 1
+const COMMAND_requestMission: i_command is 2
+const COMMAND_requestRole: i_command is 3
+const COMMAND_requestActiveSubstate: i_command is 4
+const COMMAND_requestStopMission: i_command is 5
+type ar_command is array NB_COMMAND of bool
+
+const DEFAULT_ar_command: ar_command is [false, false, false, false, false, false]
+type u_authentification is union
+	CORRECT
+	| WRONG_USERNAME
+	| WRONG_PASSWORD
+end union
+
+type rec_requestLogin is record 
+	id: i_opId
+	, auth: u_authentification end record
+
+const DEFAULT_rec_requestLogin: rec_requestLogin is {id = 0, auth = CORRECT}
+type rec_requestMission is record 
+	id: i_opId
+	, mission: i_mission end record
+
+const DEFAULT_rec_requestMission: rec_requestMission is {id = 0, mission = 0}
+type rec_requestRole is record 
+	id: i_opId
+	, role: i_role end record
+
+const DEFAULT_rec_requestRole: rec_requestRole is {id = 0, role = 0}
+type u_command is union
+	noCommand
+	| requestLogin of rec_requestLogin
+	| requestLogout of i_opId
+	| requestMission of rec_requestMission
+	| requestRole of rec_requestRole
+	| requestActiveSubstate of i_opId
+	| requestStopMission of i_opId
+end union
+
+type rec_commandStatus is record 
+	cmd: i_command
+	, status: bool end record
+
+const DEFAULT_rec_commandStatus: rec_commandStatus is {cmd = 0, status = false}
+type u_message is union
+	noMessage
+	| ack of bool
+	| commandStatus of rec_commandStatus
+	| availableMissions of ar_mission
+	| availableRoles of ar_role
+end union
+
+type fifo_SMInput is queue SM_FIFO_SIZE of u_command
+
+type fifo_opInput is queue OP_FIFO_SIZE of u_message
+
+type ar_fifo_opInput is array NB_OPERATOR of fifo_opInput
+
+type rec_operator is record 
+	rights: ar_role
+	, authorizedMissions: ar_mission
+	, role: i_opRole
+	, logged: bool end record
+
+const DEFAULT_rec_operator: rec_operator is {rights = DEFAULT_ar_role, role = ROLE_none, authorizedMissions = DEFAULT_ar_mission, logged = false}
+type ar_rec_operator is array NB_OPERATOR of rec_operator
+
+const REACHABLE_MISSIONS: ar_mission is [true, true, true, true, true]
+const REQUIRED_ROLES: array NB_MISSION of ar_role is [[true, false, false, false], [false, true, false, false], [false, false, true, true], [false, false, true, false], [false, false, false, true]]
+process operator (id: i_opId, behavior: rec_behavior, &input: ar_fifo_opInput, &output: fifo_SMInput) is
+states ready, waitingForAck
+var 
+	/* locals (value should always be reset after use to avoid configuration duplication) */
+	currentMessage: u_message, 
+	ackData: bool, 
+	commandStatusData: rec_commandStatus, 
+	/* globals */
+	allowedMissions: ar_mission, 
+	allowedRoles: ar_role, 
+	waitForAck: bool, 
+	allowedCommands: ar_command 
+init currentMessage := noMessage;
+ackData := false;
+commandStatusData := DEFAULT_rec_commandStatus;
+allowedMissions := DEFAULT_ar_mission;
+allowedRoles := DEFAULT_ar_role;
+waitForAck := false;
+allowedCommands := DEFAULT_ar_command;
+to ready
+
+from ready
+	if (not (empty input[id])) then
+		/* Read and discard next input if any */
+		currentMessage := (first input[id]);
+		case currentMessage of
+		commandStatus (commandStatusData) -> /* Update allowed commands accordingly */
+			allowedCommands[commandStatusData.cmd] := commandStatusData.status;
+			if ((commandStatusData.cmd = COMMAND_requestMission) and (not commandStatusData.status)) then
+				/* Fixes to avoid useless state duplication */
+				allowedMissions := DEFAULT_ar_mission
+			else 
+				if ((commandStatusData.cmd = COMMAND_requestRole) and (not commandStatusData.status)) then
+					allowedRoles := DEFAULT_ar_role
+				end if
+			end if;
+			/* Update allowed missions accordingly (done simply by matching) */
+			commandStatusData := DEFAULT_rec_commandStatus
+		| availableMissions (allowedMissions) -> /* Update allowed roles accordingly (done simply by matching) */
+			null
+		| availableRoles (allowedRoles) -> /* If anything else, don't do a thing (message still will be discarded) */
+			null
+		| any -> null
+		end case;
+		input[id] := (dequeue input[id]);
+		/* If no input, send or not a command to the session manager */
+		currentMessage := noMessage
+	else 
+		if (not (full output)) then
+			select
+				if (behavior.tryAll or allowedCommands[COMMAND_requestLogin]) then
+					select
+						/* Login */
+						output := (enqueue(output, requestLogin ({id = id, auth = CORRECT})))
+					[]
+						output := (enqueue(output, requestLogin ({id = id, auth = WRONG_USERNAME})))
+					[]
+						output := (enqueue(output, requestLogin ({id = id, auth = WRONG_PASSWORD})))
+					end select;
+					if (not behavior.tryAll) then
+						waitForAck := true
+					end if
+				end if
+			[]
+				if (behavior.tryAll or allowedCommands[COMMAND_requestLogout]) then
+					/* Logout */
+					output := (enqueue(output, requestLogout (id)));
+					if (not behavior.tryAll) then
+						waitForAck := true
+					end if
+				end if
+			[]
+				if (behavior.tryAll or allowedCommands[COMMAND_requestMission]) then
+					select
+						if (behavior.tryAll or allowedMissions[MISSION_administrate]) then
+							/* Request a mission */
+							output := (enqueue(output, requestMission ({id = id, mission = MISSION_administrate})));
+							if (not behavior.tryAll) then
+								waitForAck := true
+							end if
+						end if
+					[]
+						if (behavior.tryAll or allowedMissions[MISSION_maintain]) then
+							output := (enqueue(output, requestMission ({id = id, mission = MISSION_maintain})));
+							if (not behavior.tryAll) then
+								waitForAck := true
+							end if
+						end if
+					[]
+						if (behavior.tryAll or allowedMissions[MISSION_control_defense_solution]) then
+							output := (enqueue(output, requestMission ({id = id, mission = MISSION_control_defense_solution})));
+							if (not behavior.tryAll) then
+								waitForAck := true
+							end if
+						end if
+					[]
+						if (behavior.tryAll or allowedMissions[MISSION_control_air_picture]) then
+							output := (enqueue(output, requestMission ({id = id, mission = MISSION_control_air_picture})));
+							if (not behavior.tryAll) then
+								waitForAck := true
+							end if
+						end if
+					[]
+						if (behavior.tryAll or allowedMissions[MISSION_control_replay_visualization]) then
+							output := (enqueue(output, requestMission ({id = id, mission = MISSION_control_replay_visualization})));
+							if (not behavior.tryAll) then
+								waitForAck := true
+							end if
+						end if
+					end select
+				end if
+			[]
+				if (behavior.tryAll or allowedCommands[COMMAND_requestRole]) then
+					select
+						if (behavior.tryAll or allowedRoles[ROLE_administrate]) then
+							/* Request a role */
+							output := (enqueue(output, requestRole ({id = id, role = ROLE_administrate})));
+							if (not behavior.tryAll) then
+								waitForAck := true
+							end if
+						end if
+					[]
+						if (behavior.tryAll or allowedRoles[ROLE_maintain]) then
+							output := (enqueue(output, requestRole ({id = id, role = ROLE_maintain})));
+							if (not behavior.tryAll) then
+								waitForAck := true
+							end if
+						end if
+					[]
+						if (behavior.tryAll or allowedRoles[ROLE_produce_air_picture]) then
+							output := (enqueue(output, requestRole ({id = id, role = ROLE_produce_air_picture})));
+							if (not behavior.tryAll) then
+								waitForAck := true
+							end if
+						end if
+					[]
+						if (behavior.tryAll or allowedRoles[ROLE_control_engagement]) then
+							output := (enqueue(output, requestRole ({id = id, role = ROLE_control_engagement})));
+							if (not behavior.tryAll) then
+								waitForAck := true
+							end if
+						end if
+					end select
+				end if
+			[]
+				if (behavior.tryAll or allowedCommands[COMMAND_requestActiveSubstate]) then
+					/* Request mission to start */
+					output := (enqueue(output, requestActiveSubstate (id)));
+					if (not behavior.tryAll) then
+						waitForAck := true
+					end if
+				end if
+			[]
+				if (behavior.tryAll or allowedCommands[COMMAND_requestStopMission]) then
+					/* Stop the mission */
+					output := (enqueue(output, requestStopMission (id)));
+					if (not behavior.tryAll) then
+						waitForAck := true
+					end if
+				end if
+			[]
+				/* Nothing */
+				null
+			end select
+		end if
+	end if;
+	case waitForAck of
+	true -> /* Pick the next state */
+		to waitingForAck
+	| false -> to ready
+	end case
+
+from waitingForAck
+	if (not (empty input[id])) then
+		/* Read and discard next input if any */
+		currentMessage := (first input[id]);
+		case currentMessage of
+		ack (ackData) -> /* Don't wait for an acknowledgement anymore */
+			waitForAck := false;
+			/* If anything else, don't do a thing (message still will be discarded) */
+			ackData := false
+		| any -> null
+		end case;
+		input[id] := (dequeue input[id]);
+		currentMessage := noMessage
+	end if;
+	/* Session Manager
+*****************/
+	case waitForAck of
+	true -> /* Pick the next state */
+		to waitingForAck
+	| false -> to ready
+	end case
+
+
+type u_state is union
+	sInitialization
+	| sStandby
+	| sMissionSelection
+	| sPreparation
+	| sOperational
+end union
+
+process sessionManager (opsData: ar_rec_operator, &input: fifo_SMInput, &output: ar_fifo_opInput) is
+states initialization, standby, missionSelection, preparation, operational, outOfScope
+var 
+	/* See notes in the header about this state */
+	/* locals (value should always be reset after use to avoid configuration duplication) */
+	id: i_opId, 
+	mission: i_mission, 
+	role: i_role, 
+	test: bool, 
+	currentCommand: u_command, 
+	requestLoginData: rec_requestLogin, 
+	requestMissionData: rec_requestMission, 
+	requestRoleData: rec_requestRole, 
+	deny: bool, 
+	roles: ar_role, 
+	/* globals */
+	currentMission: i_mission, 
+	missingRoles: ar_role, 
+	nextState: u_state 
+init id := 0;
+mission := 0;
+role := 0;
+test := false;
+currentCommand := noCommand;
+requestLoginData := DEFAULT_rec_requestLogin;
+requestMissionData := DEFAULT_rec_requestMission;
+requestRoleData := DEFAULT_rec_requestRole;
+deny := false;
+roles := DEFAULT_ar_role;
+currentMission := 0;
+missingRoles := DEFAULT_ar_role;
+nextState := sInitialization;
+to initialization
+
+from initialization
+	foreach id do
+		/* Allow operators to login (broadcast) and initialize allowed missions (variable) */
+		/* Note: assumes operators (consoles) are offline and have all command disabled */
+		output[id] := (enqueue(output[id], commandStatus ({cmd = COMMAND_requestLogin, status = true})));
+		foreach mission do
+			opsData[id].authorizedMissions[mission] := false;
+			if REACHABLE_MISSIONS[mission] then
+				foreach role do
+					if (opsData[id].rights[role] and REQUIRED_ROLES[mission][role]) then
+						opsData[id].authorizedMissions[mission] := true
+					end if
+				end foreach;
+				role := 0
+			end if
+		end foreach;
+		mission := 0
+	end foreach;
+	id := 0;
+	/* Pick the next state */
+	nextState := sStandby;
+	to standby
+
+from standby
+	if (not (empty input)) then
+		/* Read and discard next input if any */
+		currentCommand := (first input);
+		case currentCommand of
+		requestLogin (requestLoginData) -> /* Login requested, keep in mind the same code can be found in some other state */
+			id := requestLoginData.id;
+			case requestLoginData.auth of
+			CORRECT -> output[id] := (enqueue(output[id], ack (true)));
+				output[id] := (enqueue(output[id], availableMissions (opsData[id].authorizedMissions)));
+				output[id] := (enqueue(output[id], commandStatus ({cmd = COMMAND_requestLogout, status = true})));
+				output[id] := (enqueue(output[id], commandStatus ({cmd = COMMAND_requestMission, status = true})));
+				output[id] := (enqueue(output[id], commandStatus ({cmd = COMMAND_requestLogin, status = false})));
+				opsData[id].logged := true;
+				nextState := sMissionSelection
+			| WRONG_USERNAME -> deny := true
+			| WRONG_PASSWORD -> deny := true
+			end case;
+			/* If anything else, deny */
+			requestLoginData := DEFAULT_rec_requestLogin
+		| requestLogout (id) -> deny := true
+		| requestMission (requestMissionData) -> id := requestMissionData.id;
+			requestMissionData := DEFAULT_rec_requestMission;
+			deny := true
+		| requestRole (requestRoleData) -> id := requestRoleData.id;
+			requestRoleData := DEFAULT_rec_requestRole;
+			deny := true
+		| requestActiveSubstate (id) -> deny := true
+		| requestStopMission (id) -> deny := true
+		end case;
+		if deny then
+			output[id] := (enqueue(output[id], ack (false)))
+		end if;
+		deny := false;
+		id := 0;
+		input := (dequeue input);
+		currentCommand := noCommand
+	end if;
+	case nextState of
+	sMissionSelection -> /* Pick the next state */
+		to missionSelection
+	| any -> to standby
+	end case
+
+from missionSelection
+	if (not (empty input)) then
+		/* Read and discard next input if any */
+		currentCommand := (first input);
+		case currentCommand of
+		requestLogin (requestLoginData) -> /* Login requested, keep in mind the same code can be found in some other state */
+			id := requestLoginData.id;
+			case requestLoginData.auth of
+			CORRECT -> output[id] := (enqueue(output[id], ack (true)));
+				output[id] := (enqueue(output[id], availableMissions (opsData[id].authorizedMissions)));
+				output[id] := (enqueue(output[id], commandStatus ({cmd = COMMAND_requestLogout, status = true})));
+				output[id] := (enqueue(output[id], commandStatus ({cmd = COMMAND_requestMission, status = true})));
+				output[id] := (enqueue(output[id], commandStatus ({cmd = COMMAND_requestLogin, status = false})));
+				opsData[id].logged := true
+			| WRONG_USERNAME -> deny := true
+			| WRONG_PASSWORD -> deny := true
+			end case;
+			/* Logout requested */
+			requestLoginData := DEFAULT_rec_requestLogin
+		| requestLogout (id) -> if opsData[id].logged then
+				output[id] := (enqueue(output[id], ack (true)));
+				output[id] := (enqueue(output[id], commandStatus ({cmd = COMMAND_requestLogout, status = false})));
+				output[id] := (enqueue(output[id], commandStatus ({cmd = COMMAND_requestMission, status = false})));
+				output[id] := (enqueue(output[id], commandStatus ({cmd = COMMAND_requestLogin, status = true})));
+				opsData[id].logged := false;
+				nextState := sStandby;
+				foreach id do
+					if opsData[id].logged then
+						nextState := sMissionSelection
+					end if
+				end foreach
+			end if
+		| requestMission (requestMissionData) -> id := requestMissionData.id;
+			mission := requestMissionData.mission;
+			requestMissionData := DEFAULT_rec_requestMission;
+			/* If anything else, deny */
+			if opsData[id].authorizedMissions[mission] then
+				currentMission := mission;
+				output[id] := (enqueue(output[id], ack (true)));
+				missingRoles := REQUIRED_ROLES[mission];
+				foreach role do
+					roles[role] := (opsData[id].rights[role] and missingRoles[role])
+				end foreach;
+				role := 0;
+				output[id] := (enqueue(output[id], availableRoles (roles)));
+				output[id] := (enqueue(output[id], commandStatus ({cmd = COMMAND_requestMission, status = false})));
+				output[id] := (enqueue(output[id], commandStatus ({cmd = COMMAND_requestRole, status = true})));
+				nextState := sPreparation
+			else 
+				deny := true
+			end if
+		| requestRole (requestRoleData) -> id := requestRoleData.id;
+			requestRoleData := DEFAULT_rec_requestRole;
+			deny := true
+		| requestActiveSubstate (id) -> deny := true
+		| requestStopMission (id) -> deny := true
+		end case;
+		if deny then
+			output[id] := (enqueue(output[id], ack (false)))
+		end if;
+		deny := false;
+		id := 0;
+		mission := 0;
+		roles := DEFAULT_ar_role;
+		currentCommand := noCommand;
+		input := (dequeue input)
+	end if;
+	/***************
+* Main component
+***************/
+	case nextState of
+	sStandby -> /* Pick the next state */
+		to standby
+	| sPreparation -> to preparation
+	| any -> to missionSelection
+	end case
+
+
+component main is
+var 
+	
+	id: i_opId, 
+	
+	SMInput: fifo_SMInput, 
+	
+	opInput: ar_fifo_opInput, 
+	
+	reachableMissions: ar_mission, 
+	
+	requiredRoles: ar_role, 
+	
+	opsData: ar_rec_operator
+
+init SMInput := {||};
+foreach id do
+	opInput[id] := {||};
+	opsData[id] := DEFAULT_rec_operator
+end foreach;
+foreach id do
+	/* The following is part of the context */
+	opsData[id].rights := [true, true, true, true]
+end foreach
+par 
+	operator(0, BEHAVIOR_PASSIVE, &opInput, &SMInput) 
+	 || operator(1, BEHAVIOR_PASSIVE, &opInput, &SMInput) 
+	 || sessionManager(opsData, &SMInput, &opInput) 
+end par
+
+
+main

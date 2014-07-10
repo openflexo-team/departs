@@ -1,0 +1,26 @@
+event Ev2 is {send sample to {moteur}0}
+event Ev3 is {send sample to {moteur}0}
+event Ev4 is {receive sample from any}
+event Ev5 is {receive sample from any}
+
+activity s0 is {
+	event {send start to {moteur}0}
+}
+
+activity s1 is { 
+	event Ev4; 
+	event Ev2;
+	event Ev3
+}
+
+activity s2 is { 
+	event Ev3; 
+	event Ev4; 
+	event Ev5
+} 
+
+cdl Exemple11 is {
+	init is s0
+	main is { s1 || s2 }
+}
+

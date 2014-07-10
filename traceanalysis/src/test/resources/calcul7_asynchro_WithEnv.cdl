@@ -1,0 +1,193 @@
+//========================================================================================
+// calcul7_asynchro_WithEnv.cdl  version 30 oct 13
+//
+//  voir : calcul7_asynchro_WithEnv.fcr
+//
+// 
+//========================================================================================
+
+//---- pour demo : affichage des graphes avec predicats
+//  {ProcWhile}1@lire_data
+//  {ProcWhile}1@calcul
+//  {ProcWhile}1@calcul_fini
+//  {ProcWhile}1@ecrire_data
+//  {ProcWhile}1@lire_data or {ProcWhile}1@ecrire_data
+
+//========================================================================================
+//             Event declarations  
+//========================================================================================
+
+event send_value1_toWhile is	{send data1 to {ProcWhile}1} 
+event send_value2_toWhile is	{send data2 to {ProcWhile}1} 
+event send_value3_toWhile is	{send data3 to {ProcWhile}1} 
+event send_value4_toWhile is	{send data4 to {ProcWhile}1} 
+event send_value5_toWhile is	{send data5 to {ProcWhile}1} 
+event send_value6_toWhile is	{send data6 to {ProcWhile}1} 
+
+activity send_3loop_values_toWhile is	{loop 3 send_1_values_toWhile} 
+
+event send_data1_toWhile is		{send data1 to {ProcWhile}1}
+event send_data2_toWhile is		{send data2 to {ProcWhile}1} 
+event recv_data1_fromWhile is 	{receive data1 from {ProcWhile}1} 
+event send_data3_toWhile is 	{send data3 to {ProcWhile}1} 
+
+	
+//========================================================================================
+//             Predicat declarations
+//========================================================================================
+
+predicate ProcWhile_calcul_fini is {{ProcWhile}1@calcul_fini }
+predicate ProcUntil_End 		is {{ProcUntil}1@End }
+predicate ProcUntil_values1 	is 	{{ProcUntil}1:data.index = 1 and {ProcUntil}1:data.value = 1}
+predicate equal_values_ProcUntil is {{ProcUntil}1:data.index = {ProcUntil}1:data.value}
+predicate not_equal_values_and_ProcUntil is { not ({ProcUntil}1:data.index = {ProcUntil}1:data.value) }
+
+//========================================================================================
+//             Event declarations with predicats 
+//========================================================================================
+
+event evt_ProcUntil_End is 			{ ProcUntil_End becomes true}  
+event evt_ProcUntil_index_1 is 		{({ProcUntil}1:data.index = 1) becomes true}
+event evt_ProcUntil_index_2 is 		{({ProcUntil}1:data.index = 2) becomes true}
+event evt_ProcUntil_index_3 is 		{({ProcUntil}1:data.index = 3) becomes true}
+event evt_ProcUntil_index_last is 	{({ProcUntil}1:data.index = NVAL_MAX) becomes true}
+
+//========================================================================================
+//             Event declarations with communication 
+//========================================================================================
+ 
+// la 1ere donnee  : Env --> (1,1) --> ProcWhile --> (1,1) --> ProcUntil
+event send_ProcWhile_data1 is	{send data1 from {ProcWhile}1 to {ProcUntil}1} 
+event recv_ProcUntil_data1 is	{receive data1 from {ProcWhile}1 to {ProcUntil}1}
+
+// la derniere donnee : ProcFor --> (I_MAX, I_MAX * I_MAX) --> ProcWhile --> (I_MAX, I_MAX) --> ProcUntil
+event send_ProcWhile_last_data is	{send last_data_Until from {ProcWhile}1 to {ProcUntil}1} 
+event recv_ProcUntil_last_data is	{receive last_data_Until from {ProcWhile}1 to {ProcUntil}1}
+
+
+//========================================================================================
+//             Property declarations   
+//========================================================================================
+
+property pte_ProcUntil_End is {
+    start -- / / evt_ProcUntil_End / -> success
+}
+property pte_3_data_transmitted is {
+ 	start -- / / evt_ProcUntil_index_1 / -> wait1;
+	wait1 -- / / evt_ProcUntil_index_2 / -> wait2;
+	wait2 -- / / evt_ProcUntil_index_3 / -> success
+}
+
+
+//---------  All data transmitted -----------------
+
+property pte_all_data_transmitted is {
+ 	start -- / / evt_ProcUntil_index_last / -> success
+}
+
+property  pte_ProcUntil_lastData is { 
+ 	start -- / / evt_ProcUntil_End / -> reject;
+ 	start -- / / recv_ProcUntil_last_data / -> wait;
+	wait -- / / evt_ProcUntil_End / -> start
+}
+
+
+//========================================================================================
+//             Activity declarations  
+//========================================================================================
+
+activity send_1_values_toWhile is 
+{ 
+	event send_value1_toWhile
+}
+
+activity send_2_values_toWhile is 
+{ 
+	event send_value1_toWhile;
+	event send_value2_toWhile
+}
+
+activity send_6_values_toWhile is 
+{ 
+	event send_value1_toWhile;
+	event send_value2_toWhile ; 
+	event send_value3_toWhile;
+	event send_value4_toWhile;
+	event send_value5_toWhile;
+	event send_value6_toWhile	
+}
+
+ 
+//========================================================================================
+//            CDL Scenarii
+//========================================================================================
+  
+cdl cdl_1 is {
+
+	properties  
+				pte_ProcUntil_End,
+				pte_all_data_transmitted,
+				pte_3_data_transmitted,
+				pte_ProcUntil_lastData
+				
+	assert equal_values_ProcUntil;	
+	assert not_equal_values_and_ProcUntil
+
+	main is { send_2_values_toWhile }
+}
+
+cdl cdl_6 is {
+
+	properties  
+				pte_ProcUntil_End,
+				pte_all_data_transmitted,
+				pte_3_data_transmitted,
+				pte_ProcUntil_lastData
+				
+	assert equal_values_ProcUntil;	
+	assert not_equal_values_and_ProcUntil
+
+	main is { send_6_values_toWhile }
+}
+
+
+cdl cdl_3loop is {
+
+	properties  
+				pte_ProcUntil_End,
+				pte_all_data_transmitted,
+				pte_3_data_transmitted,
+				pte_ProcUntil_lastData
+				
+	assert equal_values_ProcUntil;	
+	assert not_equal_values_and_ProcUntil
+
+	main is { send_3loop_values_toWhile }
+}
+
+activity test_1 is 
+{ 
+	event send_data1_toWhile;
+	event recv_data1_fromWhile;
+	event send_data2_toWhile
+}
+	
+cdl cdl_test1 is {
+	main is { test_1 }
+}
+
+activity test_2 is 
+{ 
+	event send_data1_toWhile;
+	{ 
+		{event send_data2_toWhile; event send_data3_toWhile }
+		[] 
+		{event recv_data1_fromWhile; event send_data3_toWhile }
+	}
+}
+
+cdl cdl_test2 is {
+	main is { test_2 }
+}
+ 
+

@@ -1,0 +1,168 @@
+/*------------------------------------------
+   calcul7_asynchro_WithEnv.fcr  version 30 oct 13
+   
+   2 processus dans le systeme : ProcWhile et procUntil
+     communique par fifo
+   1 acteur (procFor) est dans l'environnement
+   (cf calcul7_asynchro_WithEnv.cdl)
+   
+-------------------------------------------*/
+
+const SIZE_FIFO  : nat is 10
+
+type t_data is record
+	index   : int,    /* value index */
+	value   : int     /* value  */
+end
+
+type t_fifo is queue SIZE_FIFO of t_data
+
+//-------- Nbre de valeurs traitees ---------
+const NVAL_MAX  : nat is 3  // utile pour last_data_Until
+                            // et les proprietes de test de reception 
+							// de la derniere valeur
+//-------------------------------------------
+
+//------ pour les events et properties du CDL ----
+
+// la 1ere donnee  : Env --> (1,1) --> ProcWhile --> (1,1) --> ProcUntil
+const data1   	: t_data  is {index = 1, value = 1}
+const data2   	: t_data  is {index = 2, value = 4}
+const data3   	: t_data  is {index = 3, value = 9}
+const data4   	: t_data  is {index = 4, value = 16}
+const data5   	: t_data  is {index = 5, value = 25}
+const data6   	: t_data  is {index = 6, value = 36}
+
+
+// la derniere donnee : Env --> (NVAL_MAX, NVAL_MAX * NVAL_MAX) -->
+//                      ProcWhile --> (NVAL_MAX, NVAL_MAX) --> ProcUntil
+const last_data_Env	    : t_data  is {index = NVAL_MAX, value = NVAL_MAX * NVAL_MAX}
+const last_data_Until	: t_data  is {index = NVAL_MAX, value = NVAL_MAX}
+
+
+/*====================== ProcWhile ================================*/
+
+process ProcWhile  
+			( &input : read write t_fifo, 
+			  &output : read write t_fifo ) 
+is 
+
+states Start, lire_data, calcul, calcul_fini, ecrire_data
+
+var
+	noVal  : int,
+	n  : int,
+	r  : int,
+	s  : int,
+	data : t_data
+
+init 
+	noVal := 0;
+	n  := 0;
+	s  := 0;
+    r  := 0;
+	data := {index = 0, value = 0};
+	to Start
+ 
+from Start
+	//----- attente si fifo vide et reception de data  -------				
+	if (empty input) then loop end;
+	/*@ While: lire */
+	data := first input;
+	input := dequeue (input);
+
+	noVal := data.index;
+	n := data.value;
+	s := 1;
+	r := 3;
+	to calcul
+	
+from calcul
+	/*@ While: calculer */
+    if (s <= n) then
+      s := s+r;
+      r := r+2;
+      to calcul
+    else
+	  /*@ While: calcul_fini */
+	  r := r/2 - 1;
+	  to ecrire_data
+	end
+ 
+from ecrire_data
+	//---- ecrire de data si fifo non pleine ---
+	if (full output) then loop end;
+	data.value := r; 
+	/*@ While: ecrire */
+	output := enqueue (output, data);
+	to Start
+
+	
+//================== procUntil ==============================
+// reception des NVAL_MAX valeurs 
+//  data.index et data.value doivent etre toujours egaux
+//=================================================================
+
+process ProcUntil ( &input : read write t_fifo) 
+is
+ 
+states
+    Start, lire_data, End
+var
+	noVal  : int,
+	data : t_data
+init
+	noVal  := 1;
+	data := {index = 0, value = 0};
+	to Start
+
+/*-------- ProcUntil ---------------*/	
+from Start
+	//----- lecture de data si fifo non vide -------	
+	if (empty input) then loop end;
+	/*@ Until: lire */
+	data := first input;
+	input := dequeue (input);
+		
+	/*
+	if noVal = NVAL_MAX  then
+			to End				
+	end;
+	noVal := noVal + 1
+	*/
+	to Start
+
+from End 
+	loop
+
+  
+/*======================================================*/
+ 
+component Calcul is
+ 
+// il faut declarer une fifo ayant pour nom "ProcWhile_1"
+// car, dans le CDL, l'evt send_value_toWhile precise l'envoi d'une donnee au 
+// processus ProcWhile
+// ici la fifo toContext doit etre declaree meme si elle n'est pas utilisee.
+ 
+var  
+	toContext     : t_fifo,
+	ProcWhile_1     : t_fifo,
+	fifoWhile2Until   : t_fifo
+	
+init
+	//toContext 	:= {||};
+	ProcWhile_1 	:= {||};
+	fifoWhile2Until := {||}
+	
+par
+		ProcWhile (&ProcWhile_1, &fifoWhile2Until)
+	||	ProcUntil (&fifoWhile2Until)
+end
+Calcul
+
+
+
+
+
+

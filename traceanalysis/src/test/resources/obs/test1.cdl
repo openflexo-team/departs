@@ -1,0 +1,75 @@
+/* 
+	System:
+		s0 -- ?a, !b -> s0
+		
+	CDL:
+		!a; !a
+	
+	Trace (+: simultané):
+		?a + !b; ?a + !b
+	
+	Observer:
+		start -- ?a -> wait
+		wait -- ?a -> reject
+		wait -- !b -> start
+		
+	Notes:
+		En état de rejet ssi !b n'est pas matché.
+		?a et !b sont générés de façon simultanée.
+*/
+
+activity send_a is {
+	event {send t_msg.a to {system}1}
+}
+
+cdl seq_aa is {
+	properties 
+		test1, 
+		trace1, 
+		no_repeat_receive_a, 
+		no_repeat_send_b, 
+		always_a_b_after_an_a
+
+	init is {
+		send_a;
+		send_a
+	}
+	
+	main is {
+		skip
+	}
+}
+
+event receive_a is {receive t_msg.a from {env}1 to {system}1}
+event send_b is {send t_msg.b from {system}1 to {env}1}
+
+property test1 is {
+	start -- / / receive_a / -> wait;
+	wait -- / / receive_a / -> reject;
+	wait -- / / send_b / -> start
+}
+
+property trace1 is {
+	start -- / / receive_a / -> s0;
+	s0 -- / / send_b / -> s1;
+	s1 -- / / receive_a / -> s2;
+	s2 -- / / send_b / -> success
+}
+
+property no_repeat_receive_a is {
+	start -- / / receive_a / -> wait;
+	wait -- / / receive_a / -> reject;
+	wait -- / / send_b / -> start
+}
+
+property no_repeat_send_b is {
+	start -- / / send_b / -> wait;
+	wait -- / / send_b / -> reject;
+	wait -- / / receive_a / -> start
+}
+
+property always_a_b_after_an_a is {
+	start -- / / receive_a / -> wait;
+	wait -- / / send_b / -> start;
+	wait -- / / / -> reject
+}

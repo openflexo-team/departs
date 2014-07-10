@@ -1,0 +1,50 @@
+
+// Num001.cdl
+
+event ev1 is { send m1 to {sm}0 }
+event ev2 is { send m2 to {sm}0 } 
+event ev3 is { send m3 to {sm}0 } 
+event ev4 is { send m4 to {sm}0 } 
+event ev5 is { send m5 to {sm}0 } 
+event ev6 is { send m6 to {sm}0 } 
+event ev7 is { send m7 to {sm}0 } 
+event ev8 is { send m8 to {sm}0 } 
+event ev9 is { send m9 to {sm}0 } 
+event ev10 is { send m10 to {sm}0 } 
+
+
+cdl Num001 is {
+	main is { alternat }
+}
+
+activity Act1 is { event ev1; event ev1 }
+activity Act2 is { event ev2; event ev2 }
+activity Act3 is { event ev3; event ev3 }
+activity Act4 is { event ev4; event ev4 }
+activity Act5 is { event ev5; event ev5 }
+activity Act6 is { event ev6; event ev6 }
+activity Act7 is { event ev7; event ev7 }
+activity Act8 is { event ev8; event ev8 }
+activity Act9 is { event ev9; event ev9 }
+activity Act10 is { event ev10; event ev10 }
+
+
+activity alternat is
+{
+	any ->	loop 3 seq123
+[]	any ->	  loop 4 seq1245
+[]	any ->loop 2 seq14678910
+[]	any ->loop 1 seq24678910
+}
+
+activity seq123 is { alt12; Act3 }
+activity seq1245 is { alt12; Act4; Act5 }
+activity seq14678910 is { Act1; Act4; alt678; alt910 }
+activity seq24678910 is { Act2; Act4; alt678; alt910 }
+
+activity alt12 is { any -> Act1 [] any -> Act2 }
+activity alt678 is { any -> Act6 [] any -> Act7 [] any -> Act8 }
+activity alt910 is { any -> Act9 [] any -> Act10 }
+
+
+

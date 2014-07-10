@@ -1,0 +1,53 @@
+variable v1 is { tt, ff }
+variable v2 is { toto, titi, tata }
+
+event evt1 is { send t_contextMode.CTXM_PEACETIME to {sessionManager}0 }
+event evt2 is { receive t_bodyMsgToHMIs.ack(true) from any }
+event evt3 is { send t_paramsLogin{user = DEFAULT_t_userName, auth = false} to {sessionManager}0 }
+event evt4 is { receive t_bodyMsgToHMIs.ack(false) from any }
+
+activity alternative1 is {
+	options { type="SDL" }
+	
+	var1 = l1 and var2 = tt -> event evt4
+[]	var1 = l2 -> loop 2 { event evt1; event evt4; v1:=ff }
+[]	event evt2
+[]	skip
+}
+
+activity sequence1 is {
+	event evt1; 
+	loop 3 event evt2; 
+	event evt3;
+	event { send t_paramsLogin{user = DEFAULT_t_userName, auth = false} to {sessionManager}0 }
+}
+
+predicate scope1 is {
+	{sessionManager}0@activate and {sessionManager}0:HMIs[0].response = true
+}
+
+PREDICATE scope2 is {
+	{sessionManager}0@preparation or not ({sessionManager}0:HMIs[0] = true)
+}
+
+property existence_AN is {
+	options { toto="Toto" }
+	
+	an {
+		exactly one occurrence of evt1; 
+		exactly one occurrence of evt2 
+	}
+
+	occurs [0..10[
+}
+
+property hand_obs is {
+	start -- / {sessionManager}0@activate and {sessionManager}0:HMIs[0].response = true / evt1 / -> reject;
+	start -- / / evt1 /-> s1;
+	s1 -- / scope2 / evt2 /-> success
+}
+
+cdl cdl1 is {
+	init is sequence1
+	main is { sequence1 || alternative1 }
+}

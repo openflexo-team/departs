@@ -1,0 +1,31 @@
+
+event set_mode_vvi is {
+	send t_msg.set_mode ( t_mode.MODE_VVI ) to {PG}1
+}
+
+event set_mode_aai is {
+	send t_msg.set_mode ( t_mode.MODE_AAI ) to {PG}1
+}
+
+event set_mode_vdd is {
+	send t_msg.set_mode ( t_mode.MODE_VDD ) to {PG}1
+}
+
+activity set_any_mode is {
+	event set_mode_vvi
+[]	event set_mode_aai
+[]	event set_mode_vdd
+[]	skip
+}
+
+activity seq1 is {
+	event set_mode_vvi; skip
+}
+
+cdl modes_frenzy is {
+	main is {
+		loop 2 { set_any_mode }
+	||  seq1
+	}
+}
+
