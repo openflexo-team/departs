@@ -1,0 +1,38 @@
+event debut is { send sample to {moteur}0}
+event loginError is { send loginError to {moteur}0}
+event sample1 is {send sample to {moteur}0}
+event logoutBeforeMissionChoice is {send logout to {moteur}0}
+event choixMissions is {receive choixMissio from any}
+event missionChoix is { send choixMission to {moteur}0}
+event choixRoles is {receive roles from any}
+event roleChoix is {send roleMission to {moteur}0}
+event logoutAfterMissionChoice is { send logout to {moteur}0}
+event shutDown is { send shutDown to {ctl}0}
+
+
+activity niveau1 is {
+	event debut;
+	{ 
+		any -> loop 3 event loginError
+	[]	any ->  { 
+		event sample1; 
+			{ 
+				any -> event logoutBeforeMissionChoice 
+			[]	any -> {
+					event choixMissions; 
+					event missionChoix; 
+					event choixRoles; 
+					event roleChoix; 
+					event logoutAfterMissionChoice
+				} 
+			};
+		event shutDown
+		}
+	}
+}
+
+
+cdl test5 is {
+	main is { niveau1 }
+}
+

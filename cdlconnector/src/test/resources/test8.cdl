@@ -1,0 +1,14 @@
+event Ev1 is {informal #ErrorOverflowMailBox# }
+event Debut is {send debut to {moteur}0}
+event Sample is {send sample to {moteur}0}
+event Fin is { send fin to {moteur}0}
+
+activity SEQniveau1 is {
+	event Debut;
+	loop 3 event Sample;
+	event Fin
+}
+
+cdl Exemple8 is {
+	main is { SEQniveau1 }
+}
