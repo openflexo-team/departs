@@ -26,23 +26,23 @@ import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.technologyadapter.cdl.model.CDLEvent;
+import org.openflexo.technologyadapter.cdl.model.CDLPredicateEvent;
 
 @ModelEntity
-@ImplementationClass(CDLEventRole.CDLEventRoleImpl.class)
+@ImplementationClass(CDLPredicateEventRole.CDLPredicateEventRoleImpl.class)
 @XMLElement
-public interface CDLEventRole extends FlexoRole<CDLEvent> {
+public interface CDLPredicateEventRole extends FlexoRole<CDLPredicateEvent> {
 
-	public static abstract class CDLEventRoleImpl extends FlexoRoleImpl<CDLEvent> implements CDLEventRole {
+	public static abstract class CDLPredicateEventRoleImpl extends FlexoRoleImpl<CDLPredicateEvent> implements CDLPredicateEventRole {
 
 		@Override
 		public Type getType() {
-			return CDLEvent.class;
+			return CDLPredicateEvent.class;
 		}
 
 		@Override
 		public String getPreciseType() {
-			return CDLEvent.class.getSimpleName();
+			return CDLPredicateEvent.class.getSimpleName();
 		}
 
 	}

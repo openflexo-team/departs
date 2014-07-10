@@ -27,26 +27,23 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
 
 @ModelEntity
-@ImplementationClass(CDLProcessID.CDLProcessIDImpl.class)
-@XMLElement(xmlTag = "CDLProcessID")
-public interface CDLProcessID extends CDLObject {
+@ImplementationClass(CDLGammaEvent.CDLGammaEventImpl.class)
+@XMLElement(xmlTag = "CDLGammaEvent")
+public interface CDLGammaEvent extends CDLEvent {
 
-	// @PropertyIdentifier(type = obp.cdl.ProcessId.class)
-	public static final String PROCESS_ID_KEY = "processID";
+	public static final String GAMMA_EVENT_KEY = "gammaEvent";
+	
+	@Getter(value=GAMMA_EVENT_KEY, ignoreType=true)
+	public obp.event.GammaEvent getGammaEvent();
+	@Setter(GAMMA_EVENT_KEY)
+	public void setGammaEvent(obp.event.GammaEvent gammaEvent);
 
-	@Getter(value = PROCESS_ID_KEY, ignoreType=true)
-	public obp.cdl.ProcessId getCDLProcessID();
+	public static abstract class CDLGammaEventImpl extends CDLEventImpl implements CDLGammaEvent {
 
-	@Setter(value = PROCESS_ID_KEY)
-	public void setCDLProcessID(obp.cdl.ProcessId cdlProcessID);
-
-	public static abstract class CDLProcessIDImpl extends CDLObjectImpl implements CDLProcessID {
-
-		@Override
-		public String getUri() {
-			return getName();
+		public CDLGammaEventImpl() {
+			// TODO Auto-generated constructor stub
 		}
-
+		
 	}
 
 }

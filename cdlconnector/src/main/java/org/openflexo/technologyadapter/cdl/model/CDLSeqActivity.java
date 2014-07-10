@@ -1,7 +1,7 @@
 /*
  * (c) Copyright 2013 Openflexo
  *
- * This file is part of OpenFlexo.
+ * This file is Seqt of OpenFlexo.
  *
  * OpenFlexo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -10,7 +10,7 @@
  *
  * OpenFlexo is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A SeqTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -27,26 +27,23 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
 
 @ModelEntity
-@ImplementationClass(CDLProcessID.CDLProcessIDImpl.class)
-@XMLElement(xmlTag = "CDLProcessID")
-public interface CDLProcessID extends CDLObject {
-
-	// @PropertyIdentifier(type = obp.cdl.ProcessId.class)
-	public static final String PROCESS_ID_KEY = "processID";
-
-	@Getter(value = PROCESS_ID_KEY, ignoreType=true)
-	public obp.cdl.ProcessId getCDLProcessID();
-
-	@Setter(value = PROCESS_ID_KEY)
-	public void setCDLProcessID(obp.cdl.ProcessId cdlProcessID);
-
-	public static abstract class CDLProcessIDImpl extends CDLObjectImpl implements CDLProcessID {
-
-		@Override
-		public String getUri() {
-			return getName();
+@ImplementationClass(CDLSeqActivity.CDLSeqActivityImpl.class)
+@XMLElement(xmlTag = "CDLSeqActivity")
+public interface CDLSeqActivity extends CDLTopActivity {
+	
+	public static final String SEQ_ACTIVITY_KEY = "SeqActivity";
+	
+	@Getter(value=SEQ_ACTIVITY_KEY , ignoreType = true)
+	public obp.cdl.SeqActivity getSeqActivity();
+	@Setter(SEQ_ACTIVITY_KEY)
+	public void setSeqActivity(obp.cdl.SeqActivity seqActivity);
+	
+	public static abstract class CDLSeqActivityImpl extends CDLTopActivityImpl implements CDLSeqActivity {
+		
+		public CDLSeqActivityImpl() {
+			// TODO Auto-generated constructor stub
 		}
-
+		
 	}
 
 }

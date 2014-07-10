@@ -27,26 +27,22 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
 
 @ModelEntity
-@ImplementationClass(CDLProcessID.CDLProcessIDImpl.class)
-@XMLElement(xmlTag = "CDLProcessID")
-public interface CDLProcessID extends CDLObject {
-
-	// @PropertyIdentifier(type = obp.cdl.ProcessId.class)
-	public static final String PROCESS_ID_KEY = "processID";
-
-	@Getter(value = PROCESS_ID_KEY, ignoreType=true)
-	public obp.cdl.ProcessId getCDLProcessID();
-
-	@Setter(value = PROCESS_ID_KEY)
-	public void setCDLProcessID(obp.cdl.ProcessId cdlProcessID);
-
-	public static abstract class CDLProcessIDImpl extends CDLObjectImpl implements CDLProcessID {
-
-		@Override
-		public String getUri() {
-			return getName();
+@ImplementationClass(CDLParActivity.CDLParActivityImpl.class)
+@XMLElement(xmlTag = "CDLParActivity")
+public interface CDLParActivity extends CDLTopActivity {
+	
+	public static final String PAR_ACTIVITY_KEY = "ParActivity";
+	
+	@Getter(value = PAR_ACTIVITY_KEY, ignoreType=true)
+	public obp.cdl.ParActivity getCDLParActivity();
+	@Setter(PAR_ACTIVITY_KEY)
+	public void setCDLParActivity(obp.cdl.ParActivity cdlParActivity);
+	
+	public static abstract class CDLParActivityImpl extends CDLTopActivityImpl implements CDLParActivity {
+		
+		public CDLParActivityImpl() {
+			// TODO Auto-generated constructor stub
 		}
-
 	}
 
 }

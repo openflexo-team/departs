@@ -26,23 +26,23 @@ import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.technologyadapter.cdl.model.CDLActivity;
+import org.openflexo.technologyadapter.cdl.model.CDLActivityReference;
 
 @ModelEntity
-@ImplementationClass(CDLActivityRole.CDLActivityRoleImpl.class)
+@ImplementationClass(CDLActivityReferenceRole.CDLActivityReferenceRoleImpl.class)
 @XMLElement
-public interface CDLActivityRole extends FlexoRole<CDLActivity> {
+public interface CDLActivityReferenceRole extends FlexoRole<CDLActivityReference> {
 
-	public static abstract class CDLActivityRoleImpl extends FlexoRoleImpl<CDLActivity> implements CDLActivityRole {
+	public static abstract class CDLActivityReferenceRoleImpl extends FlexoRoleImpl<CDLActivityReference> implements CDLActivityReferenceRole {
 
 		@Override
 		public Type getType() {
-			return CDLActivity.class;
+			return CDLActivityReference.class;
 		}
 
 		@Override
 		public String getPreciseType() {
-			return CDLActivity.class.getSimpleName();
+			return CDLActivityReference.class.getSimpleName();
 		}
 
 	}

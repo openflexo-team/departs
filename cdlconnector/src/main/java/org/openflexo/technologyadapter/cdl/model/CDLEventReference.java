@@ -27,26 +27,30 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
 
 @ModelEntity
-@ImplementationClass(CDLProcessID.CDLProcessIDImpl.class)
-@XMLElement(xmlTag = "CDLProcessID")
-public interface CDLProcessID extends CDLObject {
+@ImplementationClass(CDLEventReference.CDLEventReferenceImpl.class)
+@XMLElement(xmlTag = "CDLEventReference")
+public interface CDLEventReference extends CDLActivity {
 
-	// @PropertyIdentifier(type = obp.cdl.ProcessId.class)
-	public static final String PROCESS_ID_KEY = "processID";
+	public static final String EVENT_REFERENCE_KEY = "eventReference";
+	public static final String REFERENCED_EVENT_KEY = "referencedEvent";
+	
+	@Getter(value=EVENT_REFERENCE_KEY, ignoreType=true)
+	public obp.cdl.EventReference getCDLEventReference();
+	@Setter(EVENT_REFERENCE_KEY)
+	public void setCDLEventReference(obp.cdl.EventReference cdlEventReference);
+	
+	@Getter(value = REFERENCED_EVENT_KEY)
+	public CDLEvent getReferencedEvent();
 
-	@Getter(value = PROCESS_ID_KEY, ignoreType=true)
-	public obp.cdl.ProcessId getCDLProcessID();
+	@Setter(value = REFERENCED_EVENT_KEY)
+	public void setReferencedEvent(CDLEvent cdlEvent);
+	
+	public static abstract class CDLEventReferenceImpl extends CDLActivityImpl implements CDLEventReference {
 
-	@Setter(value = PROCESS_ID_KEY)
-	public void setCDLProcessID(obp.cdl.ProcessId cdlProcessID);
-
-	public static abstract class CDLProcessIDImpl extends CDLObjectImpl implements CDLProcessID {
-
-		@Override
-		public String getUri() {
-			return getName();
+		public CDLEventReferenceImpl() {
+			// TODO Auto-generated constructor stub
 		}
-
+		
 	}
 
 }

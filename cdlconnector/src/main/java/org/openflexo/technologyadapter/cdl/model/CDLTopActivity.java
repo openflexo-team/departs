@@ -20,32 +20,39 @@
 
 package org.openflexo.technologyadapter.cdl.model;
 
+import java.util.List;
+
+import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.PropertyIdentifier;
+import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.model.annotations.Getter.Cardinality;
 
 @ModelEntity
-@ImplementationClass(CDLProcessID.CDLProcessIDImpl.class)
-@XMLElement(xmlTag = "CDLProcessID")
-public interface CDLProcessID extends CDLObject {
+@ImplementationClass(CDLTopActivity.CDLTopActivityImpl.class)
+@XMLElement(xmlTag = "CDLTopActivity")
+public interface CDLTopActivity extends CDLActivity {
+	
+	@PropertyIdentifier(type = List.class)
+	public static final String ACTIVITIES_KEY = "activities";
+	
+	@Getter(value = ACTIVITIES_KEY, cardinality = Cardinality.LIST)
+	public List<CDLActivity> getCDLActivities();
 
-	// @PropertyIdentifier(type = obp.cdl.ProcessId.class)
-	public static final String PROCESS_ID_KEY = "processID";
+	@Setter(ACTIVITIES_KEY)
+	public void setCDLActivities(List<CDLActivity> cdlActivity);
 
-	@Getter(value = PROCESS_ID_KEY, ignoreType=true)
-	public obp.cdl.ProcessId getCDLProcessID();
+	@Adder(ACTIVITIES_KEY)
+	public void addToCDLActivities(CDLActivity cdlActivity);
 
-	@Setter(value = PROCESS_ID_KEY)
-	public void setCDLProcessID(obp.cdl.ProcessId cdlProcessID);
-
-	public static abstract class CDLProcessIDImpl extends CDLObjectImpl implements CDLProcessID {
-
-		@Override
-		public String getUri() {
-			return getName();
-		}
+	@Remover(ACTIVITIES_KEY)
+	public void removeFromCDLActivities(CDLActivity cdlActivity);
+	
+	public static abstract class CDLTopActivityImpl extends CDLActivityImpl implements CDLTopActivity {
 
 	}
 

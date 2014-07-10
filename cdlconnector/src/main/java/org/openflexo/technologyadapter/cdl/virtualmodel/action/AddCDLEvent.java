@@ -22,7 +22,6 @@ import org.openflexo.model.annotations.XMLAttribute;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.technologyadapter.cdl.CDLModelSlot;
 import org.openflexo.technologyadapter.cdl.model.CDLEvent;
-import org.openflexo.technologyadapter.cdl.model.CDLEvent.EventKind;
 import org.openflexo.technologyadapter.cdl.model.CDLProcessID;
 import org.openflexo.technologyadapter.cdl.model.CDLUnit;
 
@@ -40,8 +39,6 @@ public interface AddCDLEvent extends AssignableAction<CDLModelSlot, CDLEvent> {
 	public static final String FROM_PROCESS_ID__KEY = "fromProcessID";
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String TO_PROCESS_ID__KEY = "toProcessID";
-	@PropertyIdentifier(type = EventKind.class)
-	public static final String EVENT_KIND_KEY = "eventKind";
 
 	@Getter(value = EVENT_NAME_KEY)
 	@XMLAttribute
@@ -71,13 +68,6 @@ public interface AddCDLEvent extends AssignableAction<CDLModelSlot, CDLEvent> {
 	@Setter(TO_PROCESS_ID__KEY)
 	public void setToProcessID(DataBinding<CDLProcessID> toProcessID);
 
-	@Getter(value = EVENT_KIND_KEY)
-	@XMLAttribute
-	public EventKind getEventKind();
-
-	@Setter(EVENT_KIND_KEY)
-	public void setEventKind(EventKind eventKind);
-
 	public static abstract class AddCDLEventImpl extends AssignableActionImpl<CDLModelSlot, CDLEvent> implements AddCDLEvent {
 
 		private static final Logger logger = Logger.getLogger(AddCDLEvent.class.getPackage().getName());
@@ -89,8 +79,6 @@ public interface AddCDLEvent extends AssignableAction<CDLModelSlot, CDLEvent> {
 		private DataBinding<CDLProcessID> fromProcessID;
 
 		private DataBinding<CDLProcessID> toProcessID;
-
-		private EventKind eventKind = null;
 
 		public AddCDLEventImpl() {
 			super();
@@ -116,7 +104,7 @@ public interface AddCDLEvent extends AssignableAction<CDLModelSlot, CDLEvent> {
 					String eventName = getEventName().getBindingValue(action);
 					String eventValue = getEventValue().getBindingValue(action);
 
-					cdlEvent = cdlUnit.createCDLEvent(getEventKind(), fromPID, toPID, eventValue, eventName);
+					cdlEvent = cdlUnit.createCDLEvent(fromPID, toPID, eventValue, eventName);
 					modelSlotInstance.getResourceData().setIsModified();
 
 				} catch (TypeMismatchException e) {
@@ -221,43 +209,6 @@ public interface AddCDLEvent extends AssignableAction<CDLModelSlot, CDLEvent> {
 				toProcessID.setBindingName("toProcessID");
 			}
 			this.toProcessID = toProcessID;
-		}
-
-		@Override
-		public EventKind getEventKind() {
-			if (eventKind == null) {
-				if (_eventKindName != null) {
-					for (EventKind eventKind : getAvailableEventKinds()) {
-						if (eventKind.name().equals(_eventKindName)) {
-							return eventKind;
-						}
-					}
-				}
-			}
-			return eventKind;
-		}
-
-		@Override
-		public void setEventKind(EventKind eventKind) {
-			this.eventKind = eventKind;
-		}
-
-		private List<EventKind> availableEventKinds = null;
-
-		public List<EventKind> getAvailableEventKinds() {
-			if (availableEventKinds == null) {
-				availableEventKinds = new Vector<EventKind>();
-				for (EventKind eventKind : EventKind.values()) {
-					availableEventKinds.add(eventKind);
-				}
-			}
-			return availableEventKinds;
-		}
-
-		private String _eventKindName = null;
-
-		public void _setEventKindName(String eventKindName) {
-			_eventKindName = eventKindName;
 		}
 
 	}

@@ -20,8 +20,10 @@
 
 package org.openflexo.technologyadapter.cdl.model;
 
+import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
 
 @ModelEntity
@@ -32,10 +34,10 @@ public interface CDLProperty extends CDLObject {
 	// @PropertyIdentifier(type = obp.property.Property.class)
 	public static final String PROPERTY_KEY = "property";
 
-	// @Getter(value = PROPERTY_KEY)
+	@Getter(value = PROPERTY_KEY, ignoreType=true)
 	public obp.property.Property getCDLProperty();
 
-	// @Setter(value = PROPERTY_KEY)
+	@Setter(value = PROPERTY_KEY)
 	public void setCDLProperty(obp.property.Property cdlProperty);
 
 	public static abstract class CDLPropertyImpl extends CDLObjectImpl implements CDLProperty {

@@ -29,10 +29,6 @@ import org.openflexo.model.annotations.XMLElement;
 @XMLElement(xmlTag = "CDLEvent")
 public interface CDLEvent extends CDLObject {
 
-	public enum EventKind {
-		INPUT, OUTPUT, SYNC, GAMMA, INFORMAL, PREDICATE
-	}
-
 	public static abstract class CDLEventImpl extends CDLObjectImpl implements CDLEvent {
 
 	}

@@ -20,6 +20,8 @@
 
 package org.openflexo.technologyadapter.cdl.model;
 
+import obp.event.Informal;
+
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -28,23 +30,22 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
 
 @ModelEntity
-@ImplementationClass(CDLCommunicationOPEvent.CDLCommunicationOPEventImpl.class)
-@XMLElement(xmlTag = "CDLCommunicationOPEvent")
-public interface CDLCommunicationOPEvent extends CDLEvent {
+@ImplementationClass(CDLInformalEvent.CDLInformalEventImpl.class)
+@XMLElement(xmlTag = "CDLInformalEvent")
+public interface CDLInformalEvent extends CDLEvent {
 
-	// @PropertyIdentifier(type = obp.event.CommunicationOp.class)
-	public static final String COMMUNICATION_OP_KEY = "communicationOp";
+	public static final String INFORMAL_EVENT_KEY = "informalEvent";
+	
+	@Getter(value=INFORMAL_EVENT_KEY, ignoreType=true)
+	public Informal getInformalEvent();
+	@Setter(INFORMAL_EVENT_KEY)
+	public void setInformalEvent(Informal nformalEvent);
+	
 	@PropertyIdentifier(type = CDLProcessID.class)
 	public static final String PROCESS_ID_FROM_KEY = "processIDfrom";
-	@PropertyIdentifier(type = CDLProcessID.class)
-	public static final String PROCESS_ID_TO_KEY = "processIDto";
-	@PropertyIdentifier(type = EventKind.class)
-	public static final String EVENT_KIND_KEY = "EventKind";
-
-	@Getter(value=COMMUNICATION_OP_KEY, ignoreType=true)
-	public obp.event.CommunicationOp getCommunicationOp();
-	@Setter(COMMUNICATION_OP_KEY)
-	public void setCommunicationOp(obp.event.CommunicationOp communicationOp);
+	
+	@PropertyIdentifier(type = String.class)
+	public static final String TAG_KEY = "tag";
 
 	@Getter(value = PROCESS_ID_FROM_KEY)
 	public CDLProcessID getProcessIDFrom();
@@ -52,33 +53,18 @@ public interface CDLCommunicationOPEvent extends CDLEvent {
 	@Setter(value = PROCESS_ID_FROM_KEY)
 	public void setProcessIDFrom(CDLProcessID processIDFrom);
 
-	@Getter(value = PROCESS_ID_TO_KEY)
-	public CDLProcessID getProcessIDTo();
-
-	@Setter(value = PROCESS_ID_TO_KEY)
-	public void setProcessIDTo(CDLProcessID processIDTo);
+	@Getter(value = TAG_KEY)
+	public String getTag();
 	
-	@Getter(value = EVENT_KIND_KEY)
-	public EventKind getEventKind();
+	@Setter(value = TAG_KEY)
+	public void setTag(String tag);
 
-	@Setter(value = EVENT_KIND_KEY)
-	public void setEventKind(EventKind eventKind);
+	public static abstract class CDLInformalEventImpl extends CDLEventImpl implements CDLInformalEvent {
 
-	public enum EventKind {
-		INPUT, OUTPUT, SYNC
-	}
-	
-	public static abstract class CDLCommunicationOPEventImpl extends CDLEventImpl implements CDLCommunicationOPEvent {
-
-		public CDLCommunicationOPEventImpl() {
+		public CDLInformalEventImpl() {
 			// TODO Auto-generated constructor stub
 		}
 		
-		@Override
-		public String getUri() {
-			return getName();
-		}
-
 	}
 
 }

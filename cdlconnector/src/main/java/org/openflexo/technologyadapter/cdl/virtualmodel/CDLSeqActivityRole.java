@@ -1,7 +1,7 @@
 /*
- * (c) Copyright 2013 Openflexo
+ * (c) Copyright 2013- Openflexo
  *
- * This file is part of OpenFlexo.
+ * This file is Seqt of OpenFlexo.
  *
  * OpenFlexo is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -10,7 +10,7 @@
  *
  * OpenFlexo is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A SeqTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -18,24 +18,32 @@
  *
  */
 
-package org.openflexo.technologyadapter.cdl.model;
+package org.openflexo.technologyadapter.cdl.virtualmodel;
 
+import java.lang.reflect.Type;
+
+import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.technologyadapter.cdl.model.CDLSeqActivity;
 
 @ModelEntity
-@ImplementationClass(CDLActivity.CDLActivityImpl.class)
-@XMLElement(xmlTag = "CDLActivity")
-public interface CDLActivity extends CDLObject {
+@ImplementationClass(CDLSeqActivityRole.CDLSeqActivityRoleImpl.class)
+@XMLElement
+public interface CDLSeqActivityRole extends FlexoRole<CDLSeqActivity> {
 
-	public static abstract class CDLActivityImpl extends CDLObjectImpl implements CDLActivity {
+	public static abstract class CDLSeqActivityRoleImpl extends FlexoRoleImpl<CDLSeqActivity> implements CDLSeqActivityRole {
 
 		@Override
-		public String getUri() {
-			return getName();
+		public Type getType() {
+			return CDLSeqActivity.class;
+		}
+
+		@Override
+		public String getPreciseType() {
+			return CDLSeqActivity.class.getSimpleName();
 		}
 
 	}
-
 }

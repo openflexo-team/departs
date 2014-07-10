@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2013 Openflexo
+ * (c) Copyright 2013- Openflexo
  *
  * This file is part of OpenFlexo.
  *
@@ -18,35 +18,32 @@
  *
  */
 
-package org.openflexo.technologyadapter.cdl.model;
+package org.openflexo.technologyadapter.cdl.virtualmodel;
 
-import org.openflexo.model.annotations.Getter;
+import java.lang.reflect.Type;
+
+import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.technologyadapter.cdl.model.CDLEventReference;
 
 @ModelEntity
-@ImplementationClass(CDLProcessID.CDLProcessIDImpl.class)
-@XMLElement(xmlTag = "CDLProcessID")
-public interface CDLProcessID extends CDLObject {
+@ImplementationClass(CDLEventActivityRole.CDLEventActivityRoleImpl.class)
+@XMLElement
+public interface CDLEventActivityRole extends FlexoRole<CDLEventReference> {
 
-	// @PropertyIdentifier(type = obp.cdl.ProcessId.class)
-	public static final String PROCESS_ID_KEY = "processID";
-
-	@Getter(value = PROCESS_ID_KEY, ignoreType=true)
-	public obp.cdl.ProcessId getCDLProcessID();
-
-	@Setter(value = PROCESS_ID_KEY)
-	public void setCDLProcessID(obp.cdl.ProcessId cdlProcessID);
-
-	public static abstract class CDLProcessIDImpl extends CDLObjectImpl implements CDLProcessID {
+	public static abstract class CDLEventActivityRoleImpl extends FlexoRoleImpl<CDLEventReference> implements CDLEventActivityRole {
 
 		@Override
-		public String getUri() {
-			return getName();
+		public Type getType() {
+			return CDLEventReference.class;
+		}
+
+		@Override
+		public String getPreciseType() {
+			return CDLEventReference.class.getSimpleName();
 		}
 
 	}
-
 }
