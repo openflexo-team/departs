@@ -1,0 +1,343 @@
+activity HMI0_login is {
+	event {send t_msg {id = 0, body = t_body.login(true)} to {SM}1}
+}
+
+activity HMI1_login is {
+	event {send t_msg {id = 1, body = t_body.login(true)} to {SM}1}
+}
+
+activity HMI2_login is {
+	event {send t_msg {id = 2, body = t_body.login(true)} to {SM}1}
+[]	event {send t_msg {id = 2, body = t_body.login(false)} to {SM}1}
+}
+
+activity HMI0_logout is {
+	event {send t_msg {id = 0, body = t_body.logout} to {SM}1}
+}
+
+activity HMI1_logout is {
+	event {send t_msg {id = 1, body = t_body.logout} to {SM}1}
+}
+
+activity HMI2_logout is {
+	event {send t_msg {id = 2, body = t_body.logout} to {SM}1}
+}
+
+activity HMI0_startOperate is {
+	event {send t_msg {id = 0, body = t_body.startOperate} to {SM}1}
+}
+
+activity HMI1_startOperate is {
+	event {send t_msg {id = 1, body = t_body.startOperate} to {SM}1}
+}
+
+activity HMI2_startOperate is {
+	event {send t_msg {id = 2, body = t_body.startOperate} to {SM}1}
+}
+
+activity HMI0_stopOperate is {
+	event {send t_msg {id = 0, body = t_body.stopOperate} to {SM}1}
+}
+
+activity HMI1_stopOperate is {
+	event {send t_msg {id = 1, body = t_body.stopOperate} to {SM}1}
+}
+
+activity HMI2_stopOperate is {
+	event {send t_msg {id = 2, body = t_body.stopOperate} to {SM}1}
+}
+
+activity HMI0_login_and_logout is {
+	HMI0_login;
+	HMI0_logout
+}
+
+activity HMI1_login_and_logout is {
+	HMI1_login;
+	HMI1_logout
+}
+
+activity HMI2_login_and_logout is {
+	HMI2_login;
+	HMI2_logout
+}
+
+activity HMI0_login_startOperate_and_logout is {
+	HMI0_login;
+	HMI0_startOperate;
+	HMI0_logout
+}
+
+activity HMI1_login_startOperate_and_logout is {
+	HMI1_login;
+	HMI1_startOperate;
+	HMI1_logout
+}
+
+activity HMI2_login_startOperate_and_logout is {
+	HMI2_login;
+	HMI2_startOperate;
+	HMI2_logout
+}
+
+activity HMI0_login_start_stopOperate_and_logout is {
+	HMI0_login;
+	HMI0_startOperate;
+	HMI0_stopOperate;
+	HMI0_logout
+}
+
+activity HMI1_login_start_stopOperate_and_logout is {
+	HMI1_login;
+	HMI1_startOperate;
+	HMI1_stopOperate;
+	HMI1_logout
+}
+
+activity HMI2_login_start_stopOperate_and_logout is {
+	HMI2_login;
+	HMI2_startOperate;
+	HMI2_stopOperate;
+	HMI2_logout
+}
+
+event any_ack is {send t_msg {id = any, body = t_body.ack(any)} from {SM}1 to {env}0}
+
+event ack_HMI0 is {send t_msg {id = 0, body = t_body.ack(true)} from {SM}1 to {env}0}
+event nack_HMI0 is {send t_msg {id = 0, body = t_body.ack(false)} from {SM}1 to {env}0}
+event ack_HMI1 is {send t_msg {id = 1, body = t_body.ack(true)} from {SM}1 to {env}0}
+event nack_HMI1 is {send t_msg {id = 1, body = t_body.ack(false)} from {SM}1 to {env}0}
+event ack_HMI2 is {send t_msg {id = 2, body = t_body.ack(true)} from {SM}1 to {env}0}
+event nack_HMI2 is {send t_msg {id = 2, body = t_body.ack(false)} from {SM}1 to {env}0}
+
+event login_HMI0 is {receive t_msg {id = 0, body = t_body.login(true)} from {env}0 to {SM}1}
+event login_HMI1 is {receive t_msg {id = 1, body = t_body.login(true)} from {env}0 to {SM}1}
+event login_HMI2 is {receive t_msg {id = 2, body = t_body.login(true)} from {env}0 to {SM}1}
+
+predicate SM_state_idle is {
+	{SM}1@idle
+}
+
+predicate SM_state_operate is {
+	{SM}1@operate
+}
+
+predicate HMI0_is_logged is {
+	{SM}1:HMIs[0].logged = true
+}
+
+
+predicate HMI1_is_logged is {
+	{SM}1:HMIs[1].logged = true
+}
+
+predicate HMI2_is_logged is {
+	{SM}1:HMIs[2].logged = true
+}
+
+predicate at_least_one_HMI_logged is {
+		HMI0_is_logged
+	or	HMI1_is_logged
+	or	HMI2_is_logged
+}
+
+predicate zero_HMI_logged is {
+	not (at_least_one_HMI_logged)
+}
+
+predicate at_least_two_HMI_logged is {
+		(HMI0_is_logged and HMI1_is_logged)
+	or	(HMI0_is_logged and HMI2_is_logged)
+	or	(HMI1_is_logged and HMI2_is_logged)
+}
+
+predicate all_HMI_logged is {
+		HMI0_is_logged
+	and	HMI1_is_logged
+	and	HMI2_is_logged	
+}
+
+predicate one_HMI_logged is {
+		at_least_one_HMI_logged
+	and	(not at_least_two_HMI_logged)
+}
+
+predicate two_HMI_logged is {
+		at_least_two_HMI_logged
+	and	(not all_HMI_logged)
+}
+
+predicate at_least_one_HMI_if_operate is {
+		(not SM_state_operate)
+	or at_least_one_HMI_logged
+}	
+
+event zero_HMI_logged_to_true is {zero_HMI_logged becomes true}
+event SM_state_operate_to_true is {SM_state_operate becomes true}
+
+property at_least_one_HMI_if_operate_vObs is {
+	start -- / SM_state_operate / zero_HMI_logged_to_true / -> reject;
+	start -- / zero_HMI_logged / SM_state_operate_to_true / -> reject
+}
+
+property login is {
+	start -- / not HMI0_is_logged / login_HMI0 / -> wait;
+	wait -- / / ack_HMI0 / -> start;
+	wait -- / / any_ack / -> reject
+}
+
+property login_weak_scope_mclain is {
+	weak scope not HMI0_is_logged
+	
+	start -- / / login_HMI0 / -> wait;
+	wait -- / / ack_HMI0 / -> start;
+	wait -- / / any_ack / -> reject
+}
+
+property login_strong_scope_mclain is {
+	strong scope not HMI0_is_logged
+	
+	start -- / / login_HMI0 / -> wait;
+	wait -- / / any_ack / -> reject
+}
+
+property loginHMI0 is {
+	start -- / not HMI0_is_logged / login_HMI0 / -> wait;
+	wait -- / HMI0_is_logged / / -> success
+}
+
+property loginHMI1 is {
+	start -- / not HMI1_is_logged / login_HMI1 / -> wait;
+	wait -- / HMI1_is_logged / / -> success
+}
+
+cdl empty is {
+	main is {
+		skip
+	}
+}
+
+cdl HMI0_login is {
+	main is {
+		HMI0_login
+	}
+}
+
+cdl HMI0_login_and_logout is {
+	main is {
+		HMI0_login_and_logout
+	}
+}
+
+cdl HMI0_login_startOperate_and_logout is {
+	main is {
+		HMI0_login_startOperate_and_logout
+	}
+}
+
+cdl HMI0_login_start_stopOperate_and_logout is {
+	main is {
+		HMI0_login_start_stopOperate_and_logout
+	}
+}
+
+cdl HMI0n1_login is {
+	main is {
+		HMI0_login
+	||	HMI1_login
+	}
+}
+
+cdl HMI0n1_login_and_logout is {
+	main is {
+		HMI0_login_and_logout
+	||  HMI1_login_and_logout
+	}
+}
+
+cdl HMI0n1_login_startOperate_and_logout is {
+	main is {
+		HMI0_login_startOperate_and_logout
+	||	HMI1_login_startOperate_and_logout
+	}
+}
+
+cdl HMI0n1_login_start_stopOperate_and_logout is {
+	main is {
+		HMI0_login_start_stopOperate_and_logout
+	||	HMI1_login_start_stopOperate_and_logout
+	}
+}
+
+cdl HMI0n2_login is {
+	main is {
+		HMI0_login
+	||	HMI2_login
+	}
+}
+
+cdl HMI0n2_login_and_logout is {
+	main is {
+		HMI0_login_and_logout
+	||  HMI2_login_and_logout
+	}
+}
+
+cdl HMI0n2_login_startOperate_and_logout is {
+	main is {
+		HMI0_login_startOperate_and_logout
+	||	HMI2_login_startOperate_and_logout
+	}
+}
+
+cdl HMI0n2_login_start_stopOperate_and_logout is {
+	main is {
+		HMI0_login_start_stopOperate_and_logout
+	||	HMI2_login_start_stopOperate_and_logout
+	}
+}
+
+cdl HMI0n1n2_login is {
+	main is {
+		HMI0_login
+	||	HMI1_login
+	||	HMI2_login
+	}
+}
+
+cdl HMI0n1n2_login_and_logout is {
+	main is {
+		HMI0_login_and_logout
+	||  HMI1_login_and_logout
+	||  HMI2_login_and_logout
+	}
+}
+
+cdl HMI0n1n2_login_startOperate_and_logout is {
+	main is {
+		HMI0_login_startOperate_and_logout
+	||	HMI1_login_startOperate_and_logout
+	||	HMI2_login_startOperate_and_logout
+	}
+}
+
+cdl HMI0n1n2_login_start_stopOperate_and_logout is {
+
+	assert at_least_one_HMI_if_operate
+
+	main is {
+		HMI0_login_start_stopOperate_and_logout
+	||	HMI1_login_start_stopOperate_and_logout
+	||	HMI2_login_startOperate_and_logout
+	}
+}
+
+cdl HMI0_logins_and_logouts is {
+	
+	main is {
+		loop 5 {
+			HMI0_login
+		[]	HMI0_logout
+		}
+	}
+}

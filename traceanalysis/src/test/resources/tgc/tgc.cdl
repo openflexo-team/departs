@@ -1,0 +1,103 @@
+/*---------------------------------------------------
+      ex_tgc_11sept10.cdl
+---------------------------------------------------*/
+
+//------------------------------- D�claration des �v�nements ----------------------------------
+
+// train 1 et 2
+
+event e1 is {send e1 to {GB}1}
+event e2 is {send e2 to {GB}1}
+event s1 is {send s1 to {GB}1}
+event s2 is {send s2 to {GB}1}
+
+// clock
+
+event tick is {send tick to {GB}1}
+
+// user
+
+event close is {send close to {GB}1}
+event rec_close is {receive cl from {GB}1}
+
+event open is {send open to {GB}1}
+event rec_open is {receive op from {GB}1}
+
+event end_user is {send e_us to {GB}1}
+
+// gate
+
+event down is {receive down from {GB}1}
+event up is {receive up from {GB}1}
+
+// light
+
+event on is {receive l_on from {GB}1}
+event off is {receive l_off from {GB}1}
+
+// Annotations Informal 
+event informal_Fin is {informal #Fin# from {GB}1}
+
+//------------------------------- D�claration des propri�t�s ----------------------------------
+property P1 is {
+    AN { exactly one occurrence of rec_close }
+    eventually leads-to [1..2]
+    AN { exactly one occurrence of rec_open }
+    rec_close must occur
+    one of up cannot occur before the first one of rec_close
+    repeatability : true
+}
+
+property P2 is {
+    AN { exactly one occurrence of down }
+    eventually leads-to [1..2]
+    AN { exactly one occurrence of up }
+    down must occur
+    one of informal_Fin  cannot occur before the first one of down
+    repeatability : true
+}
+
+
+
+
+
+// ------------- d�claration des interactions ------------------------
+/*
+interaction passageT1  { e1, s1} 
+interaction passageT2  { e2, s2} 
+interaction deuxTicks { tick, tick }
+interaction unTick { tick }
+interaction clop { close, open }
+interaction FinUser { end_user }
+interaction downup { down, up }
+interaction onoff { on, off }
+*/
+activity TRAIN1 is { event e1; event s1 }
+activity TRAIN2 is { event e2; event s2 }
+activity CLOCK1 is { event tick }
+
+activity USER is { event close; event open }
+activity GATE is { event down; event up }
+activity LIGHT is { event on; event off }
+
+CDL Tgc is {
+
+properties P1, P2
+
+
+
+
+//------------------------------- D�but CDL ----------------------------------
+
+main is
+{
+	TRAIN1
+||	TRAIN2
+||	USER
+||	CLOCK1
+	// GATE,
+	// LIGHT
+
+} // fin des acteurs
+
+}

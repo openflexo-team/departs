@@ -1,0 +1,53 @@
+const FIFO_SIZE: nat is 5
+
+type t_msg is union
+	set
+|	reset
+|	ack of bool
+end union
+const DEFAULT_t_msg: t_msg is set
+
+type t_fifo is queue FIFO_SIZE of t_msg
+
+process system (& input: t_fifo, & output: t_fifo) is
+states
+	s0
+var
+	msg: t_msg,
+	c: nat
+init
+	msg := DEFAULT_t_msg;
+	c := 0;
+	to s0
+	
+from s0
+	if (empty input) or (full output) then
+		loop
+	end if;
+	msg := first input;
+	input := dequeue input;
+	case msg of
+		set ->
+			c := 1;
+			output := enqueue(output, ack true)
+	|	reset ->
+			c := 0;
+			output := enqueue(output, ack true)
+	|	any ->
+			output := enqueue(output, ack false)
+	end case;
+	msg := DEFAULT_t_msg;
+	loop
+
+component root is
+var
+	system_1: t_fifo,
+	toContext: t_fifo
+init
+	system_1 := {||};
+	toContext := {||}
+par
+	system(& system_1, & toContext)
+end
+
+root

@@ -1,0 +1,126 @@
+//---------------------------------------------------------------------------------------
+// S_CP_3dev_24septembre_jcr.cdl
+// Ph. Dhaussy Ensta-Bretagne
+// Jean-Charles Roger Ensta-Bretagne: Adpatation à CDL v2.
+//---------------------------------------------------------------------------------------
+//  contexte avec acteurs :   Dev1, Dev2, Dev3 
+//
+//   nbre de signaux echanges (profondeur des contextes) = 
+//                    3 * n (goInit, login, akLog) +  
+//                    2 * n (operate, ackOper) + 
+//                    n (logout) 
+//                    =  6 * n   
+//
+//   ==> profondeur pour 1 dev : 6    pour 2 dev : 12   pour 3 dev : 18
+
+// j'ai ajouter sur tous les receives un from.
+// j'ai supprimer les parenthèses dans les messages.
+// j'ai remplacer les noms des fifos par le pid du process: {SM}1 -> {SM}1 (j'ai adapté le fiacre en conséquence).
+// j'ai créer 3 cdl, avec 1 dev, 2 dev et 3 dev.
+
+event recv_go_init_Dev1 is	{receive go_init_Dev1 from {SM}1 }
+
+// Message original qui utilise une constante Fiacre (fonctionne toujours)
+// event send_login1 is     	{send login1 to {SM}1}
+// Nouveau message avec un literal
+event send_login1 is     	{send T_SIGNAL { signal_type = LOGIN, signal_proc = NO_DEV1, signal_value = NUL} to {SM}1}
+
+event recv_ack_log1 is 	  	{receive ack_log1 from {SM}1}
+event recv_nack_log1 is		{receive nack_log1 from {SM}1}
+event send_operate1 is		{send operate1 to {SM}1}
+event recv_ack_oper1 is		{receive ack_oper1 from {SM}1}
+event recv_nack_oper1 is	{receive nack_oper1 from {SM}1}
+event send_logout1 is		{send logout1 to {SM}1}
+
+//  SM <---> Dev2 
+
+event recv_go_init_Dev2 is	{receive go_init_Dev2 from {SM}1}
+event send_login2 is		{send login2 to {SM}1}
+event recv_ack_log2 is		{receive ack_log2 from {SM}1}
+event recv_nack_log2 is		{receive nack_log2 from {SM}1}
+event send_operate2 is		{send operate2 to {SM}1}
+event recv_ack_oper2 is		{receive ack_oper2 from {SM}1}
+event recv_nack_oper2 is	{receive nack_oper2 from {SM}1}
+event send_logout2 is		{send logout2 to {SM}1}
+
+//  SM <---> Dev3
+
+event recv_go_init_Dev3 is	{receive go_init_Dev3 from {SM}1}
+event send_login3 is     	{send login3 to {SM}1}
+event recv_ack_log3 is		{receive ack_log3 from {SM}1}
+event recv_nack_log3 is		{receive nack_log3 from {SM}1}
+event send_operate3 is		{send operate3 to {SM}1}
+event recv_ack_oper3 is		{receive ack_oper3 from {SM}1}
+event recv_nack_oper3 is	{receive nack_oper3 from {SM}1}
+event send_logout3 is		{send logout3 to {SM}1}
+
+// ------------- déclaration des interactions ------------------------
+
+// Dev 1 2, ou 3 <---> SM 
+
+activity goinitDev1 is	{ event recv_go_init_Dev1 }
+activity login1 is		{ event send_login1; event recv_ack_log1 }
+activity nologin1 is	{ event send_login1; event recv_nack_log1 }
+
+activity goinitDev2 is	{ event recv_go_init_Dev2 }
+activity login2 is		{ event send_login2; event recv_ack_log2 }
+activity nologin2 is	{ event send_login2; event recv_nack_log2 }
+
+activity goinitDev3 is	{ event recv_go_init_Dev3 }
+activity login3 is		{ event send_login3; event recv_ack_log3 }
+activity nologin3 is	{ event send_login3; event recv_nack_log3 }
+
+
+activity operate1 is   { event send_operate1; event recv_ack_oper1 }
+activity nooperate1 is { event send_operate1; event recv_nack_oper1 }
+
+activity operate2 is   { event send_operate2; event recv_ack_oper2 }
+activity nooperate2 is { event send_operate2; event recv_nack_oper2 }
+
+activity operate3 is   { event send_operate3; event recv_ack_oper3 }
+activity nooperate3 is { event send_operate3; event recv_nack_oper3 }
+
+activity logout1 is { event send_logout1 }
+activity logout2 is { event send_logout2 }
+activity logout3 is { event send_logout3 }
+
+//------------------ comportements des acteurs -------------
+
+activity DEV1 is
+{
+	goinitDev1;
+	login1;
+	operate1;
+	logout1
+}
+
+activity DEV2 is
+{
+	goinitDev2;
+	login2;
+	operate2;
+	logout2
+}
+
+activity DEV3 is
+{
+	goinitDev3;
+	login3;
+	operate3;
+	logout3
+}
+
+
+
+//------------------------------- Début CDL ----------------------------------
+cdl cdl1dev is {
+	main is { DEV1 }
+}
+
+cdl cdl2dev is {
+	main is { DEV1 || DEV2 }
+}
+
+cdl cdl3dev is {
+	main is { DEV1 || DEV2 || DEV3 }
+}

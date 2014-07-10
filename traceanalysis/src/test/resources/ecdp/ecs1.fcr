@@ -1,0 +1,632 @@
+/*****************************************************************
+S_CP_3dev_14avril11.fcr
+Ph. Dhaussy Ensta-Bretagne
+--------------------------------------------
+
+processus SM, EquipManager et Auth dans le systeme
+
+Les acteurs (n Dev) de l'environnement sont codes par un programme CDL
+(voir S_CP_3dev_14avril11.cdl)
+
+***************************************************************/
+
+/*-------------------------------------------------- 
+    Nbre et No des device Dev 
+				   
+	***** ICI :  ajuster en fonction du nombre de Dev *****
+	
+----------------------------------------------------*/
+
+/* <<<<<<<<<<<<<<<<--- ajuster ici le nbre de Dev ---->>>>>>>>>>>>>>>>> */
+
+const NB_DEV    : nat is 3   /* 3 acteurs Dev dans le contexte */
+
+const NO_DEV1   : int is 1
+const NO_DEV2   : int is 2
+const NO_DEV3   : int is 3
+
+type T_ARRAY_BOOL_DEV is array NB_DEV of bool
+const DEFAULT_ARRAY_BOOL_DEV: T_ARRAY_BOOL_DEV is [false, false, false]
+
+const NB_SEND_RIGHTS : int is 1		/* nbre d'envoi de getRiths a Auth */
+
+const TAILLE_FIFO : nat is 10	
+
+/*-------------------------------------------------- 
+        Constantes pour les types de signaux 
+----------------------------------------------------*/
+const NUL   : int is 0   /* valeur non initilaisee */
+
+/*----  SM  <---> Equipmanager  ----*/
+
+const GO_INIT_EQ    : int is 1
+const ADD_DEV       : int is 2
+const ACK_EQ_MGER   : int is 3
+
+/*----  SM  <---> Dev  ----*/
+
+const GO_INIT_DEV  : int is 10
+const LOGIN        : int is 11
+const ACK_LOG      : int is 12
+const NACK_LOG     : int is 13
+const OPERATE      : int is 14
+const ACK_OPER     : int is 15
+const NACK_OPER    : int is 16
+const LOGOUT       : int is 17
+
+/*----  SM  <---> Auth  ----*/
+
+const GET_RIGHTS   : int is 21
+const ACK_RIGHTS   : int is 22
+const NACK_RIGHTS  : int is 23
+
+
+/*-------------------------------------------------- 
+                   STRUCTURES 
+----------------------------------------------------*/
+
+type T_DEV is 0..(NB_DEV-1)
+
+type T_SIGNAL is record
+	signal_type    : int,   /* caracterise l'id du signal */
+	signal_proc    : int,   /* destinataire ou emetteur du signal */
+	signal_value   : int    /* valeur complementaire (peut etre utilisee ou pas) */
+end
+
+type fifo   is queue TAILLE_FIFO of T_SIGNAL 	/* pour les fifo partagees */
+type T_FIFO is queue TAILLE_FIFO of T_SIGNAL 	/* pour la fifo interne */
+	
+/*-------------------------------------------------------------------- 
+   Declarations pour les events pour l'edition de lien avec le CDL
+----------------------------------------------------------------------*/
+
+/*  EquipManager <---> SM */
+const go_init_Eq   : T_SIGNAL  is {signal_type = GO_INIT_EQ , signal_proc = NUL, signal_value = NUL}
+const add_dev1     : T_SIGNAL  is {signal_type = ADD_DEV, signal_proc = NO_DEV1, signal_value = NUL}
+const add_dev2     : T_SIGNAL  is {signal_type = ADD_DEV, signal_proc = NO_DEV2, signal_value = NUL}
+const add_dev3     : T_SIGNAL  is {signal_type = ADD_DEV, signal_proc = NO_DEV3, signal_value = NUL}
+const ack_EqMger   : T_SIGNAL  is {signal_type = ACK_EQ_MGER, signal_proc = NUL, signal_value = NUL}
+
+
+/* <<<<<<<<<<<<<<<<--- ajuster ici le nbre de Dev ---->>>>>>>>>>>>>>>>> */
+
+/*  SM <---> Dev1 */
+const go_init_Dev1 : T_SIGNAL  is {signal_type = GO_INIT_DEV, signal_proc = NO_DEV1, signal_value = NUL}
+const login1       : T_SIGNAL  is {signal_type = LOGIN, signal_proc = NO_DEV1, signal_value = NUL}
+const ack_log1     : T_SIGNAL  is {signal_type = ACK_LOG, signal_proc = NO_DEV1, signal_value = NUL}
+const nack_log1    : T_SIGNAL  is {signal_type = NACK_LOG, signal_proc = NO_DEV1, signal_value = NUL}
+const operate1     : T_SIGNAL  is {signal_type = OPERATE, signal_proc = NO_DEV1, signal_value = NUL}
+const ack_oper1    : T_SIGNAL  is {signal_type = ACK_OPER, signal_proc = NO_DEV1, signal_value = NUL}
+const nack_oper1   : T_SIGNAL  is {signal_type = NACK_OPER, signal_proc = NO_DEV1, signal_value = NUL}
+const logout1      : T_SIGNAL  is {signal_type = LOGOUT, signal_proc = NO_DEV1, signal_value = NUL}
+
+/*  SM <---> Dev2 */
+const go_init_Dev2 : T_SIGNAL  is {signal_type = GO_INIT_DEV, signal_proc = NO_DEV2, signal_value = NUL}
+const login2       : T_SIGNAL  is {signal_type = LOGIN, signal_proc = NO_DEV2, signal_value = NUL}
+const ack_log2     : T_SIGNAL  is {signal_type = ACK_LOG, signal_proc = NO_DEV2, signal_value = NUL}
+const nack_log2    : T_SIGNAL  is {signal_type = NACK_LOG, signal_proc = NO_DEV2, signal_value = NUL}
+const operate2     : T_SIGNAL  is {signal_type = OPERATE, signal_proc = NO_DEV2, signal_value = NUL}
+const ack_oper2    : T_SIGNAL  is {signal_type = ACK_OPER, signal_proc = NO_DEV2, signal_value = NUL}
+const nack_oper2   : T_SIGNAL  is {signal_type = NACK_OPER, signal_proc = NO_DEV2, signal_value = NUL}
+const logout2      : T_SIGNAL  is {signal_type = LOGOUT, signal_proc = NO_DEV2, signal_value = NUL}
+
+/*  SM <---> Dev3 */
+const go_init_Dev3 : T_SIGNAL  is {signal_type = GO_INIT_DEV, signal_proc = NO_DEV3, signal_value = NUL}
+const login3       : T_SIGNAL  is {signal_type = LOGIN, signal_proc = NO_DEV3, signal_value = NUL}
+const ack_log3     : T_SIGNAL  is {signal_type = ACK_LOG, signal_proc = NO_DEV3, signal_value = NUL}
+const nack_log3    : T_SIGNAL  is {signal_type = NACK_LOG, signal_proc = NO_DEV3, signal_value = NUL}
+const operate3     : T_SIGNAL  is {signal_type = OPERATE, signal_proc = NO_DEV3, signal_value = NUL}
+const ack_oper3    : T_SIGNAL  is {signal_type = ACK_OPER, signal_proc = NO_DEV3, signal_value = NUL}
+const nack_oper3   : T_SIGNAL  is {signal_type = NACK_OPER, signal_proc = NO_DEV3, signal_value = NUL}
+const logout3      : T_SIGNAL  is {signal_type = LOGOUT, signal_proc = NO_DEV3, signal_value = NUL}
+
+/*  Auth <---> SM */
+const get_rights1  : T_SIGNAL  is {signal_type = GET_RIGHTS, signal_proc = NUL, signal_value = 1}
+const get_rights2  : T_SIGNAL  is {signal_type = GET_RIGHTS, signal_proc = NUL, signal_value = 2}
+const get_rights3  : T_SIGNAL  is {signal_type = GET_RIGHTS, signal_proc = NUL, signal_value = 3}
+
+const ack_rights1  : T_SIGNAL  is {signal_type = ACK_RIGHTS, signal_proc = NUL, signal_value = 1}
+const ack_rights2  : T_SIGNAL  is {signal_type = ACK_RIGHTS, signal_proc = NUL, signal_value = 2}
+const ack_rights3  : T_SIGNAL  is {signal_type = ACK_RIGHTS, signal_proc = NUL, signal_value = 3}
+
+const nack_rights1 : T_SIGNAL  is {signal_type = NACK_RIGHTS, signal_proc = NUL, signal_value = 1}
+const nack_rights2 : T_SIGNAL  is {signal_type = NACK_RIGHTS, signal_proc = NUL, signal_value = 2}
+const nack_rights3 : T_SIGNAL  is {signal_type = NACK_RIGHTS, signal_proc = NUL, signal_value = 3}
+
+
+
+
+/*========================================================
+                        SM 
+========================================================*/
+
+/*
+ pour l'instant les fifo partagees avec le contexte CDL doivent est du type "fifo"
+ */
+process SM ( &input			: read write fifo, 
+             &to_Auth       : read write fifo,
+             &to_EqMger     : read write fifo,
+             &to_context	: read write fifo  
+           ) 
+is
+
+states 
+	sendGoInitToEqMger, 
+	waitAddDev, 
+	prepareGoInitToDev,
+	sendGoInitToDev,
+	waitSignal,
+	testLoginNumDev,
+	sendGetRights,
+	sendAckOper,
+	sendNackOper
+
+
+var 
+	received   : T_SIGNAL,				/* msg recu  */
+	sent       : T_SIGNAL,				/* msg envoye */
+	devAdded   : T_ARRAY_BOOL_DEV,		/* pour repertorier les dev */
+	devLogged  : T_ARRAY_BOOL_DEV,		/* pour les dev loggues */
+	numDev     : T_DEV,
+	internalBuffer : T_FIFO,				/* fifo interne pour les envois vers le contexte */
+	nb_send_rights : int
+	
+init 
+	received  := {signal_type = NUL, signal_proc = NUL, signal_value = NUL};
+	sent      := {signal_type = NUL, signal_proc = NUL, signal_value = NUL};
+	devAdded  := DEFAULT_ARRAY_BOOL_DEV;
+	devLogged := DEFAULT_ARRAY_BOOL_DEV;
+	internalBuffer := {||};
+	nb_send_rights := 0;
+	
+	to sendGoInitToEqMger
+
+/*------------------------------------------------
+            send GO_INIT_EQ  
+-------------------------------------------------*/
+from sendGoInitToEqMger
+	
+	if (full (to_EqMger))  then loop end;
+	
+	/* ----------------------------------------*/
+	sent.signal_type  := GO_INIT_EQ;
+	sent.signal_proc  := NUL;
+	sent.signal_value := NUL;
+	/* ----------------------------------------*/
+	to_EqMger := enqueue (to_EqMger, sent);
+	/*@send GO_INIT_EQ */
+	to waitAddDev
+
+
+/*-----------------------------------------------------------
+          recv ADD_DEV from DEV (i) puis ACK_EQ_MGER
+------------------------------------------------------------*/
+from waitAddDev
+
+	while (not (empty input) and received.signal_type = NUL)  do
+		received := first input;
+		input := dequeue (input)	
+	end;
+
+	/* ------ message "ADD_DEV" recu ? ------ */
+	if (received.signal_type = ADD_DEV) then
+		received.signal_type  := NUL;
+		devAdded [$(received.signal_proc -1)] := true;  /* repertorier le Dev additionne  */
+		/*@ADD_DEV recu  */
+		to waitAddDev
+	end;
+	
+	/*------ message "ACK_EQ_MGER" recu ? ------*/
+	if (received.signal_type = ACK_EQ_MGER) then
+		received.signal_type  := NUL;
+		/*@ACK_EQ_MGER recu  */
+		to prepareGoInitToDev
+	end;
+
+	to waitAddDev
+
+
+/*------------------------------------------------
+	preparer les messages GO_INIT_DEV dans le buffer 
+	interne de sortie : internalBuffer
+-------------------------------------------------*/
+from prepareGoInitToDev
+
+	/* pour tous les dev ... */
+	foreach numDev do   /* syntaxe correct ??? */
+		if not (full internalBuffer) then	    /* tant que internalBuffer n'est pas plein */
+			/* ---------------------------------------- */
+			sent.signal_type  := GO_INIT_DEV;
+			sent.signal_proc  := numDev + 1;    /* + 1 car numdev prend les valeurs de 0 a NB_DEV */
+			sent.signal_value := NUL;
+			/* ---------------------------------------- */			
+			internalBuffer := enqueue (internalBuffer, sent)    /* on range */
+		end
+	end;
+	/*@prepare les msg GO_INIT_DEV */
+	to sendGoInitToDev
+	
+	
+/*------------------------------------------------
+     send les GO_INIT_DEV aux Dev :
+	 envoyer tout le contenu de internalBuffer vers le contexte
+-------------------------------------------------*/
+from sendGoInitToDev
+
+	if not(empty internalBuffer) then 	/* tant qu'internalBuffer n'est pas vide */
+		if not(full to_context) then	/* et tant que to_context n'est pas plein */
+			to_context := enqueue(to_context, first internalBuffer);    /* on envoie */
+			internalBuffer := dequeue internalBuffer
+		end;
+		/*@Envoi un msg GO_INIT_DEV */
+		loop
+	end;
+
+	/*@internalBuffer vide */
+	to waitSignal
+
+
+
+
+/*-----------------------------------------------------------
+      receive soit :
+				LOGIN (n), 
+				OPERATE (n), 
+				ACK_RIGHTS (n), 
+				NACK_RIGHTS, 
+				LOGOUT (n)  
+------------------------------------------------------------*/
+from waitSignal
+
+	while (not (empty input) and received.signal_type = NUL)  do
+		received := first input;
+		input := dequeue (input)
+	end;
+
+	/*------ message "LOGIN" recu ? ------*/
+
+	if (received.signal_type = LOGIN) then
+		received.signal_type  := NUL;
+		/*@LOGIN recu */
+		to testLoginNumDev
+	end;
+
+	/*------ message "OPERATE" recu ? ------*/
+
+	if (received.signal_type = OPERATE) then
+		received.signal_type  := NUL;
+		/*@OPERATE recu */
+		to sendGetRights
+	end;
+	
+	/*------ message "ACK_RIGHTS" recu ? ------*/
+
+	if (received.signal_type = ACK_RIGHTS) then
+		received.signal_type  := NUL;
+		/*@ACK_RIGHTS recu */
+		to sendAckOper
+	end;
+
+	/*------ message "NACK_RIGHTS" recu ? ------*/
+
+	if (received.signal_type = NACK_RIGHTS) then
+		received.signal_type  := NUL;
+		/*@NACK_RIGHTS recu */
+		to sendNackOper
+	end;
+	
+	/*------ message "LOGOUT" recu ? ------*/
+
+	if (received.signal_type = LOGOUT) then
+		received.signal_type  := NUL;
+		/*  signal_proc prend les valeurs 1 à NB_DEV */		
+		devLogged [$(received.signal_proc -1)] := false;  /* repertorier le Dev deloggue  */
+		/*@LOGOUT recu */
+		to waitSignal
+	end;
+	
+	/*@autre msg recu */
+	to waitSignal
+
+
+/*-----------------------------------------------------------
+	test du Dev  : 
+	si correspond a un Dev deja repertorie (devAdded [numDev] = true)
+	 	*  et send ACK_LOG ou NACK_LOG
+		*  mise a true de devLogged [numDev]
+------------------------------------------------------------*/
+from testLoginNumDev
+
+	if (full (to_context)) then  to testLoginNumDev  end;
+	
+	/*----- devAdded true ? -----*/
+	/*  signal_proc prend les valeurs 1 à NB_DEV */
+	if (devAdded [$(received.signal_proc -1)] = true) then 	
+			/* ----------------------------------------*/
+			sent.signal_type  := ACK_LOG;
+			sent.signal_proc  := received.signal_proc;
+			sent.signal_value := NUL
+			/* ----------------------------------------*/
+	else
+			/* ----------------------------------------*/		
+			sent.signal_type  := NACK_LOG;
+			sent.signal_proc  := received.signal_proc;
+			sent.signal_value := NUL
+			/* ----------------------------------------*/			
+	end;
+		
+	/*------------------------------------------------
+            send ACK_LOG ou NACK_LOG et 
+			affecter le tableau devLogged
+	-------------------------------------------------*/
+	to_context := enqueue (to_context, sent);
+	devLogged [$(received.signal_proc -1)] := true;  /* repertorier le Dev loggue */
+
+	/*@envoi de ACK_LOG ou NACK_LOG */
+	to waitSignal
+
+
+/*-----------------------------------------------------------	
+		envoi de NB_SEND_RIGHTS GET_RIGHTS (n) a Auth
+------------------------------------------------------------*/
+from sendGetRights
+
+    if (nb_send_rights >= NB_SEND_RIGHTS) then
+			nb_send_rights := 0;
+			to waitSignal
+	end;
+	
+	if (full (to_Auth)) then  to sendGetRights  end;
+	
+	/* ----------------------------------------*/
+	sent.signal_type  := GET_RIGHTS;
+	sent.signal_proc  := NUL;
+	sent.signal_value := received.signal_proc;
+	/* ----------------------------------------*/
+	to_Auth := enqueue (to_Auth, sent);
+
+	nb_send_rights := nb_send_rights + 1;
+	/*@envoi de GET_RIGHTS */
+	to sendGetRights
+
+	
+
+	
+/*------------------------------------------------
+		send ACK_OPER a Dev i  si devLogged [i] = true 
+-------------------------------------------------*/
+from sendAckOper
+
+	if (full (to_context)) then  to sendAckOper  end;
+
+	/*  signal_value prend les valeurs 1 à NB_DEV */
+	if (devLogged [$(received.signal_value -1)] = true) then   /*----- Si Dev est loggue -----*/
+			/* ----------------------------------------*/
+			sent.signal_type  := ACK_OPER;
+			sent.signal_proc  := received.signal_value;
+			sent.signal_value := NUL
+			/*- ---------------------------------------*/
+	else
+			/* ----------------------------------------*/
+			sent.signal_type  := NACK_OPER;
+			sent.signal_proc  := received.signal_value;
+			sent.signal_value := NUL
+			/* ----------------------------------------*/
+	end;
+	
+	to_context := enqueue (to_context, sent);
+	/*@envoi de ACK_OPER ou NACK_OPER */
+	to waitSignal
+	
+
+/*------------------------------------------------
+	    send NACK_OPER a Dev i dans tous les cas  
+-------------------------------------------------*/
+from sendNackOper
+
+	if (full (to_context)) then  to sendNackOper  end;
+	
+	/* ----------------------------------------*/	
+	sent.signal_type  := NACK_OPER;
+	sent.signal_proc  := received.signal_value;
+	sent.signal_value := NUL;
+	/* ----------------------------------------*/
+	
+	to_context := enqueue (to_context, sent);
+	/*@envoi de NACK_OPER */
+	to waitSignal
+
+
+/*------------- Fin SM ----------------------*/
+
+
+
+/*========================================================
+                       Auth
+========================================================*/
+
+process Auth (&input     : read write fifo, 
+              &toSM      : read write fifo)
+is
+
+states 
+	waitGetRights, 
+	sendAckRights
+
+var 
+	received : T_SIGNAL,
+	sent     : T_SIGNAL,
+	numDev   : int
+
+init 
+	received  := {signal_type = NUL, signal_proc = NUL, signal_value = NUL};
+	sent      := {signal_type = NUL, signal_proc = NUL, signal_value = NUL};
+	
+	to waitGetRights
+
+
+/*-----------------------------------------------------------
+		receive getRights
+------------------------------------------------------------*/
+from waitGetRights
+
+	while (not (empty input) and received.signal_type = NUL)
+	do
+		received := first input;
+		input := dequeue (input)
+	end;
+
+	/*------ message "GET_RIGHTS" recu ? ------*/
+
+	if (received.signal_type = GET_RIGHTS) then
+		received.signal_type  := NUL;
+		numDev := received.signal_value;
+		to sendAckRights
+	end;
+
+	to waitGetRights
+
+	
+/*------------------------------------------------
+	send ackRights (numDev = i) a SM
+-------------------------------------------------*/
+from sendAckRights
+
+	if (full (toSM)) then to sendAckRights  end;
+	
+	/* ------------------------------------------*/
+	sent.signal_type := ACK_RIGHTS; 	/* NACK_RIGHTS */
+	sent.signal_value  := numDev;
+	/* ------------------------------------------*/
+
+	toSM := enqueue (toSM, sent);
+	to waitGetRights
+
+/*--------- fin Auth -------------*/
+
+
+/*========================================================
+                       EquipManager 
+========================================================*/
+
+process EquipManager (&input     : read write fifo, 
+                      &toSM      : read write fifo
+                     ) 
+is
+
+states 
+	waitGoInit,
+	prepare_Add_Dev,	
+	sendAddDev
+
+var 
+	received   : T_SIGNAL,				/* msg recu  */
+	sent       : T_SIGNAL,				/* msg envoye */
+	internalBuffer : T_FIFO,			/* fifo interne pour les envois vers SM */
+	numDev     : T_DEV
+	
+init 
+	received  := {signal_type = NUL, signal_proc = NUL, signal_value = NUL};
+	sent      := {signal_type = NUL, signal_proc = NUL, signal_value = NUL};
+	internalBuffer := {||};
+	
+	to waitGoInit
+
+/*-----------------------------------------------------------
+		receive GO_INIT
+------------------------------------------------------------*/
+from waitGoInit
+
+	while (not (empty input) and received.signal_type = NUL)
+	do
+		received := first input;
+		input := dequeue (input)
+	end;
+
+	/*------ message "GO_INIT" recu ? ------*/
+
+	if (received.signal_type = GO_INIT_EQ) then
+		received.signal_type  := NUL;
+		to prepare_Add_Dev
+	end;
+
+	to waitGoInit
+
+
+/*------------------------------------------------
+	preparer les messages ADD_DEV et le message ACK_EQ_MGER
+	dans le buffer interne de sortie : internalBuffer
+-------------------------------------------------*/
+from prepare_Add_Dev
+
+	/* pour tous les dev ... */
+	foreach numDev do   
+		if not (full internalBuffer) then	    /* si internalBuffer n'est pas plein */
+			/* ---------------------------------------- */
+			sent.signal_type  := ADD_DEV;
+			sent.signal_proc  := numDev + 1;    /* + 1 car numdev prend les valeurs de 0 a NB_DEV */
+			sent.signal_value := NUL;
+			/* ---------------------------------------- */			
+			internalBuffer := enqueue (internalBuffer, sent)    /* on range */
+		end;
+
+		if not (full internalBuffer) then	    /* si internalBuffer n'est pas plein */
+			/* ---------------------------------------- */
+			sent.signal_type  := ACK_EQ_MGER;
+			sent.signal_proc  := NUL;    
+			sent.signal_value := NUL;
+			/* ---------------------------------------- */			
+			internalBuffer := enqueue (internalBuffer, sent)    /* on range */
+		end		
+	end;
+	/*@prepare les msg ADD_DEV et ACK_EQ_MGER */
+	to sendAddDev
+	
+	
+/*------------------------------------------------
+     send les ADD_DEV et ACK_EQ_MGER a SM :
+	 envoyer tout le contenu de internalBuffer vers le SM
+-------------------------------------------------*/
+from sendAddDev
+
+	if not(empty internalBuffer) then 	/* tant qu'internalBuffer n'est pas vide */
+		if not(full toSM) then	/* et tant que to_context n'est pas plein */
+			toSM := enqueue(toSM, first internalBuffer);    /* on envoie */
+			internalBuffer := dequeue internalBuffer
+		end;
+		/*@Envoi les msg ADD_DEV et ACK_EQ_MGER */
+		loop
+	end;
+
+	/*@internalBuffer vide */
+	to waitGoInit  /* pour attendre sans rien faire */
+
+/*----------- fin EquipManager --------------*/
+	
+
+
+/*========================================================
+                 Composant a valider
+========================================================*/
+component root is
+
+var  
+	SM_1           : fifo,	
+	toContext  	   : fifo,	
+	EquipManager_1 : fifo,	
+	Auth_1         : fifo	
+	
+init
+	SM_1 	:= {||};
+	toContext := {||};
+	EquipManager_1 := {||};
+	Auth_1 := {||}	
+	
+par     
+		SM			(&SM_1, &Auth_1, &EquipManager_1, &toContext)
+	||	Auth		(&Auth_1, &SM_1)
+	||	EquipManager(&EquipManager_1, &SM_1)
+
+end
+
+root
