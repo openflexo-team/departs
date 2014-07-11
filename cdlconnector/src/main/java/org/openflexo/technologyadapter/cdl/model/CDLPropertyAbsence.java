@@ -20,16 +20,27 @@
 
 package org.openflexo.technologyadapter.cdl.model;
 
+import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
 
 @ModelEntity
-@ImplementationClass(CDLProperty.CDLPropertyImpl.class)
-@XMLElement(xmlTag = "CDLProperty")
-public abstract interface CDLProperty extends CDLObject {
+@ImplementationClass(CDLPropertyAbsence.CDLPropertyAbsenceImpl.class)
+@XMLElement(xmlTag = "CDLPropertyAbsence")
+public interface CDLPropertyAbsence extends CDLPropertyPattern {
 
-	public static abstract class CDLPropertyImpl extends CDLObjectImpl implements CDLProperty {
+	// @PropertyIdentifier(type = obp.property.Property.class)
+	public static final String PROPERTY_KEY = "propertyAbsence";
+
+	@Getter(value = PROPERTY_KEY, ignoreType=true)
+	public obp.property.PropertyAbsence getCDLPropertyAbsence();
+
+	@Setter(value = PROPERTY_KEY)
+	public void setCDLPropertyAbsence(obp.property.PropertyAbsence cdlPropertyAbsence);
+
+	public static abstract class CDLPropertyAbsenceImpl extends CDLPropertyPatternImpl implements CDLPropertyAbsence {
 
 	}
 

@@ -5,6 +5,7 @@
     <BrowserElement dataClassName="org.openflexo.technologyadapter.cdl.model.CDLUnit" label="CDLUnit.name" icon="controller.iconForObject(CDLUnit)" isEditable="false" filtered="false" defaultVisible="true" name="CDLUnit">
       <Children data="data.cDLParActivity" name="mainActivity" />
       <Children data="data.initialActivity" name="initialActivity" />
+      <Children data="data.cDLproperties" name="properties" />
     </BrowserElement>
     <BrowserElement dataClassName="org.openflexo.technologyadapter.cdl.model.CDLTopActivity" label="topActivity.name" icon="controller.iconForObject(topActivity)" isEditable="false" filtered="false" defaultVisible="true" name="topActivity">
     	<Children data="topActivity.cDLActivities" name="cdlActivities" />
@@ -29,9 +30,19 @@
     </BrowserElement>
     <BrowserElement dataClassName="org.openflexo.technologyadapter.cdl.model.CDLProcessID" label="processId.name" icon="controller.iconForObject(processId)" isEditable="false" filtered="false" defaultVisible="true" name="processId">
     </BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.technologyadapter.cdl.model.CDLProperty" label="property.name" icon="controller.iconForObject(property)" isEditable="false" filtered="false" defaultVisible="true" name="property">
+    <BrowserElement dataClassName="org.openflexo.technologyadapter.cdl.model.CDLPropertyPattern" label="property.name" icon="controller.iconForObject(property)" isEditable="false" filtered="false" defaultVisible="true" name="propertyPattern">
     </BrowserElement>
-    
+    <BrowserElement dataClassName="org.openflexo.technologyadapter.cdl.model.CDLObserver" label="observer.name" icon="controller.iconForObject(observer)" isEditable="false" filtered="false" defaultVisible="true" name="observer">
+    	<Children data="observer.states" name="state" />
+    </BrowserElement>
+    <BrowserElement dataClassName="org.openflexo.technologyadapter.cdl.model.CDLObserverState" label="state.name" icon="controller.iconForObject(state)" isEditable="false" filtered="false" defaultVisible="true" name="state">
+    	<Children data="state.inTransitions" name="inTransition" />
+    	<Children data="state.outTransitions" name="outTransition" />
+    </BrowserElement>
+    <BrowserElement dataClassName="org.openflexo.technologyadapter.cdl.model.CDLObserverTransition" label="transition.name" icon="controller.iconForObject(transition)" isEditable="false" filtered="false" defaultVisible="true" name="transition">
+    	<Children data="transition.fromState" name="fromState" />
+    	<Children data="transition.toState" name="toState" />
+    </BrowserElement>
   </Browser>
   
   </Panel>

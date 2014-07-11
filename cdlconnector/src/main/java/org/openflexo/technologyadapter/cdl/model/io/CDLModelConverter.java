@@ -24,6 +24,12 @@ import obp.event.Input;
 import obp.event.Output;
 import obp.event.PredicateEvent;
 import obp.event.Synchronous;
+import obp.property.Property;
+import obp.property.PropertyAbsence;
+import obp.property.PropertyExistence;
+import obp.property.PropertyObserver;
+import obp.property.PropertyPrecedence;
+import obp.property.PropertyResponse;
 
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.ModelContext;
@@ -40,10 +46,18 @@ import org.openflexo.technologyadapter.cdl.model.CDLEventReference;
 import org.openflexo.technologyadapter.cdl.model.CDLGammaEvent;
 import org.openflexo.technologyadapter.cdl.model.CDLInformalEvent;
 import org.openflexo.technologyadapter.cdl.model.CDLObject;
+import org.openflexo.technologyadapter.cdl.model.CDLObserver;
+import org.openflexo.technologyadapter.cdl.model.CDLObserverState;
+import org.openflexo.technologyadapter.cdl.model.CDLObserverTransition;
 import org.openflexo.technologyadapter.cdl.model.CDLParActivity;
 import org.openflexo.technologyadapter.cdl.model.CDLPredicateEvent;
 import org.openflexo.technologyadapter.cdl.model.CDLProcessID;
 import org.openflexo.technologyadapter.cdl.model.CDLProperty;
+import org.openflexo.technologyadapter.cdl.model.CDLPropertyAbsence;
+import org.openflexo.technologyadapter.cdl.model.CDLPropertyExistence;
+import org.openflexo.technologyadapter.cdl.model.CDLPropertyPattern;
+import org.openflexo.technologyadapter.cdl.model.CDLPropertyPrecedence;
+import org.openflexo.technologyadapter.cdl.model.CDLPropertyResponse;
 import org.openflexo.technologyadapter.cdl.model.CDLSeqActivity;
 import org.openflexo.technologyadapter.cdl.model.CDLTopActivity;
 import org.openflexo.technologyadapter.cdl.model.CDLUnit;
@@ -77,6 +91,15 @@ public class CDLModelConverter {
 					CDLGammaEvent.class,
 					CDLInformalEvent.class,
 					CDLProperty.class,
+					CDLPropertyAbsence.class,
+					CDLObserver.class,
+					CDLProperty.class,
+					CDLPropertyResponse.class,
+					CDLPropertyExistence.class,
+					CDLObserverState.class,
+					CDLObserverTransition.class,
+					CDLPropertyResponse.class,
+					CDLPropertyPattern.class,
 					CDLEvent.class,
 					CDLCommunicationOPEvent.class));
 			modelContext = new ModelContext(CDLActivity.class);
@@ -105,19 +128,24 @@ public class CDLModelConverter {
 			if (declaration instanceof obp.cdl.EventDeclaration) {
 				convertCDLEvent((EventDeclaration) declaration, flexoCDLUnit);
 			}
-			if (declaration instanceof obp.cdl.PropertyDeclaration) {
-				convertCDLProperty((PropertyDeclaration) declaration, flexoCDLUnit);
-			}
 		}
 		for (Declaration declaration : cdlUnit.getDeclarationList()) {
 			if (declaration instanceof obp.cdl.ActivityDeclaration) {
 				CDLActivity activity = convertCDLActivity(((ActivityDeclaration) declaration).getIs(), flexoCDLUnit);
 				activity.setName(declaration.getName());
 			}
+		}
+		for (Declaration declaration : cdlUnit.getDeclarationList()) {
+			if (declaration instanceof obp.cdl.PropertyDeclaration) {
+				CDLProperty cdlProperty = convertCDLProperty(((PropertyDeclaration) declaration).getIs(), flexoCDLUnit);
+				cdlProperty.setName((((PropertyDeclaration) declaration)).getName());
+			}
 			if (declaration instanceof obp.cdl.CDLDeclaration) {
 				cdlDeclaration = (CDLDeclaration) declaration;
 			}
 		}
+		
+		
 		if(cdlDeclaration!=null){
 			if(cdlDeclaration.getInit()!=null){
 				flexoCDLUnit.setInitialActivity((CDLTopActivity)cdlObjects.get(cdlDeclaration.getInit()));
@@ -217,6 +245,7 @@ public class CDLModelConverter {
 				cdlInformalEvent.setInformalEvent((Informal) event.getIs());
 				CDLProcessID from = factory.newInstance(CDLProcessID.class);
 				from.setCDLProcessID(((Informal)event.getIs()).getFrom());
+				from.setTechnologyAdapter(technologyAdapter);
 				cdlInformalEvent.setProcessIDFrom(from);
 			}else if(event.getIs() instanceof GammaEvent){
 				cdlEvent = factory.newInstance(CDLGammaEvent.class);
@@ -277,11 +306,21 @@ public class CDLModelConverter {
 		return cdlActivity;
 	}
 
-	public CDLProperty convertCDLProperty(PropertyDeclaration property, CDLUnit cdlUnit) {
+	public CDLProperty convertCDLProperty(Property property, CDLUnit cdlUnit) {
 		CDLProperty cdlProperty = null;
 		if (!getCDLObjects().containsKey(property)) {
-			cdlProperty = factory.newInstance(CDLProperty.class);
-			cdlProperty.setName(property.getName());
+			if(property instanceof PropertyResponse){
+				PropertyResponse propertyResponse = (PropertyResponse)property;
+				cdlProperty = factory.newInstance(CDLPropertyResponse.class);
+			}else if(property instanceof PropertyExistence){
+				cdlProperty = factory.newInstance(CDLPropertyExistence.class);
+			}else if(property instanceof PropertyPrecedence){
+				cdlProperty = factory.newInstance(CDLPropertyPrecedence.class);
+			}else if(property instanceof PropertyAbsence){
+				cdlProperty = factory.newInstance(CDLPropertyAbsence.class);
+			}else if(property instanceof PropertyObserver){
+				cdlProperty = factory.newInstance(CDLObserver.class);
+			}
 			cdlProperty.setTechnologyAdapter(technologyAdapter);
 			getCDLObjects().put(property, cdlProperty);
 		} else {

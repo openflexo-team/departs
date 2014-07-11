@@ -20,16 +20,26 @@
 
 package org.openflexo.technologyadapter.cdl.model;
 
+import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
 
 @ModelEntity
-@ImplementationClass(CDLProperty.CDLPropertyImpl.class)
-@XMLElement(xmlTag = "CDLProperty")
-public abstract interface CDLProperty extends CDLObject {
+@ImplementationClass(CDLPropertyPrecedence.CDLPropertyPrecedenceImpl.class)
+@XMLElement(xmlTag = "CDLPropertyPrecedence")
+public interface CDLPropertyPrecedence extends CDLPropertyPattern {
 
-	public static abstract class CDLPropertyImpl extends CDLObjectImpl implements CDLProperty {
+	public static final String PROPERTY_KEY = "propertyPrecedence";
+
+	@Getter(value = PROPERTY_KEY, ignoreType=true)
+	public obp.property.PropertyPrecedence getCDLPropertyPrecedence();
+
+	@Setter(value = PROPERTY_KEY)
+	public void setCDLPropertyPrecedence(obp.property.PropertyPrecedence cdlPropertyPrecedence);
+
+	public static abstract class CDLPropertyPrecedenceImpl extends CDLPropertyPatternImpl implements CDLPropertyPrecedence {
 
 	}
 
