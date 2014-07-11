@@ -24,6 +24,8 @@ import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
+import obp.cdl.AltActivity;
+
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
@@ -34,10 +36,14 @@ import org.openflexo.technologyadapter.cdl.CDLTechnologyAdapter;
 import org.openflexo.technologyadapter.cdl.gui.CDLIconLibrary;
 import org.openflexo.technologyadapter.cdl.gui.view.FIBCDLView;
 import org.openflexo.technologyadapter.cdl.model.CDLActivity;
+import org.openflexo.technologyadapter.cdl.model.CDLAltActivity;
 import org.openflexo.technologyadapter.cdl.model.CDLEvent;
+import org.openflexo.technologyadapter.cdl.model.CDLEventReference;
 import org.openflexo.technologyadapter.cdl.model.CDLObserverState;
+import org.openflexo.technologyadapter.cdl.model.CDLParActivity;
 import org.openflexo.technologyadapter.cdl.model.CDLProcessID;
 import org.openflexo.technologyadapter.cdl.model.CDLProperty;
+import org.openflexo.technologyadapter.cdl.model.CDLSeqActivity;
 import org.openflexo.technologyadapter.cdl.model.CDLUnit;
 import org.openflexo.technologyadapter.cdl.virtualmodel.CDLAltActivityRole;
 import org.openflexo.technologyadapter.cdl.virtualmodel.CDLCommunicationOpEventRole;
@@ -52,6 +58,9 @@ import org.openflexo.technologyadapter.cdl.virtualmodel.action.AddCDLActivity;
 import org.openflexo.technologyadapter.cdl.virtualmodel.action.AddCDLEvent;
 import org.openflexo.technologyadapter.cdl.virtualmodel.action.AddCDLProcessID;
 import org.openflexo.technologyadapter.cdl.virtualmodel.action.AddCDLProperty;
+import org.openflexo.technologyadapter.cdl.virtualmodel.action.SelectCDLAltActivity;
+import org.openflexo.technologyadapter.cdl.virtualmodel.action.SelectCDLParActivity;
+import org.openflexo.technologyadapter.cdl.virtualmodel.action.SelectCDLEventReference;
 import org.openflexo.view.EmptyPanel;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.ControllerActionInitializer;
@@ -110,6 +119,12 @@ public class CDLAdapterController extends TechnologyAdapterController<CDLTechnol
 			return IconFactory.getImageIcon(getIconForTechnologyObject(CDLProcessID.class), IconLibrary.DUPLICATE);
 		} else if (AddCDLProperty.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(getIconForTechnologyObject(CDLProperty.class), IconLibrary.DUPLICATE);
+		}  else if (SelectCDLAltActivity.class.isAssignableFrom(editionActionClass)) {
+			return IconFactory.getImageIcon(getIconForTechnologyObject(CDLAltActivity.class), IconLibrary.IMPORT);
+		}  else if (SelectCDLEventReference.class.isAssignableFrom(editionActionClass)) {
+			return IconFactory.getImageIcon(getIconForTechnologyObject(CDLEventReference.class), IconLibrary.IMPORT);
+		}  else if (SelectCDLParActivity.class.isAssignableFrom(editionActionClass)) {
+			return IconFactory.getImageIcon(getIconForTechnologyObject(CDLParActivity.class), IconLibrary.IMPORT);
 		}
 		return super.getIconForEditionAction(editionActionClass);
 	}

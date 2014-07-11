@@ -22,10 +22,15 @@ package org.openflexo.technologyadapter.cdl.virtualmodel;
 
 import java.lang.reflect.Type;
 
+import org.openflexo.foundation.view.ActorReference;
+import org.openflexo.foundation.view.FlexoConceptInstance;
+import org.openflexo.foundation.view.ModelObjectActorReference;
+import org.openflexo.foundation.view.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.technologyadapter.cdl.model.CDLAltActivity;
 import org.openflexo.technologyadapter.cdl.model.CDLCommunicationOPEvent;
 
 @ModelEntity
@@ -45,5 +50,14 @@ public interface CDLCommunicationOpEventRole extends FlexoRole<CDLCommunicationO
 			return CDLCommunicationOPEvent.class.getSimpleName();
 		}
 
+		@Override
+		public ActorReference<CDLCommunicationOPEvent> makeActorReference(CDLCommunicationOPEvent object, FlexoConceptInstance epi) {
+			VirtualModelInstanceModelFactory factory = epi.getFactory();
+			ModelObjectActorReference<CDLCommunicationOPEvent> returned = factory.newInstance(ModelObjectActorReference.class);
+			returned.setFlexoRole(this);
+			returned.setFlexoConceptInstance(epi);
+			returned.setModellingElement(object);
+			return returned;
+		}
 	}
 }

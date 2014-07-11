@@ -26,6 +26,8 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.ontology.IFlexoOntologyObject;
 import org.openflexo.foundation.technologyadapter.DeclareEditionAction;
 import org.openflexo.foundation.technologyadapter.DeclareEditionActions;
+import org.openflexo.foundation.technologyadapter.DeclareFetchRequest;
+import org.openflexo.foundation.technologyadapter.DeclareFetchRequests;
 import org.openflexo.foundation.technologyadapter.DeclarePatternRole;
 import org.openflexo.foundation.technologyadapter.DeclarePatternRoles;
 import org.openflexo.foundation.technologyadapter.FreeModelSlot;
@@ -48,6 +50,9 @@ import org.openflexo.technologyadapter.cdl.virtualmodel.CDLPropertyRole;
 import org.openflexo.technologyadapter.cdl.virtualmodel.CDLSeqActivityRole;
 import org.openflexo.technologyadapter.cdl.virtualmodel.action.AddCDLProcessID;
 import org.openflexo.technologyadapter.cdl.virtualmodel.action.AddCDLProperty;
+import org.openflexo.technologyadapter.cdl.virtualmodel.action.SelectCDLAltActivity;
+import org.openflexo.technologyadapter.cdl.virtualmodel.action.SelectCDLParActivity;
+import org.openflexo.technologyadapter.cdl.virtualmodel.action.SelectCDLEventReference;
 
 /**
  * Implementation of the ModelSlot class for the CDL technology adapter<br>
@@ -74,6 +79,11 @@ import org.openflexo.technologyadapter.cdl.virtualmodel.action.AddCDLProperty;
 @DeclareEditionActions({ // All edition actions available through this modelslot
 		@DeclareEditionAction(FML = "AddCDLProcessID", editionActionClass = AddCDLProcessID.class), 
 		@DeclareEditionAction(FML = "AddCDLProperty", editionActionClass = AddCDLProperty.class) 
+})
+@DeclareFetchRequests({ // All requests available through this model slot
+	@DeclareFetchRequest(FML = "SelectCDLAltActivity", fetchRequestClass = SelectCDLAltActivity.class),																	// Sheet
+	@DeclareFetchRequest(FML = "SelectCDLParActivity", fetchRequestClass = SelectCDLParActivity.class),
+	@DeclareFetchRequest(FML = "SelectCDLSeqActivity", fetchRequestClass = SelectCDLEventReference.class)
 })
 public interface CDLModelSlot extends FreeModelSlot<CDLUnit> {
 

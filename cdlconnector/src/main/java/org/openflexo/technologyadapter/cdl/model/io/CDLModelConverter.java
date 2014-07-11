@@ -1,6 +1,8 @@
 package org.openflexo.technologyadapter.cdl.model.io;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
@@ -80,6 +82,7 @@ public class CDLModelConverter {
 	private ModelFactory factory;
 	private ModelContext modelContext;
 	private CDLTechnologyAdapter technologyAdapter;
+	private List<CDLActivity> activityReferences;
 
 	/**
 	 * Constructor.
@@ -134,17 +137,22 @@ public class CDLModelConverter {
 		CDLUnit flexoCDLUnit = factory.newInstance(CDLUnit.class);
 		flexoCDLUnit.setTechnologyAdapter(technologyAdapter);
 		cdlObjects.put(cdlUnit, flexoCDLUnit);
-		System.out.println("Create "+flexoCDLUnit.getName());
 		CDLDeclaration cdlDeclaration = null;
 		for (Declaration declaration : cdlUnit.getDeclarationList()) {
 			if (declaration instanceof obp.cdl.EventDeclaration) {
 				convertCDLEvent((EventDeclaration) declaration, flexoCDLUnit);
 			}
 		}
+		if(activityReferences==null){
+			activityReferences = new ArrayList<CDLActivity>();
+		}else{
+			activityReferences.clear();
+		}
 		for (Declaration declaration : cdlUnit.getDeclarationList()) {
 			if (declaration instanceof obp.cdl.ActivityDeclaration) {
 				CDLActivity activity = convertCDLActivity(((ActivityDeclaration) declaration).getIs(), flexoCDLUnit);
 				activity.setName(declaration.getName());
+				activityReferences.add(activity);
 			}
 		}
 		for (Declaration declaration : cdlUnit.getDeclarationList()) {
@@ -170,10 +178,9 @@ public class CDLModelConverter {
 				cdlParActivity.setTechnologyAdapter(technologyAdapter);
 				flexoCDLUnit.addToCDLActivities(cdlParActivity);
 				getCDLObjects().put(cdlDeclaration.getMain(), cdlParActivity);
-				System.out.println("Create "+cdlParActivity.getName());
 			}
 		}
-		for (CDLActivity activity : flexoCDLUnit.getCDLActivities()) {
+		for (CDLActivity activity : activityReferences) {
 			if (activity instanceof CDLTopActivity) {
 				setActivities((TopActivity) getCDLObjectFromFlexoCDLObject(activity), flexoCDLUnit);
 			}
@@ -216,6 +223,7 @@ public class CDLModelConverter {
 				CDLActivity cdlActivity = (CDLActivity) cdlObjects.get(activity);
 				if(cdlActivity!=null && cdlTopActivity!=null){
 					cdlTopActivity.addToCDLActivities(cdlActivity);
+					cdlUnit.addToCDLActivities(cdlActivity);
 				}
 			}
 		}
@@ -297,7 +305,6 @@ public class CDLModelConverter {
 		} else {
 			cdlActivity = (CDLActivity) getCDLObjects().get(activity);
 		}
-		cdlUnit.addToCDLActivities(cdlActivity);
 		return cdlActivity;
 	}
 	

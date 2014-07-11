@@ -22,10 +22,15 @@ package org.openflexo.technologyadapter.cdl.virtualmodel;
 
 import java.lang.reflect.Type;
 
+import org.openflexo.foundation.view.ActorReference;
+import org.openflexo.foundation.view.FlexoConceptInstance;
+import org.openflexo.foundation.view.ModelObjectActorReference;
+import org.openflexo.foundation.view.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.technologyadapter.cdl.model.CDLProperty;
 import org.openflexo.technologyadapter.cdl.model.CDLSeqActivity;
 
 @ModelEntity
@@ -43,6 +48,16 @@ public interface CDLSeqActivityRole extends FlexoRole<CDLSeqActivity> {
 		@Override
 		public String getPreciseType() {
 			return CDLSeqActivity.class.getSimpleName();
+		}
+		
+		@Override
+		public ActorReference<CDLSeqActivity> makeActorReference(CDLSeqActivity object, FlexoConceptInstance epi) {
+			VirtualModelInstanceModelFactory factory = epi.getFactory();
+			ModelObjectActorReference<CDLSeqActivity> returned = factory.newInstance(ModelObjectActorReference.class);
+			returned.setFlexoRole(this);
+			returned.setFlexoConceptInstance(epi);
+			returned.setModellingElement(object);
+			return returned;
 		}
 
 	}
