@@ -103,18 +103,16 @@ public class CDLModelConverter {
 		CDLDeclaration cdlDeclaration = null;
 		for (Declaration declaration : cdlUnit.getDeclarationList()) {
 			if (declaration instanceof obp.cdl.EventDeclaration) {
-				CDLEvent flexoCDLEvent = convertCDLEvent((EventDeclaration) declaration, flexoCDLUnit);
-				flexoCDLUnit.addToCDLEvents(flexoCDLEvent);
+				convertCDLEvent((EventDeclaration) declaration, flexoCDLUnit);
 			}
 			if (declaration instanceof obp.cdl.PropertyDeclaration) {
-				CDLProperty flexoCDLProperty = convertCDLProperty((PropertyDeclaration) declaration, flexoCDLUnit);
-				flexoCDLUnit.addToCDLProperties(flexoCDLProperty);
+				convertCDLProperty((PropertyDeclaration) declaration, flexoCDLUnit);
 			}
 		}
 		for (Declaration declaration : cdlUnit.getDeclarationList()) {
 			if (declaration instanceof obp.cdl.ActivityDeclaration) {
-				CDLActivity flexoCDLActivity = convertCDLActivity((ActivityDeclaration) declaration, flexoCDLUnit);
-				flexoCDLUnit.addToCDLActivities(flexoCDLActivity);
+				CDLActivity activity = convertCDLActivity(((ActivityDeclaration) declaration).getIs(), flexoCDLUnit);
+				activity.setName(declaration.getName());
 			}
 			if (declaration instanceof obp.cdl.CDLDeclaration) {
 				cdlDeclaration = (CDLDeclaration) declaration;
@@ -150,8 +148,11 @@ public class CDLModelConverter {
 				if(cdlObjects.get(activity)==null){
 					if(activity instanceof EventReference){
 						EventReference eventReference = (EventReference)activity;
-						CDLEvent cdlEvent = convertCDLEvent(eventReference.getReference(), cdlUnit);
 						CDLEventReference cdlActivity = factory.newInstance(CDLEventReference.class);
+						CDLEvent cdlEvent = (CDLEvent) cdlObjects.get(eventReference.getReference().getIs());
+						if(cdlEvent==null){
+							cdlEvent = convertCDLEvent(eventReference.getReference(), cdlUnit);
+						}
 						cdlActivity.setReferencedEvent(cdlEvent);
 						cdlActivity.setCDLEventReference(eventReference);
 						cdlActivity.setName(eventReference.getName());
@@ -160,12 +161,11 @@ public class CDLModelConverter {
 					}
 					if(activity instanceof ActivityReference){
 						ActivityReference activityReference = (ActivityReference)activity;
-						CDLActivity cdlActivity = convertCDLActivity(activityReference.getReference(), cdlUnit);
 						CDLActivityReference cdlActivityReference = factory.newInstance(CDLActivityReference.class);
-						cdlActivityReference.setReferencedActivity(cdlActivity);
 						cdlActivityReference.setCDLActivityReference(activityReference);
+						cdlActivityReference.setReferencedActivity((CDLActivity) cdlObjects.get(activityReference.getReference().getIs()));
 						cdlActivityReference.setName(activityReference.getName());
-						cdlActivity.setTechnologyAdapter(technologyAdapter);
+						cdlActivityReference.setTechnologyAdapter(technologyAdapter);
 						cdlObjects.put(activityReference, cdlActivityReference);
 					}
 				}
@@ -189,12 +189,21 @@ public class CDLModelConverter {
 				cdlEvent = factory.newInstance(CDLCommunicationOPEvent.class);
 				CDLCommunicationOPEvent cdlCommunicationOp = (CDLCommunicationOPEvent) cdlEvent;
 				cdlCommunicationOp.setCommunicationOp((CommunicationOp) event.getIs());
-				CDLProcessID from = factory.newInstance(CDLProcessID.class);
-				CDLProcessID to = factory.newInstance(CDLProcessID.class);
-				from.setCDLProcessID(((CommunicationOp)event.getIs()).getFrom());
-				to.setCDLProcessID(((CommunicationOp)event.getIs()).getTo());
-				cdlCommunicationOp.setProcessIDFrom(from);
-				cdlCommunicationOp.setProcessIDTo(to);
+				
+				if(((CommunicationOp)event.getIs()).getFrom()!=null){
+					CDLProcessID from = factory.newInstance(CDLProcessID.class);
+					from.setTechnologyAdapter(technologyAdapter);
+					from.setCDLProcessID(((CommunicationOp)event.getIs()).getFrom());
+					from.setName(((CommunicationOp)event.getIs()).getFrom().getName());
+					cdlCommunicationOp.setProcessIDFrom(from);
+				}
+				if(((CommunicationOp)event.getIs()).getTo()!=null){
+					CDLProcessID to = factory.newInstance(CDLProcessID.class);
+					to.setTechnologyAdapter(technologyAdapter);
+					to.setCDLProcessID(((CommunicationOp)event.getIs()).getTo());
+					to.setName(((CommunicationOp)event.getIs()).getTo().getName());
+					cdlCommunicationOp.setProcessIDTo(to);
+				}
 				if(event.getIs() instanceof Input){
 					cdlCommunicationOp.setEventKind(EventKind.INPUT);
 				} else if(event.getIs() instanceof Output){
@@ -225,47 +234,46 @@ public class CDLModelConverter {
 		} else {
 			cdlEvent = (CDLEvent) getCDLObjects().get(event);
 		}
+		cdlUnit.addToCDLEvents(cdlEvent);
 		return cdlEvent;
 	}
 
-	public CDLActivity convertCDLActivity(ActivityDeclaration activity, CDLUnit cdlUnit) {
+	public CDLActivity convertCDLActivity(Activity activity, CDLUnit cdlUnit) {
 		CDLActivity cdlActivity = null;
 		if (!getCDLObjects().containsKey(activity)) {
-			if(activity.getIs() instanceof ActivityReference){
+			if(activity instanceof ActivityReference){
 				cdlActivity = factory.newInstance(CDLActivityReference.class);
-				ActivityReference activityReference = (ActivityReference)activity.getIs();
+				ActivityReference activityReference = (ActivityReference)activity;
 				CDLActivityReference cdlActivityReference = (CDLActivityReference) cdlActivity;
 				cdlActivityReference.setCDLActivityReference(activityReference);
-			}else if(activity.getIs() instanceof ParActivity){
+			}else if(activity instanceof ParActivity){
 				cdlActivity = factory.newInstance(CDLParActivity.class);
-				ParActivity parActivity = (ParActivity)activity.getIs();
+				ParActivity parActivity = (ParActivity)activity;
 				CDLParActivity cdlParActivity = (CDLParActivity) cdlActivity;
 				cdlParActivity.setCDLParActivity(parActivity);
-			}else if(activity.getIs() instanceof SeqActivity){
+			}else if(activity instanceof SeqActivity){
 				cdlActivity = factory.newInstance(CDLSeqActivity.class);
-				SeqActivity seqActivity = (SeqActivity)activity.getIs();
+				SeqActivity seqActivity = (SeqActivity)activity;
 				CDLSeqActivity cdlSeqActivity = (CDLSeqActivity) cdlActivity;
 				cdlSeqActivity.setSeqActivity(seqActivity);
-			}else if(activity.getIs() instanceof AltActivity){
+			}else if(activity instanceof AltActivity){
 				cdlActivity = factory.newInstance(CDLAltActivity.class);
-				AltActivity altActivity = (AltActivity)activity.getIs();
+				AltActivity altActivity = (AltActivity)activity;
 				CDLAltActivity cdlAltActivity = (CDLAltActivity) cdlActivity;
 				cdlAltActivity.setCDLAltActivity(altActivity);
-			}else if(activity.getIs() instanceof EventReference){
+			}else if(activity instanceof EventReference){
 				cdlActivity = factory.newInstance(CDLEventReference.class);
 				CDLEventReference cdlEventReference = (CDLEventReference) cdlActivity;
-				EventReference activityReference = (EventReference)activity.getIs();
+				EventReference activityReference = (EventReference)activity;
 				cdlEventReference.setReferencedEvent((CDLEvent) cdlObjects.get(activityReference));
 				cdlEventReference.setCDLEventReference(activityReference);
 			}
-			
-			cdlActivity.setName(activity.getName());
 			cdlActivity.setTechnologyAdapter(technologyAdapter);
-			cdlObjects.put(activity.getIs(), cdlActivity);
-			System.out.println("Create "+activity.getName());
+			cdlObjects.put(activity, cdlActivity);
 		} else {
 			cdlActivity = (CDLActivity) getCDLObjects().get(activity);
 		}
+		cdlUnit.addToCDLActivities(cdlActivity);
 		return cdlActivity;
 	}
 
@@ -279,6 +287,7 @@ public class CDLModelConverter {
 		} else {
 			cdlProperty = (CDLProperty) getCDLObjects().get(property);
 		}
+		cdlUnit.addToCDLProperties(cdlProperty);
 		return cdlProperty;
 	}
 

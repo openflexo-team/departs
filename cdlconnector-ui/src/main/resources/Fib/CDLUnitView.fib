@@ -6,9 +6,6 @@
       <Children data="data.cDLParActivity" name="mainActivity" />
       <Children data="data.initialActivity" name="initialActivity" />
     </BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.technologyadapter.cdl.model.CDLActivity" label="activity.name" icon="controller.iconForObject(activity)" isEditable="false" filtered="false" defaultVisible="true" name="activity">
-    	
-    </BrowserElement>
     <BrowserElement dataClassName="org.openflexo.technologyadapter.cdl.model.CDLTopActivity" label="topActivity.name" icon="controller.iconForObject(topActivity)" isEditable="false" filtered="false" defaultVisible="true" name="topActivity">
     	<Children data="topActivity.cDLActivities" name="cdlActivities" />
     </BrowserElement>
@@ -16,18 +13,22 @@
     	<Children data="activityReference.referencedActivity" name="topActivity" />
     </BrowserElement>
     <BrowserElement dataClassName="org.openflexo.technologyadapter.cdl.model.CDLEventReference" label="eventReference.name" icon="controller.iconForObject(eventReference)" isEditable="false" filtered="false" defaultVisible="true" name="eventReference">
-    	<Children data="eventReference.cDLEventReference" name="event" />
+    	<Children data="eventReference.referencedEvent" name="event" />
     </BrowserElement>
     
     <BrowserElement dataClassName="org.openflexo.technologyadapter.cdl.model.CDLGammaEvent" label="gamma.name" icon="controller.iconForObject(gamma)" isEditable="false" filtered="false" defaultVisible="true" name="gamma">
     </BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.technologyadapter.cdl.model.CDLInformalEvent" label="informal.name" icon="controller.iconForObject(informal)" isEditable="false" filtered="false" defaultVisible="true" name="informal">
+    <BrowserElement dataClassName="org.openflexo.technologyadapter.cdl.model.CDLInformalEvent" label="informal.tag" icon="controller.iconForObject(informal)" isEditable="false" filtered="false" defaultVisible="true" name="informal">
+    	<Children data="informal.processIDFrom" name="from" />
     </BrowserElement>
     <BrowserElement dataClassName="org.openflexo.technologyadapter.cdl.model.CDLPredicateEvent" label="predicate.name" icon="controller.iconForObject(predicate)" isEditable="false" filtered="false" defaultVisible="true" name="predicate">
     </BrowserElement>
     <BrowserElement dataClassName="org.openflexo.technologyadapter.cdl.model.CDLCommunicationOPEvent" label="com.name" icon="controller.iconForObject(com)" isEditable="false" filtered="false" defaultVisible="true" name="com">
+    	<Children data="com.processIDFrom" name="from" />
+    	<Children data="com.processIDTo" name="to" />
     </BrowserElement>
-    
+    <BrowserElement dataClassName="org.openflexo.technologyadapter.cdl.model.CDLProcessID" label="processId.name" icon="controller.iconForObject(processId)" isEditable="false" filtered="false" defaultVisible="true" name="processId">
+    </BrowserElement>
     <BrowserElement dataClassName="org.openflexo.technologyadapter.cdl.model.CDLProperty" label="property.name" icon="controller.iconForObject(property)" isEditable="false" filtered="false" defaultVisible="true" name="property">
     </BrowserElement>
     
