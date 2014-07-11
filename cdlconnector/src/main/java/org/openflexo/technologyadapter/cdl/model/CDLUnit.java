@@ -45,7 +45,7 @@ public interface CDLUnit extends CDLObject, ResourceData<CDLUnit> {
 	@PropertyIdentifier(type = String.class)
 	public static final String CDL_MAIN_KEY = "cdlMain";
 	@PropertyIdentifier(type = List.class)
-	public static final String PROPERTIES_KEY = "properties";
+	public static final String PROPERTIES_KEY = "cdlProperties";
 	@PropertyIdentifier(type = List.class)
 	public static final String EVENTS_KEY = "events";
 	@PropertyIdentifier(type = List.class)

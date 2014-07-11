@@ -46,9 +46,6 @@ public abstract interface CDLObserverState extends CDLObject {
 	
 	@PropertyIdentifier(type = List.class)
 	public static final String OUT_TRANSITIONS_KEY = "outTransitions";
-	
-	@PropertyIdentifier(type = StateType.class)
-	public static final String STATE_TYPE_KEY = "StateType";
 
 	@Getter(value = PROPERTY_KEY, ignoreType=true)
 	public State getCDLObserverState();
@@ -79,16 +76,6 @@ public abstract interface CDLObserverState extends CDLObject {
 
 	@Remover(OUT_TRANSITIONS_KEY)
 	public void removeFromCDLObserverOutTransitions(CDLObserverTransition cdlObserverOutTransition);
-	
-	@Getter(value = STATE_TYPE_KEY)
-	public StateType getStateType();
-
-	@Setter(value = STATE_TYPE_KEY)
-	public void setStateType(StateType stateType);
-
-	public enum StateType {
-		NORMAL, REJECT, SUCCESS, CUT
-	}
 
 	public static abstract class CDLObserverStateImpl extends CDLObjectImpl implements CDLObserverState {
 

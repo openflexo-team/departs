@@ -36,7 +36,6 @@ import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.technologyadapter.cdl.model.CDLUnit;
-import org.openflexo.technologyadapter.cdl.virtualmodel.CDLActivityReferenceRole;
 import org.openflexo.technologyadapter.cdl.virtualmodel.CDLAltActivityRole;
 import org.openflexo.technologyadapter.cdl.virtualmodel.CDLCommunicationOpEventRole;
 import org.openflexo.technologyadapter.cdl.virtualmodel.CDLEventActivityRole;
@@ -47,8 +46,6 @@ import org.openflexo.technologyadapter.cdl.virtualmodel.CDLPredicateEventRole;
 import org.openflexo.technologyadapter.cdl.virtualmodel.CDLProcessIDRole;
 import org.openflexo.technologyadapter.cdl.virtualmodel.CDLPropertyRole;
 import org.openflexo.technologyadapter.cdl.virtualmodel.CDLSeqActivityRole;
-import org.openflexo.technologyadapter.cdl.virtualmodel.action.AddCDLActivity;
-import org.openflexo.technologyadapter.cdl.virtualmodel.action.AddCDLEvent;
 import org.openflexo.technologyadapter.cdl.virtualmodel.action.AddCDLProcessID;
 import org.openflexo.technologyadapter.cdl.virtualmodel.action.AddCDLProperty;
 
@@ -67,7 +64,6 @@ import org.openflexo.technologyadapter.cdl.virtualmodel.action.AddCDLProperty;
 		@DeclarePatternRole(FML = "CDLGammaEvent", flexoRoleClass = CDLGammaEventRole.class),
 		@DeclarePatternRole(FML = "CDLInformalEvent", flexoRoleClass = CDLInformalEventRole.class),
 		@DeclarePatternRole(FML = "CDLPredicateEvent", flexoRoleClass = CDLPredicateEventRole.class),
-		@DeclarePatternRole(FML = "CDLActivityReference", flexoRoleClass = CDLActivityReferenceRole.class),
 		@DeclarePatternRole(FML = "CDLAltActivity", flexoRoleClass = CDLAltActivityRole.class),
 		@DeclarePatternRole(FML = "CDLParActivity", flexoRoleClass = CDLParActivityRole.class),
 		@DeclarePatternRole(FML = "CDLSeqActivity", flexoRoleClass = CDLSeqActivityRole.class),

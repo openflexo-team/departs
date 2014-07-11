@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2013- Openflexo
+ * (c) Copyright 2013 Openflexo
  *
  * This file is part of OpenFlexo.
  *
@@ -18,32 +18,36 @@
  *
  */
 
-package org.openflexo.technologyadapter.cdl.virtualmodel;
+package org.openflexo.technologyadapter.cdl.model;
 
-import java.lang.reflect.Type;
+import obp.obs.State;
 
-import org.openflexo.foundation.viewpoint.FlexoRole;
+import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.technologyadapter.cdl.model.CDLActivityReference;
 
 @ModelEntity
-@ImplementationClass(CDLActivityReferenceRole.CDLActivityReferenceRoleImpl.class)
-@XMLElement
-public interface CDLActivityReferenceRole extends FlexoRole<CDLActivityReference> {
+@ImplementationClass(CDLObserverStateReject.CDLObserverStateRejectImpl.class)
+@XMLElement(xmlTag = "CDLObserverStateReject")
+public abstract interface CDLObserverStateReject extends CDLObserverState {
+	
+	public static final String PROPERTY_KEY = "CDLObserverStateReject";
+	
+	@Getter(value = PROPERTY_KEY, ignoreType=true)
+	public State getCDLObserverState();
 
-	public static abstract class CDLActivityReferenceRoleImpl extends FlexoRoleImpl<CDLActivityReference> implements CDLActivityReferenceRole {
+	@Setter(value = PROPERTY_KEY)
+	public void setCDLObserverState(State state);
+
+	public static abstract class CDLObserverStateRejectImpl extends CDLObserverStateImpl implements CDLObserverStateReject {
 
 		@Override
-		public Type getType() {
-			return CDLActivityReference.class;
-		}
-
-		@Override
-		public String getPreciseType() {
-			return CDLActivityReference.class.getSimpleName();
+		public String getUri() {
+			return getName();
 		}
 
 	}
+
 }

@@ -35,10 +35,10 @@ import org.openflexo.technologyadapter.cdl.gui.CDLIconLibrary;
 import org.openflexo.technologyadapter.cdl.gui.view.FIBCDLView;
 import org.openflexo.technologyadapter.cdl.model.CDLActivity;
 import org.openflexo.technologyadapter.cdl.model.CDLEvent;
+import org.openflexo.technologyadapter.cdl.model.CDLObserverState;
 import org.openflexo.technologyadapter.cdl.model.CDLProcessID;
 import org.openflexo.technologyadapter.cdl.model.CDLProperty;
 import org.openflexo.technologyadapter.cdl.model.CDLUnit;
-import org.openflexo.technologyadapter.cdl.virtualmodel.CDLActivityReferenceRole;
 import org.openflexo.technologyadapter.cdl.virtualmodel.CDLAltActivityRole;
 import org.openflexo.technologyadapter.cdl.virtualmodel.CDLCommunicationOpEventRole;
 import org.openflexo.technologyadapter.cdl.virtualmodel.CDLEventActivityRole;
@@ -124,9 +124,6 @@ public class CDLAdapterController extends TechnologyAdapterController<CDLTechnol
 
 	@Override
 	public ImageIcon getIconForPatternRole(Class<? extends FlexoRole<?>> arg0) {
-		if (CDLActivityReferenceRole.class.isAssignableFrom(arg0)) {
-			return getIconForTechnologyObject(CDLActivity.class);
-		}
 		if (CDLAltActivityRole.class.isAssignableFrom(arg0)) {
 			return getIconForTechnologyObject(CDLActivity.class);
 		}
