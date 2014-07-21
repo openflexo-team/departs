@@ -56,7 +56,6 @@ import org.openflexo.technologyadapter.cdl.virtualmodel.action.SelectCDLEventRef
 
 /**
  * Implementation of the ModelSlot class for the CDL technology adapter<br>
- * We expect here to connect an CDL model conform to an CDLMetaModel
  * 
  * @author vleilde
  * 

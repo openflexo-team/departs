@@ -53,9 +53,8 @@ import org.openflexo.technologyadapter.fiacre.virtualmodel.actions.SelectFiacreS
 
 /**
  * Implementation of the ModelSlot class for the Fiacre technology adapter<br>
- * We expect here to connect an Fiacre model conform to an FiacreMetaModel
  * 
- * @author SomeOne
+ * @author Vincent
  * 
  */
 @ModelEntity

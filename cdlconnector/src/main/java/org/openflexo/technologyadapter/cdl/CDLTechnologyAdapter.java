@@ -95,7 +95,7 @@ public class CDLTechnologyAdapter extends TechnologyAdapter {
 	}
 
 	protected CDLUnitResource tryToLookupCDLUnits(FlexoResourceCenter<?> resourceCenter, File candidateFile) {
-		if (isValidWorkbookFile(candidateFile)) {
+		if (isValidCDLFile(candidateFile)) {
 			CDLUnitResource cdlUnitRes = retrieveCDLUnitResource(candidateFile);
 			CDLUnitRepository cdlUnitRepository = resourceCenter.getRepository(CDLUnitRepository.class, this);
 			if (cdlUnitRes != null) {
@@ -138,13 +138,13 @@ public class CDLTechnologyAdapter extends TechnologyAdapter {
 	}
 
 	/**
-	 * Return flag indicating if supplied file appears as a valid workbook
+	 * Return flag indicating if supplied file appears as a valid cdl
 	 * 
 	 * @param candidateFile
 	 * 
 	 * @return
 	 */
-	public boolean isValidWorkbookFile(File candidateFile) {
+	public boolean isValidCDLFile(File candidateFile) {
 		return candidateFile.getName().endsWith(CDL_FILE_EXTENSION);
 	}
 
