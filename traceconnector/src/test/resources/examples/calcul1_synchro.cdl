@@ -1,0 +1,117 @@
+//========================================================================================
+// calcul1_synchro.cdl  version 15 nov 13
+//
+// Ph. Dhaussy Ensta-Bretagne  
+//========================================================================================
+ 
+
+//========================================================================================
+//             Predicat declarations
+//========================================================================================
+
+predicate ProcFor_End is {{ProcFor}1@End }
+predicate ProcUntil_End is {{ProcUntil}1@End }
+
+predicate ProcFor_i_0 is 		{{ProcFor}1:i = 0 }
+predicate values1_ProcUntil is 	{{ProcUntil}1:data.index = 1 and {ProcUntil}1:data.value = 1}
+predicate equal_values_ProcUntil is { {ProcUntil}1:data.index = {ProcUntil}1:data.value}
+
+//========================================================================================
+//             Event declarations with predicats 
+//========================================================================================
+ 
+event evt_ProcFor_End is   { ProcFor_End becomes true}
+event evt_ProcUntil_End is { ProcUntil_End becomes true}
+event evt_ProcFor_i_0 is   { ProcFor_i_0 becomes false}
+
+//========================================================================================
+//             Event declarations with sync 
+//========================================================================================
+ 
+// exemple d'evenements avec sync 
+event evt_sync_for_while_1 is {sync {Comp}1:portFor2While (data1) from {ProcFor}1 to {ProcWhile}1}
+event evt_sync_1_bis       is {sync {Comp}1:portFor2While (t_data {index = 1, value = 1}) from {ProcFor}1 to {ProcWhile}1}
+event evt_sync_any_1       is {sync {Comp}1:portFor2While (any) from {ProcFor}1 to {ProcWhile}1}
+event evt_sync_any_2       is {sync {Comp}1:portFor2While (t_data {index = 1, value = any}) from {ProcFor}1 to {ProcWhile}1}
+event evt_sync_any_3       is {sync {Comp}1:portFor2While (data1) from any to {ProcWhile}1}
+event evt_sync_any_4       is {sync {Comp}1:portFor2While (data1) from {ProcFor}1 to any}
+event evt_sync_any_5       is {sync {Comp}1:portFor2While (data1) from any to any}
+
+
+//========================================================================================
+//             Property declarations   
+//========================================================================================
+ 
+//---------  data1 sent from ProcFor to ProcWhile -----------------
+property pte_ProcForWhile_1 is {
+ 	start -- / / evt_sync_for_while_1 / ->  success
+}
+
+//---------  End state of ProcFor is reached -----------------
+property pte_ProcForWhile_1_For_End is {
+ 	start -- / / evt_sync_for_while_1 / -> wait;
+ 	wait -- / / evt_ProcFor_End / -> success
+}
+
+property pte_ProcFor_End is {
+	start -- / / evt_ProcFor_End / -> success
+}
+
+//---------  End state of ProcUntil is reached -----------------
+property pte_ProcForWhile_1_Until_End is {
+ 	start -- / / evt_sync_for_while_1 / -> wait;
+ 	wait -- / / evt_ProcUntil_End / -> success
+}
+
+property pte_ProcUntil_End is {
+    start -- / / evt_ProcUntil_End / -> success
+}
+
+// Test des differents evenements avec sync
+property pte_1_bis is {
+    start -- / / evt_sync_1_bis / -> success
+}
+
+property pte_1 is {
+    start -- / / evt_sync_any_1 / -> success
+}
+property pte_2 is {
+    start -- / / evt_sync_any_2  / -> success
+}
+property pte_3 is {
+    start -- / / evt_sync_any_3  / -> success
+}
+property pte_4 is {
+    start -- / / evt_sync_any_4 / -> success
+}
+property pte_5 is {
+    start -- / / evt_sync_any_5  / -> success
+}
+
+
+//========================================================================================
+//             Activity declarations  
+//========================================================================================
+
+// none
+ 
+//========================================================================================
+//            CDL Scenarii
+//========================================================================================
+ 
+cdl cdl_1 is {
+
+	properties  pte_ProcForWhile_1_For_End, 
+				pte_ProcForWhile_1_Until_End,
+				pte_ProcFor_End,
+				pte_ProcUntil_End  // ,
+//				pte_1_bis, pte_1, pte_2, pte_3, pte_4, pte_5
+				
+//	assert ProcFor_i_0;
+//	assert ProcFor_i_0;
+	assert equal_values_ProcUntil	
+	
+	main is { skip }
+}
+ 
+

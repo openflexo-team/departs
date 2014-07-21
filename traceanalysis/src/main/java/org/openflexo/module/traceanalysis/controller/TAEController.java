@@ -33,6 +33,7 @@ import org.openflexo.module.FlexoModule;
 import org.openflexo.selection.MouseSelectionManager;
 import org.openflexo.technologyadapter.cdl.CDLTechnologyAdapter;
 import org.openflexo.technologyadapter.fiacre.FiacreTechnologyAdapter;
+import org.openflexo.technologyadapter.trace.TraceTechnologyAdapter;
 import org.openflexo.view.FlexoMainPane;
 import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
@@ -60,7 +61,7 @@ public class TAEController extends FlexoController {
 		addToPerspectives(TAE_PERSPECTIVE = new TAEPerspective(this));
 		
 		for (TechnologyAdapter ta : getApplicationContext().getTechnologyAdapterService().getTechnologyAdapters()) {
-			if (ta instanceof CDLTechnologyAdapter || ta instanceof FiacreTechnologyAdapter) {
+			if (ta instanceof CDLTechnologyAdapter || ta instanceof FiacreTechnologyAdapter || ta instanceof TraceTechnologyAdapter) {
 				TechnologyAdapterController<?> tac = getApplicationContext().getTechnologyAdapterControllerService()
 						.getTechnologyAdapterController(ta);
 				if (tac != null) {

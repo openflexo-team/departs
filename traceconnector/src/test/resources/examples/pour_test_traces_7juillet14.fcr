@@ -1,0 +1,411 @@
+/*------------------------------------------
+   pour_test_traces_17juillet13.fcr  
+   version 17 juillet 13
+    
+   3 processus de calcul : For, While, Until
+   communication des données asynchrone entre les processus
+   et declenchement des processus de maniere synchrone sur ck.
+   
+   Iteration sur :
+     - ProcFor transmet le couple (i, i*i)
+     - ProcWhile calcule et transmet le couple (i, racine carre de i*i)
+     - ProcUntil receptionne le couple (i, i)
+
+------------------------------------------ 
+  Ph. Dhaussy Ensta-Bretagne  	  
+-------------------------------------------*/
+ 
+//-------- Nbre de valeurs traitees ---------
+const NVAL_MAX  		: nat is 30
+const NVAL_MAX_PLUS_1   : nat is NVAL_MAX + 1
+
+
+//===============================================
+//  definition des structures
+//===============================================
+
+type t_data1 is record
+	data1_Nat1   : nat,    
+	data1_Nat2   : nat,    
+	data1_Bool1 : bool
+end
+
+type t_data2 is record
+	data2_Nat1  : nat,   
+	data2_Nat2  : nat,     
+	data2_Bool1 : bool,
+	data1       : t_data1
+end
+
+type t_data3 is record
+	data1 : t_data1,
+	data2 : t_data2,
+	data3_Bool1 : bool,
+	index   : nat,    /* value index */
+	value   : nat     /* value  */
+end
+
+
+//=================================================
+// declaration des tableaux
+//=================================================
+
+// ------------ pour tableau de bool ------------
+const T_ARRAY_BOOL_SIZE : nat is 4
+type T_ARRAY_BOOL is array T_ARRAY_BOOL_SIZE of bool
+
+// ------------ pour tableau de nat ------------
+const T_ARRAY_INT_SIZE : nat is 5
+type T_ARRAY_INT is array T_ARRAY_INT_SIZE of int
+
+// ------------pour tableau de t_data2 ------------
+const T_ARRAY_T_DATA2_SIZE : nat is 3
+type T_ARRAY_t_data2 is array T_ARRAY_T_DATA2_SIZE of t_data2
+
+// ------------pour tableau de t_data3 ------------
+const T_ARRAY_T_DATA3_SIZE : nat is 3
+type T_ARRAY_t_data3 is array T_ARRAY_T_DATA3_SIZE of t_data3
+
+
+//=================================================
+// declaration des fifos
+//=================================================
+const SIZE_FIFO  : nat is 10
+type t_fifo_int is queue SIZE_FIFO of nat
+type t_fifo_t_data1 is queue SIZE_FIFO of t_data1
+type t_fifo_t_data2 is queue SIZE_FIFO of t_data2
+type t_fifo_t_data3 is queue SIZE_FIFO of t_data3
+
+
+//=================================================
+// Valeurs par defaut des structures
+//=================================================
+	
+// ------- pour t_data1 --------- 
+const DEFAULT1_t_data1 : t_data1 is 		
+		{data1_Nat1 = 0, 
+		data1_Nat2 = 0, 
+		data1_Bool1 = true}		
+
+const DEFAULT2_t_data1 : t_data1 is 		
+		{data1_Nat1 = 1, 
+		data1_Nat2 = 2, 
+		data1_Bool1 = false}		
+		
+// ------- pour t_data2 ------- 
+const DEFAULT1_t_data2 : t_data2 is 		
+		{data2_Nat1 = 11, 
+		data2_Nat2 = 12, 
+		data2_Bool1 = true, 
+		data1 = {data1_Nat1 = 0, data1_Nat2 = 0, data1_Bool1 = true}}		 
+
+const DEFAULT2_t_data2 : t_data2 is 		
+		{data2_Nat1 = 111, 
+		data2_Nat2 = 122, 
+		data2_Bool1 = false, 
+		data1 = {data1_Nat1 = 1, data1_Nat2 = 2, data1_Bool1 = false}}		 
+
+// ------- pour t_data3 ------- 
+const DEFAULT1_t_data3 : t_data3 is 		
+		{data1 = {data1_Nat1 = 0, data1_Nat2 = 0, data1_Bool1 = true}, 
+		 data2 = {data2_Nat1 = 11, data2_Nat2 = 12, data2_Bool1 = true, 
+				  data1 = {data1_Nat1 = 0, data1_Nat2 = 0, data1_Bool1 = true}},		 
+		 data3_Bool1 = true, 
+		 index = 0,
+		 value = 0}
+
+const DEFAULT2_t_data3 : t_data3 is 		
+		{data1 = {data1_Nat1 = 1, data1_Nat2 = 2, data1_Bool1 = false}, 
+		 data2 = {data2_Nat1 = 111, data2_Nat2 = 222, data2_Bool1 = false, 
+				  data1 = {data1_Nat1 = 10, data1_Nat2 = 11, data1_Bool1 = false}},		 
+		 data3_Bool1 = false, 
+		 index = 0,
+		 value = 0}		 
+
+//=================================================
+// Valeurs par defaut des tableaux
+//=================================================
+
+// ------- pour tableau de bool ------- 
+const DEFAULT1_ARRAY_BOOL : T_ARRAY_BOOL is [false, true, false, true]
+const DEFAULT2_ARRAY_BOOL : T_ARRAY_BOOL is [true, false, true, false]
+
+// ------- pour tableau de Nat  -------
+const DEFAULT1_ARRAY_INT : T_ARRAY_INT is [ 1,  2,  3,  4,  5]
+const DEFAULT2_ARRAY_INT : T_ARRAY_INT is [11, 22, 33, 44, 55]
+
+	
+/*====================== ProcFor ================================*/
+// Envoi des valeurs 1 a NVAL_MAX inclus au carre
+//=================================================================
+process ProcFor [ck : in none] (&output1 : read write t_fifo_t_data1, 
+								&output2 : read write t_fifo_t_data2,
+								&output3 : read write t_fifo_t_data3)
+is 
+
+states Start, ReInit, End
+var
+	noVal  : int,
+	nbAttente : int,
+	data3 : t_data3,
+	tabOf_Bool_local    : T_ARRAY_BOOL,			/* tab de bool */
+	tabOf_Int_local     : T_ARRAY_INT,			/* tab de int */
+	tabOf_t_data2_local : T_ARRAY_t_data2,		/* tab de t_data2 */
+	tabOf_t_data3_local : T_ARRAY_t_data3		/* tab de t_data3 */
+
+init
+	noVal  := 1;
+	nbAttente := 0;
+	data3 := DEFAULT1_t_data3;
+
+	tabOf_Bool_local    := DEFAULT1_ARRAY_BOOL;
+	tabOf_Int_local     := DEFAULT1_ARRAY_INT;
+	tabOf_t_data2_local := [DEFAULT1_t_data2, DEFAULT2_t_data2, DEFAULT1_t_data2]; 
+	tabOf_t_data3_local := [DEFAULT1_t_data3, DEFAULT2_t_data3, DEFAULT1_t_data3];
+	
+	to Start
+   
+/*--------- ProcFor --------------*/
+from Start
+	ck;  			/* synchro Clk */
+	tabOf_Bool_local    := DEFAULT2_ARRAY_BOOL;	
+	tabOf_Int_local     := DEFAULT2_ARRAY_INT;
+	tabOf_t_data2_local := [DEFAULT2_t_data2, DEFAULT1_t_data2, DEFAULT2_t_data2];
+	tabOf_t_data3_local := [DEFAULT2_t_data3, DEFAULT1_t_data3, DEFAULT2_t_data3];
+	
+	//---- ecriture de data3 si fifo non pleine ---
+	if (not (full output3)) then  
+		data3.index := noVal;
+		data3.value := noVal * noVal; 
+		
+		// data.value := 1; 
+		/*@ For: ecrire */
+		output3 := enqueue (output3, data3);
+		noVal := noVal + 1;
+		if noVal > NVAL_MAX  then
+			to End
+		end
+	else  
+		/* fifo pleine */
+		/*@ For: attente ecrire */
+		nbAttente := nbAttente + 1
+	end;
+	to ReInit
+
+from ReInit	
+	tabOf_Bool_local    := DEFAULT1_ARRAY_BOOL;
+	tabOf_Int_local     := DEFAULT1_ARRAY_INT;
+	tabOf_t_data2_local := [DEFAULT1_t_data2, DEFAULT2_t_data2, DEFAULT1_t_data2];
+	tabOf_t_data3_local := [DEFAULT1_t_data3, DEFAULT2_t_data3, DEFAULT1_t_data3];
+	to Start
+	
+from End 
+	ck;   // pour vider le pipe line
+	loop
+ 
+  
+/*====================== ProcWhile ================================*/
+
+process ProcWhile [ck : in none] (&input1 : read write t_fifo_t_data1, 
+								  &input2 : read write t_fifo_t_data2,
+								  &input3 : read write t_fifo_t_data3,
+								  &output : read write t_fifo_t_data3) 
+is 
+
+states Start, calcul, calcul_fini
+var
+	noVal  : int,
+	n  : int,
+	r  : int,
+	s  : int,
+	nbAttente : int,
+	data3 : t_data3
+
+init 
+	noVal := 0;
+	nbAttente := 0;
+	n  := 0;
+	s  := 0;
+    r  := 0;
+	// data3 := {index = 0, value = 0, b = true, v = {n1 = 11, n2 = 22, b1 = false}};
+	data3 := DEFAULT1_t_data3;
+	to Start
+ 
+/*-------- ProcWhile ---------------*/
+from Start
+	ck;
+	//----- attente si fifo vide et reception de data  -------				
+	if (not (empty input3)) then 
+		/*@ While: lire */
+		data3 := first input3;
+		input3 := dequeue (input3);
+
+		noVal := data3.index;
+		n := data3.value;
+		s := 1;
+		r := 3;
+		to calcul
+	else
+		/*@ While: attente lire */
+		nbAttente := nbAttente + 1;
+		to Start
+	end
+	
+from calcul
+	ck;
+	/*@ While: calcul */
+    if (s <= n) then
+      s := s+r;
+      r := r+2;
+      to calcul
+    else
+	  /*@ While: calcul_fini */
+	  r := r/2 - 1;
+      to calcul_fini 
+    end
+
+from calcul_fini
+	ck;
+	//---- ecrire de data si fifo non pleine ---
+	if (not (full output)) then  
+		data3.value := r; 
+		/*@ While: ecrire */
+		output := enqueue (output, data3);
+		to Start
+	else
+		/* fifo pleine */
+		/*@ While: attente ecrire */
+		nbAttente := nbAttente + 1;
+		to calcul_fini
+	end
+
+	
+//================== procUntil ==============================
+// reception des NVAL_MAX valeurs 
+//  data.index et data.value doivent etre toujours egaux
+///=================================================================
+
+process ProcUntil [ck : in none] (&input :  read write t_fifo_t_data3, 
+								  &tabBool_param : T_ARRAY_BOOL, 
+								  &tabOf_t_data3_param : T_ARRAY_t_data3)  
+is
+  
+states
+    Start, ReInit, Vidage, End
+var
+	noVal  : int,
+	nbAttente : int,
+	data3 : t_data3,
+	tabOf_t_data3_local  : T_ARRAY_t_data3,
+	tabOfBool_local      : T_ARRAY_BOOL		/* tab de bool */
+
+init
+	noVal  := 1;
+	nbAttente := 0;
+	data3 := DEFAULT1_t_data3;
+	tabOf_t_data3_local := [DEFAULT1_t_data3, DEFAULT2_t_data3, DEFAULT1_t_data3];
+    tabOfBool_local := DEFAULT2_ARRAY_BOOL;	
+	to Start
+
+/*-------- ProcUntil ---------------*/	
+from Start
+	ck;
+    tabOfBool_local := DEFAULT1_ARRAY_BOOL;
+	
+	tabBool_param := DEFAULT2_ARRAY_BOOL;
+	tabOf_t_data3_local := [DEFAULT2_t_data3, DEFAULT1_t_data3, DEFAULT2_t_data3];
+	tabOf_t_data3_param := [DEFAULT2_t_data3, DEFAULT1_t_data3, DEFAULT2_t_data3];
+		
+	//----- lecture de data si fifo non vide -------	
+	if (not (empty input)) then 
+		/*@ Until: lire */
+		data3 := first input;
+		input := dequeue (input);
+
+		if noVal = NVAL_MAX  then
+			to Vidage				
+		end;
+		noVal := noVal + 1
+	else 
+		/*@ Until: attente lire */
+		nbAttente := nbAttente + 1
+
+	end; 
+	to ReInit
+
+from ReInit	
+	tabOf_t_data3_local := [DEFAULT1_t_data3, DEFAULT2_t_data3, DEFAULT1_t_data3];
+	tabOfBool_local := DEFAULT2_ARRAY_BOOL;	
+	tabOf_t_data3_param := [DEFAULT1_t_data3, DEFAULT2_t_data3, DEFAULT1_t_data3];
+
+	to Start
+	
+from Vidage
+	ck;
+	//---- vidage si fifo non vide ---
+	if (not (empty input)) then 
+		to Vidage
+	else 
+		/* fifo vide --> fin */
+		to End
+	end
+	
+from End 
+	loop
+
+	
+//========= process for clock tick ========
+
+process Clock [ck : out none] is
+
+states
+     run
+var
+	nb_sync : int
+init
+	nb_sync := 0;
+     to run
+	 
+ from run
+	ck;
+	nb_sync := nb_sync + 1;
+    loop
+ 
+ 
+/*======================================================*/
+
+component Comp is
+
+var  
+	fifoFor2While1     : t_fifo_t_data1,
+	fifoFor2While2     : t_fifo_t_data2,
+	fifoFor2While3     : t_fifo_t_data3,
+	fifoWhile2Until    : t_fifo_t_data3,
+	tabOf_Bool_global    : T_ARRAY_BOOL,		/* tab de bool */
+	tabOf_t_data3_global : T_ARRAY_t_data3		/* tab de t_data3 */
+
+port 
+	Clk :  none
+	
+init
+	fifoFor2While1 	:= {||};
+	fifoFor2While2 	:= {||};
+	fifoFor2While3 	:= {||};
+	fifoWhile2Until := {||};
+	tabOf_Bool_global    := DEFAULT1_ARRAY_BOOL;
+	tabOf_t_data3_global := [DEFAULT1_t_data3, DEFAULT2_t_data3, DEFAULT1_t_data3]
+	
+par
+		ProcFor   [Clk] (&fifoFor2While1, &fifoFor2While2, &fifoFor2While3)
+	 ||	ProcWhile [Clk] (&fifoFor2While1, &fifoFor2While2, &fifoFor2While3, &fifoWhile2Until)
+	 ||	ProcUntil [Clk] (&fifoWhile2Until, &tabOf_Bool_global, &tabOf_t_data3_global)
+	 ||	Clock [Clk]
+end
+Comp
+
+
+
+
+
+
+

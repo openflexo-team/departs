@@ -1,0 +1,134 @@
+//========================================================================================
+// calcul2_synchro_asynchro.cdl  version 21 jan 12
+//
+// Ph. Dhaussy Ensta-Bretagne  
+//========================================================================================
+ 
+//========================================================================================
+//             Event declarations  
+//========================================================================================
+
+
+//========================================================================================
+//             Predicat declarations
+//========================================================================================
+
+predicate ProcFor_End is {{ProcFor}1@End }
+predicate ProcUntil_End is {{ProcUntil}1@End }
+
+predicate ProcFor_nbVal_0 is 		{{ProcFor}1:nbVal = 0 }
+predicate values1_ProcUntil is 		{{ProcUntil}1:data.index = 1 and {ProcUntil}1:data.value = 1}
+predicate equal_values_ProcUntil is { {ProcUntil}1:data.index = {ProcUntil}1:data.value}
+
+//----- Pour le test des fifo  -------
+// predicate length_fifoFor2While is 	{{Comp}1:fifoFor2While.length   < NVAL_MAX_PLUS_1 }
+// predicate length_fifoWhile2Until is 	{{Comp}1:fifoWhile2Until.length < NVAL_MAX_PLUS_1 }
+
+// predicate length_fifoFor2While is 	{{Comp}1:fifoFor2While.length   < SIZE_FIFO }
+// predicate length_fifoWhile2Until is 	{{Comp}1:fifoWhile2Until.length < SIZE_FIFO }
+
+predicate length_fifoFor2While is 		{{Comp}1:fifoFor2While.length   < 2 }
+predicate length_fifoWhile2Until is 	{{Comp}1:fifoWhile2Until.length < 2 }
+
+predicate verif_length_fifoFor2While is 	{{Comp}1:fifoFor2While.length = {ProcWhile}1:inputLength}
+predicate verif_length_fifoWhile2Until is 	{{Comp}1:fifoFor2While.length = {ProcUntil}1:inputLength}
+ 
+//========================================================================================
+//             Event declarations with predicats 
+//========================================================================================
+  
+event evt_ProcFor_End is { ProcFor_End becomes true}
+event evt_ProcUntil_End is { ProcUntil_End becomes true}
+event evt_ProcFor_nbVal_0 is { ProcFor_nbVal_0 becomes false}
+
+
+//========================================================================================
+//             Event declarations with communication 
+//========================================================================================
+ 
+// la 1ere donnee  : ProcFor --> (1,1) --> ProcWhile --> (1,1) --> ProcUntil
+event send_ProcFor_data1 is		{send data1 from {ProcFor}1 to {ProcWhile}1} 
+event send_ProcWhile_data1 is	{send data1 from {ProcWhile}1 to {ProcUntil}1} 
+event recv_ProcWhile_data1 is	{receive data1 from {ProcFor}1 to {ProcWhile}1}
+event recv_ProcUntil_data1 is	{receive data1 from {ProcWhile}1 to {ProcUntil}1}
+
+// la derniere donnee : ProcFor --> (I_MAX, I_MAX * I_MAX) --> ProcWhile --> (I_MAX, I_MAX) --> ProcUntil
+event send_ProcFor_last_data is		{send last_data_For from {ProcFor}1 to {ProcWhile}1} 
+event send_ProcWhile_last_data is	{send last_data_While from {ProcWhile}1 to {ProcUntil}1} 
+event recv_ProcWhile_last_data is	{receive last_data_For from {ProcFor}1 to {ProcWhile}1}
+event recv_ProcUntil_last_data is	{receive last_data_While from {ProcWhile}1 to {ProcUntil}1}
+
+//========================================================================================
+//             Property declarations   
+//========================================================================================
+ 
+//---------  End state of ProcFor is reached -----------------
+property pte_ProcForWhile_1 is {
+ 	start -- / / send_ProcFor_data1 / ->  success
+}
+
+//---------  End state of ProcFor is reached -----------------
+property pte_ProcForWhile_1_For_End is {
+ 	start -- / / send_ProcFor_data1 / -> wait;
+ 	wait -- / / evt_ProcFor_End / -> success
+}
+
+property pte_ProcFor_End is {
+	start -- / / evt_ProcFor_End / -> success
+}
+
+//---------  End state of ProcUntil is reached -----------------
+property pte_ProcForWhile_1_Until_End is {
+ 	start -- / / send_ProcFor_data1 / -> wait;
+ 	wait -- / / evt_ProcUntil_End / -> success
+}
+
+property pte_ProcUntil_End is {
+    start -- / / evt_ProcUntil_End / -> success
+}
+
+
+//---------  data1 transmitted -----------------
+property pte_data1_transmitted is {
+ 	start -- / / send_ProcFor_data1 / -> wait1;
+ 	wait1 -- / / recv_ProcWhile_data1 / -> wait2;
+ 	wait2 -- / / send_ProcWhile_data1 / -> wait3;
+	wait3 -- / / recv_ProcUntil_data1 / -> success
+}
+
+//---------  All data transmitted -----------------
+property pte_all_data_transmitted is {
+ 	start -- / / send_ProcFor_last_data / -> wait1;
+ 	wait1 -- / / recv_ProcWhile_last_data / -> wait2;
+ 	wait2 -- / / send_ProcWhile_last_data / -> wait3;
+	wait3 -- / / recv_ProcUntil_last_data / -> success
+}
+
+//========================================================================================
+//             Activity declarations  
+//========================================================================================
+
+// none
+ 
+//========================================================================================
+//            CDL Scenarii
+//========================================================================================
+ 
+cdl cdl_1 is {
+
+	properties  pte_ProcForWhile_1_For_End, 
+				pte_ProcForWhile_1_Until_End,
+				pte_ProcFor_End,
+				pte_ProcUntil_End,
+				pte_data1_transmitted, pte_all_data_transmitted
+				
+	assert equal_values_ProcUntil;	
+	assert length_fifoFor2While;
+	assert length_fifoWhile2Until
+// 	assert verif_length_fifoFor2While
+	
+	main is { skip }
+}
+
+ 
+
