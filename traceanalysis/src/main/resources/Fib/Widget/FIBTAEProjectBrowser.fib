@@ -9,9 +9,9 @@
         <Children data="project.getTraceAnalysis()" name="traceAnalsyis" />
     </BrowserElement>
     <BrowserElement dataClassName="org.openflexo.module.traceanalysis.model.TraceAnalysis" label="traceAnalsyis.name" icon="controller.iconForObject(traceAnalsyis)" isEditable="false" filtered="false" defaultVisible="true" name="traceAnalsyis">
-    	<Children data="traceAnalsyis.traceExplorationMasks" name="traceExplorationMask" />
+    	<Children data="traceAnalsyis.configurationMasks" name="configurationMask" />
     </BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.module.traceanalysis.model.TraceExplorationMask" label="traceExplorationMask.name" icon="controller.iconForObject(traceExplorationMask)" isEditable="false" filtered="false" defaultVisible="true" name="traceExplorationMask">
+    <BrowserElement dataClassName="org.openflexo.module.traceanalysis.model.ConfigurationMask" label="configurationMask.name" icon="controller.iconForObject(configurationMask)" isEditable="false" filtered="false" defaultVisible="true" name="configurationMask">
     </BrowserElement>
   </Browser>
   <LocalizedDictionary />

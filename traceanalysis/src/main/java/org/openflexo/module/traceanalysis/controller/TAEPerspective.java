@@ -28,11 +28,13 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.model.undo.CompoundEdit;
 import org.openflexo.module.traceanalysis.TAEIconLibrary;
 import org.openflexo.module.traceanalysis.model.TraceAnalysis;
-import org.openflexo.module.traceanalysis.model.TraceExplorationMask;
+import org.openflexo.module.traceanalysis.model.ConfigurationMask;
 import org.openflexo.module.traceanalysis.view.TraceAnalysisModuleView;
-import org.openflexo.module.traceanalysis.view.TraceExplorationMaskModuleView;
+import org.openflexo.module.traceanalysis.view.InspectedConfigurationModuleView;
 import org.openflexo.module.traceanalysis.widget.FIBAnalyzeConceptsBrowser;
 import org.openflexo.module.traceanalysis.widget.FIBTAEProjectBrowser;
+import org.openflexo.module.traceanalysis.widget.FIBConfigurationMaskBrowser;
+import org.openflexo.technologyadapter.trace.gui.view.FIBTraceView;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.FlexoPerspective;
@@ -43,6 +45,8 @@ public class TAEPerspective extends FlexoPerspective {
 
 	private FIBTAEProjectBrowser taeProjectBrowser = null;
 	private FIBAnalyzeConceptsBrowser analyzeConceptsBrowser = null;
+	private FIBConfigurationMaskBrowser configurationMaskBrowser = null;
+
 
 	/**
 	 * Default constructor taking controller as argument
@@ -53,6 +57,7 @@ public class TAEPerspective extends FlexoPerspective {
 
 		taeProjectBrowser = new FIBTAEProjectBrowser(controller.getProject(), controller);
 		analyzeConceptsBrowser = new FIBAnalyzeConceptsBrowser(null, controller);
+		configurationMaskBrowser = new FIBConfigurationMaskBrowser(null, controller);
 		setTopLeftView(taeProjectBrowser);
 	}
 
@@ -74,6 +79,8 @@ public class TAEPerspective extends FlexoPerspective {
 	public String getWindowTitleforObject(FlexoObject object, FlexoController controller) {
 		if (object instanceof TraceAnalysis) {
 			return ((TraceAnalysis) object).getName();
+		}else if (object instanceof ConfigurationMask) {
+			return ((ConfigurationMask) object).getName();
 		}
 		if (object != null) {
 			return object.toString();
@@ -86,11 +93,19 @@ public class TAEPerspective extends FlexoPerspective {
 		analyzeConceptsBrowser.setTraceAnalysis(traceAnalysis);
 		setBottomLeftView(analyzeConceptsBrowser);
 	}
+	
+	public void focusOnConfigurationMask(ConfigurationMask configurationMask) {
+		logger.info("focusOnConfigurationMask " + configurationMask);
+		configurationMaskBrowser.setConfigurationMask(configurationMask);
+		setBottomLeftView(configurationMaskBrowser);
+	}
 
 	@Override
 	public void focusOnObject(FlexoObject object) {
 		if (object instanceof TraceAnalysis) {
 			focusOnTraceAnalysis((TraceAnalysis) object);
+		}else if(object instanceof ConfigurationMask) {
+			focusOnConfigurationMask((ConfigurationMask) object);
 		}
 	};
 
@@ -112,7 +127,11 @@ public class TAEPerspective extends FlexoPerspective {
 		// logger.info("ViewPointPerspective: object was double-clicked: " + object);
 		if (object instanceof TraceAnalysis) {
 			controller.selectAndFocusObject((TraceAnalysis) object);
-		} else {
+		} 
+		else if (object instanceof ConfigurationMask) {
+			controller.selectAndFocusObject((ConfigurationMask) object);
+		}
+		else {
 			super.objectWasDoubleClicked(object, controller);
 		}
 	}
@@ -122,7 +141,7 @@ public class TAEPerspective extends FlexoPerspective {
 	public boolean hasModuleViewForObject(FlexoObject object) {
 		if (object instanceof TraceAnalysis) {
 			return true;
-		}else if (object instanceof TraceExplorationMask) {
+		}else if (object instanceof ConfigurationMask) {
 			return true;
 		}
 		return super.hasModuleViewForObject(object);
@@ -132,8 +151,8 @@ public class TAEPerspective extends FlexoPerspective {
 	public ModuleView<?> createModuleViewForObject(FlexoObject object, boolean editable) {
 		if (object instanceof TraceAnalysis) {
 			return new TraceAnalysisModuleView((TraceAnalysis) object,getController(), this);
-		} else if(object instanceof TraceExplorationMask){
-			return new TraceExplorationMaskModuleView((TraceExplorationMask) object,getController(), this);
+		} else if(object instanceof ConfigurationMask){
+			return new InspectedConfigurationModuleView((ConfigurationMask) object,getController(), this);
 		}
 		return super.createModuleViewForObject(object, editable);
 	}

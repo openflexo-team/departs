@@ -19,6 +19,8 @@
  */
 package org.openflexo.module.traceanalysis.model;
 
+import static org.junit.Assert.assertTrue;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -40,19 +42,18 @@ public class TraceAnalysis extends DefaultFlexoObject implements PropertyChangeL
 	private final View view;
 
 	private final TAEProject taeProject;
-	private TAEAnalyze taeAnalyze ;
+	private TAETrace taeTrace ;
 	private TAESystem taeSystem ;
 	private TAEContext taeContext;
 	private TAEObserver taeObserver;
 	private ArrayList<TAEObject> taeObjects;
 	
-	private List<TraceExplorationMask> traceExplorationMasks;
+	private List<ConfigurationMask> configurationMasks;
 
 	public TraceAnalysis(View view, TAEProject taeProject) throws InvalidArgumentException {
 		super();
 		this.taeProject = taeProject;
 		this.view = view;
-		setTraceExplorationMasks(new ArrayList<TraceExplorationMask>());
 		view.getPropertyChangeSupport().addPropertyChangeListener(this);
 	}
 
@@ -100,7 +101,7 @@ public class TraceAnalysis extends DefaultFlexoObject implements PropertyChangeL
 		
 		if(taeObjects==null){
 			taeObjects = new ArrayList<TAEObject>();
-			taeObjects.add(getTaeAnalyze());
+			taeObjects.add(getTAETrace());
 			taeObjects.add(getTAEContext());
 			taeObjects.add(getTAEObserver());
 			taeObjects.add(getTAESystem());
@@ -142,15 +143,24 @@ public class TraceAnalysis extends DefaultFlexoObject implements PropertyChangeL
 		return taeObserver;
 	}
 	
-	public TAEAnalyze getTaeAnalyze() {
-		if(taeAnalyze==null){
+	public TAETrace getTAETrace() {
+		if(taeTrace==null){
 			try {
-				taeAnalyze=new TAEAnalyze(getVirtualModelInstanceConformToNamedVirtualModel("AnalyzeVirtualModel"));
+				taeTrace=new TAETrace(getVirtualModelInstanceConformToNamedVirtualModel("TraceVirtualModel"));
+				if(configurationMasks==null){
+					configurationMasks = new ArrayList<ConfigurationMask>();
+				}
+				if(taeTrace.getVirtualModelInstance()!=null){
+					for(FlexoConceptInstance fciMask : getTAETrace().getVirtualModelInstance().getFlexoConceptInstances(getMaskFlexoConcept())){
+						ConfigurationMask mask = new ConfigurationMask(this,fciMask);
+						configurationMasks.add(mask);
+					}
+				}
 			} catch (InvalidArgumentException e) {
-				logger.log(Level.SEVERE, "No Analyze found");
+				logger.log(Level.SEVERE, "No Trace found");
 			}
 		}
-		return taeAnalyze;
+		return taeTrace;
 	}
 	
 	public void setTAESystem(TAESystem system) {
@@ -165,8 +175,8 @@ public class TraceAnalysis extends DefaultFlexoObject implements PropertyChangeL
 		this.taeObserver = observer;
 	}
 
-	public void setTaeAnalyze(TAEAnalyze taeAnalyze) {
-		this.taeAnalyze = taeAnalyze;
+	public void setTaeTrace(TAETrace taeTrace) {
+		this.taeTrace = taeTrace;
 	}
 	
 	@Override
@@ -175,13 +185,36 @@ public class TraceAnalysis extends DefaultFlexoObject implements PropertyChangeL
 		return true;
 	}
 
-	public List<TraceExplorationMask> getTraceExplorationMasks() {
-		return traceExplorationMasks;
+	public List<ConfigurationMask> getConfigurationMasks() {
+		return configurationMasks;
 	}
 
-	public void setTraceExplorationMasks(List<TraceExplorationMask> traceExplorationMasks) {
-		this.traceExplorationMasks = traceExplorationMasks;
+	private FlexoConcept getMaskFlexoConcept(){
+		return getTAETrace().getVirtualModelInstance().getVirtualModel().getFlexoConcept("Mask");
 	}
 	
+	public void setConfigurationMasks(List<ConfigurationMask> configurationMasks) {
+		this.configurationMasks = configurationMasks;
+	}
+	
+	public ConfigurationMask getNewConfigurationMask(){
+		FlexoConceptInstance newFlexoConceptInstance = getTAETrace().getVirtualModelInstance().makeNewFlexoConceptInstance(getMaskFlexoConcept());
+		return getConfigurationMask(newFlexoConceptInstance);
+	}
+	
+	public ConfigurationMask getConfigurationMask(FlexoConceptInstance flexoConceptInstance) {
+		if(configurationMasks==null){
+			configurationMasks = new ArrayList<ConfigurationMask>();
+		}
+		for(ConfigurationMask mask : getConfigurationMasks()){
+			if(mask.getFlexoConceptInstance().equals(flexoConceptInstance)){
+				return mask;
+			}
+		}
+		ConfigurationMask mask = new ConfigurationMask(this,flexoConceptInstance);
+		getConfigurationMasks().add(mask);
+		getPropertyChangeSupport().firePropertyChange("configurationMasks", null, this);
+		return mask;
+	}
 	
 }

@@ -32,16 +32,16 @@ import org.openflexo.module.traceanalysis.TAEIconLibrary;
 import org.openflexo.module.traceanalysis.model.TAEProject;
 import org.openflexo.module.traceanalysis.model.TraceAnalysis;
 import org.openflexo.module.traceanalysis.model.action.CreateTraceAnalysis;
-import org.openflexo.module.traceanalysis.model.action.CreateTraceExplorationMask;
+import org.openflexo.module.traceanalysis.model.action.CreateConfigurationMask;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
-public class CreateTraceExplorationMaskInitializer extends ActionInitializer<CreateTraceExplorationMask, TraceAnalysis, FlexoObject> {
+public class CreateConfigurationMaskInitializer extends ActionInitializer<CreateConfigurationMask, TraceAnalysis, FlexoObject> {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 
-	CreateTraceExplorationMaskInitializer(TAEControllerActionInitializer actionInitializer) {
-		super(CreateTraceExplorationMask.actionType, actionInitializer);
+	CreateConfigurationMaskInitializer(TAEControllerActionInitializer actionInitializer) {
+		super(CreateConfigurationMask.actionType, actionInitializer);
 	}
 
 	@Override
@@ -50,20 +50,21 @@ public class CreateTraceExplorationMaskInitializer extends ActionInitializer<Cre
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateTraceExplorationMask> getDefaultInitializer() {
-		return new FlexoActionInitializer<CreateTraceExplorationMask>() {
+	protected FlexoActionInitializer<CreateConfigurationMask> getDefaultInitializer() {
+		return new FlexoActionInitializer<CreateConfigurationMask>() {
 			@Override
-			public boolean run(EventObject e, CreateTraceExplorationMask action) {
-				return instanciateAndShowDialog(action, TAECst.CREATE_TRACE_EXPLORATION_MASK_DIALOG_FIB);
+			public boolean run(EventObject e, CreateConfigurationMask action) {
+				return instanciateAndShowDialog(action, TAECst.CREATE_CONFIGURATION_MASK_DIALOG_FIB);
 			}
 		};
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CreateTraceExplorationMask> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<CreateTraceExplorationMask>() {
+	protected FlexoActionFinalizer<CreateConfigurationMask> getDefaultFinalizer() {
+		return new FlexoActionFinalizer<CreateConfigurationMask>() {
 			@Override
-			public boolean run(EventObject e, CreateTraceExplorationMask action) {
+			public boolean run(EventObject e, CreateConfigurationMask action) {
+				getController().selectAndFocusObject(action.getConfigurationMask());
 				return true;
 			}
 		};

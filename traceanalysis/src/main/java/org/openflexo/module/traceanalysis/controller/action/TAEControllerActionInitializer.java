@@ -52,7 +52,7 @@ public class TAEControllerActionInitializer extends ControllerActionInitializer 
 		super.initializeActions();
 		new CreateTraceAnalysisInitializer(this);
 		new ConvertToTAEProjectInitializer(this);
-		new CreateTraceExplorationMaskInitializer(this);
+		new CreateConfigurationMaskInitializer(this);
 	}
 
 }

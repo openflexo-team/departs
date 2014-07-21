@@ -42,32 +42,32 @@ import org.openflexo.foundation.view.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.viewpoint.VirtualModelModelSlotInstanceConfiguration;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.localization.FlexoLocalization;
-import org.openflexo.module.traceanalysis.model.TAEAnalyze;
+import org.openflexo.module.traceanalysis.model.TAETrace;
 import org.openflexo.module.traceanalysis.model.TAEContext;
 import org.openflexo.module.traceanalysis.model.TAEObserver;
 import org.openflexo.module.traceanalysis.model.TAESystem;
 import org.openflexo.module.traceanalysis.model.TraceAnalysis;
 import org.openflexo.module.traceanalysis.model.TAEProject;
-import org.openflexo.module.traceanalysis.model.TraceExplorationMask;
+import org.openflexo.module.traceanalysis.model.ConfigurationMask;
 import org.openflexo.technologyadapter.cdl.CDLModelSlot;
 import org.openflexo.technologyadapter.cdl.CDLTechnologyAdapter;
 import org.openflexo.technologyadapter.fiacre.FiacreProgramModelSlot;
 import org.openflexo.technologyadapter.fiacre.FiacreTechnologyAdapter;
 import org.openflexo.toolbox.StringUtils;
 
-public class CreateTraceExplorationMask extends FlexoAction<CreateTraceExplorationMask, TraceAnalysis, FlexoObject> {
+public class CreateConfigurationMask extends FlexoAction<CreateConfigurationMask, TraceAnalysis, FlexoObject> {
 
-	private static final Logger logger = Logger.getLogger(CreateTraceExplorationMask.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(CreateConfigurationMask.class.getPackage().getName());
 
-	public static FlexoActionType<CreateTraceExplorationMask, TraceAnalysis, FlexoObject> actionType = new FlexoActionType<CreateTraceExplorationMask, TraceAnalysis, FlexoObject>(
-			"create_trace_exploration_mask", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+	public static FlexoActionType<CreateConfigurationMask, TraceAnalysis, FlexoObject> actionType = new FlexoActionType<CreateConfigurationMask, TraceAnalysis, FlexoObject>(
+			"create_configuration_mask", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public CreateTraceExplorationMask makeNewAction(TraceAnalysis focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
-			return new CreateTraceExplorationMask(focusedObject, globalSelection, editor);
+		public CreateConfigurationMask makeNewAction(TraceAnalysis focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
+			return new CreateConfigurationMask(focusedObject, globalSelection, editor);
 		}
 
 		@Override
@@ -83,10 +83,10 @@ public class CreateTraceExplorationMask extends FlexoAction<CreateTraceExplorati
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(CreateTraceExplorationMask.actionType, TraceAnalysis.class);
+		FlexoObjectImpl.addActionForClass(CreateConfigurationMask.actionType, TraceAnalysis.class);
 	}
 
-	CreateTraceExplorationMask(TraceAnalysis focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
+	CreateConfigurationMask(TraceAnalysis focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
@@ -94,29 +94,29 @@ public class CreateTraceExplorationMask extends FlexoAction<CreateTraceExplorati
 	protected void doAction(Object context) throws SaveResourceException {
 
 		logger.info("Create trace exploration mask");
-		traceExplorationMask = new TraceExplorationMask(getFocusedObject());
-		traceExplorationMask.setName(getTraceExplorationMaskName());
+		configurationMask = getFocusedObject().getNewConfigurationMask();
+		configurationMask.setName(getConfigurationMaskName());
 	}
 	
-	private TraceExplorationMask traceExplorationMask;
+	private ConfigurationMask configurationMask;
 	
-	public String getTraceExplorationMaskName() {
-		return traceExplorationMaskName;
+	public String getConfigurationMaskName() {
+		return configurationMaskName;
 	}
 
-	public void setTraceExplorationMaskName(String traceExplorationMaskName) {
+	public void setConfigurationMaskName(String configurationMaskName) {
 		boolean wasValid = isValid();
-		this.traceExplorationMaskName = traceExplorationMaskName;
-		getPropertyChangeSupport().firePropertyChange("traceExplorationMaskName", null, traceExplorationMaskName);
+		this.configurationMaskName = configurationMaskName;
+		getPropertyChangeSupport().firePropertyChange("configurationMaskName", null, configurationMaskName);
 		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
 		getPropertyChangeSupport().firePropertyChange("errorMessage", null, getErrorMessage());
 	}
 
 	private String errorMessage;
 	
-	private String traceExplorationMaskName;
+	private String configurationMaskName;
 	
-	private String traceExplorationMaskDescription;
+	private String configurationMaskDescription;
 
 	public String getErrorMessage() {
 		isValid();
@@ -128,32 +128,32 @@ public class CreateTraceExplorationMask extends FlexoAction<CreateTraceExplorati
 	@Override
 	public boolean isValid() {
 
-		if (StringUtils.isEmpty(traceExplorationMaskName)) {
-			errorMessage = FlexoLocalization.localizedForKey("no_traceExplorationMask_name_defined");
+		if (StringUtils.isEmpty(configurationMaskName)) {
+			errorMessage = FlexoLocalization.localizedForKey("no_configurationMask_name_defined");
 			return false;
 		}
 
 		return true;
 	}
 
-	public String getTraceExplorationMaskDescription() {
-		return traceExplorationMaskDescription;
+	public String getConfigurationMaskDescription() {
+		return configurationMaskDescription;
 	}
 
-	public void setTraceExplorationMaskDescription(String traceExplorationMaskDescription) {
+	public void setConfigurationMaskDescription(String configurationMaskDescription) {
 		boolean wasValid = isValid();
-		this.traceExplorationMaskDescription = traceExplorationMaskDescription;
-		getPropertyChangeSupport().firePropertyChange("traceExplorationMaskDescription", null, traceExplorationMaskDescription);
+		this.configurationMaskDescription = configurationMaskDescription;
+		getPropertyChangeSupport().firePropertyChange("configurationMaskDescription", null, configurationMaskDescription);
 		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
 		getPropertyChangeSupport().firePropertyChange("errorMessage", null, getErrorMessage());
 	}
 
-	public TraceExplorationMask getTraceExplorationMask() {
-		return traceExplorationMask;
+	public ConfigurationMask getConfigurationMask() {
+		return configurationMask;
 	}
 
-	public void setTraceExplorationMask(TraceExplorationMask traceExplorationMask) {
-		this.traceExplorationMask = traceExplorationMask;
+	public void setConfigurationMask(ConfigurationMask configurationMask) {
+		this.configurationMask = configurationMask;
 	}
 
 }
