@@ -38,11 +38,12 @@ public interface CDLCommunicationOPEvent extends CDLEvent {
 	public static final String PROCESS_ID_FROM_KEY = "processIDfrom";
 	@PropertyIdentifier(type = CDLProcessID.class)
 	public static final String PROCESS_ID_TO_KEY = "processIDto";
+	@PropertyIdentifier(type = EventKind.class)
+	public static final String EVENT_KIND_KEY = "EventKind";
 
-	// @Getter(value = COMMUNICATION_OP_KEY)
+	@Getter(value=COMMUNICATION_OP_KEY, ignoreType=true)
 	public obp.event.CommunicationOp getCommunicationOp();
-
-	// @Setter(value = COMMUNICATION_OP_KEY)
+	@Setter(COMMUNICATION_OP_KEY)
 	public void setCommunicationOp(obp.event.CommunicationOp communicationOp);
 
 	@Getter(value = PROCESS_ID_FROM_KEY)
@@ -56,9 +57,23 @@ public interface CDLCommunicationOPEvent extends CDLEvent {
 
 	@Setter(value = PROCESS_ID_TO_KEY)
 	public void setProcessIDTo(CDLProcessID processIDTo);
+	
+	@Getter(value = EVENT_KIND_KEY)
+	public EventKind getEventKind();
 
+	@Setter(value = EVENT_KIND_KEY)
+	public void setEventKind(EventKind eventKind);
+
+	public enum EventKind {
+		INPUT, OUTPUT, SYNC
+	}
+	
 	public static abstract class CDLCommunicationOPEventImpl extends CDLEventImpl implements CDLCommunicationOPEvent {
 
+		public CDLCommunicationOPEventImpl() {
+			// TODO Auto-generated constructor stub
+		}
+		
 		@Override
 		public String getUri() {
 			return getName();

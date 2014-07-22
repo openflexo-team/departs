@@ -1,0 +1,162 @@
+/*------------------------------------------
+   calcul2_synchro.fcr  version 15 nov 13
+ 
+   3 processus de calcul : For, While, Until
+   communication synchrone entre les processus 
+   la valeur echangee est de type structure t_data {index, value}
+   Iteration sur :
+     - ProcFor transmet le couple (i, i*i)
+     - ProcWhile calcule et transmet le couple (i, racine carre de i*i)
+     - ProcUntil receptionne le couple (i, i)
+ 
+----------------------------------- 
+   Ph. Dhaussy Ensta-Bretagne  
+-------------------------------------------*/
+
+const I_MAX  : nat is 3 
+
+type t_data is record
+	index   : int,    /* value index */
+	value   : int     /* value  */
+end
+
+const data1  : t_data is {index = 1, value = 1}
+
+
+/*====================== ProcFor ================================*/
+// Envoi des valeurs 1 a I_MAX inclus au carre
+
+process ProcFor [output : out t_data]
+is 
+
+states Start, S2, End
+var
+	i  : int,
+	n  : int,
+	data : t_data
+init
+	i  := 0;
+	n  := 0;
+	data := {index = 0, value = 0};
+	to Start
+  
+/*-----------------------*/
+from Start
+	i := i + 1;
+	if i > I_MAX  then
+	     to End
+	end;
+	to S2
+
+from S2
+      n := i*i;
+	  data.index := i;
+	  data.value := n; 
+	  output ! data;
+      to Start
+ 
+from End 
+	loop
+ 
+/*====================== ProcWhile ================================*/
+
+process ProcWhile  [input : in t_data, output : out t_data]
+is 
+
+states Start, S2, S3
+var
+	i  : int,
+	n  : int,
+	r  : int,
+	s  : int,
+	data : t_data	
+init
+	n  := 0;
+	s  := 0;
+    r  := 0;
+	data := {index = 0, value = 0};
+	to Start
+ 
+/*-----------------------*/
+from Start
+	input ? data;  	/* synchro input */
+	i := data.index;
+	n := data.value;
+	s := 1;
+    r := 3;
+	to S2
+	
+from S2
+    if (s <= n) then
+      s := s+r;
+      r := r+2;
+      loop
+    else
+      to S3  
+    end if
+
+from S3
+    r := r/2 - 1;
+	// data.index := i;  inutile car inchange
+	data.value := r; 
+    output ! data;
+    to Start
+
+
+//======== procUntil ===============
+// reception des I_MAX valeurs 
+//  data.index et data.value doivent etre toujours egaux
+//-------------------------------------------------
+process ProcUntil [input : in t_data] 
+is
+  
+states
+    Start, End
+var
+	b : bool,
+	i  : int,
+	n  : int,
+	data : t_data
+init
+	b := true;
+	i  := 1;
+	n  := 0;
+	data := {index = 0, value = 0};
+	to Start
+	
+from Start
+	if i > I_MAX  then
+	     to End
+	else
+		input ? data;  			/* synchro input */
+		i := i + 1;
+		to Start
+	end
+ 
+from End 
+	loop
+		
+	
+/*======================================================*/
+
+component Comp is
+
+port 
+	portFor2While : t_data,
+	portWhile2Until : t_data
+
+par
+	  	ProcFor [portFor2While]
+	 ||	ProcWhile [portFor2While, portWhile2Until]
+	 ||	ProcUntil [portWhile2Until]
+end
+
+Comp
+
+
+
+
+
+
+
+

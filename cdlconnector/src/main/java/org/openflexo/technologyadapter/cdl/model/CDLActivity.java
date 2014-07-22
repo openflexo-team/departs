@@ -25,20 +25,11 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
 
 @ModelEntity
-@ImplementationClass(CDLActivity.CDLStateImpl.class)
+@ImplementationClass(CDLActivity.CDLActivityImpl.class)
 @XMLElement(xmlTag = "CDLActivity")
 public interface CDLActivity extends CDLObject {
 
-	// @PropertyIdentifier(type = obp.cdl.Activity.class)
-	public static final String ACTIVITY_KEY = "activity";
-
-	// @Getter(value = ACTIVITY_KEY)
-	public obp.cdl.Activity getCDLActivity();
-
-	// @Setter(value = ACTIVITY_KEY)
-	public void setCDLActivity(obp.cdl.Activity cdlActivity);
-
-	public static abstract class CDLStateImpl extends CDLObjectImpl implements CDLActivity {
+	public static abstract class CDLActivityImpl extends CDLObjectImpl implements CDLActivity {
 
 		@Override
 		public String getUri() {

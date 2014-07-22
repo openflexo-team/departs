@@ -33,6 +33,7 @@ import org.openflexo.module.FlexoModule;
 import org.openflexo.selection.MouseSelectionManager;
 import org.openflexo.technologyadapter.cdl.CDLTechnologyAdapter;
 import org.openflexo.technologyadapter.fiacre.FiacreTechnologyAdapter;
+import org.openflexo.technologyadapter.trace.TraceTechnologyAdapter;
 import org.openflexo.view.FlexoMainPane;
 import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
@@ -43,7 +44,7 @@ import org.openflexo.module.traceanalysis.controller.TAESelectionManager;
 import org.openflexo.module.traceanalysis.controller.action.TAEControllerActionInitializer;
 import org.openflexo.module.traceanalysis.model.TAEProject;
 import org.openflexo.module.traceanalysis.model.TraceAnalysis;
-import org.openflexo.module.traceanalysis.model.TraceExplorationMask;
+import org.openflexo.module.traceanalysis.model.ConfigurationMask;
 import org.openflexo.module.traceanalysis.view.menu.TAEMenuBar;
 
 public class TAEController extends FlexoController {
@@ -60,7 +61,7 @@ public class TAEController extends FlexoController {
 		addToPerspectives(TAE_PERSPECTIVE = new TAEPerspective(this));
 		
 		for (TechnologyAdapter ta : getApplicationContext().getTechnologyAdapterService().getTechnologyAdapters()) {
-			if (ta instanceof CDLTechnologyAdapter || ta instanceof FiacreTechnologyAdapter) {
+			if (ta instanceof CDLTechnologyAdapter || ta instanceof FiacreTechnologyAdapter || ta instanceof TraceTechnologyAdapter) {
 				TechnologyAdapterController<?> tac = getApplicationContext().getTechnologyAdapterControllerService()
 						.getTechnologyAdapterController(ta);
 				if (tac != null) {
@@ -113,6 +114,9 @@ public class TAEController extends FlexoController {
 				if (object instanceof TraceAnalysis) {
 					TAE_PERSPECTIVE.focusOnTraceAnalysis((TraceAnalysis) object);
 				}
+				if (object instanceof ConfigurationMask) {
+					TAE_PERSPECTIVE.focusOnConfigurationMask((ConfigurationMask) object);
+				}
 			}
 			getSelectionManager().setSelectedObject(object);
 		} 
@@ -124,7 +128,7 @@ public class TAEController extends FlexoController {
 			return IconLibrary.OPENFLEXO_NOTEXT_16;
 		} else if (object instanceof TraceAnalysis) {
 			return TAEIconLibrary.TAE_SMALL_ICON;
-		} else if (object instanceof TraceExplorationMask) {
+		} else if (object instanceof ConfigurationMask) {
 			return TAEIconLibrary.MASK_SMALL_ICON;
 		} 
 		return super.iconForObject(object);

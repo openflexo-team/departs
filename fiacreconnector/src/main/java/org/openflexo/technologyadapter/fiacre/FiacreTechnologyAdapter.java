@@ -95,7 +95,7 @@ public class FiacreTechnologyAdapter extends TechnologyAdapter {
 	}
 
 	protected FiacreProgramResource tryToLookupFiacrePrograms(FlexoResourceCenter<?> resourceCenter, File candidateFile) {
-		if (isValidWorkbookFile(candidateFile)) {
+		if (isValidFiacreFile(candidateFile)) {
 			FiacreProgramResource FiacreProgramRes = retrieveFiacreProgramResource(candidateFile);
 			FiacreProgramRepository FiacreProgramRepository = resourceCenter.getRepository(FiacreProgramRepository.class, this);
 			if (FiacreProgramRes != null) {
@@ -138,13 +138,13 @@ public class FiacreTechnologyAdapter extends TechnologyAdapter {
 	}
 
 	/**
-	 * Return flag indicating if supplied file appears as a valid workbook
+	 * Return flag indicating if supplied file appears as a valid fiacre
 	 * 
 	 * @param candidateFile
 	 * 
 	 * @return
 	 */
-	public boolean isValidWorkbookFile(File candidateFile) {
+	public boolean isValidFiacreFile(File candidateFile) {
 		return candidateFile.getName().endsWith(FIACRE_FILE_EXTENSION);
 	}
 

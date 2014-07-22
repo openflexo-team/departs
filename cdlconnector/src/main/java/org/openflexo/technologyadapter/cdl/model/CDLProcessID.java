@@ -20,8 +20,10 @@
 
 package org.openflexo.technologyadapter.cdl.model;
 
+import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
 
 @ModelEntity
@@ -32,10 +34,10 @@ public interface CDLProcessID extends CDLObject {
 	// @PropertyIdentifier(type = obp.cdl.ProcessId.class)
 	public static final String PROCESS_ID_KEY = "processID";
 
-	// @Getter(value = PROCESS_ID_KEY)
+	@Getter(value = PROCESS_ID_KEY, ignoreType=true)
 	public obp.cdl.ProcessId getCDLProcessID();
 
-	// @Setter(value = PROCESS_ID_KEY)
+	@Setter(value = PROCESS_ID_KEY)
 	public void setCDLProcessID(obp.cdl.ProcessId cdlProcessID);
 
 	public static abstract class CDLProcessIDImpl extends CDLObjectImpl implements CDLProcessID {

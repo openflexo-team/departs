@@ -22,12 +22,6 @@ package org.openflexo.technologyadapter.cdl.model;
 
 import java.util.List;
 
-import obp.cdl.EventDeclaration;
-import obp.event.Event;
-import obp.event.Input;
-import obp.event.Output;
-import obp.event.Synchronous;
-
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Getter;
@@ -38,25 +32,24 @@ import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.technologyadapter.cdl.model.CDLEvent.EventKind;
 import org.openflexo.technologyadapter.cdl.model.io.CDLModelConverter;
-import org.openflexo.technologyadapter.cdl.rm.CDLUnitResource;
 
 @ModelEntity
 @ImplementationClass(CDLUnit.CDLUnitImpl.class)
 @XMLElement(xmlTag = "CDLUnit")
 public interface CDLUnit extends CDLObject, ResourceData<CDLUnit> {
 
-	// @PropertyIdentifier(type = obp.cdl.CDLUnit.class)
 	public static final String CDL_UNIT_KEY = "cdlUnit";
 	@PropertyIdentifier(type = String.class)
 	public static final String INITIAL_ACTIVITY_KEY = "initialActivity";
+	@PropertyIdentifier(type = String.class)
+	public static final String CDL_MAIN_KEY = "cdlMain";
 	@PropertyIdentifier(type = List.class)
-	public static final String ACTIVITIES_KEY = "activities";
+	public static final String PROPERTIES_KEY = "cdlProperties";
 	@PropertyIdentifier(type = List.class)
 	public static final String EVENTS_KEY = "events";
 	@PropertyIdentifier(type = List.class)
-	public static final String PROPERTIES_KEY = "properties";
+	public static final String ACTIVITIES_KEY = "activities";
 
 	// @Getter(value = CDL_UNIT_KEY)
 	public obp.cdl.CDLUnit getCDLUnit();
@@ -65,23 +58,29 @@ public interface CDLUnit extends CDLObject, ResourceData<CDLUnit> {
 	public void setCDLUnit(obp.cdl.CDLUnit cdlUnit);
 
 	@Getter(value = INITIAL_ACTIVITY_KEY)
-	public CDLActivity getInitialActivity();
+	public CDLTopActivity getInitialActivity();
 
 	@Setter(value = INITIAL_ACTIVITY_KEY)
-	public void setInitialActivity(CDLActivity initialActivity);
+	public void setInitialActivity(CDLTopActivity initialActivity);
+	
+	@Getter(value = CDL_MAIN_KEY)
+	public CDLParActivity getCDLParActivity();
 
-	@Getter(value = ACTIVITIES_KEY, cardinality = Cardinality.LIST)
-	public List<CDLActivity> getCDLActivities();
+	@Setter(value = CDL_MAIN_KEY)
+	public void setCDLParActivity(CDLParActivity cdlParActivity);
 
-	@Setter(ACTIVITIES_KEY)
-	public void setCDLActivities(List<CDLActivity> cdlActivity);
+	@Getter(value = PROPERTIES_KEY, cardinality = Cardinality.LIST)
+	public List<CDLProperty> getCDLProperties();
 
-	@Adder(ACTIVITIES_KEY)
-	public void addToCDLActivities(CDLActivity cdlActivity);
+	@Setter(PROPERTIES_KEY)
+	public void setCDLProperties(List<CDLProperty> cdlProperty);
 
-	@Remover(ACTIVITIES_KEY)
-	public void removeFromCDLActivities(CDLActivity cdlActivity);
+	@Adder(PROPERTIES_KEY)
+	public void addToCDLProperties(CDLProperty cdlProperty);
 
+	@Remover(PROPERTIES_KEY)
+	public void removeFromCDLProperties(CDLProperty cdlProperty);
+	
 	@Getter(value = EVENTS_KEY, cardinality = Cardinality.LIST)
 	public List<CDLEvent> getCDLEvents();
 
@@ -94,25 +93,25 @@ public interface CDLUnit extends CDLObject, ResourceData<CDLUnit> {
 	@Remover(EVENTS_KEY)
 	public void removeFromCDLEvents(CDLEvent cdlEvent);
 
-	@Getter(value = PROPERTIES_KEY, cardinality = Cardinality.LIST)
-	public List<CDLProperty> getCDLProperties();
+	@Getter(value = ACTIVITIES_KEY, cardinality = Cardinality.LIST)
+	public List<CDLActivity> getCDLActivities();
 
-	@Setter(PROPERTIES_KEY)
-	public void setCDLProperties(List<CDLProperty> cdlProperty);
+	@Setter(ACTIVITIES_KEY)
+	public void setCDLActivities(List<CDLActivity> cdlActivity);
 
-	@Adder(PROPERTIES_KEY)
-	public void addToCDLProperties(CDLProperty cdlProperty);
+	@Adder(ACTIVITIES_KEY)
+	public void addToCDLActivities(CDLActivity cdlActivity);
 
-	@Remover(PROPERTIES_KEY)
-	public void removeFromCDLPorperties(CDLProperty cdlProperty);
-
+	@Remover(ACTIVITIES_KEY)
+	public void removeFromCDLActivities(CDLActivity cdlActivity);
+	
 	public String getCode();
 
 	public CDLModelConverter getConverter();
 
 	public void setConverter(CDLModelConverter converter);
 
-	public CDLEvent createCDLEvent(EventKind evtKind, CDLProcessID fromPID, CDLProcessID toPID, String message, String name);
+	public CDLEvent createCDLEvent(CDLProcessID fromPID, CDLProcessID toPID, String message, String name);
 
 	public static abstract class CDLUnitImpl extends CDLObjectImpl implements CDLUnit {
 
@@ -128,45 +127,6 @@ public interface CDLUnit extends CDLObject, ResourceData<CDLUnit> {
 		@Override
 		public String getUri() {
 			return getName();
-		}
-
-		@Override
-		public CDLEvent createCDLEvent(EventKind evtKind, CDLProcessID fromPID, CDLProcessID toPID, String message, String name) {
-			CDLEvent cdlEvent = null;
-			EventDeclaration evDecl = new EventDeclaration();
-			Event event = null;
-			switch (evtKind) {
-			case INPUT:
-				Input input = new Input();
-				input.setFrom(fromPID.getCDLProcessID());
-				input.setTo(toPID.getCDLProcessID());
-				event = input;
-				break;
-			case OUTPUT:
-				Output output = new Output();
-				output.setFrom(fromPID.getCDLProcessID());
-				output.setTo(toPID.getCDLProcessID());
-				event = output;
-				break;
-			case SYNC:
-				Synchronous sync = new Synchronous();
-				sync.setFrom(fromPID.getCDLProcessID());
-				sync.setTo(toPID.getCDLProcessID());
-				event = sync;
-				break;
-			case GAMMA:
-			case INFORMAL:
-			case PREDICATE:
-			}
-			if (name != null) {
-				evDecl.setIs(event);
-				evDecl.setName(name);
-			}
-
-			this.getCDLUnit().addDeclaration(evDecl);
-			cdlEvent = ((CDLUnitResource) this.getResource()).getConverter().convertCDLEvent(evDecl, this, getTechnologyAdapter());
-
-			return cdlEvent;
 		}
 
 	}

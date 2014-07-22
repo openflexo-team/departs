@@ -67,7 +67,6 @@ public class TAEProject extends DefaultFlexoObject implements ProjectWrapper<TAE
 		
 		try {
 			traceAnalysisViewPoint = taeViewPointResource.getResourceData(null);
-			//traceAnalysisView = taeViewResource.getResourceData(null);
 		} catch (Exception e) {
 			throw new FlexoException(e);
 		}
@@ -75,9 +74,6 @@ public class TAEProject extends DefaultFlexoObject implements ProjectWrapper<TAE
 		if (traceAnalysisViewPoint == null) {
 			throw new InvalidArgumentException("Could not load traceAnalysisViewPoint");
 		}
-		/*if (traceAnalysisView == null) {
-			throw new InvalidArgumentException("Could not load traceAnalysisView");
-		}*/
 	}
 
 	public String getName() {
@@ -99,7 +95,7 @@ public class TAEProject extends DefaultFlexoObject implements ProjectWrapper<TAE
 	}
 	
 	public VirtualModel getAnalyzeVirtualModel(){
-		return getTraceAnaylsisViewPoint().getVirtualModelNamed("AnalyzeVirtualModel");
+		return getTraceAnaylsisViewPoint().getVirtualModelNamed("TraceVirtualModel");
 	}
 	public VirtualModel getContextVirtualModel(){
 		return getTraceAnaylsisViewPoint().getVirtualModelNamed("ContextVirtualModel");

@@ -2,6 +2,7 @@ package org.openflexo.module.traceanalysis.model;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openflexo.foundation.DefaultFlexoObject;
@@ -34,6 +35,10 @@ public class TAEObject extends DefaultFlexoObject implements PropertyChangeListe
 	
 	public List<FlexoConceptInstance> getFlexoConceptInstances(FlexoConcept flexoConcept){
 		return virtualModelInstance.getFlexoConceptInstances(flexoConcept);
+	}
+	
+	public List<FlexoConceptInstance> getFlexoConceptInstances(String name){
+		return virtualModelInstance.getFlexoConceptInstances(name);
 	}
 	
 	@Override

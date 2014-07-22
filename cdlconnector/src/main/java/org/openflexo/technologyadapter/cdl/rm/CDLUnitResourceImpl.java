@@ -106,8 +106,9 @@ public abstract class CDLUnitResourceImpl extends FlexoFileResourceImpl<CDLUnit>
 				unit = CDLUtil.readCDLAndResolveReferences(getFile());
 				if (converter == null) {
 					converter = new CDLModelConverter();
+					converter.setTechnologyAdapter(getTechnologyAdapter());
 				}
-				resourceData = converter.convertCDLUnit(unit, getTechnologyAdapter());
+				resourceData = converter.convertCDLUnit(unit);
 				resourceData.setResource(this);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block

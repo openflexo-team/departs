@@ -19,8 +19,14 @@
  */
 package org.openflexo.module.traceanalysis.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openflexo.foundation.InvalidArgumentException;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
+import org.openflexo.technologyadapter.fiacre.model.FiacreComponent;
+import org.openflexo.technologyadapter.fiacre.model.FiacreProcess;
 
 public class TAESystem extends TAEObject {
 
@@ -29,6 +35,21 @@ public class TAESystem extends TAEObject {
 		super(virtualModelInstance);
 		// TODO Auto-generated constructor stub
 	}
-
+	
+	public List<FiacreProcess> getFiacreProcesses(){
+		List<FiacreProcess> fiacreProcesses = new ArrayList<FiacreProcess>();
+		for(FlexoConceptInstance fciProcess : getVirtualModelInstance().getFlexoConceptInstances("Process")){
+			fiacreProcesses.add((FiacreProcess) fciProcess.getFlexoActor("process"));
+		}
+		return fiacreProcesses;
+	}
+	
+	public List<FiacreComponent> getFiacreComponents(){
+		List<FiacreComponent> fiacreComponents = new ArrayList<FiacreComponent>();
+		for(FlexoConceptInstance fciComponent : getVirtualModelInstance().getFlexoConceptInstances("Component")){
+			fiacreComponents.add((FiacreComponent) fciComponent.getFlexoActor("component"));
+		}
+		return fiacreComponents;
+	}
 	
 }

@@ -27,7 +27,15 @@ import javax.swing.ImageIcon;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.technologyadapter.cdl.model.CDLActivity;
+import org.openflexo.technologyadapter.cdl.model.CDLActivityReference;
 import org.openflexo.technologyadapter.cdl.model.CDLEvent;
+import org.openflexo.technologyadapter.cdl.model.CDLEventReference;
+import org.openflexo.technologyadapter.cdl.model.CDLObserverState;
+import org.openflexo.technologyadapter.cdl.model.CDLObserverStateCut;
+import org.openflexo.technologyadapter.cdl.model.CDLObserverStateNormal;
+import org.openflexo.technologyadapter.cdl.model.CDLObserverStateReject;
+import org.openflexo.technologyadapter.cdl.model.CDLObserverStateSuccess;
+import org.openflexo.technologyadapter.cdl.model.CDLObserverTransition;
 import org.openflexo.technologyadapter.cdl.model.CDLProcessID;
 import org.openflexo.technologyadapter.cdl.model.CDLProperty;
 import org.openflexo.technologyadapter.cdl.model.CDLUnit;
@@ -44,10 +52,33 @@ public class CDLIconLibrary {
 	public static final ImageIcon CDL_PROPERTY_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/cdl_property.png"));
 	public static final ImageIcon CDL_EVENT_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/cdl_event.png"));
 	public static final ImageIcon CDL_PROCESSID_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/cdl_processid.png"));
+	public static final ImageIcon CDL_STATE_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/cdl_state.png"));
+	public static final ImageIcon CDL_TRANSITION_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/cdl_transition.png"));
+	public static final ImageIcon CDL_REF_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/cdl_ref.png"));
 
+	public static final ImageIcon CDL_NORMAL_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/cdl_normal.png"));
+	public static final ImageIcon CDL_CUT_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/cdl_cut.png"));
+	public static final ImageIcon CDL_SUCCESS_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/cdl_success.png"));
+	public static final ImageIcon CDL_REJECT_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/cdl_reject.png"));
+
+	
 	public static ImageIcon iconForObject(Class<? extends TechnologyObject> objectClass) {
 		if (CDLUnit.class.isAssignableFrom(objectClass)) {
 			return CDL_TECHNOLOGY_ICON;
+		} else if (CDLObserverStateNormal.class.isAssignableFrom(objectClass)) {
+			return CDL_NORMAL_ICON;
+		} else if (CDLObserverStateReject.class.isAssignableFrom(objectClass)) {
+			return CDL_REJECT_ICON;
+		} else if (CDLObserverStateSuccess.class.isAssignableFrom(objectClass)) {
+			return CDL_SUCCESS_ICON;
+		} else if (CDLObserverStateCut.class.isAssignableFrom(objectClass)) {
+			return CDL_CUT_ICON;
+		} else if (CDLObserverTransition.class.isAssignableFrom(objectClass)) {
+			return CDL_TRANSITION_ICON;
+		} else if (CDLActivityReference.class.isAssignableFrom(objectClass)) {
+			return CDL_REF_ICON;
+		} else if (CDLEventReference.class.isAssignableFrom(objectClass)) {
+			return CDL_REF_ICON;
 		} else if (CDLEvent.class.isAssignableFrom(objectClass)) {
 			return CDL_EVENT_ICON;
 		} else if (CDLActivity.class.isAssignableFrom(objectClass)) {

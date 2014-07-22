@@ -6,6 +6,9 @@ import java.util.logging.Logger;
 
 import obp.fiacre.model.ComponentDecl;
 import obp.fiacre.model.Declaration;
+import obp.fiacre.model.Instance;
+import obp.fiacre.model.InterfacedComp;
+import obp.fiacre.model.Par;
 import obp.fiacre.model.ProcessDecl;
 import obp.fiacre.model.State;
 
@@ -51,6 +54,8 @@ public class FiacreProgramConverter {
 				FiacreProcess fiacreProcess = convertFiacreProcess((ProcessDecl) declaration, flexoFiacreProgram, technologyAdapter);
 				flexoFiacreProgram.addToFiacreProcesses(fiacreProcess);
 			}
+		}
+		for (Declaration declaration : fiacreProgram.getDeclarationList()) {
 			if (declaration instanceof ComponentDecl) {
 				FiacreComponent fiacreComponent = convertFiacreComponent((ComponentDecl) declaration, flexoFiacreProgram, technologyAdapter);
 				flexoFiacreProgram.addToFiacreComponents(fiacreComponent);
@@ -79,6 +84,20 @@ public class FiacreProgramConverter {
 		FiacreComponent fiacreComponent = null;
 		if (!getFiacreObjects().containsKey(component)) {
 			fiacreComponent = factory.newInstance(FiacreComponent.class);
+			if(component.getBody()!=null){
+				if(component.getBody() instanceof Par){
+					Par body = (Par)component.getBody();
+					for(InterfacedComp comp :body.getArgList()){
+						if(comp.getComposition()!=null && comp.getComposition() instanceof Instance){
+							Instance instance = (Instance)comp.getComposition();
+							if(instance.getType() instanceof ProcessDecl){
+								ProcessDecl process =  (ProcessDecl) instance.getType();
+								fiacreComponent.addToFiacreProcesses((FiacreProcess) getFiacreObjects().get(process));
+							}
+						}
+					}
+				}
+			}
 			fiacreComponent.setName(component.getName());
 			fiacreComponent.setTechnologyAdapter(technologyAdapter);
 			getFiacreObjects().put(component, fiacreComponent);
