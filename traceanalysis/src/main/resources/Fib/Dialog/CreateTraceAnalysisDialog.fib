@@ -4,26 +4,26 @@
     <Label id="2" manageDynamicModel="false" useScrollBar="false" index="1" localize="true" align="right" constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=0;gridY=1;index=1;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" label="trace_analysis_name" readOnly="false" />
     <TextField id="3" passwd="false" manageDynamicModel="false" useScrollBar="false" data="data.traceAnalysisName" columns="40" name="TraceAnalysisNameTF" text="TextField" index="2" localize="true" constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=1;gridY=1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)" readOnly="false" validateOnReturn="false" />
 	<Label label="cdl file" constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=0;gridY=2;index=1;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" localize="true" />
-    <Custom componentClassName="org.openflexo.components.widget.FIBResourceSelector" localize="true" manageDynamicModel="true" name="ResourceSelector" data="data.cdl" constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=1;gridX=1;gridY=2;index=1;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)">
+    <Custom componentClassName="org.openflexo.components.widget.FIBResourceSelector" localize="true" manageDynamicModel="true" name="CDLResourceSelector" data="data.cdl" constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=1;gridX=1;gridY=2;index=1;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)">
       <Assignment variable="component.technologyAdapter" value="data.cdlTechnologyAdapter" />
       <Assignment variable="component.informationSpace" value="data.serviceManager.informationSpace" />
-      <Assignment variable="component.project" value="data.editor.project" />
+      <!--<Assignment variable="component.project" value="data.editor.project" />-->
       <Assignment variable="component.selectableCondition" />
       <Assignment variable="component.resourceDataClass" value="data.cdl" />
     </Custom>
     <Label label="system file" constraints="gridbag(anchor=west;fill=none;gridHeight=1;gridWidth=1;gridX=0;gridY=3;index=1;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" localize="true" />
-    <Custom componentClassName="org.openflexo.components.widget.FIBResourceSelector" localize="true" manageDynamicModel="true" name="ResourceSelector" data="data.fiacre" constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=1;gridX=1;gridY=3;index=1;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)">
+    <Custom componentClassName="org.openflexo.components.widget.FIBResourceSelector" localize="true" manageDynamicModel="true" name="FiacreResourceSelector" data="data.fiacre" constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=1;gridX=1;gridY=3;index=1;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)">
       <Assignment variable="component.technologyAdapter" value="data.fiacreTechnologyAdapter" />
       <Assignment variable="component.informationSpace" value="data.serviceManager.informationSpace" />
-      <Assignment variable="component.project" value="data.editor.project" />
+        <!--<Assignment variable="component.project" value="data.editor.project" />-->
       <Assignment variable="component.selectableCondition" />
       <Assignment variable="component.resourceDataClass" value="data.fiacre" />
     </Custom>
     <Label label="trace file" constraints="gridbag(anchor=west;fill=none;gridHeight=1;gridWidth=1;gridX=0;gridY=4;index=1;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" localize="true" />
-    <Custom componentClassName="org.openflexo.components.widget.FIBResourceSelector" localize="true" manageDynamicModel="true" name="ResourceSelector" data="data.trace" constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=1;gridX=1;gridY=4;index=1;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)">
+    <Custom componentClassName="org.openflexo.components.widget.FIBResourceSelector" localize="true" manageDynamicModel="true" name="TraceResourceSelector" data="data.trace" constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=1;gridX=1;gridY=4;index=1;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)">
       <Assignment variable="component.technologyAdapter" value="data.traceTechnologyAdapter" />
       <Assignment variable="component.informationSpace" value="data.serviceManager.informationSpace" />
-      <Assignment variable="component.project" value="data.editor.project" />
+        <!--<Assignment variable="component.project" value="data.editor.project" />-->
       <Assignment variable="component.selectableCondition" />
       <Assignment variable="component.resourceDataClass" value="data.trace" />
     </Custom>

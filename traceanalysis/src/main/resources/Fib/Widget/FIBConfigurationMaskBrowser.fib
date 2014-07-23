@@ -8,7 +8,7 @@
       <TextFieldColumn id="6" displayTitle="true" title="col2" columnWidth="60" resizable="true" />
     </Table>
     <Browser root="data" iteratorClassName="java.lang.Object" visibleRowCount="5" rowHeight="18" boundToSelectionManager="true" selectionMode="DiscontiguousTreeSelection" selected="" showFooter="false" rootVisible="true" showRootsHandle="true" localize="true" manageDynamicModel="true" clickAction="" doubleClickAction="data.updateSelection(MaskBrowser.selected)" rightClickAction="" name="MaskBrowser" index="0" constraints="border(location=center)" visible="">
-      <BrowserElement dataClassName="org.openflexo.module.traceanalysis.model.ConfigurationMask" icon="controller.iconForObject(mask)" label="configurationMask.name" isEditable="false" filtered="false" defaultVisible="true" name="mask">
+      <BrowserElement dataClassName="org.openflexo.module.traceanalysis.model.ConfigurationMask" icon="controller.iconForObject(mask)" label="mask.name" isEditable="false" filtered="false" defaultVisible="true" name="mask">
         <Children data="mask.traceAnalysis.traceAnalysisVirtualModelInstances" name="traceAnalysisVirtualModelInstance" />
       </BrowserElement>
       <BrowserElement dataClassName="org.openflexo.module.traceanalysis.model.SystemVirtualModelInstance" label="systemVirtualModelInstance.virtualModelInstance.virtualModel.name" icon="controller.iconForObject(systemVirtualModelInstance.virtualModelInstance)" isEditable="false" filtered="false" defaultVisible="false" name="systemVirtualModelInstance">

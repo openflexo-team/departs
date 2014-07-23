@@ -8,7 +8,7 @@
       <TextFieldColumn id="6" displayTitle="true" title="col2" columnWidth="60" resizable="true" />
     </Table>
     <Browser root="data" iteratorClassName="java.lang.Object" visibleRowCount="5" rowHeight="18" boundToSelectionManager="true" selectionMode="DiscontiguousTreeSelection" selected="" showFooter="false" rootVisible="true" showRootsHandle="true" localize="true" manageDynamicModel="true" clickAction="" doubleClickAction="" rightClickAction="" name="MaskBrowser" index="0" constraints="border(location=center)" visible="">
-      <BrowserElement dataClassName="org.openflexo.module.traceanalysis.model.ConfigurationMask" icon="controller.iconForObject(mask)" label="configurationMask.name" isEditable="false" filtered="false" defaultVisible="true" name="mask">
+      <BrowserElement dataClassName="org.openflexo.module.traceanalysis.model.ConfigurationMask" icon="controller.iconForObject(mask)" label="mask.name" isEditable="false" filtered="false" defaultVisible="true" name="mask">
         <Children data="mask.traceAnalysis.traceAnalysisVirtualModelInstances" name="traceAnalysisVirtualModelInstance" />
       </BrowserElement>
       <BrowserElement dataClassName="org.openflexo.module.traceanalysis.model.SystemVirtualModelInstance" label="systemVirtualModelInstance.virtualModelInstance.virtualModel.name" icon="controller.iconForObject(systemVirtualModelInstance.virtualModelInstance)" isEditable="false" filtered="false" defaultVisible="false" name="systemVirtualModelInstance">
@@ -18,13 +18,10 @@
         <Children data="fiacreComponent.fiacreProcesses" name="process" />
       </BrowserElement>
       <BrowserElement dataClassName="org.openflexo.technologyadapter.fiacre.model.FiacreProcess" visible="data.selection.contains(fiacreProcess)" icon="controller.iconForObject(fiacreProcess)" label="fiacreProcess.name + data.traceAnalysis.traceVirtualModelInstance.getValue(fiacreProcess, 2)" isEditable="false" filtered="false" defaultVisible="true" name="fiacreProcess">
-        <!--<Children data="fiacreProcess.fiacreStates" name="state" />-->
       </BrowserElement>
-      <!--<BrowserElement dataClassName="org.openflexo.technologyadapter.fiacre.model.FiacreState" visible="data.selection.contains(state)" icon="controller.iconForObject(state)" enabled="data.isPartOfSelection(state)" label="state.name" isEditable="false" filtered="false" defaultVisible="true" name="state">
-      </BrowserElement>-->
     </Browser>
     <Panel id="7" darkLevel="0" vGap="5" useScrollBar="false" protectContent="false" hGap="5" layout="flow" border="empty" flowAlignment="LEADING" trackViewPortWidth="true" constraints="border(location=south)" trackViewPortHeight="true">
-      <Button id="8" manageDynamicModel="false" useScrollBar="false" buttonType="Trigger" localize="true" constraints="flow()" label="Apply" readOnly="false" action="data.selectionUpdate(MaskBrowser.selection)" />
+      <Button id="8" manageDynamicModel="false" useScrollBar="false" buttonType="Trigger" localize="true" constraints="flow()" label="Apply" readOnly="false" action="data.updateSelection(MaskBrowser.selection)" />
       <Button id="9" manageDynamicModel="false" useScrollBar="false" buttonType="Trigger" localize="true" constraints="flow()" label="Save" readOnly="false" />
     </Panel>
   </Panel>
