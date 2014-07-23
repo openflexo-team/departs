@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VirtualModel id="0" userID="FLX" useSpecificDescriptions="false" flexoID="-1" name="ObserverVirtualModel">
+  <Inspector id="1" flexoID="-1" userID="FLX" useSpecificDescriptions="false" inspectorTitle="ObserverVirtualModel" />
+  <ModelSlot_VirtualModelModelSlot id="2" cloningStratgey="Reference" flexoID="1" isRequired="false" userID="FLX" useSpecificDescriptions="false" name="virtualModelInstance" isReadOnly="false" virtualModelURI="http://depart.v1/ObserverVirtualModel" />
+  <ModelSlot_CDLModelSlot id="3" cloningStratgey="Reference" flexoID="2" isRequired="true" name="cdlModelSlot" useSpecificDescriptions="false" userID="FLX" isReadOnly="false" />
+  <ModelSlot_VirtualModelModelSlot id="4" cloningStratgey="Reference" flexoID="3" isRequired="true" userID="FLX" useSpecificDescriptions="false" name="systemModelSlot" isReadOnly="false" virtualModelURI="http://depart.v1/SystemVirtualModel" />
+</VirtualModel>
