@@ -94,7 +94,7 @@ public class CreateConfigurationMask extends FlexoAction<CreateConfigurationMask
 	protected void doAction(Object context) throws SaveResourceException {
 
 		logger.info("Create trace exploration mask");
-		configurationMask = getFocusedObject().getNewConfigurationMask();
+		configurationMask = getFocusedObject().getTraceVirtualModelInstance().getNewConfigurationMask();
 		configurationMask.setName(getConfigurationMaskName());
 	}
 	

@@ -4,7 +4,7 @@
     <Inspector id="2" flexoID="8" userID="FLX" useSpecificDescriptions="false" inspectorTitle="Mask" />
   </FlexoConcept>
   <Inspector id="3" flexoID="-1" userID="FLX" useSpecificDescriptions="false" inspectorTitle="TracesVirtualModel" />
-  <ModelSlot_VirtualModelModelSlot id="4" cloningStratgey="Reference" flexoID="1" isRequired="false" userID="FLX" useSpecificDescriptions="false" name="virtualModelInstance" isReadOnly="false" virtualModelURI="http://depart.v1/TracesVirtualModel" />
+  <ModelSlot_VirtualModelModelSlot id="4" cloningStratgey="Reference" flexoID="1" isRequired="false" userID="FLX" useSpecificDescriptions="false" name="virtualModelInstance" isReadOnly="false" virtualModelURI="http://depart.v1/TraceVirtualModel" />
   <ModelSlot_TraceModelSlot id="5" cloningStratgey="Reference" flexoID="10" isRequired="true" name="traceModelSlot" useSpecificDescriptions="false" userID="FLX" isReadOnly="false" />
   <ModelSlot_VirtualModelModelSlot id="6" cloningStratgey="Reference" flexoID="11" isRequired="true" userID="FLX" useSpecificDescriptions="false" name="contextVirtualModel" isReadOnly="false" virtualModelURI="http://depart.v1/ContextVirtualModel" />
   <ModelSlot_VirtualModelModelSlot id="7" cloningStratgey="Reference" flexoID="12" isRequired="true" userID="FLX" useSpecificDescriptions="false" name="systemVirtualModel" isReadOnly="false" virtualModelURI="http://depart.v1/SystemVirtualModel" />

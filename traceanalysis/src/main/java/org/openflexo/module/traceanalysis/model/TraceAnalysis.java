@@ -47,8 +47,6 @@ public class TraceAnalysis extends DefaultFlexoObject implements PropertyChangeL
 	private ContextVirtualModelInstance contextVirtualModelInstance;
 	private ObserverVirtualModelInstance observerVirtualModelInstance;
 	private ArrayList<TraceAnalysisVirtualModelInstance> traceAnalysisVirtualModelInstances;
-	
-	private List<ConfigurationMask> configurationMasks;
 
 	public TraceAnalysis(View view, TraceAnalysisProject traceAnalysisProject) throws InvalidArgumentException {
 		super();
@@ -113,7 +111,7 @@ public class TraceAnalysis extends DefaultFlexoObject implements PropertyChangeL
 	public SystemVirtualModelInstance getSystemVirtualModelInstance() {
 		if(systemVirtualModelInstance==null){
 			try {
-				systemVirtualModelInstance=new SystemVirtualModelInstance(getVirtualModelInstanceConformToNamedVirtualModel("SystemVirtualModel"));
+				systemVirtualModelInstance=new SystemVirtualModelInstance(getVirtualModelInstanceConformToNamedVirtualModel("SystemVirtualModel"), this);
 			} catch (InvalidArgumentException e) {
 				logger.log(Level.SEVERE, "No System found");
 			}
@@ -124,7 +122,7 @@ public class TraceAnalysis extends DefaultFlexoObject implements PropertyChangeL
 	public ContextVirtualModelInstance getContextVirtualModelInstance() {
 		if(contextVirtualModelInstance==null){
 			try {
-				contextVirtualModelInstance=new ContextVirtualModelInstance(getVirtualModelInstanceConformToNamedVirtualModel("ContextVirtualModel"));
+				contextVirtualModelInstance=new ContextVirtualModelInstance(getVirtualModelInstanceConformToNamedVirtualModel("ContextVirtualModel"), this);
 			} catch (InvalidArgumentException e) {
 				logger.log(Level.SEVERE, "No Context found");
 			}
@@ -135,7 +133,7 @@ public class TraceAnalysis extends DefaultFlexoObject implements PropertyChangeL
 	public ObserverVirtualModelInstance getObserverVirtualModelInstance() {
 		if(observerVirtualModelInstance==null){
 			try {
-				observerVirtualModelInstance=new ObserverVirtualModelInstance(getVirtualModelInstanceConformToNamedVirtualModel("ObserverVirtualModel"));
+				observerVirtualModelInstance=new ObserverVirtualModelInstance(getVirtualModelInstanceConformToNamedVirtualModel("ObserverVirtualModel"), this);
 			} catch (InvalidArgumentException e) {
 				logger.log(Level.SEVERE, "No Observer found");
 			}
@@ -146,16 +144,7 @@ public class TraceAnalysis extends DefaultFlexoObject implements PropertyChangeL
 	public TraceVirtualModelInstance getTraceVirtualModelInstance() {
 		if(traceVirtualModelInstance==null){
 			try {
-				traceVirtualModelInstance=new TraceVirtualModelInstance(getVirtualModelInstanceConformToNamedVirtualModel("TraceVirtualModel"));
-				if(configurationMasks==null){
-					configurationMasks = new ArrayList<ConfigurationMask>();
-				}
-				if(traceVirtualModelInstance.getVirtualModelInstance()!=null){
-					for(FlexoConceptInstance fciMask : getTraceVirtualModelInstance().getVirtualModelInstance().getFlexoConceptInstances(getMaskFlexoConcept())){
-						ConfigurationMask mask = new ConfigurationMask(this,fciMask);
-						configurationMasks.add(mask);
-					}
-				}
+				traceVirtualModelInstance=new TraceVirtualModelInstance(getVirtualModelInstanceConformToNamedVirtualModel("TraceVirtualModel"), this);
 			} catch (InvalidArgumentException e) {
 				logger.log(Level.SEVERE, "No Trace found");
 			}
@@ -183,38 +172,6 @@ public class TraceAnalysis extends DefaultFlexoObject implements PropertyChangeL
 	public boolean delete() {
 		super.delete();
 		return true;
-	}
-
-	public List<ConfigurationMask> getConfigurationMasks() {
-		return configurationMasks;
-	}
-
-	private FlexoConcept getMaskFlexoConcept(){
-		return getTraceVirtualModelInstance().getVirtualModelInstance().getVirtualModel().getFlexoConcept("Mask");
-	}
-	
-	public void setConfigurationMasks(List<ConfigurationMask> configurationMasks) {
-		this.configurationMasks = configurationMasks;
-	}
-	
-	public ConfigurationMask getNewConfigurationMask(){
-		FlexoConceptInstance newFlexoConceptInstance = getTraceVirtualModelInstance().getVirtualModelInstance().makeNewFlexoConceptInstance(getMaskFlexoConcept());
-		return getConfigurationMask(newFlexoConceptInstance);
-	}
-	
-	public ConfigurationMask getConfigurationMask(FlexoConceptInstance flexoConceptInstance) {
-		if(configurationMasks==null){
-			configurationMasks = new ArrayList<ConfigurationMask>();
-		}
-		for(ConfigurationMask mask : getConfigurationMasks()){
-			if(mask.getFlexoConceptInstance().equals(flexoConceptInstance)){
-				return mask;
-			}
-		}
-		ConfigurationMask mask = new ConfigurationMask(this,flexoConceptInstance);
-		getConfigurationMasks().add(mask);
-		getPropertyChangeSupport().firePropertyChange("configurationMasks", null, this);
-		return mask;
 	}
 	
 }

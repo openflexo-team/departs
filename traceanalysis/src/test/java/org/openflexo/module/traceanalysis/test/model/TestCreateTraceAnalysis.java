@@ -1,0 +1,130 @@
+package org.openflexo.module.traceanalysis.test.model;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.FileNotFoundException;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.openflexo.foundation.FlexoEditor;
+import org.openflexo.foundation.FlexoException;
+import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.OpenflexoProjectAtRunTimeTestCase;
+import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
+import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.module.traceanalysis.model.ConfigurationMask;
+import org.openflexo.module.traceanalysis.model.TraceAnalysis;
+import org.openflexo.module.traceanalysis.model.TraceAnalysisProject;
+import org.openflexo.module.traceanalysis.model.TraceAnalysisProjectNature;
+import org.openflexo.module.traceanalysis.model.action.CreateConfigurationMask;
+import org.openflexo.module.traceanalysis.model.action.CreateTraceAnalysis;
+import org.openflexo.test.OrderedRunner;
+import org.openflexo.test.TestOrder;
+
+/**
+ * This unit test is intented to test trace analysis creation in the context of TraceAnalysisProjectNature
+ * 
+ * @author vincent
+ * 
+ */
+@RunWith(OrderedRunner.class)
+public class TestCreateTraceAnalysis extends OpenflexoProjectAtRunTimeTestCase {
+
+	static FlexoEditor editor;
+	static FlexoProject project;
+	static TraceAnalysisProject taProject;
+	static TraceAnalysis traceAnalysis;
+	static ConfigurationMask configurationMask;
+
+	@Test
+	@TestOrder(1)
+	public void testCreateTraceAnalysisProject() {
+
+		instanciateTestServiceManager();
+
+		TraceAnalysisProjectNature TRACE_ANALYSIS_NATURE = serviceManager.getProjectNatureService().getProjectNature(
+				TraceAnalysisProjectNature.class);
+		assertNotNull(TRACE_ANALYSIS_NATURE);
+
+		editor = createProject("TestTraceAnalysisProject", TRACE_ANALYSIS_NATURE);
+		project = editor.getProject();
+		System.out.println("Created project " + project.getProjectDirectory());
+		assertTrue(project.getProjectDirectory().exists());
+		assertTrue(project.getProjectDataResource().getFile().exists());
+		assertTrue(project.hasNature(TRACE_ANALYSIS_NATURE));
+		taProject = TRACE_ANALYSIS_NATURE.getTraceAnalysisProject(project);
+		assertNotNull(taProject);
+	}
+
+	@Test
+	@TestOrder(2)
+	public void testCreateTraceAnalysis() {
+		CreateTraceAnalysis action = CreateTraceAnalysis.actionType.makeNewAction(taProject, null, editor);
+		action.setTraceAnalysisName("TraceAnalysis1");
+		assertTrue(action.isValid());
+		action.doAction();
+		assertTrue(action.hasActionExecutionSucceeded());
+		traceAnalysis = action.getTraceAnalysis();
+		assertNotNull(traceAnalysis);
+		assertEquals(traceAnalysis.getTraceAnalysisVirtualModelInstances().size(), 4);
+	}
+
+	@Test
+	@TestOrder(3)
+	public void testCreateConfigurationMask() {
+		CreateConfigurationMask action = CreateConfigurationMask.actionType.makeNewAction(traceAnalysis, null, editor);
+		action.setConfigurationMaskName("configurationMask1");
+		assertTrue(action.isValid());
+		action.doAction();
+		assertTrue(action.hasActionExecutionSucceeded());
+		configurationMask = action.getConfigurationMask();
+		assertNotNull(configurationMask);
+		
+		try {
+			traceAnalysis.getView().getResource().save(null);
+		} catch (SaveResourceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Reload project, check that everything is still ok
+	 * 
+	 * @throws FileNotFoundException
+	 * @throws ResourceLoadingCancelledException
+	 * @throws FlexoException
+	 */
+	@Test
+	@TestOrder(4)
+	public void testReloadProject() throws FileNotFoundException, ResourceLoadingCancelledException, FlexoException {
+
+		instanciateTestServiceManager();
+		editor = reloadProject(project.getDirectory());
+		project = editor.getProject();
+		assertNotNull(editor);
+		assertNotNull(project);
+
+		TraceAnalysisProjectNature TRACE_ANALYSIS_NATURE = serviceManager.getProjectNatureService().getProjectNature(
+				TraceAnalysisProjectNature.class);
+		assertNotNull(TRACE_ANALYSIS_NATURE);
+
+		assertTrue(project.hasNature(TRACE_ANALYSIS_NATURE));
+		taProject = TRACE_ANALYSIS_NATURE.getTraceAnalysisProject(project);
+		assertNotNull(taProject);
+
+		assertNotNull(taProject.getTraceVirtualModel());
+		assertNotNull(taProject.getContextVirtualModel());
+		assertNotNull(taProject.getSystemVirtualModel());
+		assertNotNull(taProject.getTraceVirtualModel());
+
+		traceAnalysis = taProject.getTraceAnalysis("TraceAnalysis1");
+		assertNotNull(traceAnalysis);
+
+		configurationMask = traceAnalysis.getTraceVirtualModelInstance().getConfigurationMask("configurationMask1");
+		assertNotNull(configurationMask);
+	}
+}

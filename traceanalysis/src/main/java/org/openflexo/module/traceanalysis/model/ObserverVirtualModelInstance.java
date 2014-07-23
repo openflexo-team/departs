@@ -24,9 +24,9 @@ import org.openflexo.foundation.view.VirtualModelInstance;
 
 public class ObserverVirtualModelInstance extends TraceAnalysisVirtualModelInstance {
 
-	public ObserverVirtualModelInstance(VirtualModelInstance virtualModelInstance)
+	public ObserverVirtualModelInstance(VirtualModelInstance virtualModelInstance, TraceAnalysis traceAnalysis)
 			throws InvalidArgumentException {
-		super(virtualModelInstance);
+		super(virtualModelInstance, traceAnalysis);
 		// TODO Auto-generated constructor stub
 	}
 

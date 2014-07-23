@@ -30,9 +30,9 @@ import org.openflexo.technologyadapter.fiacre.model.FiacreProcess;
 
 public class SystemVirtualModelInstance extends TraceAnalysisVirtualModelInstance {
 
-	public SystemVirtualModelInstance(VirtualModelInstance virtualModelInstance)
+	public SystemVirtualModelInstance(VirtualModelInstance virtualModelInstance, TraceAnalysis traceAnalysis)
 			throws InvalidArgumentException {
-		super(virtualModelInstance);
+		super(virtualModelInstance,traceAnalysis);
 		// TODO Auto-generated constructor stub
 	}
 	

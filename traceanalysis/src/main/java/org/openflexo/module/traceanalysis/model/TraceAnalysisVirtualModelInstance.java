@@ -15,9 +15,12 @@ public class TraceAnalysisVirtualModelInstance extends DefaultFlexoObject implem
 	
 	private final VirtualModelInstance virtualModelInstance;
 	
-	public TraceAnalysisVirtualModelInstance(VirtualModelInstance virtualModelInstance) throws InvalidArgumentException {
+	private final TraceAnalysis traceAnalysis;
+	
+	public TraceAnalysisVirtualModelInstance(VirtualModelInstance virtualModelInstance, TraceAnalysis traceAnalysis) throws InvalidArgumentException {
 		super();
 		this.virtualModelInstance = virtualModelInstance;
+		this.traceAnalysis = traceAnalysis;
 		virtualModelInstance.getPropertyChangeSupport().addPropertyChangeListener(this);
 	}
 	
@@ -39,6 +42,10 @@ public class TraceAnalysisVirtualModelInstance extends DefaultFlexoObject implem
 	
 	public List<FlexoConceptInstance> getFlexoConceptInstances(String name){
 		return virtualModelInstance.getFlexoConceptInstances(name);
+	}
+	
+	public TraceAnalysis getTraceAnalysis(){
+		return traceAnalysis;
 	}
 	
 	@Override

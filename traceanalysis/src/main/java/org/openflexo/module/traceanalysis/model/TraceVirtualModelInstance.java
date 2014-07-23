@@ -19,30 +19,39 @@
  */
 package org.openflexo.module.traceanalysis.model;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.InvalidArgumentException;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.FreeModelSlotInstance;
-import org.openflexo.foundation.view.ModelSlotInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.technologyadapter.fiacre.model.FiacreProcess;
-import org.openflexo.technologyadapter.fiacre.model.FiacreState;
 import org.openflexo.technologyadapter.trace.model.FlexoConfigData;
 import org.openflexo.technologyadapter.trace.model.FlexoProcess;
 import org.openflexo.technologyadapter.trace.model.FlexoTraceOBP;
 
-import Parser.Donnee;
-import Parser.TraceOBP;
-
 public class TraceVirtualModelInstance extends TraceAnalysisVirtualModelInstance {
-
+	
+	private static final Logger logger = Logger.getLogger(TraceVirtualModelInstance.class.getPackage().getName());
+	
+	private List<ConfigurationMask> configurationMasks;
+	
 	public enum ParamKind {
 		STATE
 	}
 	
-	public TraceVirtualModelInstance(VirtualModelInstance virtualModelInstance)
+	public TraceVirtualModelInstance(VirtualModelInstance virtualModelInstance, TraceAnalysis traceAnalysis)
 			throws InvalidArgumentException {
-		super(virtualModelInstance);
-		// TODO Auto-generated constructor stub
+		super(virtualModelInstance,traceAnalysis);
+		for(FlexoConceptInstance fciMask : getVirtualModelInstance().getFlexoConceptInstances(getMaskFlexoConcept())){
+			ConfigurationMask mask = new ConfigurationMask(fciMask, traceAnalysis);
+			getConfigurationMasks().add(mask);
+		}
 	}
 
 	
@@ -62,4 +71,45 @@ public class TraceVirtualModelInstance extends TraceAnalysisVirtualModelInstance
 		return null;
 	}
 
+	public List<ConfigurationMask> getConfigurationMasks() {
+		if(configurationMasks==null){
+			configurationMasks = new ArrayList<ConfigurationMask>();
+		}
+		return configurationMasks;
+	}
+	
+	public ConfigurationMask getConfigurationMask(String name) {
+		for(ConfigurationMask mask :configurationMasks){
+			if(mask.getName().equals(name)){
+				return mask;
+			}
+		}
+		logger.log(Level.SEVERE, "No configuration mask named "+ name + " for trace " + getName());
+		return null;
+	}
+
+	private FlexoConcept getMaskFlexoConcept(){
+		return getVirtualModelInstance().getVirtualModel().getFlexoConcept("Mask");
+	}
+	
+	public void setConfigurationMasks(List<ConfigurationMask> configurationMasks) {
+		this.configurationMasks = configurationMasks;
+	}
+	
+	public ConfigurationMask getNewConfigurationMask(){
+		FlexoConceptInstance newFlexoConceptInstance = getVirtualModelInstance().makeNewFlexoConceptInstance(getMaskFlexoConcept());
+		return getConfigurationMask(newFlexoConceptInstance);
+	}
+	
+	public ConfigurationMask getConfigurationMask(FlexoConceptInstance flexoConceptInstance) {
+		for(ConfigurationMask mask : getConfigurationMasks()){
+			if(mask.getFlexoConceptInstance().equals(flexoConceptInstance)){
+				return mask;
+			}
+		}
+		ConfigurationMask mask = new ConfigurationMask(flexoConceptInstance, getTraceAnalysis());
+		getConfigurationMasks().add(mask);
+		getPropertyChangeSupport().firePropertyChange("configurationMasks", null, this);
+		return mask;
+	}
 }

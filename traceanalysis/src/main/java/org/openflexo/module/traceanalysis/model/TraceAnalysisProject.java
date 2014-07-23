@@ -94,7 +94,7 @@ public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectW
 		return traceAnalysisViewPoint;
 	}
 	
-	public VirtualModel getAnalyzeVirtualModel(){
+	public VirtualModel getTraceVirtualModel(){
 		return getTraceAnaylsisViewPoint().getVirtualModelNamed("TraceVirtualModel");
 	}
 	public VirtualModel getContextVirtualModel(){
@@ -143,10 +143,10 @@ public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectW
 			traceAnalysis.put(view, returned);
 			getPropertyChangeSupport().firePropertyChange("getTraceAnalysis()", null, traceAnalysis);
 		}
-		returned.setSystemVirtualModelInstance(new SystemVirtualModelInstance(systemVM));
-		returned.setContextVirtualModelInstance(new ContextVirtualModelInstance(contextVM));
-		returned.setObserverVirtualModelInstance(new ObserverVirtualModelInstance(observerVM));
-		returned.setTraceVirtualModelInstance(new TraceVirtualModelInstance(traceVM));
+		returned.setSystemVirtualModelInstance(new SystemVirtualModelInstance(systemVM,returned));
+		returned.setContextVirtualModelInstance(new ContextVirtualModelInstance(contextVM,returned));
+		returned.setObserverVirtualModelInstance(new ObserverVirtualModelInstance(observerVM,returned));
+		returned.setTraceVirtualModelInstance(new TraceVirtualModelInstance(traceVM,returned));
 		return returned;
 	}
 
