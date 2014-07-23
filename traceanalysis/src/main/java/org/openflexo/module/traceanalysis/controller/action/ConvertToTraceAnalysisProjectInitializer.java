@@ -28,46 +28,46 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.module.traceanalysis.TAEIconLibrary;
-import org.openflexo.module.traceanalysis.controller.TAEPerspective;
-import org.openflexo.module.traceanalysis.model.action.ConvertToTAEProject;
+import org.openflexo.module.traceanalysis.TraceAnalysisIconLibrary;
+import org.openflexo.module.traceanalysis.controller.TraceAnalysisPerspective;
+import org.openflexo.module.traceanalysis.model.action.ConvertToTraceAnalysisProject;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
-public class ConvertToTAEProjectInitializer extends
-		ActionInitializer<ConvertToTAEProject, FlexoProject, FlexoObject> {
+public class ConvertToTraceAnalysisProjectInitializer extends
+		ActionInitializer<ConvertToTraceAnalysisProject, FlexoProject, FlexoObject> {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 
-	ConvertToTAEProjectInitializer(TAEControllerActionInitializer actionInitializer) {
-		super(ConvertToTAEProject.actionType, actionInitializer);
+	ConvertToTraceAnalysisProjectInitializer(TraceAnalysisControllerActionInitializer actionInitializer) {
+		super(ConvertToTraceAnalysisProject.actionType, actionInitializer);
 	}
 
 	@Override
-	protected TAEControllerActionInitializer getControllerActionInitializer() {
-		return (TAEControllerActionInitializer) super.getControllerActionInitializer();
+	protected TraceAnalysisControllerActionInitializer getControllerActionInitializer() {
+		return (TraceAnalysisControllerActionInitializer) super.getControllerActionInitializer();
 	}
 
 	@Override
-	protected FlexoActionInitializer<ConvertToTAEProject> getDefaultInitializer() {
-		return new FlexoActionInitializer<ConvertToTAEProject>() {
+	protected FlexoActionInitializer<ConvertToTraceAnalysisProject> getDefaultInitializer() {
+		return new FlexoActionInitializer<ConvertToTraceAnalysisProject>() {
 			@Override
-			public boolean run(EventObject e, ConvertToTAEProject action) {
+			public boolean run(EventObject e, ConvertToTraceAnalysisProject action) {
 				return true;
 			}
 		};
 	}
 
 	@Override
-	protected FlexoActionFinalizer<ConvertToTAEProject> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<ConvertToTAEProject>() {
+	protected FlexoActionFinalizer<ConvertToTraceAnalysisProject> getDefaultFinalizer() {
+		return new FlexoActionFinalizer<ConvertToTraceAnalysisProject>() {
 			@Override
-			public boolean run(EventObject e, ConvertToTAEProject action) {
-				if (getController().getCurrentPerspective() instanceof TAEPerspective) {
-					((TAEPerspective) getController().getCurrentPerspective()).setProject(action.getFocusedObject());
+			public boolean run(EventObject e, ConvertToTraceAnalysisProject action) {
+				if (getController().getCurrentPerspective() instanceof TraceAnalysisPerspective) {
+					((TraceAnalysisPerspective) getController().getCurrentPerspective()).setProject(action.getFocusedObject());
 				}
 				getController().selectAndFocusObject(
-						action.getTAEProjectNature().getTAEProject(action.getFocusedObject()));
+						action.getTraceAnalysisProjectNature().getTraceAnalysisProject(action.getFocusedObject()));
 				return true;
 			}
 		};
@@ -75,7 +75,7 @@ public class ConvertToTAEProjectInitializer extends
 
 	@Override
 	protected Icon getEnabledIcon() {
-		return TAEIconLibrary.TAE_SMALL_ICON;
+		return TraceAnalysisIconLibrary.TA_SMALL_ICON;
 	}
 
 }

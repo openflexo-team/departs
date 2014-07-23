@@ -25,7 +25,7 @@ import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.prefs.ModulePreferences;
 
 @ModelEntity
-@XMLElement(xmlTag = "TAEPreferences")
-public interface TAEPreferences extends ModulePreferences<TAEModule>{
+@XMLElement(xmlTag = "TraceAnalysisPreferences")
+public interface TraceAnalysisPreferences extends ModulePreferences<TAModule>{
 
 }

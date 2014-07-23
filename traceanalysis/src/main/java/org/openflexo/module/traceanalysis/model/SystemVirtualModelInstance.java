@@ -28,9 +28,9 @@ import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.technologyadapter.fiacre.model.FiacreComponent;
 import org.openflexo.technologyadapter.fiacre.model.FiacreProcess;
 
-public class TAESystem extends TAEObject {
+public class SystemVirtualModelInstance extends TraceAnalysisVirtualModelInstance {
 
-	public TAESystem(VirtualModelInstance virtualModelInstance)
+	public SystemVirtualModelInstance(VirtualModelInstance virtualModelInstance)
 			throws InvalidArgumentException {
 		super(virtualModelInstance);
 		// TODO Auto-generated constructor stub

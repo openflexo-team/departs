@@ -39,26 +39,26 @@ import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.TechnologyAdapterController;
 import org.openflexo.view.menu.FlexoMenuBar;
-import org.openflexo.module.traceanalysis.TAEIconLibrary;
-import org.openflexo.module.traceanalysis.controller.TAESelectionManager;
-import org.openflexo.module.traceanalysis.controller.action.TAEControllerActionInitializer;
-import org.openflexo.module.traceanalysis.model.TAEProject;
+import org.openflexo.module.traceanalysis.TraceAnalysisIconLibrary;
+import org.openflexo.module.traceanalysis.controller.TraceAnalysisSelectionManager;
+import org.openflexo.module.traceanalysis.controller.action.TraceAnalysisControllerActionInitializer;
+import org.openflexo.module.traceanalysis.model.TraceAnalysisProject;
 import org.openflexo.module.traceanalysis.model.TraceAnalysis;
 import org.openflexo.module.traceanalysis.model.ConfigurationMask;
-import org.openflexo.module.traceanalysis.view.menu.TAEMenuBar;
+import org.openflexo.module.traceanalysis.view.menu.TraceAnalysisMenuBar;
 
-public class TAEController extends FlexoController {
+public class TraceAnalysisController extends FlexoController {
 
-	public TAEPerspective TAE_PERSPECTIVE;
+	public TraceAnalysisPerspective TA_PERSPECTIVE;
 	
-	public TAEController(FlexoModule module) {
+	public TraceAnalysisController(FlexoModule module) {
 		super(module);
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	protected void initializePerspectives() {
-		addToPerspectives(TAE_PERSPECTIVE = new TAEPerspective(this));
+		addToPerspectives(TA_PERSPECTIVE = new TraceAnalysisPerspective(this));
 		
 		for (TechnologyAdapter ta : getApplicationContext().getTechnologyAdapterService().getTechnologyAdapters()) {
 			if (ta instanceof CDLTechnologyAdapter || ta instanceof FiacreTechnologyAdapter || ta instanceof TraceTechnologyAdapter) {
@@ -74,12 +74,12 @@ public class TAEController extends FlexoController {
 
 	@Override
 	protected MouseSelectionManager createSelectionManager() {
-		return new TAESelectionManager(this);
+		return new TraceAnalysisSelectionManager(this);
 	}
 
 	@Override
 	protected FlexoMenuBar createNewMenuBar() {
-		return new TAEMenuBar(this);
+		return new TraceAnalysisMenuBar(this);
 	}
 
 	@Override
@@ -94,7 +94,7 @@ public class TAEController extends FlexoController {
 	
 	@Override
 	public ControllerActionInitializer createControllerActionInitializer() {
-		return new TAEControllerActionInitializer(this);
+		return new TraceAnalysisControllerActionInitializer(this);
 	}
 
 	/**
@@ -110,12 +110,12 @@ public class TAEController extends FlexoController {
 			if (object instanceof FlexoObject) {
 				setCurrentEditedObjectAsModuleView(object);
 			}
-			if (getCurrentPerspective() == TAE_PERSPECTIVE) {
+			if (getCurrentPerspective() == TA_PERSPECTIVE) {
 				if (object instanceof TraceAnalysis) {
-					TAE_PERSPECTIVE.focusOnTraceAnalysis((TraceAnalysis) object);
+					TA_PERSPECTIVE.focusOnTraceAnalysis((TraceAnalysis) object);
 				}
 				if (object instanceof ConfigurationMask) {
-					TAE_PERSPECTIVE.focusOnConfigurationMask((ConfigurationMask) object);
+					TA_PERSPECTIVE.focusOnConfigurationMask((ConfigurationMask) object);
 				}
 			}
 			getSelectionManager().setSelectedObject(object);
@@ -124,12 +124,12 @@ public class TAEController extends FlexoController {
 	
 	@Override
 	public ImageIcon iconForObject(Object object) {
-		if (object instanceof TAEProject) {
+		if (object instanceof TraceAnalysisProject) {
 			return IconLibrary.OPENFLEXO_NOTEXT_16;
 		} else if (object instanceof TraceAnalysis) {
-			return TAEIconLibrary.TAE_SMALL_ICON;
+			return TraceAnalysisIconLibrary.TA_SMALL_ICON;
 		} else if (object instanceof ConfigurationMask) {
-			return TAEIconLibrary.MASK_SMALL_ICON;
+			return TraceAnalysisIconLibrary.MASK_SMALL_ICON;
 		} 
 		return super.iconForObject(object);
 	}
@@ -138,6 +138,6 @@ public class TAEController extends FlexoController {
 	public void updateEditor(FlexoEditor from, FlexoEditor to) {
 		super.updateEditor(from, to);
 		FlexoProject project = (to != null ? to.getProject() : null);
-		TAE_PERSPECTIVE.setProject(project);
+		TA_PERSPECTIVE.setProject(project);
 	}
 }

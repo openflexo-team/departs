@@ -20,12 +20,18 @@
 
 package org.openflexo.technologyadapter.trace.model;
 
+import java.util.List;
+
 import org.openflexo.foundation.resource.ResourceData;
+import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.PropertyIdentifier;
+import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.model.annotations.Getter.Cardinality;
 
 import Parser.ConfigData;
 
@@ -36,10 +42,25 @@ public interface FlexoConfigData extends FlexoTraceObject, ResourceData<FlexoCon
 
 	public static final String CONFIG_DATA_KEY = "configData";
 	
+	@PropertyIdentifier(type = List.class)
+	public static final String PROCESS_KEY = "process";
+	
 	@Getter(value=CONFIG_DATA_KEY, ignoreType=true)
 	public ConfigData getConfigData();
 	@Setter(CONFIG_DATA_KEY)
 	public void setConfigData(ConfigData configData);
+	
+	@Getter(value = PROCESS_KEY, cardinality = Cardinality.LIST)
+	public List<FlexoProcess> getFlexoProcess();
+
+	@Setter(PROCESS_KEY)
+	public void setFlexoProcess(List<FlexoProcess> flexoProcess);
+
+	@Adder(PROCESS_KEY)
+	public void addToFlexoProcess(FlexoProcess flexoProcess);
+
+	@Remover(PROCESS_KEY)
+	public void removeFromFlexoProcess(FlexoProcess flexoProcess);
 
 	public static abstract class FlexoConfigDataImpl extends FlexoTraceObjectImpl implements FlexoConfigData {
 

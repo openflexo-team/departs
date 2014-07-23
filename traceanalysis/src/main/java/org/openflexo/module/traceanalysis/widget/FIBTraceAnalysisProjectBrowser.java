@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 import org.openflexo.fib.model.FIBBrowser;
 import org.openflexo.fib.model.FIBContainer;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.module.traceanalysis.controller.TAEController;
+import org.openflexo.module.traceanalysis.controller.TraceAnalysisController;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.FIBBrowserView;
@@ -34,12 +34,12 @@ import org.openflexo.view.FIBBrowserView;
  * 
  */
 @SuppressWarnings("serial")
-public class FIBTAEProjectBrowser extends FIBBrowserView<FlexoProject> {
-	static final Logger logger = Logger.getLogger(FIBTAEProjectBrowser.class.getPackage().getName());
+public class FIBTraceAnalysisProjectBrowser extends FIBBrowserView<FlexoProject> {
+	static final Logger logger = Logger.getLogger(FIBTraceAnalysisProjectBrowser.class.getPackage().getName());
 
-	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/Widget/FIBTAEProjectBrowser.fib");
+	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/Widget/FIBTraceAnalysisProjectBrowser.fib");
 
-	public FIBTAEProjectBrowser(FlexoProject project, TAEController controller) {
+	public FIBTraceAnalysisProjectBrowser(FlexoProject project, TraceAnalysisController controller) {
 		super(project, controller, FIB_FILE);
 	}
 
@@ -52,10 +52,10 @@ public class FIBTAEProjectBrowser extends FIBBrowserView<FlexoProject> {
 			bindFlexoActionsToBrowser(projectBrowser);
 		}
 
-		FIBBrowser taeProjectBrowser = retrieveFIBBrowserNamed((FIBContainer) getFIBComponent(), "TAEProjectBrowser");
+		FIBBrowser traceAnalysisProjectBrowser = retrieveFIBBrowserNamed((FIBContainer) getFIBComponent(), "TraceAnalysisProjectBrowser");
 
-		if (taeProjectBrowser != null) {
-			bindFlexoActionsToBrowser(taeProjectBrowser);
+		if (traceAnalysisProjectBrowser != null) {
+			bindFlexoActionsToBrowser(traceAnalysisProjectBrowser);
 		}
 
 	}

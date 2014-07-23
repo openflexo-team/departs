@@ -33,9 +33,9 @@ import org.openflexo.foundation.view.rm.ViewResource;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.logging.FlexoLogger;
 
-public class TAEProjectNature implements ProjectNature<TAEProjectNature, TAEProject> {
+public class TraceAnalysisProjectNature implements ProjectNature<TraceAnalysisProjectNature, TraceAnalysisProject> {
 
-	static final Logger logger = FlexoLogger.getLogger(TAEProjectNature.class.getPackage().getName());
+	static final Logger logger = FlexoLogger.getLogger(TraceAnalysisProjectNature.class.getPackage().getName());
 
 	private ProjectNatureService projectNatureService;
 
@@ -44,11 +44,11 @@ public class TAEProjectNature implements ProjectNature<TAEProjectNature, TAEProj
 	public static final String TRACE_ANALYSIS_VIEWPOINT_NAME = "http://depart.v1";
 	public static final String TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI = TRACE_ANALYSIS_VIEWPOINT_NAME;
 
-	private final Map<FlexoProject, TAEProject> taeProjects;
+	private final Map<FlexoProject, TraceAnalysisProject> traceAnalysisProjects;
 
 	// Never call this: this is done via services
-	public TAEProjectNature() {
-		taeProjects = new HashMap<FlexoProject, TAEProject>();
+	public TraceAnalysisProjectNature() {
+		traceAnalysisProjects = new HashMap<FlexoProject, TraceAnalysisProject>();
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class TAEProjectNature implements ProjectNature<TAEProjectNature, TAEProj
 		/*if (project.getViewLibrary().getAllResources().size() == 0) {
 			return false;
 		}*/
-		TAEProject factory = getTAEProject(project);
+		TraceAnalysisProject factory = getTraceAnalysisProject(project);
 		if (factory == null) {
 			return false;
 		}
@@ -92,8 +92,8 @@ public class TAEProjectNature implements ProjectNature<TAEProjectNature, TAEProj
 	 * @return
 	 */
 	@Override
-	public TAEProject getProjectWrapper(FlexoProject project) {
-		return getTAEProject(project);
+	public TraceAnalysisProject getProjectWrapper(FlexoProject project) {
+		return getTraceAnalysisProject(project);
 	}
 
 	/**
@@ -125,12 +125,12 @@ public class TAEProjectNature implements ProjectNature<TAEProjectNature, TAEProj
 	}
 
 
-	public TAEProject getTAEProject(FlexoProject project) {
-		TAEProject returned = taeProjects.get(project);
+	public TraceAnalysisProject getTraceAnalysisProject(FlexoProject project) {
+		TraceAnalysisProject returned = traceAnalysisProjects.get(project);
 		if (returned == null) {
 			try {
-				returned = new TAEProject(project, this);
-				taeProjects.put(project, returned);
+				returned = new TraceAnalysisProject(project, this);
+				traceAnalysisProjects.put(project, returned);
 			} catch (Exception e) {
 				e.printStackTrace();
 				return null;

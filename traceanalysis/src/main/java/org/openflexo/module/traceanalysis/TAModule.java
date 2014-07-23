@@ -29,29 +29,29 @@ import org.openflexo.components.ProgressWindow;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.module.FlexoModule;
 import org.openflexo.module.Module;
-import org.openflexo.module.traceanalysis.controller.TAEController;
+import org.openflexo.module.traceanalysis.controller.TraceAnalysisController;
 import org.openflexo.view.controller.FlexoController;
 
 /**
- * DbEditor module
+ * Trace Analysis module
  * 
  * @author vincent
  */
-public class TAEModule extends FlexoModule<TAEModule> {
+public class TAModule extends FlexoModule<TAModule> {
 
-	private static final Logger logger = Logger.getLogger(TAEModule.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(TAModule.class.getPackage().getName());
 
-	public static final String TAE_MODULE_SHORT_NAME = "TAE";
-	public static final String TAE_MODULE_NAME = "traceAnalysis";
+	public static final String TA_MODULE_SHORT_NAME = "TA";
+	public static final String TA_MODULE_NAME = "traceAnalysis";
 
-	public TAEModule(ApplicationContext applicationContext) {
+	public TAModule(ApplicationContext applicationContext) {
 		super(applicationContext);
 		// TODO Auto-generated constructor stub
 		ProgressWindow.setProgressInstance(FlexoLocalization.localizedForKey("build_editor"));
 	}
 
 	@Override
-	public Module<TAEModule> getModule() {
+	public Module<TAModule> getModule() {
 		// TODO Auto-generated method stub
 		return TraceAnalysisModule.INSTANCE;
 	}
@@ -59,6 +59,6 @@ public class TAEModule extends FlexoModule<TAEModule> {
 	@Override
 	protected FlexoController createControllerForModule() {
 		// TODO Auto-generated method stub
-		return new TAEController(this);
+		return new TraceAnalysisController(this);
 	}
 }

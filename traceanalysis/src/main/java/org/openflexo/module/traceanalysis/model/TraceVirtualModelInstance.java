@@ -27,18 +27,19 @@ import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.technologyadapter.fiacre.model.FiacreProcess;
 import org.openflexo.technologyadapter.fiacre.model.FiacreState;
 import org.openflexo.technologyadapter.trace.model.FlexoConfigData;
+import org.openflexo.technologyadapter.trace.model.FlexoProcess;
 import org.openflexo.technologyadapter.trace.model.FlexoTraceOBP;
 
 import Parser.Donnee;
 import Parser.TraceOBP;
 
-public class TAETrace extends TAEObject {
+public class TraceVirtualModelInstance extends TraceAnalysisVirtualModelInstance {
 
 	public enum ParamKind {
 		STATE
 	}
 	
-	public TAETrace(VirtualModelInstance virtualModelInstance)
+	public TraceVirtualModelInstance(VirtualModelInstance virtualModelInstance)
 			throws InvalidArgumentException {
 		super(virtualModelInstance);
 		// TODO Auto-generated constructor stub
@@ -51,9 +52,9 @@ public class TAETrace extends TAEObject {
 		FlexoConfigData configData = traceOBP.getFlexoConfigData().get(config);
 		
 		if(object instanceof FiacreProcess){
-			for(Parser.Process process : configData.getConfigData().getProcessList()){
-				if(process.getProcessName().equals(((FiacreProcess)object).getName())){
-					return process.getProcessState();
+			for(FlexoProcess process : configData.getFlexoProcess()){
+				if(process.getProcessType().equals(((FiacreProcess)object).getName())){
+					return process.getState();
 				}
 			}
 		}

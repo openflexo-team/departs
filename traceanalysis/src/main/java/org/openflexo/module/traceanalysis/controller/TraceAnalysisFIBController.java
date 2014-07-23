@@ -25,19 +25,19 @@ import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.FlexoFIBController;
 
-public class TAEFIBController extends FlexoFIBController {
+public class TraceAnalysisFIBController extends FlexoFIBController {
 
-	private static final Logger logger = Logger.getLogger(TAEFIBController.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(TraceAnalysisFIBController.class.getPackage().getName());
 
-	public TAEFIBController(FIBComponent component) {
+	public TraceAnalysisFIBController(FIBComponent component) {
 		super(component);
 		// Default parent localizer is the main localizer
 		setParentLocalizer(FlexoLocalization.getMainLocalizer());
 	}
 
 	@Override
-	public TAEController getFlexoController() {
-		return (TAEController) super.getFlexoController();
+	public TraceAnalysisController getFlexoController() {
+		return (TraceAnalysisController) super.getFlexoController();
 	}
 
 }

@@ -11,11 +11,11 @@ import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 
-public class TAEObject extends DefaultFlexoObject implements PropertyChangeListener {
+public class TraceAnalysisVirtualModelInstance extends DefaultFlexoObject implements PropertyChangeListener {
 	
 	private final VirtualModelInstance virtualModelInstance;
 	
-	public TAEObject(VirtualModelInstance virtualModelInstance) throws InvalidArgumentException {
+	public TraceAnalysisVirtualModelInstance(VirtualModelInstance virtualModelInstance) throws InvalidArgumentException {
 		super();
 		this.virtualModelInstance = virtualModelInstance;
 		virtualModelInstance.getPropertyChangeSupport().addPropertyChangeListener(this);

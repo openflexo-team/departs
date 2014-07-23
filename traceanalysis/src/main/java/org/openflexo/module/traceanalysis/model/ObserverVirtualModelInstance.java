@@ -22,9 +22,9 @@ package org.openflexo.module.traceanalysis.model;
 import org.openflexo.foundation.InvalidArgumentException;
 import org.openflexo.foundation.view.VirtualModelInstance;
 
-public class TAEContext extends TAEObject {
+public class ObserverVirtualModelInstance extends TraceAnalysisVirtualModelInstance {
 
-	public TAEContext(VirtualModelInstance virtualModelInstance)
+	public ObserverVirtualModelInstance(VirtualModelInstance virtualModelInstance)
 			throws InvalidArgumentException {
 		super(virtualModelInstance);
 		// TODO Auto-generated constructor stub

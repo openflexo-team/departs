@@ -21,7 +21,7 @@ package org.openflexo.module.traceanalysis.controller.action;
 
 import java.util.logging.Logger;
 
-import org.openflexo.module.traceanalysis.controller.TAEController;
+import org.openflexo.module.traceanalysis.controller.TraceAnalysisController;
 import org.openflexo.selection.SelectionManager;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
@@ -31,27 +31,27 @@ import org.openflexo.view.controller.ControllerActionInitializer;
  * 
  * @author vincent leilde
  */
-public class TAEControllerActionInitializer extends ControllerActionInitializer {
+public class TraceAnalysisControllerActionInitializer extends ControllerActionInitializer {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 
-	public TAEControllerActionInitializer(TAEController controller) {
+	public TraceAnalysisControllerActionInitializer(TraceAnalysisController controller) {
 		super(controller);
 	}
 
-	protected TAEController getTAEController() {
-		return (TAEController) getController();
+	protected TraceAnalysisController getTraceAnalysisController() {
+		return (TraceAnalysisController) getController();
 	}
 
-	protected SelectionManager getTAESelectionManager() {
-		return getTAEController().getSelectionManager();
+	protected SelectionManager getTraceAnalysisSelectionManager() {
+		return getTraceAnalysisController().getSelectionManager();
 	}
 
 	@Override
 	public void initializeActions() {
 		super.initializeActions();
 		new CreateTraceAnalysisInitializer(this);
-		new ConvertToTAEProjectInitializer(this);
+		new ConvertToTraceAnalysisProjectInitializer(this);
 		new CreateConfigurationMaskInitializer(this);
 	}
 

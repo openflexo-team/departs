@@ -22,9 +22,9 @@ package org.openflexo.module.traceanalysis;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 
-public class TAECst {
+public class TraceAnalysisCst {
 
-	public static Resource CREATE_TRACE_ANALYSIS_DIALOG_FIB = ResourceLocator.locateResource("Fib/Dialog/CreateTAEDialog.fib");
+	public static Resource CREATE_TRACE_ANALYSIS_DIALOG_FIB = ResourceLocator.locateResource("Fib/Dialog/CreateTraceAnalysisDialog.fib");
 	public static Resource CREATE_CONFIGURATION_MASK_DIALOG_FIB = ResourceLocator.locateResource("Fib/Dialog/CreateConfigurationMaskDialog.fib");
 	
 }

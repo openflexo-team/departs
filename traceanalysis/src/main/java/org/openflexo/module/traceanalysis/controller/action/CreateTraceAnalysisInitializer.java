@@ -27,24 +27,24 @@ import javax.swing.Icon;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.module.traceanalysis.TAECst;
-import org.openflexo.module.traceanalysis.TAEIconLibrary;
-import org.openflexo.module.traceanalysis.model.TAEProject;
+import org.openflexo.module.traceanalysis.TraceAnalysisCst;
+import org.openflexo.module.traceanalysis.TraceAnalysisIconLibrary;
+import org.openflexo.module.traceanalysis.model.TraceAnalysisProject;
 import org.openflexo.module.traceanalysis.model.action.CreateTraceAnalysis;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
-public class CreateTraceAnalysisInitializer extends ActionInitializer<CreateTraceAnalysis, TAEProject, FlexoObject> {
+public class CreateTraceAnalysisInitializer extends ActionInitializer<CreateTraceAnalysis, TraceAnalysisProject, FlexoObject> {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 
-	CreateTraceAnalysisInitializer(TAEControllerActionInitializer actionInitializer) {
+	CreateTraceAnalysisInitializer(TraceAnalysisControllerActionInitializer actionInitializer) {
 		super(CreateTraceAnalysis.actionType, actionInitializer);
 	}
 
 	@Override
-	protected TAEControllerActionInitializer getControllerActionInitializer() {
-		return (TAEControllerActionInitializer) super.getControllerActionInitializer();
+	protected TraceAnalysisControllerActionInitializer getControllerActionInitializer() {
+		return (TraceAnalysisControllerActionInitializer) super.getControllerActionInitializer();
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class CreateTraceAnalysisInitializer extends ActionInitializer<CreateTrac
 		return new FlexoActionInitializer<CreateTraceAnalysis>() {
 			@Override
 			public boolean run(EventObject e, CreateTraceAnalysis action) {
-				return instanciateAndShowDialog(action, TAECst.CREATE_TRACE_ANALYSIS_DIALOG_FIB);
+				return instanciateAndShowDialog(action, TraceAnalysisCst.CREATE_TRACE_ANALYSIS_DIALOG_FIB);
 			}
 		};
 	}
@@ -69,7 +69,7 @@ public class CreateTraceAnalysisInitializer extends ActionInitializer<CreateTrac
 
 	@Override
 	protected Icon getEnabledIcon() {
-		return TAEIconLibrary.TAE_SMALL_ICON;
+		return TraceAnalysisIconLibrary.TA_SMALL_ICON;
 	}
 
 }

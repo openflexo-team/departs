@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Panel layout="border" darkLevel="0" dataClassName="org.openflexo.module.traceanalysis.model.TraceAnalysis" controllerClassName="org.openflexo.module.traceanalysis.controller.TAEFIBController">
+<Panel layout="border" darkLevel="0" dataClassName="org.openflexo.module.traceanalysis.model.TraceAnalysis" controllerClassName="org.openflexo.module.traceanalysis.controller.TraceAnalysisFIBController">
  
 </Panel>

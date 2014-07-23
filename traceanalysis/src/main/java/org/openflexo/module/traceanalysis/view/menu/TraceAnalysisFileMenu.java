@@ -34,7 +34,7 @@ import org.openflexo.view.menu.FileMenu;
 import org.openflexo.view.menu.FlexoMenuItem;
 import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
-import org.openflexo.module.traceanalysis.controller.TAEController;
+import org.openflexo.module.traceanalysis.controller.TraceAnalysisController;
 import org.openflexo.module.traceanalysis.controller.action.ImportAction;
 
 
@@ -44,16 +44,16 @@ import org.openflexo.module.traceanalysis.controller.action.ImportAction;
  * @author vincent leilde
  */
 
-public class TAEFileMenu extends FileMenu {
+public class TraceAnalysisFileMenu extends FileMenu {
 
-	private static final Logger logger = Logger.getLogger(TAEFileMenu.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(TraceAnalysisFileMenu.class.getPackage().getName());
 
-	public TAEFileMenu(TAEController controller) {
+	public TraceAnalysisFileMenu(TraceAnalysisController controller) {
 		super(controller);
 	}
 
-	public TAEController getTAEController() {
-		return (TAEController) getController();
+	public TraceAnalysisController getTraceAnalysisController() {
+		return (TraceAnalysisController) getController();
 	}
 
 	@Override
@@ -66,9 +66,9 @@ public class TAEFileMenu extends FileMenu {
 
 	@Override
 	public void quit() {
-		if (getTAEController().getApplicationContext().getResourceManager().getUnsavedResources().size() == 0) {
+		if (getTraceAnalysisController().getApplicationContext().getResourceManager().getUnsavedResources().size() == 0) {
 			super.quit();
-		} else if (getTAEController().reviewModifiedResources()) {
+		} else if (getTraceAnalysisController().reviewModifiedResources()) {
 			super.quit();
 		}
 
@@ -95,7 +95,7 @@ public class TAEFileMenu extends FileMenu {
 
 		@Override
 		public void actionPerformed(ActionEvent event) {
-			getTAEController().reviewModifiedResources();
+			getTraceAnalysisController().reviewModifiedResources();
 		}
 	}
 

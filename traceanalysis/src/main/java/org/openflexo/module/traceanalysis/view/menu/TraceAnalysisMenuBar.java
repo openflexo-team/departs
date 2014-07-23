@@ -21,7 +21,7 @@
 package org.openflexo.module.traceanalysis.view.menu;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.menu.FlexoMenuBar;
-import org.openflexo.module.traceanalysis.controller.TAEController;
+import org.openflexo.module.traceanalysis.controller.TraceAnalysisController;
 import org.openflexo.module.traceanalysis.TraceAnalysisModule;
 
 /**
@@ -29,11 +29,11 @@ import org.openflexo.module.traceanalysis.TraceAnalysisModule;
  * 
  * @author vincent leilde
  */
-public class TAEMenuBar extends FlexoMenuBar {
+public class TraceAnalysisMenuBar extends FlexoMenuBar {
 
-	private TAEFileMenu _fileMenu;
+	private TraceAnalysisFileMenu _fileMenu;
 
-	public TAEMenuBar(TAEController controller) {
+	public TraceAnalysisMenuBar(TraceAnalysisController controller) {
 		super(controller, TraceAnalysisModule.INSTANCE);
 	}
 	
@@ -44,9 +44,9 @@ public class TAEMenuBar extends FlexoMenuBar {
 	 * @return a FileMenu instance
 	 */
 	@Override
-	public TAEFileMenu getFileMenu(FlexoController controller) {
+	public TraceAnalysisFileMenu getFileMenu(FlexoController controller) {
 		if (_fileMenu == null) {
-			_fileMenu = new TAEFileMenu((TAEController) controller);
+			_fileMenu = new TraceAnalysisFileMenu((TraceAnalysisController) controller);
 		}
 		return _fileMenu;
 	}

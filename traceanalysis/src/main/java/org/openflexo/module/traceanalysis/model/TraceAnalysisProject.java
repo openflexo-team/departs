@@ -39,21 +39,21 @@ import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 
-public class TAEProject extends DefaultFlexoObject implements ProjectWrapper<TAEProjectNature> {
+public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectWrapper<TraceAnalysisProjectNature> {
 
 	private final FlexoProject project;
 
-	private final TAEProjectNature projectNature;
+	private final TraceAnalysisProjectNature projectNature;
 	
 	private final ViewPoint traceAnalysisViewPoint;
 	private final Map<View, TraceAnalysis> traceAnalysis;
 
-	protected TAEProject(FlexoProject project, TAEProjectNature projectNature) throws FileNotFoundException,
+	protected TraceAnalysisProject(FlexoProject project, TraceAnalysisProjectNature projectNature) throws FileNotFoundException,
 			ResourceLoadingCancelledException, InvalidArgumentException, FlexoException {
 		this.project = project;
 		this.projectNature = projectNature;
 		
-		ViewPointResource taeViewPointResource = getProject().getServiceManager().getViewPointLibrary().getViewPointResource(TAEProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
+		ViewPointResource traceAnalsyisViewPointResource = getProject().getServiceManager().getViewPointLibrary().getViewPointResource(TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
 
 		/*ViewResource taeViewResource = project.getViewLibrary().getResource(
 				project.getURI() + TAEProjectNature.TRACE_ANALYSIS_VIEW_RELATIVE_URI);*/
@@ -66,7 +66,7 @@ public class TAEProject extends DefaultFlexoObject implements ProjectWrapper<TAE
 		traceAnalysis = new HashMap<View, TraceAnalysis>();
 		
 		try {
-			traceAnalysisViewPoint = taeViewPointResource.getResourceData(null);
+			traceAnalysisViewPoint = traceAnalsyisViewPointResource.getResourceData(null);
 		} catch (Exception e) {
 			throw new FlexoException(e);
 		}
@@ -86,7 +86,7 @@ public class TAEProject extends DefaultFlexoObject implements ProjectWrapper<TAE
 	}
 
 	@Override
-	public TAEProjectNature getProjectNature() {
+	public TraceAnalysisProjectNature getProjectNature() {
 		return projectNature;
 	}
 	
@@ -115,12 +115,12 @@ public class TAEProject extends DefaultFlexoObject implements ProjectWrapper<TAE
 		ArrayList<TraceAnalysis> returned = new ArrayList<TraceAnalysis>();
 	
 		try{
-			for (View view : project.getViewLibrary().getViewsForViewPointWithURI(TAEProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI)) {
+			for (View view : project.getViewLibrary().getViewsForViewPointWithURI(TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI)) {
 				returned.add(getTraceAnalysis(view));
 			}
 		}
 		catch (InvalidArgumentException e) {
-			TAEProjectNature.logger.warning(e.getMessage());
+			TraceAnalysisProjectNature.logger.warning(e.getMessage());
 		}
 
 		return returned;
@@ -133,6 +133,20 @@ public class TAEProject extends DefaultFlexoObject implements ProjectWrapper<TAE
 			traceAnalysis.put(view, returned);
 			getPropertyChangeSupport().firePropertyChange("getTraceAnalysis()", null, traceAnalysis);
 		}
+		return returned;
+	}
+	
+	public TraceAnalysis getTraceAnalysis(View view,VirtualModelInstance systemVM, VirtualModelInstance contextVM, VirtualModelInstance observerVM, VirtualModelInstance traceVM) throws InvalidArgumentException {
+		TraceAnalysis returned = traceAnalysis.get(view);
+		if (returned == null) {
+			returned = new TraceAnalysis(view, this);
+			traceAnalysis.put(view, returned);
+			getPropertyChangeSupport().firePropertyChange("getTraceAnalysis()", null, traceAnalysis);
+		}
+		returned.setSystemVirtualModelInstance(new SystemVirtualModelInstance(systemVM));
+		returned.setContextVirtualModelInstance(new ContextVirtualModelInstance(contextVM));
+		returned.setObserverVirtualModelInstance(new ObserverVirtualModelInstance(observerVM));
+		returned.setTraceVirtualModelInstance(new TraceVirtualModelInstance(traceVM));
 		return returned;
 	}
 

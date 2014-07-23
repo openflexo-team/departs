@@ -26,24 +26,24 @@ import javax.swing.ImageIcon;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.model.undo.CompoundEdit;
-import org.openflexo.module.traceanalysis.TAEIconLibrary;
+import org.openflexo.module.traceanalysis.TraceAnalysisIconLibrary;
 import org.openflexo.module.traceanalysis.model.TraceAnalysis;
 import org.openflexo.module.traceanalysis.model.ConfigurationMask;
 import org.openflexo.module.traceanalysis.view.TraceAnalysisModuleView;
 import org.openflexo.module.traceanalysis.view.InspectedConfigurationModuleView;
 import org.openflexo.module.traceanalysis.widget.FIBAnalyzeConceptsBrowser;
-import org.openflexo.module.traceanalysis.widget.FIBTAEProjectBrowser;
+import org.openflexo.module.traceanalysis.widget.FIBTraceAnalysisProjectBrowser;
 import org.openflexo.module.traceanalysis.widget.FIBConfigurationMaskBrowser;
 import org.openflexo.technologyadapter.trace.gui.view.FIBTraceView;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
-public class TAEPerspective extends FlexoPerspective {
+public class TraceAnalysisPerspective extends FlexoPerspective {
 
-	protected static final Logger logger = Logger.getLogger(TAEPerspective.class.getPackage().getName());
+	protected static final Logger logger = Logger.getLogger(TraceAnalysisPerspective.class.getPackage().getName());
 
-	private FIBTAEProjectBrowser taeProjectBrowser = null;
+	private FIBTraceAnalysisProjectBrowser taProjectBrowser = null;
 	private FIBAnalyzeConceptsBrowser analyzeConceptsBrowser = null;
 	private FIBConfigurationMaskBrowser configurationMaskBrowser = null;
 
@@ -51,14 +51,14 @@ public class TAEPerspective extends FlexoPerspective {
 	/**
 	 * Default constructor taking controller as argument
 	 */
-	public TAEPerspective(TAEController controller) {
-		super("tae_perspective", controller);
+	public TraceAnalysisPerspective(TraceAnalysisController controller) {
+		super("ta_perspective", controller);
 		// _controller = controller;
 
-		taeProjectBrowser = new FIBTAEProjectBrowser(controller.getProject(), controller);
+		taProjectBrowser = new FIBTraceAnalysisProjectBrowser(controller.getProject(), controller);
 		analyzeConceptsBrowser = new FIBAnalyzeConceptsBrowser(null, controller);
 		configurationMaskBrowser = new FIBConfigurationMaskBrowser(null, controller);
-		setTopLeftView(taeProjectBrowser);
+		setTopLeftView(taProjectBrowser);
 	}
 
 	public ModuleView<?> getCurrentModuleView(FlexoController controller) {
@@ -72,7 +72,7 @@ public class TAEPerspective extends FlexoPerspective {
 	 */
 	@Override
 	public ImageIcon getActiveIcon() {
-		return TAEIconLibrary.TAE_SMALL_ICON;
+		return TraceAnalysisIconLibrary.TA_SMALL_ICON;
 	}
 
 	@Override
@@ -157,7 +157,7 @@ public class TAEPerspective extends FlexoPerspective {
 		return super.createModuleViewForObject(object, editable);
 	}
 	public void setProject(FlexoProject project) {
-		taeProjectBrowser.setRootObject(project);
+		taProjectBrowser.setRootObject(project);
 	}
 
 }

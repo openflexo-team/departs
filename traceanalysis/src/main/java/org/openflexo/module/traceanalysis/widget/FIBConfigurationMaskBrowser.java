@@ -21,7 +21,7 @@ package org.openflexo.module.traceanalysis.widget;
 
 import java.util.logging.Logger;
 
-import org.openflexo.module.traceanalysis.controller.TAEController;
+import org.openflexo.module.traceanalysis.controller.TraceAnalysisController;
 import org.openflexo.module.traceanalysis.model.ConfigurationMask;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
@@ -33,7 +33,7 @@ public class FIBConfigurationMaskBrowser extends FIBBrowserView<ConfigurationMas
 
 	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/Widget/FIBConfigurationMaskBrowser.fib");
 
-	public FIBConfigurationMaskBrowser(ConfigurationMask configurationMask, TAEController controller) {
+	public FIBConfigurationMaskBrowser(ConfigurationMask configurationMask, TraceAnalysisController controller) {
 		super(configurationMask, controller, FIB_FILE);
 		// System.out.println("Showing browser with " + project);
 	}

@@ -25,13 +25,13 @@ import javax.swing.ImageIcon;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.toolbox.ImageIconResource;
 
-public class TAEIconLibrary {
+public class TraceAnalysisIconLibrary {
 	
 
 	// Module icons
-	public static final ImageIcon TAE_SMALL_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/tae_small.png"));
-	public static final ImageIcon TAE_MEDIUM_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/tae_medium.png"));
-	public static final ImageIcon TAE_BIG_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/tae_big.png"));
+	public static final ImageIcon TA_SMALL_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/ta_small.png"));
+	public static final ImageIcon TA_MEDIUM_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/ta_medium.png"));
+	public static final ImageIcon TA_BIG_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/ta_big.png"));
 	
 	public static final ImageIcon MASK_SMALL_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/mask16x16.png"));
 	public static final ImageIcon MASK_MEDIUM_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/mask32x32.png"));

@@ -28,7 +28,7 @@ package org.openflexo.module.traceanalysis.view.menu;
 import java.util.logging.Logger;
 
 import org.openflexo.module.traceanalysis.TraceAnalysisModule;
-import org.openflexo.module.traceanalysis.controller.TAEController;
+import org.openflexo.module.traceanalysis.controller.TraceAnalysisController;
 import org.openflexo.view.menu.WindowMenu;
 
 /**
@@ -36,29 +36,29 @@ import org.openflexo.view.menu.WindowMenu;
  * 
  * @author vincent
  */
-public class TAEWindowMenu extends WindowMenu {
+public class TraceAnalysisWindowMenu extends WindowMenu {
 
-	private static final Logger logger = Logger.getLogger(TAEWindowMenu.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(TraceAnalysisWindowMenu.class.getPackage().getName());
 
 	// ==========================================================================
 	// ============================= Instance Variables
 	// =========================
 	// ==========================================================================
 
-	protected TAEController taeController;
+	protected TraceAnalysisController traceAnalysisController;
 
 	// ==========================================================================
 	// ============================= Constructor
 	// ================================
 	// ==========================================================================
 
-	public TAEWindowMenu(TAEController controller) {
+	public TraceAnalysisWindowMenu(TraceAnalysisController controller) {
 		super(controller, TraceAnalysisModule.INSTANCE);
-		taeController = controller;
+		traceAnalysisController = controller;
 		// Put your actions here
 	}
 
-	public TAEController getTAEController() {
-		return taeController;
+	public TraceAnalysisController getTraceAnalysisController() {
+		return traceAnalysisController;
 	}
 }

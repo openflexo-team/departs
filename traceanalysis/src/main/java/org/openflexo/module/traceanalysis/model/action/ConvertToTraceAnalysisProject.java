@@ -29,35 +29,35 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.resource.SaveResourceException;
-import org.openflexo.module.traceanalysis.model.TAEProjectNature;
+import org.openflexo.module.traceanalysis.model.TraceAnalysisProjectNature;
 
 /**
- * This action is used to gives {@link TAEProjectNature} to a {@link FlexoProject}<br>
+ * This action is used to gives {@link TraceAnalysisProjectNature} to a {@link FlexoProject}<br>
  * 
  * 
  * @author vincent
  * 
  */
-public class ConvertToTAEProject extends FlexoAction<ConvertToTAEProject, FlexoProject, FlexoObject> {
+public class ConvertToTraceAnalysisProject extends FlexoAction<ConvertToTraceAnalysisProject, FlexoProject, FlexoObject> {
 
-	private static final Logger logger = Logger.getLogger(ConvertToTAEProject.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(ConvertToTraceAnalysisProject.class.getPackage().getName());
 
-	public static FlexoActionType<ConvertToTAEProject, FlexoProject, FlexoObject> actionType = new FlexoActionType<ConvertToTAEProject, FlexoProject, FlexoObject>(
+	public static FlexoActionType<ConvertToTraceAnalysisProject, FlexoProject, FlexoObject> actionType = new FlexoActionType<ConvertToTraceAnalysisProject, FlexoProject, FlexoObject>(
 			"trace_analysis_project", FlexoActionType.convertMenu, FlexoActionType.defaultGroup, FlexoActionType.NORMAL_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public ConvertToTAEProject makeNewAction(FlexoProject focusedObject, Vector<FlexoObject> globalSelection,
+		public ConvertToTraceAnalysisProject makeNewAction(FlexoProject focusedObject, Vector<FlexoObject> globalSelection,
 				FlexoEditor editor) {
-			return new ConvertToTAEProject(focusedObject, globalSelection, editor);
+			return new ConvertToTraceAnalysisProject(focusedObject, globalSelection, editor);
 		}
 
 		@Override
 		public boolean isVisibleForSelection(FlexoProject project, Vector<FlexoObject> globalSelection) {
-			TAEProjectNature nature = project.getServiceManager().getProjectNatureService()
-					.getProjectNature(TAEProjectNature.class);
+			TraceAnalysisProjectNature nature = project.getServiceManager().getProjectNatureService()
+					.getProjectNature(TraceAnalysisProjectNature.class);
 			return !project.hasNature(nature);
 		}
 
@@ -69,24 +69,24 @@ public class ConvertToTAEProject extends FlexoAction<ConvertToTAEProject, FlexoP
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(ConvertToTAEProject.actionType, FlexoProject.class);
+		FlexoObjectImpl.addActionForClass(ConvertToTraceAnalysisProject.actionType, FlexoProject.class);
 	}
 
-	ConvertToTAEProject(FlexoProject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
+	ConvertToTraceAnalysisProject(FlexoProject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
 	@Override
 	protected void doAction(Object context) throws SaveResourceException {
 
-		logger.info("Convert to TAEProject");
+		logger.info("Convert to TraceAnalysisProject");
 
-		getTAEProjectNature().givesNature(getFocusedObject(), getEditor());
+		getTraceAnalysisProjectNature().givesNature(getFocusedObject(), getEditor());
 
 	}
 
-	public TAEProjectNature getTAEProjectNature() {
-		return getServiceManager().getProjectNatureService().getProjectNature(TAEProjectNature.class);
+	public TraceAnalysisProjectNature getTraceAnalysisProjectNature() {
+		return getServiceManager().getProjectNatureService().getProjectNature(TraceAnalysisProjectNature.class);
 	}
 
 }

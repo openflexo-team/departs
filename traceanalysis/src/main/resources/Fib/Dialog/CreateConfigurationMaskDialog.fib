@@ -11,6 +11,6 @@
     <Button id="9" manageDynamicModel="false" useScrollBar="false" buttonType="Trigger" action="controller.cancelAndDispose()" index="1" localize="true" constraints="flow(index=1)" label="cancel" readOnly="false" />
   </Panel>
   <LocalizedDictionary>
-  	<Localized key="creates_new_trace_exploration_mask" lang="English">Create new trace exploration mask</Localized>
+  	<Localized key="creates_new_trace_exploration_mask" lang="English">Create new configuration mask</Localized>
   </LocalizedDictionary>
 </Panel>

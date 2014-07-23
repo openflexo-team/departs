@@ -27,18 +27,18 @@ import org.openflexo.view.menu.FlexoMenuBar;
 
 import java.util.logging.Logger;
 
-public class TAESelectionManager extends MouseSelectionManager {
+public class TraceAnalysisSelectionManager extends MouseSelectionManager {
 
-	protected static final Logger logger = Logger.getLogger(TAESelectionManager.class.getPackage().getName());
+	protected static final Logger logger = Logger.getLogger(TraceAnalysisSelectionManager.class.getPackage().getName());
 
-	public TAESelectionManager(TAEController controller) {
+	public TraceAnalysisSelectionManager(TraceAnalysisController controller) {
 		super(controller);
 		FlexoMenuBar menuBar = controller.getMenuBar();
 		_contextualMenuManager = new ContextualMenuManager(this, controller);
 	}
 
-	public TAEController getTAEController() {
-		return (TAEController) getController();
+	public TraceAnalysisController getTraceAnalysisController() {
+		return (TraceAnalysisController) getController();
 	}
 
 	/**
@@ -48,7 +48,7 @@ public class TAESelectionManager extends MouseSelectionManager {
 	 */
 	@Override
 	public FlexoObject getRootFocusedObject() {
-		return getTAEController().getCurrentDisplayedObjectAsModuleView();
+		return getTraceAnalysisController().getCurrentDisplayedObjectAsModuleView();
 	}
 
 }

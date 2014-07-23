@@ -89,11 +89,24 @@ public class TraceModelConverter {
 	
 	public FlexoConfigData convertConfigData(ConfigData configData, FlexoTraceOBP traceOBP){
 		FlexoConfigData flexoConfigData = factory.newInstance(FlexoConfigData.class);
+		for (Parser.Process process : configData.getProcessList()) {
+			flexoConfigData.addToFlexoProcess(convertProcess(process,traceOBP));
+		}
 		flexoConfigData.setConfigData(configData);
 		flexoConfigData.setTechnologyAdapter(technologyAdapter);
 		flexoConfigData.setName(Integer.toString(configData.getNoConfig()));
 		traceObjects.put(configData, flexoConfigData);
 		return flexoConfigData;
+	}
+	
+	public FlexoProcess convertProcess(Parser.Process process, FlexoTraceOBP traceOBP){
+		FlexoProcess flexoProcess = factory.newInstance(FlexoProcess.class);
+		flexoProcess.setProcess(process);
+		flexoProcess.setTechnologyAdapter(technologyAdapter);
+		flexoProcess.setName(process.getProcessName());
+		flexoProcess.setState(process.getProcessState());
+		traceObjects.put(process, flexoProcess);
+		return flexoProcess;
 	}
 	
 
