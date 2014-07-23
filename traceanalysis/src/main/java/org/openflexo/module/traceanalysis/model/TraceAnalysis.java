@@ -34,6 +34,7 @@ import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.View;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
+import org.openflexo.technologyadapter.trace.model.FlexoConfigData;
 
 public class TraceAnalysis extends DefaultFlexoObject implements PropertyChangeListener {
 	
@@ -47,6 +48,9 @@ public class TraceAnalysis extends DefaultFlexoObject implements PropertyChangeL
 	private ContextVirtualModelInstance contextVirtualModelInstance;
 	private ObserverVirtualModelInstance observerVirtualModelInstance;
 	private ArrayList<TraceAnalysisVirtualModelInstance> traceAnalysisVirtualModelInstances;
+	
+	private ConfigurationMask selectedMask;
+	private FlexoConfigData selectedFlexoConfigData;
 
 	public TraceAnalysis(View view, TraceAnalysisProject traceAnalysisProject) throws InvalidArgumentException {
 		super();
@@ -172,6 +176,22 @@ public class TraceAnalysis extends DefaultFlexoObject implements PropertyChangeL
 	public boolean delete() {
 		super.delete();
 		return true;
+	}
+
+	public ConfigurationMask getSelectedMask() {
+		return selectedMask;
+	}
+
+	public void setSelectedMask(ConfigurationMask selectedMask) {
+		this.selectedMask = selectedMask;
+	}
+	
+	public FlexoConfigData getSelectedFlexoConfigData() {
+		return selectedFlexoConfigData;
+	}
+
+	public void setSelectedFlexoConfigData(FlexoConfigData selectedFlexoConfigData) {
+		this.selectedFlexoConfigData = selectedFlexoConfigData;
 	}
 	
 }

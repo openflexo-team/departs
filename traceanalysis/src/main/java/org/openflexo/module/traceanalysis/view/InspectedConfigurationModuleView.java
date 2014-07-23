@@ -31,7 +31,7 @@ public class InspectedConfigurationModuleView extends FIBModuleView<Configuratio
 
 	private final FlexoPerspective perspective;
 	
-	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/Widget/FIBInspectedConfiguration.fib");
+	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/Widget/FIBInspectedConfigurationModuleView.fib");
 	
 	public InspectedConfigurationModuleView(ConfigurationMask configurationMask, FlexoController controller, FlexoPerspective perspective) {
 		super(configurationMask, controller, FIB_FILE);

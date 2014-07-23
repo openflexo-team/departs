@@ -140,4 +140,10 @@ public class TraceAnalysisController extends FlexoController {
 		FlexoProject project = (to != null ? to.getProject() : null);
 		TA_PERSPECTIVE.setProject(project);
 	}
+	
+	@Override
+	public void initInspectors() {
+		super.initInspectors();
+	}
+	
 }

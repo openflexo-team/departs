@@ -31,6 +31,7 @@ import org.openflexo.foundation.view.FreeModelSlotInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.technologyadapter.fiacre.model.FiacreProcess;
+import org.openflexo.technologyadapter.fiacre.model.FiacreState;
 import org.openflexo.technologyadapter.trace.model.FlexoConfigData;
 import org.openflexo.technologyadapter.trace.model.FlexoProcess;
 import org.openflexo.technologyadapter.trace.model.FlexoTraceOBP;
@@ -54,20 +55,40 @@ public class TraceVirtualModelInstance extends TraceAnalysisVirtualModelInstance
 		}
 	}
 
+	public List<FlexoConfigData> getConfigurations(){
+		return getTraceOBP().getFlexoConfigData();
+	}
 	
-	public String getValue(FlexoObject object, int config){
+	public FlexoConfigData getConfiguration(int id){
+		return getTraceOBP().getFlexoConfigData().get(id);
+	}
+	
+	public FlexoTraceOBP getTraceOBP(){
 		FreeModelSlotInstance msi = (FreeModelSlotInstance) getVirtualModelInstance().getModelSlotInstance("traceModelSlot");
-		FlexoTraceOBP traceOBP = (FlexoTraceOBP) msi.getAccessedResourceData();
-		FlexoConfigData configData = traceOBP.getFlexoConfigData().get(config);
-		
+		return (FlexoTraceOBP) msi.getAccessedResourceData();
+	}
+	
+	
+	public FlexoObject getFlexoConfigDataValue(FlexoObject object, int config){
+		FlexoConfigData configData = getTraceOBP().getFlexoConfigData().get(config);
 		if(object instanceof FiacreProcess){
 			for(FlexoProcess process : configData.getFlexoProcess()){
 				if(process.getProcessType().equals(((FiacreProcess)object).getName())){
-					return process.getState();
+					return process;
 				}
 			}
 		}
-		
+		return null;
+	}
+	
+	public FlexoObject getFlexoConfigDataValue(FlexoObject object, FlexoConfigData configData){
+		if(object instanceof FiacreProcess){
+			for(FlexoProcess process : configData.getFlexoProcess()){
+				if(process.getProcessType().equals(((FiacreProcess)object).getName())){
+					return process;
+				}
+			}
+		}
 		return null;
 	}
 
