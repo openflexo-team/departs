@@ -31,8 +31,10 @@ import org.openflexo.foundation.view.FreeModelSlotInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.technologyadapter.fiacre.model.FiacreProcess;
-import org.openflexo.technologyadapter.fiacre.model.FiacreState;
+import org.openflexo.technologyadapter.fiacre.model.FiacreVariable;
 import org.openflexo.technologyadapter.trace.model.FlexoTraceOBPConfigData;
+import org.openflexo.technologyadapter.trace.model.FlexoTraceOBPData;
+import org.openflexo.technologyadapter.trace.model.FlexoTraceOBPObject;
 import org.openflexo.technologyadapter.trace.model.FlexoTraceOBPProcess;
 import org.openflexo.technologyadapter.trace.model.FlexoTraceOBP;
 
@@ -41,10 +43,6 @@ public class TraceVirtualModelInstance extends TraceAnalysisVirtualModelInstance
 	private static final Logger logger = Logger.getLogger(TraceVirtualModelInstance.class.getPackage().getName());
 	
 	private List<ConfigurationMask> configurationMasks;
-	
-	public enum ParamKind {
-		STATE
-	}
 	
 	public TraceVirtualModelInstance(VirtualModelInstance virtualModelInstance, TraceAnalysis traceAnalysis)
 			throws InvalidArgumentException {
@@ -68,27 +66,46 @@ public class TraceVirtualModelInstance extends TraceAnalysisVirtualModelInstance
 		return (FlexoTraceOBP) msi.getAccessedResourceData();
 	}
 	
-	
-	public FlexoObject getFlexoConfigDataValue(FlexoObject object, int config){
-		FlexoTraceOBPConfigData configData = getTraceOBP().getFlexoConfigData().get(config);
+	public FlexoTraceOBPObject getConfigurationValue(FlexoObject object, FlexoTraceOBPConfigData configData){
 		if(object instanceof FiacreProcess){
-			for(FlexoTraceOBPProcess process : configData.getFlexoProcess()){
-				if(process.getProcessType().equals(((FiacreProcess)object).getName())){
-					return process;
-				}
-			}
+			return getProcessValue((FiacreProcess)object, configData);
 		}
+		if(object instanceof FiacreVariable){
+			return getVariableValue((FiacreVariable)object, configData);
+		}
+		logger.log(Level.SEVERE, "No value found for object " + object.toString());
 		return null;
 	}
 	
-	public FlexoObject getFlexoConfigDataValue(FlexoObject object, FlexoTraceOBPConfigData configData){
+	public FlexoTraceOBPObject getConfigurationValue(FlexoObject object, int config){
+		FlexoTraceOBPConfigData configData = getTraceOBP().getFlexoConfigData().get(config);
 		if(object instanceof FiacreProcess){
-			for(FlexoTraceOBPProcess process : configData.getFlexoProcess()){
-				if(process.getProcessType().equals(((FiacreProcess)object).getName())){
-					return process;
-				}
+			return getProcessValue((FiacreProcess)object, configData);
+		}
+		if(object instanceof FiacreVariable){
+			return getVariableValue((FiacreVariable)object, configData);
+		}
+		logger.log(Level.SEVERE, "No value found for object " + object.toString());
+		return null;
+	}
+	
+	public FlexoTraceOBPProcess getProcessValue(FiacreProcess process, FlexoTraceOBPConfigData configData){
+		for(FlexoTraceOBPProcess traceProcess : configData.getFlexoProcess()){
+			if(traceProcess.getProcessType().equals(process.getName())){
+				return traceProcess;
 			}
 		}
+		logger.log(Level.SEVERE, "No value found for process " + process.getName());
+		return null;
+	}
+	
+	public FlexoTraceOBPData getVariableValue(FiacreVariable variable, FlexoTraceOBPConfigData configData){
+		for(FlexoTraceOBPData traceData : getProcessValue(variable.getFiacreProcess(),configData).getFlexoData()){
+			if(traceData.getName().equals(variable.getName())){
+				return traceData;
+			}
+		}
+		logger.log(Level.SEVERE, "No value found for variable " + variable.getName());
 		return null;
 	}
 
@@ -133,4 +150,6 @@ public class TraceVirtualModelInstance extends TraceAnalysisVirtualModelInstance
 		getPropertyChangeSupport().firePropertyChange("configurationMasks", null, this);
 		return mask;
 	}
+	
+	
 }

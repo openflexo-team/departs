@@ -21,12 +21,12 @@ package org.openflexo.module.traceanalysis.model;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.openflexo.foundation.InvalidArgumentException;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.technologyadapter.fiacre.model.FiacreComponent;
 import org.openflexo.technologyadapter.fiacre.model.FiacreProcess;
+import org.openflexo.technologyadapter.fiacre.model.FiacreVariable;
 
 public class SystemVirtualModelInstance extends TraceAnalysisVirtualModelInstance {
 
@@ -50,6 +50,10 @@ public class SystemVirtualModelInstance extends TraceAnalysisVirtualModelInstanc
 			fiacreComponents.add((FiacreComponent) fciComponent.getFlexoActor("component"));
 		}
 		return fiacreComponents;
+	}
+	
+	public List<FiacreVariable> getFiacreVariable(FiacreProcess fiacreProcess){
+		return fiacreProcess.getFiacreVariables();
 	}
 	
 }

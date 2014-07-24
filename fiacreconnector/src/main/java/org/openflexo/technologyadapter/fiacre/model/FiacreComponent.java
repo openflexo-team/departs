@@ -38,15 +38,16 @@ import org.openflexo.model.annotations.XMLElement;
 @XMLElement(xmlTag = "FiacreComponent")
 public interface FiacreComponent extends FiacreObject {
 
-	// @PropertyIdentifier(type = obp.cdl.FiacreComponent.class)
 	public static final String FIACRE_COMPONENT_KEY = "FiacreComponent";
+	
 	@PropertyIdentifier(type = boolean.class)
 	public static final String IS_ROOT_KEY = "isRoot";
 	@PropertyIdentifier(type = FiacreProcess.class, cardinality = Cardinality.LIST)
 	public static final String FIACRE_PROCESS_KEY = "FiacreProcesses";
 
+	@Getter(value=FIACRE_COMPONENT_KEY, ignoreType=true)
 	public obp.fiacre.model.ComponentDecl getFiacreComponent();
-
+	@Setter(FIACRE_COMPONENT_KEY)
 	public void setFiacreComponent(obp.fiacre.model.ComponentDecl fiacreComponent);
 
 	@Getter(value = IS_ROOT_KEY, defaultValue = "false")
@@ -81,6 +82,11 @@ public interface FiacreComponent extends FiacreObject {
 		@Override
 		public String getUri() {
 			return getName();
+		}
+		
+		@Override
+		public String getName() {
+			return getFiacreComponent().getName();
 		}
 
 	}

@@ -6,9 +6,9 @@
       <Children data="data.flexoTransitions" name="transitions" />
       <Children data="data.flexoConfigData" name="configData" />
     </BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.technologyadapter.trace.model.FlexoTransition" label="transition.name" icon="controller.iconForObject(transition)" isEditable="false" filtered="false" defaultVisible="true" name="transition">
+    <BrowserElement dataClassName="org.openflexo.technologyadapter.trace.model.FlexoTraceOBPTransition" label="transition.name" icon="controller.iconForObject(transition)" isEditable="false" filtered="false" defaultVisible="true" name="transition">
     </BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.technologyadapter.trace.model.FlexoConfigData" label="configData.name" icon="controller.iconForObject(configData)" isEditable="false" filtered="false" defaultVisible="true" name="configData">
+    <BrowserElement dataClassName="org.openflexo.technologyadapter.trace.model.FlexoTraceOBPConfigData" label="configData.name" icon="controller.iconForObject(configData)" isEditable="false" filtered="false" defaultVisible="true" name="configData">
     </BrowserElement>
   </Browser>
   

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 
 import org.junit.Test;
@@ -15,12 +16,16 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.OpenflexoProjectAtRunTimeTestCase;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.module.traceanalysis.model.ConfigurationMask;
 import org.openflexo.module.traceanalysis.model.TraceAnalysis;
 import org.openflexo.module.traceanalysis.model.TraceAnalysisProject;
 import org.openflexo.module.traceanalysis.model.TraceAnalysisProjectNature;
 import org.openflexo.module.traceanalysis.model.action.CreateConfigurationMask;
 import org.openflexo.module.traceanalysis.model.action.CreateTraceAnalysis;
+import org.openflexo.technologyadapter.cdl.CDLTechnologyAdapter;
+import org.openflexo.technologyadapter.fiacre.FiacreTechnologyAdapter;
+import org.openflexo.technologyadapter.trace.TraceTechnologyAdapter;
 import org.openflexo.test.OrderedRunner;
 import org.openflexo.test.TestOrder;
 
@@ -38,13 +43,28 @@ public class TestCreateTraceAnalysis extends OpenflexoProjectAtRunTimeTestCase {
 	static TraceAnalysisProject taProject;
 	static TraceAnalysis traceAnalysis;
 	static ConfigurationMask configurationMask;
+	
+	static CDLTechnologyAdapter cdlTa;
+	static FiacreTechnologyAdapter fiacreTa;
+	static TraceTechnologyAdapter traceTa;
+	
+	static String CDL_FILE = "/examples/calcul1_asynchro.cdl";
+	static String FIACRE_FILE = "/examples/calcul1_asynchro.fcr";
+	static String TRACE_FILE = "/examples/calcul1_asynchro.trace";
 
 	@Test
 	@TestOrder(1)
 	public void testCreateTraceAnalysisProject() {
 
 		instanciateTestServiceManager();
-
+		
+		cdlTa =getFlexoServiceManager().getTechnologyAdapterService().getTechnologyAdapter(CDLTechnologyAdapter.class);
+		fiacreTa =getFlexoServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FiacreTechnologyAdapter.class);
+		traceTa =getFlexoServiceManager().getTechnologyAdapterService().getTechnologyAdapter(TraceTechnologyAdapter.class);
+		assertNotNull(cdlTa);
+		assertNotNull(fiacreTa);
+		assertNotNull(traceTa);
+		
 		TraceAnalysisProjectNature TRACE_ANALYSIS_NATURE = serviceManager.getProjectNatureService().getProjectNature(
 				TraceAnalysisProjectNature.class);
 		assertNotNull(TRACE_ANALYSIS_NATURE);
@@ -64,6 +84,13 @@ public class TestCreateTraceAnalysis extends OpenflexoProjectAtRunTimeTestCase {
 	public void testCreateTraceAnalysis() {
 		CreateTraceAnalysis action = CreateTraceAnalysis.actionType.makeNewAction(taProject, null, editor);
 		action.setTraceAnalysisName("TraceAnalysis1");
+		
+		
+		
+		action.setCdl(cdlTa.retrieveCDLUnitResource((getResource(CDL_FILE))));
+		action.setFiacre(fiacreTa.retrieveFiacreProgramResource(getResource(FIACRE_FILE)));
+		action.setTrace(traceTa.retrieveTraceOBPResource(getResource(TRACE_FILE)));
+		
 		assertTrue(action.isValid());
 		action.doAction();
 		assertTrue(action.hasActionExecutionSucceeded());

@@ -19,8 +19,13 @@
  */
 package org.openflexo.module.traceanalysis.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openflexo.foundation.InvalidArgumentException;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
+import org.openflexo.technologyadapter.cdl.model.CDLUnit;
 
 public class ContextVirtualModelInstance extends TraceAnalysisVirtualModelInstance {
 
@@ -29,6 +34,13 @@ public class ContextVirtualModelInstance extends TraceAnalysisVirtualModelInstan
 		super(virtualModelInstance, traceAnalysis);
 		// TODO Auto-generated constructor stub
 	}
-
+	
+	public List<CDLUnit> getCDLUnits(){
+		List<CDLUnit> cdlUnits = new ArrayList<CDLUnit>();
+		for(FlexoConceptInstance fciCDLUnit : getVirtualModelInstance().getFlexoConceptInstances("CDLUnit")){
+			cdlUnits.add((CDLUnit) fciCDLUnit.getFlexoActor("cdlUnit"));
+		}
+		return cdlUnits;
+	}
 	
 }

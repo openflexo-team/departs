@@ -27,20 +27,30 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
 
 @ModelEntity
-@ImplementationClass(FiacreState.FiacreStateImpl.class)
-@XMLElement(xmlTag = "FiacreState")
-public interface FiacreState extends FiacreObject {
+@ImplementationClass(FiacreVariable.FiacreVariableImpl.class)
+@XMLElement(xmlTag = "FiacreVariable")
+public interface FiacreVariable extends FiacreObject {
 
-	public static final String FIACRE_STATE_KEY = "FiacreState";
+	public static final String FIACRE_VARIABLE_KEY = "FiacreVariable";
+	
+	public static final String FIACRE_PROCESS_KEY = "FiacreProcess";
 
-	@Getter(value=FIACRE_STATE_KEY, ignoreType=true)
-	public obp.fiacre.model.State getFiacreState();
-	@Setter(FIACRE_STATE_KEY)
-	public void setFiacreState(obp.fiacre.model.State fiacreState);
+	@Getter(value=FIACRE_VARIABLE_KEY, ignoreType=true)
+	public obp.fiacre.model.LocalVariable getFiacreVariable();
+	@Setter(FIACRE_VARIABLE_KEY)
+	public void setFiacreVariable(obp.fiacre.model.LocalVariable fiacreVariable);
+	
+	@Getter(value=FIACRE_PROCESS_KEY, inverse=FiacreProcess.FIACRE_VARIABLES_KEY)
+	public FiacreProcess getFiacreProcess();
+	
+	@Setter(FIACRE_PROCESS_KEY)
+	public void setFiacreProcess(FiacreProcess fiacreProcess);
+	
+	public String getType();
+	
+	public static abstract class FiacreVariableImpl extends FiacreObjectImpl implements FiacreVariable {
 
-	public static abstract class FiacreStateImpl extends FiacreObjectImpl implements FiacreState {
-
-		public FiacreStateImpl() {
+		public FiacreVariableImpl() {
 			// TODO Auto-generated constructor stub
 		}
 
@@ -51,9 +61,14 @@ public interface FiacreState extends FiacreObject {
 		
 		@Override
 		public String getName() {
-			return getFiacreState().getName();
+			return getFiacreVariable().getName();
 		}
 
+		@Override
+		public String getType() {
+			return getFiacreVariable().getType().toString();
+		}
+		
 	}
 
 }
