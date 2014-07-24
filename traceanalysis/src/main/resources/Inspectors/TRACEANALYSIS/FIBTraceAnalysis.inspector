@@ -17,16 +17,16 @@
       	 <BrowserElement dataClassName="org.openflexo.technologyadapter.fiacre.model.FiacreComponent" visible="data.selectedMask.selection.contains(fiacreComponent)" icon="controller.iconForObject(fiacreComponent)" label="fiacreComponent.name" isEditable="false" filtered="false" defaultVisible="true" name="fiacreComponent">
         	<Children data="fiacreComponent.fiacreProcesses" name="process" />
       	 </BrowserElement>
-      	 <BrowserElement dataClassName="org.openflexo.technologyadapter.fiacre.model.FiacreProcess" visible="data.selectedMask.selection.contains(fiacreProcess)" icon="controller.iconForObject(fiacreProcess)" label="fiacreProcess.name + data.traceVirtualModelInstance.getConfigurationValue(fiacreProcess, data.selectedFlexoConfigData)" isEditable="false" filtered="false" defaultVisible="true" name="fiacreProcess">
+      	 <BrowserElement dataClassName="org.openflexo.technologyadapter.fiacre.model.FiacreProcess" visible="data.selectedMask.selection.contains(fiacreProcess)" icon="controller.iconForObject(fiacreProcess)" label="data.traceVirtualModelInstance.getConfigurationValue(fiacreProcess,configurationDD.data)" isEditable="false" filtered="false" defaultVisible="true" name="fiacreProcess">
       	 	<Children data="fiacreProcess.fiacreStates" name="process" />
       	 	<Children data="fiacreProcess.fiacreVariables" name="variable" />
       	 </BrowserElement>
-      	 <BrowserElement dataClassName="org.openflexo.technologyadapter.fiacre.model.FiacreVariable" visible="data.selectedMask.selection.contains(variable)" icon="controller.iconForObject(variable)" enabled="" label="variable.name + data.traceVirtualModelInstance.getConfigurationValue(variable, data.selectedFlexoConfigData)" isEditable="false" filtered="false" defaultVisible="true" name="variable">
+      	 <BrowserElement dataClassName="org.openflexo.technologyadapter.fiacre.model.FiacreVariable" visible="data.selectedMask.selection.contains(fiacreVariable)" icon="controller.iconForObject(fiacreVariable)" enabled="" label="fiacreVariable.name + ' ' + data.traceVirtualModelInstance.getConfigurationValue(fiacreVariable, configurationDD.data)" isEditable="false" filtered="false" defaultVisible="true" name="fiacreVariable">
       	 </BrowserElement>
-      	 <BrowserElement dataClassName="org.openflexo.technologyadapter.fiacre.model.FiacreState" visible="data.selectedMask.selection.contains(fiacreState)" icon="controller.iconForObject(fiacreState)" label="fiacreState.name + data.traceVirtualModelInstance.getConfigurationValue(fiacreState, data.selectedFlexoConfigData)" isEditable="false" filtered="false" defaultVisible="true" name="fiacreState">
+      	 <BrowserElement dataClassName="org.openflexo.technologyadapter.fiacre.model.FiacreState" visible="data.traceVirtualModelInstance.getConfigurationValue(fiacreState, configurationDD.data)!=null" icon="controller.iconForObject(fiacreState)" label="fiacreState.name" isEditable="false" filtered="false" defaultVisible="true" name="fiacreState">
       	 </BrowserElement>
-      	 <Dependancy componentName="configuration" />
-      	 <Dependancy componentName="mask" />
+      	 <Dependancy componentName="configurationDD" />
+      	 <Dependancy componentName="maskDD" />
       </Browser>
       
     </Tab>

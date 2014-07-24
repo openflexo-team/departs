@@ -31,12 +31,14 @@ import org.openflexo.foundation.view.FreeModelSlotInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.technologyadapter.fiacre.model.FiacreProcess;
+import org.openflexo.technologyadapter.fiacre.model.FiacreState;
 import org.openflexo.technologyadapter.fiacre.model.FiacreVariable;
 import org.openflexo.technologyadapter.trace.model.FlexoTraceOBPConfigData;
 import org.openflexo.technologyadapter.trace.model.FlexoTraceOBPData;
 import org.openflexo.technologyadapter.trace.model.FlexoTraceOBPObject;
 import org.openflexo.technologyadapter.trace.model.FlexoTraceOBPProcess;
 import org.openflexo.technologyadapter.trace.model.FlexoTraceOBP;
+import org.openflexo.technologyadapter.trace.model.FlexoTraceOBPState;
 
 public class TraceVirtualModelInstance extends TraceAnalysisVirtualModelInstance {
 	
@@ -66,46 +68,62 @@ public class TraceVirtualModelInstance extends TraceAnalysisVirtualModelInstance
 		return (FlexoTraceOBP) msi.getAccessedResourceData();
 	}
 	
-	public FlexoTraceOBPObject getConfigurationValue(FlexoObject object, FlexoTraceOBPConfigData configData){
-		if(object instanceof FiacreProcess){
-			return getProcessValue((FiacreProcess)object, configData);
-		}
-		if(object instanceof FiacreVariable){
-			return getVariableValue((FiacreVariable)object, configData);
-		}
-		logger.log(Level.SEVERE, "No value found for object " + object.toString());
-		return null;
-	}
-	
-	public FlexoTraceOBPObject getConfigurationValue(FlexoObject object, int config){
+	public String getConfigurationValue(FlexoObject object, int config){
 		FlexoTraceOBPConfigData configData = getTraceOBP().getFlexoConfigData().get(config);
+		return getConfigurationValue(object, configData);
+	}
+	
+	public String getConfigurationValue(FlexoObject object, FlexoTraceOBPConfigData configData){
+		if(getConfigurationObject(object, configData)!=null){
+			return getConfigurationObject(object, configData).getValue();
+		}else{
+			return null;
+		}
+	}
+	
+	public FlexoTraceOBPObject getConfigurationObject(FlexoObject object, int config){
+		FlexoTraceOBPConfigData configData = getTraceOBP().getFlexoConfigData().get(config);
+		return getConfigurationObject(object, configData);
+	}
+	
+	public FlexoTraceOBPObject getConfigurationObject(FlexoObject object, FlexoTraceOBPConfigData configData){
 		if(object instanceof FiacreProcess){
-			return getProcessValue((FiacreProcess)object, configData);
+			return getProcessObject((FiacreProcess)object, configData);
+		} else if (object instanceof FiacreVariable){
+			return getVariableObject((FiacreVariable)object, configData);
+		} else if(object instanceof FiacreState){
+			return getStateObject((FiacreState)object, configData);
 		}
-		if(object instanceof FiacreVariable){
-			return getVariableValue((FiacreVariable)object, configData);
-		}
-		logger.log(Level.SEVERE, "No value found for object " + object.toString());
+		logger.log(Level.WARNING, "No value found for object " + object.toString());
 		return null;
 	}
 	
-	public FlexoTraceOBPProcess getProcessValue(FiacreProcess process, FlexoTraceOBPConfigData configData){
+	public FlexoTraceOBPProcess getProcessObject(FiacreProcess process, FlexoTraceOBPConfigData configData){
 		for(FlexoTraceOBPProcess traceProcess : configData.getFlexoProcess()){
 			if(traceProcess.getProcessType().equals(process.getName())){
 				return traceProcess;
 			}
 		}
-		logger.log(Level.SEVERE, "No value found for process " + process.getName());
+		logger.log(Level.WARNING, "No value found for process " + process.getName());
 		return null;
 	}
 	
-	public FlexoTraceOBPData getVariableValue(FiacreVariable variable, FlexoTraceOBPConfigData configData){
-		for(FlexoTraceOBPData traceData : getProcessValue(variable.getFiacreProcess(),configData).getFlexoData()){
+	public FlexoTraceOBPData getVariableObject(FiacreVariable variable, FlexoTraceOBPConfigData configData){
+		for(FlexoTraceOBPData traceData : getProcessObject(variable.getFiacreProcess(),configData).getFlexoData()){
 			if(traceData.getName().equals(variable.getName())){
 				return traceData;
 			}
 		}
-		logger.log(Level.SEVERE, "No value found for variable " + variable.getName());
+		logger.log(Level.WARNING, "No value found for variable " + variable.getName());
+		return null;
+	}
+	
+	public FlexoTraceOBPState getStateObject(FiacreState state, FlexoTraceOBPConfigData configData){
+		if(getProcessObject(state.getFiacreProcess(),configData).getState()!=null &&
+				getProcessObject(state.getFiacreProcess(),configData).getState().getName().equals(state.getName())){
+			return (FlexoTraceOBPState) getProcessObject(state.getFiacreProcess(),configData).getState();
+		}
+		logger.log(Level.WARNING, "No value found for state " + state.getName());
 		return null;
 	}
 
