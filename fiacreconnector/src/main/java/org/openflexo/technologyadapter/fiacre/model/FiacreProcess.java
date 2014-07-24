@@ -23,7 +23,6 @@ package org.openflexo.technologyadapter.fiacre.model;
 import java.util.List;
 import java.util.Vector;
 
-import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -36,7 +35,7 @@ import org.openflexo.model.annotations.Getter.Cardinality;
 @ModelEntity
 @ImplementationClass(FiacreProcess.FiacreProcessImpl.class)
 @XMLElement(xmlTag = "FiacreProcess")
-public interface FiacreProcess extends FiacreObject, ResourceData<FiacreProcess> {
+public interface FiacreProcess extends FiacreObject{
 
 	public static final String FIACRE_PROCESS_KEY = "FiacreProcess";
 	

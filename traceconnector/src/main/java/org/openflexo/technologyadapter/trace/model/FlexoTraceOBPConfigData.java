@@ -20,68 +20,56 @@
 
 package org.openflexo.technologyadapter.trace.model;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.List;
 
-import org.openflexo.foundation.resource.ResourceData;
+import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
+import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.model.annotations.Getter.Cardinality;
 
 import Parser.ConfigData;
 
 @ModelEntity
-@ImplementationClass(FlexoProcess.FlexoProcessImpl.class)
-@XMLElement(xmlTag = "FlexoProcess")
-public interface FlexoProcess extends FlexoTraceObject, ResourceData<FlexoProcess> {
+@ImplementationClass(FlexoTraceOBPConfigData.FlexoTraceOBPConfigDataImpl.class)
+@XMLElement(xmlTag = "FlexoTraceOBPConfigData")
+public interface FlexoTraceOBPConfigData extends FlexoTraceOBPObject{
 
+	public static final String CONFIG_DATA_KEY = "configData";
+	
+	@PropertyIdentifier(type = List.class)
 	public static final String PROCESS_KEY = "process";
 	
-	@PropertyIdentifier(type = String.class)
-	public static final String PROCESS_STATE_KEY = "state";
+	@Getter(value=CONFIG_DATA_KEY, ignoreType=true)
+	public ConfigData getConfigData();
+	@Setter(CONFIG_DATA_KEY)
+	public void setConfigData(ConfigData configData);
 	
-	@Getter(value=PROCESS_KEY, ignoreType=true)
-	public Parser.Process getProcess();
+	@Getter(value = PROCESS_KEY, cardinality = Cardinality.LIST)
+	public List<FlexoTraceOBPProcess> getFlexoProcess();
+
 	@Setter(PROCESS_KEY)
-	public void setProcess(Parser.Process process);
-	
-	@Getter(value = PROCESS_STATE_KEY)
-	public String getState();
-	@Setter(value = PROCESS_STATE_KEY)
-	public void setState(String state);
-	
-	public String getProcessID();
-	
-	public String getProcessType();
+	public void setFlexoProcess(List<FlexoTraceOBPProcess> flexoProcess);
 
-	public static abstract class FlexoProcessImpl extends FlexoTraceObjectImpl implements FlexoProcess {
+	@Adder(PROCESS_KEY)
+	public void addToFlexoProcess(FlexoTraceOBPProcess flexoProcess);
 
-		public FlexoProcessImpl() {
+	@Remover(PROCESS_KEY)
+	public void removeFromFlexoProcess(FlexoTraceOBPProcess flexoProcess);
+
+	public static abstract class FlexoTraceOBPConfigDataImpl extends FlexoTraceOBPObjectImpl implements FlexoTraceOBPConfigData {
+
+		public FlexoTraceOBPConfigDataImpl() {
 			// TODO Auto-generated constructor stub
 		}
 
 		@Override
 		public String getUri() {
 			return getName();
-		}
-		
-		@Override
-		public String getProcessID(){
-			Pattern id = Pattern.compile("\\d+\\b");
-			Matcher makeMatch = id.matcher(getName());
-			makeMatch.find();
-			return makeMatch.group();
-		}
-		
-		@Override
-		public String getProcessType(){
-			Pattern id = Pattern.compile("\\D+");
-			Matcher makeMatch = id.matcher(getName());
-			makeMatch.find();
-			return makeMatch.group();
 		}
 
 	}

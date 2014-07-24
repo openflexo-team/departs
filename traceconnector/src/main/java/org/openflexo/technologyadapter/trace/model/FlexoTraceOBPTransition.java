@@ -20,21 +20,29 @@
 
 package org.openflexo.technologyadapter.trace.model;
 
-import org.openflexo.foundation.resource.ResourceData;
+import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
 
+import Parser.Transition;
+
 @ModelEntity
-@ImplementationClass(FlexoData.FlexoDataImpl.class)
-@XMLElement(xmlTag = "FlexoData")
-public interface FlexoData extends FlexoTraceObject, ResourceData<FlexoData> {
+@ImplementationClass(FlexoTraceOBPTransition.FlexoTraceOBPTransitionImpl.class)
+@XMLElement(xmlTag = "FlexoTraceOBPTransition")
+public interface FlexoTraceOBPTransition extends FlexoTraceOBPObject{
 
-	public static final String DATA_KEY = "data";
+	public static final String TRANSITION_KEY = "Transition";
+	
+	@Getter(value=TRANSITION_KEY, ignoreType=true)
+	public Transition getTransition();
+	@Setter(TRANSITION_KEY)
+	public void setTransition(Transition transition);
 
-	public static abstract class FlexoDataImpl extends FlexoTraceObjectImpl implements FlexoData {
+	public static abstract class FlexoTraceOBPTransitionImpl extends FlexoTraceOBPObjectImpl implements FlexoTraceOBPTransition {
 
-		public FlexoDataImpl() {
+		public FlexoTraceOBPTransitionImpl() {
 			// TODO Auto-generated constructor stub
 		}
 

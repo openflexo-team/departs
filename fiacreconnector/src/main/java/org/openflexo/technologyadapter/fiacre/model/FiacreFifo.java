@@ -20,7 +20,6 @@
 
 package org.openflexo.technologyadapter.fiacre.model;
 
-import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -28,7 +27,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(FiacreFifo.FiacreFifoImpl.class)
 @XMLElement(xmlTag = "FiacreFifo")
-public interface FiacreFifo extends FiacreObject, ResourceData<FiacreFifo> {
+public interface FiacreFifo extends FiacreObject {
 
 	public static final String FIACRE_FIFO_KEY = "FiacreFifo";
 

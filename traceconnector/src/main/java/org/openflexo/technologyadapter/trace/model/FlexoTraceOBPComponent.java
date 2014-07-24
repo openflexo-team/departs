@@ -20,21 +20,26 @@
 
 package org.openflexo.technologyadapter.trace.model;
 
-import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
 
+import Parser.Component;
+
 @ModelEntity
-@ImplementationClass(FlexoComponent.FlexoComponentImpl.class)
+@ImplementationClass(FlexoTraceOBPComponent.FlexoTraceOBPComponentImpl.class)
 @XMLElement(xmlTag = "FlexoComponent")
-public interface FlexoComponent extends FlexoTraceObject, ResourceData<FlexoComponent> {
+public interface FlexoTraceOBPComponent extends FlexoTraceOBPObject{
 
 	public static final String COMPONENT_KEY = "component";
+	
+	public Component getComponent();
 
-	public static abstract class FlexoComponentImpl extends FlexoTraceObjectImpl implements FlexoComponent {
+	public void setComponent(Component component);
 
-		public FlexoComponentImpl() {
+	public static abstract class FlexoTraceOBPComponentImpl extends FlexoTraceOBPObjectImpl implements FlexoTraceOBPComponent {
+
+		public FlexoTraceOBPComponentImpl() {
 			// TODO Auto-generated constructor stub
 		}
 

@@ -21,6 +21,8 @@
 package org.openflexo.technologyadapter.trace.model;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.model.annotations.Adder;
@@ -36,35 +38,21 @@ import org.openflexo.model.annotations.Getter.Cardinality;
 import Parser.ConfigData;
 
 @ModelEntity
-@ImplementationClass(FlexoConfigData.FlexoConfigDataImpl.class)
-@XMLElement(xmlTag = "FlexoConfigData")
-public interface FlexoConfigData extends FlexoTraceObject, ResourceData<FlexoConfigData> {
+@ImplementationClass(FlexoTraceOBPContext.FlexoTraceOBPContextImpl.class)
+@XMLElement(xmlTag = "FlexoTraceOBPContext")
+public interface FlexoTraceOBPContext extends FlexoTraceOBPObject{
 
-	public static final String CONFIG_DATA_KEY = "configData";
+	public static final String CONTEXT_KEY = "context";
 	
-	@PropertyIdentifier(type = List.class)
-	public static final String PROCESS_KEY = "process";
+	@Getter(value=CONTEXT_KEY, ignoreType=true)
+	public Parser.Context getTraceOBPContext();
 	
-	@Getter(value=CONFIG_DATA_KEY, ignoreType=true)
-	public ConfigData getConfigData();
-	@Setter(CONFIG_DATA_KEY)
-	public void setConfigData(ConfigData configData);
-	
-	@Getter(value = PROCESS_KEY, cardinality = Cardinality.LIST)
-	public List<FlexoProcess> getFlexoProcess();
+	@Setter(CONTEXT_KEY)
+	public void setTraceOBPContext(Parser.Context context);
 
-	@Setter(PROCESS_KEY)
-	public void setFlexoProcess(List<FlexoProcess> flexoProcess);
+	public static abstract class FlexoTraceOBPContextImpl extends FlexoTraceOBPObjectImpl implements FlexoTraceOBPContext {
 
-	@Adder(PROCESS_KEY)
-	public void addToFlexoProcess(FlexoProcess flexoProcess);
-
-	@Remover(PROCESS_KEY)
-	public void removeFromFlexoProcess(FlexoProcess flexoProcess);
-
-	public static abstract class FlexoConfigDataImpl extends FlexoTraceObjectImpl implements FlexoConfigData {
-
-		public FlexoConfigDataImpl() {
+		public FlexoTraceOBPContextImpl() {
 			// TODO Auto-generated constructor stub
 		}
 

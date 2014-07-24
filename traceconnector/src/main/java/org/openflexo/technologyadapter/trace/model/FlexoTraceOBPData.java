@@ -20,30 +20,36 @@
 
 package org.openflexo.technologyadapter.trace.model;
 
-import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
 
-import Parser.Transition;
-
 @ModelEntity
-@ImplementationClass(FlexoTransition.FlexoTransitionImpl.class)
-@XMLElement(xmlTag = "FlexoTransition")
-public interface FlexoTransition extends FlexoTraceObject, ResourceData<FlexoTransition> {
+@ImplementationClass(FlexoTraceOBPData.FlexoTraceOBPDataImpl.class)
+@XMLElement(xmlTag = "FlexoTraceOBPData")
+public interface FlexoTraceOBPData extends FlexoTraceOBPObject{
 
-	public static final String TRANSITION_KEY = "Transition";
+	public static final String DATA_KEY = "data";
 	
-	@Getter(value=TRANSITION_KEY, ignoreType=true)
-	public Transition getTransition();
-	@Setter(TRANSITION_KEY)
-	public void setTransition(Transition transition);
+	public static final String VALUE_KEY = "value";
+	
+	@Getter(value=DATA_KEY, ignoreType=true)
+	public Parser.Donnee getDonnee();
+	
+	@Setter(DATA_KEY)
+	public void setDonnee(Parser.Donnee donnee);
 
-	public static abstract class FlexoTransitionImpl extends FlexoTraceObjectImpl implements FlexoTransition {
+	@Getter(value = VALUE_KEY)
+	public String getValue();
+	
+	@Setter(value = VALUE_KEY)
+	public void setValue(String value);
+	
+	public static abstract class FlexoTraceOBPDataImpl extends FlexoTraceOBPObjectImpl implements FlexoTraceOBPData {
 
-		public FlexoTransitionImpl() {
+		public FlexoTraceOBPDataImpl() {
 			// TODO Auto-generated constructor stub
 		}
 

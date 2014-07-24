@@ -38,8 +38,8 @@ import Parser.TraceOBP;
 
 @ModelEntity
 @ImplementationClass(FlexoTraceOBP.FlexoTraceOBPImpl.class)
-@XMLElement(xmlTag = "TraceOBP")
-public interface FlexoTraceOBP extends FlexoTraceObject, ResourceData<FlexoTraceOBP> {
+@XMLElement(xmlTag = "FlexoTraceOBP")
+public interface FlexoTraceOBP extends FlexoTraceOBPObject, ResourceData<FlexoTraceOBP> {
 
 	public static final String TRACE_OBP_KEY = "traceOBP";
 	
@@ -53,34 +53,34 @@ public interface FlexoTraceOBP extends FlexoTraceObject, ResourceData<FlexoTrace
 	public void setTraceOBP(TraceOBP traceOBP);
 
 	@Getter(value = CONFIG_DATA_KEY, cardinality = Cardinality.LIST)
-	public List<FlexoConfigData> getFlexoConfigData();
+	public List<FlexoTraceOBPConfigData> getFlexoConfigData();
 
 	@Setter(CONFIG_DATA_KEY)
-	public void setFlexoConfigData(List<FlexoConfigData> flexoConfigData);
+	public void setFlexoConfigData(List<FlexoTraceOBPConfigData> flexoConfigData);
 
 	@Adder(CONFIG_DATA_KEY)
-	public void addToFlexoConfigData(FlexoConfigData flexoConfigData);
+	public void addToFlexoConfigData(FlexoTraceOBPConfigData flexoConfigData);
 
 	@Remover(CONFIG_DATA_KEY)
-	public void removeFromFlexoConfigData(FlexoConfigData flexoConfigData);
+	public void removeFromFlexoConfigData(FlexoTraceOBPConfigData flexoConfigData);
 
 	@Getter(value = TRANSITIONS_KEY, cardinality = Cardinality.LIST)
-	public List<FlexoTransition> getFlexoTransitions();
+	public List<FlexoTraceOBPTransition> getFlexoTransitions();
 
 	@Setter(TRANSITIONS_KEY)
-	public void setFlexoTransitions(List<FlexoTransition> flexoTransition);
+	public void setFlexoTransitions(List<FlexoTraceOBPTransition> flexoTransition);
 
 	@Adder(TRANSITIONS_KEY)
-	public void addToFlexoTransitions(FlexoTransition flexoTransition);
+	public void addToFlexoTransitions(FlexoTraceOBPTransition flexoTransition);
 
 	@Remover(TRANSITIONS_KEY)
-	public void removeFromFlexoTransitions(FlexoTransition flexoTransition);
+	public void removeFromFlexoTransitions(FlexoTraceOBPTransition flexoTransition);
 
 	public TraceModelConverter getConverter();
 
 	public void setConverter(TraceModelConverter converter);
 
-	public static abstract class FlexoTraceOBPImpl extends FlexoTraceObjectImpl implements FlexoTraceOBP {
+	public static abstract class FlexoTraceOBPImpl extends FlexoTraceOBPObjectImpl implements FlexoTraceOBP {
 
 		public FlexoTraceOBPImpl() {
 			// TODO Auto-generated constructor stub

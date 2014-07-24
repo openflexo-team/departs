@@ -26,8 +26,8 @@ import javax.swing.ImageIcon;
 
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.rm.ResourceLocator;
-import org.openflexo.technologyadapter.trace.model.FlexoConfigData;
-import org.openflexo.technologyadapter.trace.model.FlexoTransition;
+import org.openflexo.technologyadapter.trace.model.FlexoTraceOBPConfigData;
+import org.openflexo.technologyadapter.trace.model.FlexoTraceOBPTransition;
 import org.openflexo.technologyadapter.trace.model.FlexoTraceOBP;
 import org.openflexo.toolbox.ImageIconResource;
 
@@ -44,9 +44,9 @@ public class TraceIconLibrary {
 	public static ImageIcon iconForObject(Class<? extends TechnologyObject> objectClass) {
 		if (FlexoTraceOBP.class.isAssignableFrom(objectClass)) {
 			return TRACE_TECHNOLOGY_ICON;
-		}  else if (FlexoTransition.class.isAssignableFrom(objectClass)) {
+		}  else if (FlexoTraceOBPTransition.class.isAssignableFrom(objectClass)) {
 			return TRACE_TRANSITIONS_ICON;
-		} else if (FlexoConfigData.class.isAssignableFrom(objectClass)) {
+		} else if (FlexoTraceOBPConfigData.class.isAssignableFrom(objectClass)) {
 			return TRACE_CONFIG_DATA_ICON;
 		}
 		return null;

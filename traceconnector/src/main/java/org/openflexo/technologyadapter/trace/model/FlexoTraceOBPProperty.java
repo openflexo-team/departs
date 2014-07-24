@@ -18,32 +18,32 @@
  *
  */
 
-package org.openflexo.technologyadapter.fiacre.model;
+package org.openflexo.technologyadapter.trace.model;
 
+import org.openflexo.foundation.resource.ResourceData;
+import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
 
 @ModelEntity
-@ImplementationClass(FiacreState.FiacreStateImpl.class)
-@XMLElement(xmlTag = "FiacreState")
-public interface FiacreState extends FiacreObject {
+@ImplementationClass(FlexoTraceOBPProperty.FlexoTraceOBPPropertyImpl.class)
+@XMLElement(xmlTag = "FlexoTraceOBPProperty")
+public interface FlexoTraceOBPProperty extends FlexoTraceOBPObject {
 
-	public static final String FIACRE_State_KEY = "FiacreState";
+	public static final String PROPERTY_KEY = "property";
+	
+	@Getter(value=PROPERTY_KEY, ignoreType=true)
+	public Parser.Property getProperty();
+	
+	@Setter(PROPERTY_KEY)
+	public void setProperty(Parser.Property property);
 
-	public obp.fiacre.model.State getFiacreState();
+	public static abstract class FlexoTraceOBPPropertyImpl extends FlexoTraceOBPObjectImpl implements FlexoTraceOBPProperty {
 
-	public void setFiacreState(obp.fiacre.model.State fiacreState);
-
-	public static abstract class FiacreStateImpl extends FiacreObjectImpl implements FiacreState {
-
-		public FiacreStateImpl() {
+		public FlexoTraceOBPPropertyImpl() {
 			// TODO Auto-generated constructor stub
-		}
-
-		@Override
-		public String getFiacreCode() {
-			return "State" + getName();
 		}
 
 		@Override
