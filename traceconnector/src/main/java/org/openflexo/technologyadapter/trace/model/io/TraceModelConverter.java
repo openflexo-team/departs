@@ -19,6 +19,7 @@ import org.openflexo.technologyadapter.trace.model.FlexoTraceOBPData;
 import org.openflexo.technologyadapter.trace.model.FlexoTraceOBPProcess;
 import org.openflexo.technologyadapter.trace.model.FlexoTraceOBPObject;
 import org.openflexo.technologyadapter.trace.model.FlexoTraceOBP;
+import org.openflexo.technologyadapter.trace.model.FlexoTraceOBPState;
 import org.openflexo.technologyadapter.trace.model.FlexoTraceOBPTransition;
 
 import Parser.ConfigData;
@@ -33,7 +34,6 @@ public class TraceModelConverter {
 	protected final Map<Object, FlexoTraceOBPObject> traceObjects = new HashMap<Object, FlexoTraceOBPObject>();
 
 	private ModelFactory factory;
-	private ModelContext modelContext;
 	private TraceTechnologyAdapter technologyAdapter;
 	
 	/**
@@ -48,7 +48,8 @@ public class TraceModelConverter {
 					FlexoTraceOBPData.class,
 					FlexoTraceOBPProcess.class,
 					FlexoTraceOBPTransition.class,
-					FlexoTraceOBPConfigData.class));
+					FlexoTraceOBPConfigData.class,
+					FlexoTraceOBPState.class));
 		} catch (ModelDefinitionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -107,18 +108,23 @@ public class TraceModelConverter {
 		}
 		flexoProcess.setProcess(process);
 		flexoProcess.setTechnologyAdapter(technologyAdapter);
-		flexoProcess.setName(process.getProcessName());
-		flexoProcess.setState(process.getProcessState());
+		flexoProcess.setState(convertState(process.getProcessState(), traceOBP));
 		traceObjects.put(process, flexoProcess);
 		return flexoProcess;
+	}
+	
+	public FlexoTraceOBPState convertState(String state, FlexoTraceOBP traceOBP){
+		FlexoTraceOBPState flexoState = factory.newInstance(FlexoTraceOBPState.class);
+		flexoState.setName(state);
+		flexoState.setTechnologyAdapter(technologyAdapter);
+		traceObjects.put(state, flexoState);
+		return flexoState;
 	}
 	
 	public FlexoTraceOBPData convertData(Parser.Donnee donnee, FlexoTraceOBP traceOBP){
 		FlexoTraceOBPData flexoData = factory.newInstance(FlexoTraceOBPData.class);
 		flexoData.setDonnee(donnee);
 		flexoData.setTechnologyAdapter(technologyAdapter);
-		flexoData.setName(donnee.varName);
-		flexoData.setValue(donnee.toStringAnalyseContenu());
 		traceObjects.put(donnee, flexoData);
 		return flexoData;
 	}

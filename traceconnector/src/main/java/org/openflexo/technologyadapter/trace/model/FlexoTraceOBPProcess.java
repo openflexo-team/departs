@@ -45,7 +45,7 @@ public interface FlexoTraceOBPProcess extends FlexoTraceOBPObject{
 	@PropertyIdentifier(type = List.class)
 	public static final String DATA_KEY = "data";
 	
-	@PropertyIdentifier(type = String.class)
+	@PropertyIdentifier(type = FlexoTraceOBPState.class)
 	public static final String PROCESS_STATE_KEY = "state";
 	
 	@Getter(value=PROCESS_KEY, ignoreType=true)
@@ -53,10 +53,10 @@ public interface FlexoTraceOBPProcess extends FlexoTraceOBPObject{
 	@Setter(PROCESS_KEY)
 	public void setProcess(Parser.Process process);
 	
-	@Getter(value = PROCESS_STATE_KEY)
-	public String getState();
-	@Setter(value = PROCESS_STATE_KEY)
-	public void setState(String state);
+	@Getter(value = PROCESS_STATE_KEY, inverse = FlexoTraceOBPState.PROCESS_KEY)
+	public FlexoTraceOBPState getState();
+	@Setter(PROCESS_STATE_KEY)
+	public void setState(FlexoTraceOBPState state);
 	
 	@Getter(value = DATA_KEY, cardinality = Cardinality.LIST)
 	public List<FlexoTraceOBPData> getFlexoData();
@@ -99,6 +99,16 @@ public interface FlexoTraceOBPProcess extends FlexoTraceOBPObject{
 			Matcher makeMatch = id.matcher(getName());
 			makeMatch.find();
 			return makeMatch.group();
+		}
+		
+		@Override
+		public String getName() {
+			return getProcess().getProcessName();
+		}
+		
+		@Override
+		public String getValue() {
+			return getProcessType()+"{"+getProcessID()+"}";
 		}
 
 	}

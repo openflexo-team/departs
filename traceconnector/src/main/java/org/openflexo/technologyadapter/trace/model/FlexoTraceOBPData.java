@@ -33,19 +33,11 @@ public interface FlexoTraceOBPData extends FlexoTraceOBPObject{
 
 	public static final String DATA_KEY = "data";
 	
-	public static final String VALUE_KEY = "value";
-	
 	@Getter(value=DATA_KEY, ignoreType=true)
 	public Parser.Donnee getDonnee();
 	
 	@Setter(DATA_KEY)
 	public void setDonnee(Parser.Donnee donnee);
-
-	@Getter(value = VALUE_KEY)
-	public String getValue();
-	
-	@Setter(value = VALUE_KEY)
-	public void setValue(String value);
 	
 	public static abstract class FlexoTraceOBPDataImpl extends FlexoTraceOBPObjectImpl implements FlexoTraceOBPData {
 
@@ -58,6 +50,16 @@ public interface FlexoTraceOBPData extends FlexoTraceOBPObject{
 			return getName();
 		}
 
+		@Override
+		public String getName() {
+			return getDonnee().varName;
+		}
+		
+		@Override
+		public String getValue() {
+			return getDonnee().varValue.toString();
+		}
+		
 	}
 
 }

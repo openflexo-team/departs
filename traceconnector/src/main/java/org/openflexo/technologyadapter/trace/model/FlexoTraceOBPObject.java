@@ -56,6 +56,8 @@ public interface FlexoTraceOBPObject extends TechnologyObject<TraceTechnologyAda
 	public TraceTechnologyAdapter getTechnologyAdapter();
 
 	public void setTechnologyAdapter(TraceTechnologyAdapter technologyAdapter);
+	
+	String getValue();
 
 	public static abstract class FlexoTraceOBPObjectImpl extends FlexoObjectImpl implements FlexoTraceOBPObject {
 

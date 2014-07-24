@@ -18,35 +18,30 @@
  *
  */
 
-package org.openflexo.technologyadapter.fiacre.model;
-
+package org.openflexo.technologyadapter.trace.model;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
 
 @ModelEntity
-@ImplementationClass(FiacreState.FiacreStateImpl.class)
-@XMLElement(xmlTag = "FiacreState")
-public interface FiacreState extends FiacreObject {
+@ImplementationClass(FlexoTraceOBPState.FlexoTraceOBPStateImpl.class)
+@XMLElement(xmlTag = "FlexoTraceOBPState")
+public interface FlexoTraceOBPState extends FlexoTraceOBPObject{
+	
+	@PropertyIdentifier(type = FlexoTraceOBPProcess.class)
+	public static final String PROCESS_KEY = "process";
+	
+	@Getter(value = PROCESS_KEY, inverse = FlexoTraceOBPProcess.PROCESS_STATE_KEY)
+	public FlexoTraceOBPProcess getProcess();
+	@Setter(PROCESS_KEY)
+	public void setProcess(FlexoTraceOBPProcess process);
 
-	public static final String FIACRE_STATE_KEY = "FiacreState";
-	public static final String FIACRE_PROCESS_KEY = "FiacreProcess";
+	public static abstract class FlexoTraceOBPStateImpl extends FlexoTraceOBPObjectImpl implements FlexoTraceOBPState {
 
-	@Getter(value=FIACRE_STATE_KEY, ignoreType=true)
-	public obp.fiacre.model.State getFiacreState();
-	@Setter(FIACRE_STATE_KEY)
-	public void setFiacreState(obp.fiacre.model.State fiacreState);
-
-	@Getter(value=FIACRE_PROCESS_KEY, ignoreType=true, inverse= FiacreProcess.FIACRE_STATES_KEY)
-	public FiacreProcess getFiacreProcess();
-	@Setter(FIACRE_PROCESS_KEY)
-	public void setFiacreProcess(FiacreProcess fiacreProcess);
-
-	public static abstract class FiacreStateImpl extends FiacreObjectImpl implements FiacreState {
-
-		public FiacreStateImpl() {
+		public FlexoTraceOBPStateImpl() {
 			// TODO Auto-generated constructor stub
 		}
 
@@ -56,8 +51,8 @@ public interface FiacreState extends FiacreObject {
 		}
 		
 		@Override
-		public String getName() {
-			return getFiacreState().getName();
+		public String getValue() {
+			return getName();
 		}
 
 	}

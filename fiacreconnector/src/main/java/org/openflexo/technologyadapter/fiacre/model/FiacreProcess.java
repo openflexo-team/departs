@@ -62,7 +62,7 @@ public interface FiacreProcess extends FiacreObject{
 	@Remover(FIACRE_FIFOS_KEY)
 	public void removeFromFiacreFifos(FiacreFifo fiacreFifo);
 	
-	@Getter(value = FIACRE_STATES_KEY, cardinality = Cardinality.LIST)
+	@Getter(value = FIACRE_STATES_KEY, cardinality = Cardinality.LIST, inverse = FiacreState.FIACRE_PROCESS_KEY)
 	public List<FiacreState> getFiacreStates();
 
 	@Setter(FIACRE_STATES_KEY)
