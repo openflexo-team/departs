@@ -19,7 +19,9 @@
  */
 package org.openflexo.module.traceanalysis.view;
 
-import org.openflexo.module.traceanalysis.model.TraceAnalysis;
+import java.util.logging.Logger;
+
+import org.openflexo.module.traceanalysis.model.ConfigurationMask;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.FIBModuleView;
@@ -27,14 +29,15 @@ import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.FlexoPerspective;
 
 @SuppressWarnings("serial")
-public class TraceAnalysisModuleView extends FIBModuleView<TraceAnalysis>{
-
+public class ConfigurationMaskModuleView extends FIBModuleView<ConfigurationMask>{
+	static final Logger logger = Logger.getLogger(ConfigurationMaskModuleView.class.getPackage().getName());
+	
 	private final FlexoPerspective perspective;
 	
-	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/Widget/FIBTraceAnalysisModuleView.fib");
+	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/Widget/FIBConfigurationMaskModuleView.fib");
 	
-	public TraceAnalysisModuleView(TraceAnalysis traceAnalysis, FlexoController controller, FlexoPerspective perspective) {
-		super(traceAnalysis, controller, FIB_FILE);
+	public ConfigurationMaskModuleView(ConfigurationMask configurationMask, FlexoController controller, FlexoPerspective perspective) {
+		super(configurationMask, controller, FIB_FILE);
 		this.perspective = perspective;
 	}
 

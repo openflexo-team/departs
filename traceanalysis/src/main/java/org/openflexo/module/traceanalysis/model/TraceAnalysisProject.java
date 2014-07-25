@@ -21,9 +21,9 @@ package org.openflexo.module.traceanalysis.model;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.foundation.FlexoException;
@@ -31,22 +31,31 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.InvalidArgumentException;
 import org.openflexo.foundation.nature.ProjectWrapper;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
+import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.View;
 import org.openflexo.foundation.view.VirtualModelInstance;
-import org.openflexo.foundation.view.VirtualModelModelSlotInstance;
-import org.openflexo.foundation.view.rm.ViewResource;
+import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 
 public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectWrapper<TraceAnalysisProjectNature> {
 
+	private static final Logger logger = Logger.getLogger(TraceAnalysisProject.class.getPackage().getName());
+	
 	private final FlexoProject project;
 
 	private final TraceAnalysisProjectNature projectNature;
 	
 	private final ViewPoint traceAnalysisViewPoint;
-	private final Map<View, TraceAnalysis> traceAnalysis;
+	private ArrayList<TraceAnalysisVirtualModelInstance> traceAnalysisVirtualModelInstances;
+	
+	private List<TraceVirtualModelInstance> traceVirtualModelInstances ;
+	private SystemVirtualModelInstance systemVirtualModelInstance ;
+	private ContextVirtualModelInstance contextVirtualModelInstance;
+	private ObserverVirtualModelInstance observerVirtualModelInstance;
+	
+	private View traceAnalysisView;
 
 	protected TraceAnalysisProject(FlexoProject project, TraceAnalysisProjectNature projectNature) throws FileNotFoundException,
 			ResourceLoadingCancelledException, InvalidArgumentException, FlexoException {
@@ -54,16 +63,6 @@ public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectW
 		this.projectNature = projectNature;
 		
 		ViewPointResource traceAnalsyisViewPointResource = getProject().getServiceManager().getViewPointLibrary().getViewPointResource(TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
-
-		/*ViewResource taeViewResource = project.getViewLibrary().getResource(
-				project.getURI() + TAEProjectNature.TRACE_ANALYSIS_VIEW_RELATIVE_URI);*/
-	
-		/*if (taeViewResource == null) {
-			throw new InvalidArgumentException("Could not retrieve TraceAnalysisView resource (searched uri="
-					+ (project.getURI() + TAEProjectNature.TRACE_ANALYSIS_VIEW_RELATIVE_URI) + ")");
-		}*/
-
-		traceAnalysis = new HashMap<View, TraceAnalysis>();
 		
 		try {
 			traceAnalysisViewPoint = traceAnalsyisViewPointResource.getResourceData(null);
@@ -106,57 +105,108 @@ public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectW
 	public VirtualModel getSystemVirtualModel(){
 		return getTraceAnaylsisViewPoint().getVirtualModelNamed("SystemVirtualModel");
 	}
-
-	/*public View getTraceAnalysisView() {
-		return traceAnalysisView;
-	}*/
 	
-	public List<TraceAnalysis> getTraceAnalysis() {
-		ArrayList<TraceAnalysis> returned = new ArrayList<TraceAnalysis>();
-	
-		try{
-			for (View view : project.getViewLibrary().getViewsForViewPointWithURI(TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI)) {
-				returned.add(getTraceAnalysis(view));
-			}
-		}
-		catch (InvalidArgumentException e) {
-			TraceAnalysisProjectNature.logger.warning(e.getMessage());
-		}
-
-		return returned;
-	}
-	
-	public TraceAnalysis getTraceAnalysis(View view) throws InvalidArgumentException {
-		TraceAnalysis returned = traceAnalysis.get(view);
-		if (returned == null) {
-			returned = new TraceAnalysis(view, this);
-			traceAnalysis.put(view, returned);
-			getPropertyChangeSupport().firePropertyChange("getTraceAnalysis()", null, traceAnalysis);
-		}
-		return returned;
-	}
-	
-	public TraceAnalysis getTraceAnalysis(View view,VirtualModelInstance systemVM, VirtualModelInstance contextVM, VirtualModelInstance observerVM, VirtualModelInstance traceVM) throws InvalidArgumentException {
-		TraceAnalysis returned = traceAnalysis.get(view);
-		if (returned == null) {
-			returned = new TraceAnalysis(view, this);
-			traceAnalysis.put(view, returned);
-			getPropertyChangeSupport().firePropertyChange("getTraceAnalysis()", null, traceAnalysis);
-		}
-		returned.setSystemVirtualModelInstance(new SystemVirtualModelInstance(systemVM,returned));
-		returned.setContextVirtualModelInstance(new ContextVirtualModelInstance(contextVM,returned));
-		returned.setObserverVirtualModelInstance(new ObserverVirtualModelInstance(observerVM,returned));
-		returned.setTraceVirtualModelInstance(new TraceVirtualModelInstance(traceVM,returned));
-		return returned;
-	}
-
-	public TraceAnalysis getTraceAnalysis(String traceAnalysisName) {
-		for (TraceAnalysis traceAnalysis : getTraceAnalysis()) {
-			if (traceAnalysis.getName().equals(traceAnalysisName)) {
-				return traceAnalysis;
+	private VirtualModelInstance getVirtualModelInstanceConformToNamedVirtualModel(String name){
+		for (VirtualModelInstance vmi : traceAnalysisView.getVirtualModelInstances()) {
+			if(vmi.getVirtualModel().getName().equals(name)){
+				return vmi;
 			}
 		}
 		return null;
+	}
+	
+	public List<FlexoConceptInstance> getInstances(FlexoConcept concept) {
+		return getVirtualModelInstanceConformToNamedVirtualModel(concept.getVirtualModel().getName()).getFlexoConceptInstances(concept);
+	}
+	
+	public List<TraceAnalysisVirtualModelInstance> getTraceAnalysisVirtualModelInstances(){
+		
+		if(traceAnalysisVirtualModelInstances==null){
+			traceAnalysisVirtualModelInstances = new ArrayList<TraceAnalysisVirtualModelInstance>();
+			traceAnalysisVirtualModelInstances.add(getContextVirtualModelInstance());
+			traceAnalysisVirtualModelInstances.add(getSystemVirtualModelInstance());
+			traceAnalysisVirtualModelInstances.add(getObserverVirtualModelInstance());
+		}
+		
+		return traceAnalysisVirtualModelInstances;
+	}
+	
+	public SystemVirtualModelInstance getSystemVirtualModelInstance() {
+		if(systemVirtualModelInstance==null){
+			try {
+				systemVirtualModelInstance=new SystemVirtualModelInstance(getVirtualModelInstanceConformToNamedVirtualModel("SystemVirtualModel"), this);
+			} catch (InvalidArgumentException e) {
+				logger.log(Level.SEVERE, "No System found");
+			}
+		}
+		return systemVirtualModelInstance;
+	}
+	
+	public ContextVirtualModelInstance getContextVirtualModelInstance() {
+		if(contextVirtualModelInstance==null){
+			try {
+				contextVirtualModelInstance=new ContextVirtualModelInstance(getVirtualModelInstanceConformToNamedVirtualModel("ContextVirtualModel"), this);
+			} catch (InvalidArgumentException e) {
+				logger.log(Level.SEVERE, "No Context found");
+			}
+		}
+		return contextVirtualModelInstance;
+	}
+	
+	public ObserverVirtualModelInstance getObserverVirtualModelInstance() {
+		if(observerVirtualModelInstance==null){
+			try {
+				observerVirtualModelInstance=new ObserverVirtualModelInstance(getVirtualModelInstanceConformToNamedVirtualModel("ObserverVirtualModel"), this);
+			} catch (InvalidArgumentException e) {
+				logger.log(Level.SEVERE, "No Observer found");
+			}
+		}
+		return observerVirtualModelInstance;
+	}
+	
+	public List<TraceVirtualModelInstance> getTraceVirtualModelInstances() {
+		if(traceVirtualModelInstances==null){
+			traceVirtualModelInstances=new ArrayList<TraceVirtualModelInstance>();
+		}
+		return traceVirtualModelInstances;
+	}
+	
+	public TraceVirtualModelInstance getTraceVirtualModelInstance(VirtualModelInstance vmi) {
+		for(TraceVirtualModelInstance traceVirtualModelInstance : getTraceVirtualModelInstances()){
+			if(traceVirtualModelInstance.getVirtualModelInstance().getURI().equals(vmi.getURI())){
+				return traceVirtualModelInstance;
+			}
+		}
+
+		try {
+			TraceVirtualModelInstance traceVirtualModelInstance = new TraceVirtualModelInstance(getVirtualModelInstanceConformToNamedVirtualModel("TraceVirtualModel"), this);
+			getTraceVirtualModelInstances().add(traceVirtualModelInstance);
+			getPropertyChangeSupport().firePropertyChange("traceVirtualModelInstances", null, getTraceVirtualModelInstances());
+			return traceVirtualModelInstance;
+		} catch (InvalidArgumentException e) {
+			logger.log(Level.SEVERE, "Trace virtual model instance cannot be instanciated");
+		};
+		return null;
+	}
+	
+	public void setSystemVirtualModelInstance(SystemVirtualModelInstance systemVirtualModelInstance) {
+		this.systemVirtualModelInstance = systemVirtualModelInstance;
+	}
+
+	public void setContextVirtualModelInstance(ContextVirtualModelInstance contextVirtualModelInstance) {
+		this.contextVirtualModelInstance = contextVirtualModelInstance;
+	}
+
+	public void setObserverVirtualModelInstance(ObserverVirtualModelInstance observerVirtualModelInstance) {
+		this.observerVirtualModelInstance = observerVirtualModelInstance;
+	}
+
+	public View getTraceAnalysisView() {
+		return traceAnalysisView;
+	}
+
+	public void setTraceAnalysisView(View traceAnalysisView) {
+		this.traceAnalysisView = traceAnalysisView;
 	}
 
 }

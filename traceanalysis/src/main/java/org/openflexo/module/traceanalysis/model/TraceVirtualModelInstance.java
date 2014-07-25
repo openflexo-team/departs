@@ -46,13 +46,16 @@ public class TraceVirtualModelInstance extends TraceAnalysisVirtualModelInstance
 	
 	private List<ConfigurationMask> configurationMasks;
 	
-	public TraceVirtualModelInstance(VirtualModelInstance virtualModelInstance, TraceAnalysis traceAnalysis)
+	private ConfigurationMask selectedMask;
+	private FlexoTraceOBPConfigData selectedFlexoConfigData;
+	
+	public TraceVirtualModelInstance(VirtualModelInstance virtualModelInstance, TraceAnalysisProject traceAnalysisProject)
 			throws InvalidArgumentException {
-		super(virtualModelInstance,traceAnalysis);
-		for(FlexoConceptInstance fciMask : getVirtualModelInstance().getFlexoConceptInstances(getMaskFlexoConcept())){
+		super(virtualModelInstance,traceAnalysisProject);
+		/*for(FlexoConceptInstance fciMask : getVirtualModelInstance().getFlexoConceptInstances(getMaskFlexoConcept())){
 			ConfigurationMask mask = new ConfigurationMask(fciMask, traceAnalysis);
 			getConfigurationMasks().add(mask);
-		}
+		}*/
 	}
 
 	public List<FlexoTraceOBPConfigData> getConfigurations(){
@@ -163,11 +166,27 @@ public class TraceVirtualModelInstance extends TraceAnalysisVirtualModelInstance
 				return mask;
 			}
 		}
-		ConfigurationMask mask = new ConfigurationMask(flexoConceptInstance, getTraceAnalysis());
+		ConfigurationMask mask = new ConfigurationMask(flexoConceptInstance);
 		getConfigurationMasks().add(mask);
 		getPropertyChangeSupport().firePropertyChange("configurationMasks", null, this);
 		return mask;
 	}
 	
+	
+	public ConfigurationMask getSelectedMask() {
+		return selectedMask;
+	}
+
+	public void setSelectedMask(ConfigurationMask selectedMask) {
+		this.selectedMask = selectedMask;
+	}
+	
+	public FlexoTraceOBPConfigData getSelectedFlexoConfigData() {
+		return selectedFlexoConfigData;
+	}
+
+	public void setSelectedFlexoConfigData(FlexoTraceOBPConfigData selectedFlexoConfigData) {
+		this.selectedFlexoConfigData = selectedFlexoConfigData;
+	}
 	
 }

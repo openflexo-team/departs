@@ -15,12 +15,12 @@ public class TraceAnalysisVirtualModelInstance extends DefaultFlexoObject implem
 	
 	private final VirtualModelInstance virtualModelInstance;
 	
-	private final TraceAnalysis traceAnalysis;
+	private final TraceAnalysisProject traceAnalysisProject;
 	
-	public TraceAnalysisVirtualModelInstance(VirtualModelInstance virtualModelInstance, TraceAnalysis traceAnalysis) throws InvalidArgumentException {
+	public TraceAnalysisVirtualModelInstance(VirtualModelInstance virtualModelInstance, TraceAnalysisProject traceAnalysisProject) throws InvalidArgumentException {
 		super();
 		this.virtualModelInstance = virtualModelInstance;
-		this.traceAnalysis = traceAnalysis;
+		this.traceAnalysisProject = traceAnalysisProject;
 		virtualModelInstance.getPropertyChangeSupport().addPropertyChangeListener(this);
 	}
 	
@@ -44,8 +44,8 @@ public class TraceAnalysisVirtualModelInstance extends DefaultFlexoObject implem
 		return virtualModelInstance.getFlexoConceptInstances(name);
 	}
 	
-	public TraceAnalysis getTraceAnalysis(){
-		return traceAnalysis;
+	public TraceAnalysisProject getTraceAnalysisProject(){
+		return traceAnalysisProject;
 	}
 	
 	@Override

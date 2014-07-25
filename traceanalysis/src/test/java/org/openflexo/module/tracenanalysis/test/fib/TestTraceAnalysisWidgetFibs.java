@@ -19,12 +19,7 @@ public class TestTraceAnalysisWidgetFibs extends GenericFIBTestCase {
 
 	@Test
 	public void testFIBConfigurationMaskBrowserWidget() {
-		validateFIB("Fib/Widget/FIBConfigurationMaskBrowser.fib");
-	}
-
-	@Test
-	public void testFIBInspectedConfigurationWidget() {
-		validateFIB("Fib/Widget/FIBInspectedConfigurationModuleView.fib");
+		validateFIB("Fib/Widget/FIBConfigurationMaskModuleView.fib");
 	}
 
 	@Test

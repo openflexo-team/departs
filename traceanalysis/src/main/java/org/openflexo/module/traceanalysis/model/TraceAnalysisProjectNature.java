@@ -24,14 +24,21 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.openflexo.components.ProgressWindow;
+import org.openflexo.fib.FIBLibrary;
+import org.openflexo.fib.controller.FIBDialog;
+import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.nature.ProjectNatureService;
-import org.openflexo.foundation.view.action.CreateView;
-import org.openflexo.foundation.view.rm.ViewResource;
+import org.openflexo.foundation.view.View;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.logging.FlexoLogger;
+import org.openflexo.module.traceanalysis.TraceAnalysisCst;
+import org.openflexo.module.traceanalysis.model.action.CreateTraceAnalysisProject;
+import org.openflexo.view.FlexoFrame;
+import org.openflexo.view.controller.FlexoFIBController;
 
 public class TraceAnalysisProjectNature implements ProjectNature<TraceAnalysisProjectNature, TraceAnalysisProject> {
 
@@ -75,9 +82,9 @@ public class TraceAnalysisProjectNature implements ProjectNature<TraceAnalysisPr
 		if (project.getServiceManager().getViewPointLibrary().getViewPoints().size() == 0) {
 			return false;
 		}
-		/*if (project.getViewLibrary().getAllResources().size() == 0) {
+		if (project.getViewLibrary().getViewsForViewPointWithURI(TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI).size() == 0) {
 			return false;
-		}*/
+		}
 		TraceAnalysisProject factory = getTraceAnalysisProject(project);
 		if (factory == null) {
 			return false;
@@ -103,24 +110,19 @@ public class TraceAnalysisProjectNature implements ProjectNature<TraceAnalysisPr
 	 */
 	@Override
 	public void givesNature(FlexoProject project, FlexoEditor editor) {
-
+		
 		ViewPointResource traceAnalysisViewPointResource = editor.getServiceManager().getViewPointLibrary().getViewPointResource(TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
 		
 		if (traceAnalysisViewPointResource == null) {
 			logger.log(Level.SEVERE, "No trace analysis viewpoint found in resource centers");
 		}
-
-		/*ViewResource traceAnalysisViewResource = project.getViewLibrary().getResource(
-				project.getURI() + TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
-
-		if (traceAnalysisViewResource == null) {
-			CreateView action = CreateView.actionType.makeNewAction(project.getViewLibrary().getRootFolder(), null, editor);
-			action.setNewViewName(TRACE_ANALYSIS_VIEW_NAME);
-			action.setNewViewTitle(TRACE_ANALYSIS_VIEW_NAME);
-			action.setViewpointResource(traceAnalysisViewPointResource);
-			action.doAction();
-			traceAnalysisViewResource = (ViewResource) action.getNewView().getResource();
-		}*/
+		TraceAnalysisProject traceAnalysisProject = getProjectWrapper(project);
+		CreateTraceAnalysisProject action = CreateTraceAnalysisProject.actionType.makeNewAction(traceAnalysisProject, null, editor);
+		
+		FIBComponent fibComponent = FIBLibrary.instance().retrieveFIBComponent(TraceAnalysisCst.CREATE_TRACE_ANALYSIS_PROJECT_DIALOG_FIB);
+		FIBDialog dialog = FIBDialog.instanciateAndShowDialog(fibComponent, action, ProgressWindow.instance(), true,
+				new FlexoFIBController(fibComponent));
+		action.doAction();
 
 	}
 

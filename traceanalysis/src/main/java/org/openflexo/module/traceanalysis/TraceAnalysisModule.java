@@ -21,8 +21,10 @@
 package org.openflexo.module.traceanalysis;
 
 import org.openflexo.module.Module;
+import org.openflexo.module.NatureSpecificModule;
+import org.openflexo.module.traceanalysis.model.TraceAnalysisProjectNature;
 
-public class TraceAnalysisModule extends Module<TAModule> {
+public class TraceAnalysisModule extends NatureSpecificModule<TAModule, TraceAnalysisProjectNature> {
 
 	public static Module<TAModule> INSTANCE = null;
 
@@ -30,9 +32,10 @@ public class TraceAnalysisModule extends Module<TAModule> {
 			
 		super(TAModule.TA_MODULE_NAME, TAModule.TA_MODULE_NAME, TAModule.class, TraceAnalysisPreferences.class, "",
 				null , "TA", TraceAnalysisIconLibrary.TA_SMALL_ICON, TraceAnalysisIconLibrary.TA_MEDIUM_ICON, TraceAnalysisIconLibrary.TA_MEDIUM_ICON,
-				TraceAnalysisIconLibrary.TA_BIG_ICON);
+				TraceAnalysisIconLibrary.TA_BIG_ICON, TraceAnalysisProjectNature.class);
 
 		INSTANCE = this;
+		
 	}
 
 

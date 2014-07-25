@@ -21,25 +21,24 @@ package org.openflexo.module.traceanalysis.widget;
 
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoProject;
 import org.openflexo.module.traceanalysis.controller.TraceAnalysisController;
-import org.openflexo.module.traceanalysis.model.TraceAnalysis;
+import org.openflexo.module.traceanalysis.model.TraceAnalysisProject;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.FIBBrowserView;
 
 @SuppressWarnings("serial")
-public class FIBAnalyzeConceptsBrowser extends FIBBrowserView<TraceAnalysis> {
-	static final Logger logger = Logger.getLogger(FIBAnalyzeConceptsBrowser.class.getPackage().getName());
+public class FIBTraceAnalysisProjectConceptBrowser extends FIBBrowserView<TraceAnalysisProject> {
+	static final Logger logger = Logger.getLogger(FIBTraceAnalysisProjectConceptBrowser.class.getPackage().getName());
 
 	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/Widget/FIBAnalyzeConceptsBrowser.fib");
 
-	public FIBAnalyzeConceptsBrowser(TraceAnalysis traceAnalysis, TraceAnalysisController controller) {
-		super(traceAnalysis, controller, FIB_FILE);
+	public FIBTraceAnalysisProjectConceptBrowser(TraceAnalysisProject traceAnalysisProject, TraceAnalysisController controller) {
+		super(traceAnalysisProject, controller, FIB_FILE);
 		// System.out.println("Showing browser with " + project);
 	}
 
-	public void setTraceAnalysis(TraceAnalysis traceAnalysis) {
-		setDataObject(traceAnalysis);
+	public void setTraceAnalysisProject(TraceAnalysisProject traceAnalysisProject) {
+		setDataObject(traceAnalysisProject);
 	}
 }

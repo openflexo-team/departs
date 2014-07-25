@@ -12,17 +12,15 @@ import org.openflexo.foundation.viewpoint.PrimitiveRole;
 public class ConfigurationMask extends DefaultFlexoObject implements PropertyChangeListener {
 	
 	private final FlexoConceptInstance flexoConceptInstance;
-	private final TraceAnalysis traceAnalysis;
 	private String name;
 	private static String NAME = "name";
 	private List<Object> selection;
 	
 	
 	
-	public ConfigurationMask(FlexoConceptInstance flexoConceptInstance, TraceAnalysis traceAnalysis) {
+	public ConfigurationMask(FlexoConceptInstance flexoConceptInstance) {
 		super();
 		this.flexoConceptInstance = flexoConceptInstance;
-		this.traceAnalysis = traceAnalysis;
 		name = flexoConceptInstance.getFlexoActor(NAME);
 		selection = new ArrayList<Object>();
 	}
@@ -60,10 +58,6 @@ public class ConfigurationMask extends DefaultFlexoObject implements PropertyCha
 			selection.add(selected);
 		}
 		getPropertyChangeSupport().firePropertyChange("selection", null, selection);
-	}
-	
-	public TraceAnalysis getTraceAnalysis(){
-		return traceAnalysis;
 	}
 	
 }

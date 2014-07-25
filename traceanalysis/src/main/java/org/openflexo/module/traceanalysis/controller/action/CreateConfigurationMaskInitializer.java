@@ -29,14 +29,12 @@ import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.module.traceanalysis.TraceAnalysisCst;
 import org.openflexo.module.traceanalysis.TraceAnalysisIconLibrary;
-import org.openflexo.module.traceanalysis.model.TraceAnalysisProject;
-import org.openflexo.module.traceanalysis.model.TraceAnalysis;
-import org.openflexo.module.traceanalysis.model.action.CreateTraceAnalysis;
+import org.openflexo.module.traceanalysis.model.TraceVirtualModelInstance;
 import org.openflexo.module.traceanalysis.model.action.CreateConfigurationMask;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
-public class CreateConfigurationMaskInitializer extends ActionInitializer<CreateConfigurationMask, TraceAnalysis, FlexoObject> {
+public class CreateConfigurationMaskInitializer extends ActionInitializer<CreateConfigurationMask, TraceVirtualModelInstance, FlexoObject> {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 

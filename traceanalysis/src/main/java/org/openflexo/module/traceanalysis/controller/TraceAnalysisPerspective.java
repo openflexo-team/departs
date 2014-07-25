@@ -25,16 +25,14 @@ import javax.swing.ImageIcon;
 
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
-import org.openflexo.model.undo.CompoundEdit;
 import org.openflexo.module.traceanalysis.TraceAnalysisIconLibrary;
-import org.openflexo.module.traceanalysis.model.TraceAnalysis;
 import org.openflexo.module.traceanalysis.model.ConfigurationMask;
-import org.openflexo.module.traceanalysis.view.TraceAnalysisModuleView;
-import org.openflexo.module.traceanalysis.view.InspectedConfigurationModuleView;
-import org.openflexo.module.traceanalysis.widget.FIBAnalyzeConceptsBrowser;
+import org.openflexo.module.traceanalysis.model.TraceAnalysisProject;
+import org.openflexo.module.traceanalysis.model.TraceVirtualModelInstance;
+import org.openflexo.module.traceanalysis.view.ConfigurationMaskModuleView;
+import org.openflexo.module.traceanalysis.view.TraceVirtualModelInstanceModuleView;
+import org.openflexo.module.traceanalysis.widget.FIBTraceAnalysisProjectConceptBrowser;
 import org.openflexo.module.traceanalysis.widget.FIBTraceAnalysisProjectBrowser;
-import org.openflexo.module.traceanalysis.widget.FIBConfigurationMaskBrowser;
-import org.openflexo.technologyadapter.trace.gui.view.FIBTraceView;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.FlexoPerspective;
@@ -44,8 +42,7 @@ public class TraceAnalysisPerspective extends FlexoPerspective {
 	protected static final Logger logger = Logger.getLogger(TraceAnalysisPerspective.class.getPackage().getName());
 
 	private FIBTraceAnalysisProjectBrowser taProjectBrowser = null;
-	private FIBAnalyzeConceptsBrowser analyzeConceptsBrowser = null;
-	private FIBConfigurationMaskBrowser configurationMaskBrowser = null;
+	private FIBTraceAnalysisProjectConceptBrowser analyzeConceptsBrowser = null;
 
 
 	/**
@@ -56,8 +53,7 @@ public class TraceAnalysisPerspective extends FlexoPerspective {
 		// _controller = controller;
 
 		taProjectBrowser = new FIBTraceAnalysisProjectBrowser(controller.getProject(), controller);
-		analyzeConceptsBrowser = new FIBAnalyzeConceptsBrowser(null, controller);
-		configurationMaskBrowser = new FIBConfigurationMaskBrowser(null, controller);
+		analyzeConceptsBrowser = new FIBTraceAnalysisProjectConceptBrowser(null, controller);
 		setTopLeftView(taProjectBrowser);
 	}
 
@@ -77,8 +73,8 @@ public class TraceAnalysisPerspective extends FlexoPerspective {
 
 	@Override
 	public String getWindowTitleforObject(FlexoObject object, FlexoController controller) {
-		if (object instanceof TraceAnalysis) {
-			return ((TraceAnalysis) object).getName();
+		if (object instanceof TraceVirtualModelInstance) {
+			return ((TraceVirtualModelInstance) object).getName();
 		}else if (object instanceof ConfigurationMask) {
 			return ((ConfigurationMask) object).getName();
 		}
@@ -88,24 +84,16 @@ public class TraceAnalysisPerspective extends FlexoPerspective {
 		return "null";
 	}
 
-	public void focusOnTraceAnalysis(TraceAnalysis traceAnalysis) {
-		logger.info("focusOnTraceAnalysis " + traceAnalysis);
-		analyzeConceptsBrowser.setTraceAnalysis(traceAnalysis);
+	public void focusOnTraceAnalysisProject(TraceAnalysisProject traceAnalysisProject) {
+		logger.info("focusOnTraceVirtualModelInstance " + traceAnalysisProject);
+		analyzeConceptsBrowser.setTraceAnalysisProject(traceAnalysisProject);
 		setBottomLeftView(analyzeConceptsBrowser);
-	}
-	
-	public void focusOnConfigurationMask(ConfigurationMask configurationMask) {
-		logger.info("focusOnConfigurationMask " + configurationMask);
-		configurationMaskBrowser.setConfigurationMask(configurationMask);
-		setBottomLeftView(configurationMaskBrowser);
 	}
 
 	@Override
 	public void focusOnObject(FlexoObject object) {
-		if (object instanceof TraceAnalysis) {
-			focusOnTraceAnalysis((TraceAnalysis) object);
-		}else if(object instanceof ConfigurationMask) {
-			focusOnConfigurationMask((ConfigurationMask) object);
+		if (object instanceof TraceAnalysisProject) {
+			focusOnTraceAnalysisProject((TraceAnalysisProject) object);
 		}
 	};
 
@@ -125,8 +113,8 @@ public class TraceAnalysisPerspective extends FlexoPerspective {
 	@Override
 	public void objectWasDoubleClicked(Object object, FlexoController controller) {
 		// logger.info("ViewPointPerspective: object was double-clicked: " + object);
-		if (object instanceof TraceAnalysis) {
-			controller.selectAndFocusObject((TraceAnalysis) object);
+		if (object instanceof TraceVirtualModelInstance) {
+			controller.selectAndFocusObject((TraceVirtualModelInstance) object);
 		} 
 		else if (object instanceof ConfigurationMask) {
 			controller.selectAndFocusObject((ConfigurationMask) object);
@@ -139,7 +127,7 @@ public class TraceAnalysisPerspective extends FlexoPerspective {
 
 	@Override
 	public boolean hasModuleViewForObject(FlexoObject object) {
-		if (object instanceof TraceAnalysis) {
+		if (object instanceof TraceVirtualModelInstance) {
 			return true;
 		}else if (object instanceof ConfigurationMask) {
 			return true;
@@ -149,10 +137,10 @@ public class TraceAnalysisPerspective extends FlexoPerspective {
 
 	@Override
 	public ModuleView<?> createModuleViewForObject(FlexoObject object, boolean editable) {
-		if (object instanceof TraceAnalysis) {
-			return new TraceAnalysisModuleView((TraceAnalysis) object,getController(), this);
+		if (object instanceof TraceVirtualModelInstance) {
+			return new TraceVirtualModelInstanceModuleView((TraceVirtualModelInstance) object,getController(), this);
 		} else if(object instanceof ConfigurationMask){
-			return new InspectedConfigurationModuleView((ConfigurationMask) object,getController(), this);
+			return new ConfigurationMaskModuleView((ConfigurationMask) object,getController(), this);
 		}
 		return super.createModuleViewForObject(object, editable);
 	}

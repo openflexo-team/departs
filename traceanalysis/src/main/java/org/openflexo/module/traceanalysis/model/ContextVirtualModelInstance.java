@@ -29,9 +29,9 @@ import org.openflexo.technologyadapter.cdl.model.CDLUnit;
 
 public class ContextVirtualModelInstance extends TraceAnalysisVirtualModelInstance {
 
-	public ContextVirtualModelInstance(VirtualModelInstance virtualModelInstance, TraceAnalysis traceAnalysis)
+	public ContextVirtualModelInstance(VirtualModelInstance virtualModelInstance, TraceAnalysisProject traceAnalysisProject)
 			throws InvalidArgumentException {
-		super(virtualModelInstance, traceAnalysis);
+		super(virtualModelInstance, traceAnalysisProject);
 		// TODO Auto-generated constructor stub
 	}
 	
