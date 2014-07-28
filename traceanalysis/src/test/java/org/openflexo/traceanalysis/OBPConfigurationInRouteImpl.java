@@ -73,17 +73,11 @@ public class OBPConfigurationInRouteImpl implements OBPConfigurationInRoute {
 
 	@Override
 	public RelativeConfigurationArtefact getPreviousConfigurationArtefact() {
-
-		System.out.println("Pour " + this + " le precedent c'est " + getRoute().getTrace().getPreviousConfiguration(getConfiguration()));
-
 		return getRelativeConfigurationArtefact(getRoute().getTrace().getPreviousConfiguration(getConfiguration()));
 	}
 
 	@Override
 	public RelativeConfigurationArtefact getNextConfigurationArtefact() {
-
-		System.out.println("Pour " + this + " le suivant c'est " + getRoute().getTrace().getNextConfiguration(getConfiguration()));
-
 		return getRelativeConfigurationArtefact(getRoute().getTrace().getNextConfiguration(getConfiguration()));
 	}
 

@@ -125,24 +125,22 @@ public class OBPRouteImpl implements OBPRoute {
 
 	@Override
 	public void show(OBPConfiguration config) {
-		// TODO Auto-generated method stub
 		System.out.println("show " + config);
-		System.out.println("visibleConfigurations=" + visibleConfigurations);
+		//System.out.println("visibleConfigurations=" + visibleConfigurations);
 
 		OBPConfigurationInRoute previousVisible = getPreviousVisibleConfiguration(config);
 
-		System.out.println("previous visible = " + previousVisible);
-		System.out.println("index = " + getIndex(previousVisible));
+		//System.out.println("previous visible = " + previousVisible);
+		//System.out.println("index = " + getIndex(previousVisible));
 
 		visibleConfigurations.add(getIndex(previousVisible) + 1, getOBPConfigurationInRoute(config));
-		System.out.println("NOW visibleConfigurations=" + visibleConfigurations);
-		// System.exit(-1);
+		
+		//System.out.println("NOW visibleConfigurations=" + visibleConfigurations);
+		
 		getPropertyChangeSupport().firePropertyChange("visibleConfigurations", null, getOBPConfigurationInRoute(config));
 
 		for (OBPConfigurationInRoute c : visibleConfigurations) {
-			System.err.println(">>>>> notifying change location for " + c);
 			c.getPropertyChangeSupport().firePropertyChange("location", null, c.getLocation());
-			System.err.println("< DONE notifying change location for " + c);
 		}
 
 	}
@@ -154,7 +152,9 @@ public class OBPRouteImpl implements OBPRoute {
 		}
 		System.out.println("hide " + config);
 		visibleConfigurations.remove(getOBPConfigurationInRoute(config));
+
 		getPropertyChangeSupport().firePropertyChange("visibleConfigurations", null, getOBPConfigurationInRoute(config));
+		
 		for (OBPConfigurationInRoute c : visibleConfigurations) {
 			c.getPropertyChangeSupport().firePropertyChange("location", null, c.getLocation());
 		}

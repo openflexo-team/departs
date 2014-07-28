@@ -21,4 +21,8 @@ public class OBPTransitionImpl implements OBPTransition {
 		return nextConfiguration;
 	}
 
+	@Override
+	public String toString() {
+		return "OBPTransition " + getPreviousConfiguration() + " - " + getNextConfiguration();
+	}
 }
