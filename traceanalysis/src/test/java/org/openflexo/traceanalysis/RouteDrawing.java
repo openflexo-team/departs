@@ -34,6 +34,7 @@ import org.openflexo.traceanalysis.OBPRoute.AbstractTransitionArtefact;
 public class RouteDrawing extends DrawingImpl<OBPRoute> {
 
 	public static final double ROW_HEIGHT = 60.0;
+	public static final double LIFE_LINE_WIDTH = 150.0;
 
 	private DrawingGraphicalRepresentation graphRepresentation;
 	private ShapeGraphicalRepresentation configurationRepresentation;
@@ -125,7 +126,7 @@ public class RouteDrawing extends DrawingImpl<OBPRoute> {
 		concreteTransitionRepresentation.setForeground(getFactory().makeForegroundStyle(Color.GRAY, 0.5f));
 
 		abstractTransitionRepresentation = getFactory().makeConnectorGraphicalRepresentation(ConnectorType.LINE);
-		abstractTransitionRepresentation.setForeground(getFactory().makeForegroundStyle(Color.LIGHT_GRAY, 0.5f, DashStyle.DOTS_DASHES));
+		abstractTransitionRepresentation.setForeground(getFactory().makeForegroundStyle(Color.DARK_GRAY, 0.5f, DashStyle.DOTS_DASHES));
 
 		lifeLineRepresentation = getFactory().makeShapeGraphicalRepresentation(ShapeType.RECTANGLE);
 		lifeLineRepresentation.setWidth(0);
@@ -304,44 +305,44 @@ public class RouteDrawing extends DrawingImpl<OBPRoute> {
 		// nodeBinding.setDynamicPropertyValue(GraphicalRepresentation.ABSOLUTE_TEXT_X, new DataBinding<Double>("drawable.labelX"));
 		// nodeBinding.setDynamicPropertyValue(GraphicalRepresentation.ABSOLUTE_TEXT_Y, new DataBinding<Double>("drawable.labelY"));
 		configurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>("10.0"), false);
-		configurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>("drawable.location+50.0"),
-				false);
+		configurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>("drawable.visibleIndex*"
+				+ ROW_HEIGHT + "+50.0"), false);
 
 		nextConfigurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.TEXT, new DataBinding<String>(
 				"drawable.configuration.name"), false);
 		nextConfigurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>("15.0"), false);
 		nextConfigurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>(
-				"drawable.configurationInRoute.location+75.0"), false);
+				"drawable.configurationInRoute.visibleIndex*" + ROW_HEIGHT + "+75.0"), false);
 
 		previousConfigurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.TEXT, new DataBinding<String>(
 				"drawable.configuration.name"), false);
 		previousConfigurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>("15.0"), false);
 		previousConfigurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>(
-				"drawable.configurationInRoute.location+35.0"), false);
+				"drawable.configurationInRoute.visibleIndex*" + ROW_HEIGHT + "+35.0"), false);
 
 		intermediateConfigurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.TEXT, new DataBinding<String>(
 				"drawable.configuration.name"), false);
 		intermediateConfigurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>("15.0"), false);
 		intermediateConfigurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>(
-				"drawable.configurationInRoute.location+85.0"), false);
+				"drawable.configurationInRoute.visibleIndex*" + ROW_HEIGHT + "+85.0"), false);
 
 		lifeLineBinding.setDynamicPropertyValue(GraphicalRepresentation.TEXT, new DataBinding<String>("drawable.component.componentName"),
 				false);
-		lifeLineBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>("drawable.index*100.0+120.0"),
-				false);
+		lifeLineBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>("drawable.index*" + LIFE_LINE_WIDTH
+				+ "+120.0"), false);
 		lifeLineBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>("50.0"), false);
-		lifeLineBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.HEIGHT, new DataBinding<Double>(
-				"(drawable.route.size-1)*60.0+20.0"), false);
+		lifeLineBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.HEIGHT, new DataBinding<Double>("(drawable.route.size-1)*"
+				+ ROW_HEIGHT + "+20.0"), false);
 
 		messageStartAnchorBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>(
-				"drawable.startComponent.index*100+120.0"), false);
+				"drawable.startComponent.index*" + LIFE_LINE_WIDTH + "+120.0"), false);
 		messageStartAnchorBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>(
-				"drawable.startConfiguration.location+60.0+10.0"), false);
+				"(drawable.startConfiguration.visibleIndex+1)*" + ROW_HEIGHT + "+10.0"), false);
 
 		messageEndAnchorBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>(
-				"drawable.endComponent.index*100+120.0"), false);
+				"drawable.endComponent.index*" + LIFE_LINE_WIDTH + "+120.0"), false);
 		messageEndAnchorBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>(
-				"drawable.endConfiguration.location+60.0-10.0"), false);
+				"(drawable.endConfiguration.visibleIndex+1)*" + ROW_HEIGHT + "-10.0"), false);
 		messageBinding.setDynamicPropertyValue(GraphicalRepresentation.TEXT, new DataBinding<String>("drawable.message.messageLabel"),
 				false);
 

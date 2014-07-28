@@ -153,7 +153,7 @@ public class OBPRouteImpl implements OBPRoute {
 		getPropertyChangeSupport().firePropertyChange("visibleConfigurations", null, getOBPConfigurationInRoute(config));
 
 		for (OBPConfigurationInRoute c : visibleConfigurations) {
-			c.getPropertyChangeSupport().firePropertyChange("location", null, c.getLocation());
+			c.getPropertyChangeSupport().firePropertyChange("visibleIndex", null, c.getVisibleIndex());
 		}
 
 		getPropertyChangeSupport().firePropertyChange("size", oldSize, getSize());
@@ -174,7 +174,7 @@ public class OBPRouteImpl implements OBPRoute {
 		getPropertyChangeSupport().firePropertyChange("visibleConfigurations", null, getOBPConfigurationInRoute(config));
 
 		for (OBPConfigurationInRoute c : visibleConfigurations) {
-			c.getPropertyChangeSupport().firePropertyChange("location", null, c.getLocation());
+			c.getPropertyChangeSupport().firePropertyChange("visibleIndex", null, c.getVisibleIndex());
 		}
 
 		getPropertyChangeSupport().firePropertyChange("size", oldSize, getSize());

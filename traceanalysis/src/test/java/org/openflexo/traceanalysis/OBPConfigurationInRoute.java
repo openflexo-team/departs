@@ -34,7 +34,7 @@ public interface OBPConfigurationInRoute extends HasPropertyChangeSupport {
 
 	public OBPConfiguration getConfiguration();
 
-	public double getLocation();
+	public double getVisibleIndex();
 
 	public boolean nextTransitionIsAbstract();
 

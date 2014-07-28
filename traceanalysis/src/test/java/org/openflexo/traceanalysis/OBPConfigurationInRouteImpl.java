@@ -61,9 +61,9 @@ public class OBPConfigurationInRouteImpl implements OBPConfigurationInRoute {
 	}
 
 	@Override
-	public double getLocation() {
+	public double getVisibleIndex() {
 		// System.out.println("Pour la config " + getConfiguration() + " l'index est " + route.getIndex(getConfiguration()));
-		return route.getIndex(getConfiguration()) * RouteDrawing.ROW_HEIGHT;
+		return route.getIndex(getConfiguration());
 	}
 
 	@Override
