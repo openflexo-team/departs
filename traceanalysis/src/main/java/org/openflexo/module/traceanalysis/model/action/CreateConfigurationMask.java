@@ -24,72 +24,52 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.InvalidArgumentException;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
-import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
-import org.openflexo.foundation.technologyadapter.FreeModelSlotInstanceConfiguration;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
-import org.openflexo.foundation.view.VirtualModelInstance;
-import org.openflexo.foundation.view.action.CreateBasicVirtualModelInstance;
-import org.openflexo.foundation.view.action.CreateView;
-import org.openflexo.foundation.view.action.ModelSlotInstanceConfiguration.DefaultModelSlotInstanceConfigurationOption;
-import org.openflexo.foundation.view.rm.ViewResource;
-import org.openflexo.foundation.view.rm.VirtualModelInstanceResource;
-import org.openflexo.foundation.viewpoint.VirtualModelModelSlotInstanceConfiguration;
-import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.localization.FlexoLocalization;
-import org.openflexo.module.traceanalysis.model.TAETrace;
-import org.openflexo.module.traceanalysis.model.TAEContext;
-import org.openflexo.module.traceanalysis.model.TAEObserver;
-import org.openflexo.module.traceanalysis.model.TAESystem;
-import org.openflexo.module.traceanalysis.model.TraceAnalysis;
-import org.openflexo.module.traceanalysis.model.TAEProject;
 import org.openflexo.module.traceanalysis.model.ConfigurationMask;
-import org.openflexo.technologyadapter.cdl.CDLModelSlot;
-import org.openflexo.technologyadapter.cdl.CDLTechnologyAdapter;
-import org.openflexo.technologyadapter.fiacre.FiacreProgramModelSlot;
-import org.openflexo.technologyadapter.fiacre.FiacreTechnologyAdapter;
+import org.openflexo.module.traceanalysis.model.TraceVirtualModelInstance;
 import org.openflexo.toolbox.StringUtils;
 
-public class CreateConfigurationMask extends FlexoAction<CreateConfigurationMask, TraceAnalysis, FlexoObject> {
+public class CreateConfigurationMask extends FlexoAction<CreateConfigurationMask, TraceVirtualModelInstance, FlexoObject> {
 
 	private static final Logger logger = Logger.getLogger(CreateConfigurationMask.class.getPackage().getName());
 
-	public static FlexoActionType<CreateConfigurationMask, TraceAnalysis, FlexoObject> actionType = new FlexoActionType<CreateConfigurationMask, TraceAnalysis, FlexoObject>(
+	public static FlexoActionType<CreateConfigurationMask, TraceVirtualModelInstance, FlexoObject> actionType = new FlexoActionType<CreateConfigurationMask, TraceVirtualModelInstance, FlexoObject>(
 			"create_configuration_mask", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public CreateConfigurationMask makeNewAction(TraceAnalysis focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
+		public CreateConfigurationMask makeNewAction(TraceVirtualModelInstance focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 			return new CreateConfigurationMask(focusedObject, globalSelection, editor);
 		}
 
 		@Override
-		public boolean isVisibleForSelection(TraceAnalysis object, Vector<FlexoObject> globalSelection) {
+		public boolean isVisibleForSelection(TraceVirtualModelInstance object, Vector<FlexoObject> globalSelection) {
 			return true;
 		}
 
 		@Override
-		public boolean isEnabledForSelection(TraceAnalysis object, Vector<FlexoObject> globalSelection) {
+		public boolean isEnabledForSelection(TraceVirtualModelInstance object, Vector<FlexoObject> globalSelection) {
 			return true;
 		}
 
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(CreateConfigurationMask.actionType, TraceAnalysis.class);
+		FlexoObjectImpl.addActionForClass(CreateConfigurationMask.actionType, TraceVirtualModelInstance.class);
 	}
 
-	CreateConfigurationMask(TraceAnalysis focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
+	CreateConfigurationMask(TraceVirtualModelInstance focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
+	private ConfigurationMask configurationMask;
+	
 	@Override
 	protected void doAction(Object context) throws SaveResourceException {
 
@@ -97,8 +77,6 @@ public class CreateConfigurationMask extends FlexoAction<CreateConfigurationMask
 		configurationMask = getFocusedObject().getNewConfigurationMask();
 		configurationMask.setName(getConfigurationMaskName());
 	}
-	
-	private ConfigurationMask configurationMask;
 	
 	public String getConfigurationMaskName() {
 		return configurationMaskName;

@@ -20,21 +20,29 @@
 
 package org.openflexo.technologyadapter.fiacre.model;
 
-import org.openflexo.foundation.resource.ResourceData;
+import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
 
 @ModelEntity
 @ImplementationClass(FiacreState.FiacreStateImpl.class)
 @XMLElement(xmlTag = "FiacreState")
-public interface FiacreState extends FiacreObject, ResourceData<FiacreState> {
+public interface FiacreState extends FiacreObject {
 
-	public static final String FIACRE_State_KEY = "FiacreState";
+	public static final String FIACRE_STATE_KEY = "FiacreState";
+	public static final String FIACRE_PROCESS_KEY = "FiacreProcess";
 
+	@Getter(value=FIACRE_STATE_KEY, ignoreType=true)
 	public obp.fiacre.model.State getFiacreState();
-
+	@Setter(FIACRE_STATE_KEY)
 	public void setFiacreState(obp.fiacre.model.State fiacreState);
+
+	@Getter(value=FIACRE_PROCESS_KEY, ignoreType=true, inverse= FiacreProcess.FIACRE_STATES_KEY)
+	public FiacreProcess getFiacreProcess();
+	@Setter(FIACRE_PROCESS_KEY)
+	public void setFiacreProcess(FiacreProcess fiacreProcess);
 
 	public static abstract class FiacreStateImpl extends FiacreObjectImpl implements FiacreState {
 
@@ -43,13 +51,13 @@ public interface FiacreState extends FiacreObject, ResourceData<FiacreState> {
 		}
 
 		@Override
-		public String getFiacreCode() {
-			return "State" + getName();
-		}
-
-		@Override
 		public String getUri() {
 			return getName();
+		}
+		
+		@Override
+		public String getName() {
+			return getFiacreState().getName();
 		}
 
 	}

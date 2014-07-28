@@ -31,6 +31,7 @@ import org.openflexo.technologyadapter.fiacre.model.FiacreFifo;
 import org.openflexo.technologyadapter.fiacre.model.FiacreProcess;
 import org.openflexo.technologyadapter.fiacre.model.FiacreProgram;
 import org.openflexo.technologyadapter.fiacre.model.FiacreState;
+import org.openflexo.technologyadapter.fiacre.model.FiacreVariable;
 import org.openflexo.toolbox.ImageIconResource;
 
 public class FiacreIconLibrary {
@@ -40,6 +41,8 @@ public class FiacreIconLibrary {
 	public static final ImageIcon FIACRE_TECHNOLOGY_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/fiacre_small.png"));
 	public static final ImageIcon FIACRE_FILE_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/fiacre_small.png"));
 
+	public static final ImageIcon FIACRE_PROGRAM_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/program16x16.png"));
+	public static final ImageIcon FIACRE_VARIABLE_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/variable16x16.png"));
 	public static final ImageIcon FIACRE_PROCESS_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/process16x16.png"));
 	public static final ImageIcon FIACRE_COMPONENT_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/component16x16.png"));
 	public static final ImageIcon FIACRE_STATE_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/state16x16.png"));
@@ -56,6 +59,10 @@ public class FiacreIconLibrary {
 			return FIACRE_STATE_ICON;
 		} else if (FiacreFifo.class.isAssignableFrom(objectClass)) {
 			return FIACRE_FIFO_ICON;
+		}else if (FiacreVariable.class.isAssignableFrom(objectClass)) {
+			return FIACRE_VARIABLE_ICON;
+		} else if (FiacreProgram.class.isAssignableFrom(objectClass)) {
+			return FIACRE_PROGRAM_ICON;
 		}
 		return null;
 	}

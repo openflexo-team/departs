@@ -110,6 +110,7 @@ public abstract class FiacreProgramResourceImpl extends FlexoFileResourceImpl<Fi
 				Program = FiacreUtil.loadProgram(getFile());
 				if (converter == null) {
 					converter = new FiacreProgramConverter();
+					converter.setTechnologyAdapter(getTechnologyAdapter());
 				}
 				resourceData = converter.convertFiacreProgram(Program, getTechnologyAdapter());
 				resourceData.setResource(this);

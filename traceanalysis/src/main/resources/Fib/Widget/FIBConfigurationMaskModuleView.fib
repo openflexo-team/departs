@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel id="0" darkLevel="0" useScrollBar="false" protectContent="false" layout="border" controllerClassName="org.openflexo.module.traceanalysis.controller.TraceAnalysisFIBController" border="empty" trackViewPortWidth="true" dataClassName="org.openflexo.module.traceanalysis.model.ConfigurationMask" trackViewPortHeight="true">
+  <LocalizedDictionary id="1" />
+  <Label id="2" manageDynamicModel="false" useScrollBar="false" name="Configuration Mask" localize="true" align="center" constraints="border(location=north)" label="configuration_mask" readOnly="false" />
+  <Panel id="3" darkLevel="0" useScrollBar="false" protectContent="false" layout="border" border="empty" trackViewPortWidth="true" constraints="border(location=center)" trackViewPortHeight="true">
+    <Browser root="data" iteratorClassName="java.lang.Object" visibleRowCount="5" rowHeight="18" boundToSelectionManager="true" selectionMode="DiscontiguousTreeSelection" selected="" showFooter="false" rootVisible="true" showRootsHandle="true" localize="true" manageDynamicModel="true" clickAction="" doubleClickAction="data.updateSelection(MaskBrowser.selected)" rightClickAction="" name="MaskBrowser" index="0" constraints="border(location=center)" visible="">
+      <BrowserElement dataClassName="org.openflexo.module.traceanalysis.model.ConfigurationMask" icon="controller.iconForObject(mask)" label="mask.name" isEditable="false" filtered="false" defaultVisible="true" name="mask">
+        <Children data="mask.traceAnalysis.traceAnalysisVirtualModelInstances" name="traceAnalysisVirtualModelInstance" />
+      </BrowserElement>
+      <BrowserElement dataClassName="org.openflexo.module.traceanalysis.model.SystemVirtualModelInstance" label="systemVirtualModelInstance.virtualModelInstance.virtualModel.name" icon="controller.iconForObject(systemVirtualModelInstance.virtualModelInstance)" isEditable="false" filtered="false" defaultVisible="false" name="systemVirtualModelInstance">
+        <Children data="systemVirtualModelInstance.getFiacreComponents()" name="fiacreComponent" />
+      </BrowserElement>
+      <BrowserElement dataClassName="org.openflexo.technologyadapter.fiacre.model.FiacreComponent" icon="controller.iconForObject(fiacreComponent)" enabled="data.selection.contains(fiacreComponent)" label="fiacreComponent.name" isEditable="false" filtered="false" defaultVisible="true" name="fiacreComponent">
+        <Children data="fiacreComponent.fiacreProcesses" name="process" />
+      </BrowserElement>
+      <BrowserElement dataClassName="org.openflexo.technologyadapter.fiacre.model.FiacreProcess" icon="controller.iconForObject(fiacreProcess)" enabled="data.selection.contains(fiacreProcess)" label="fiacreProcess.name" isEditable="false" filtered="false" defaultVisible="true" name="fiacreProcess">
+        <Children data="fiacreProcess.fiacreVariables" name="variable" />
+      </BrowserElement>
+      <BrowserElement dataClassName="org.openflexo.technologyadapter.fiacre.model.FiacreVariable" icon="controller.iconForObject(variable)" enabled="data.selection.contains(variable)" label="variable.name" isEditable="false" filtered="false" defaultVisible="true" name="variable">
+      </BrowserElement>
+      <BrowserElement dataClassName="org.openflexo.module.traceanalysis.model.ContextVirtualModelInstance" label="contextVirtualModelInstance.virtualModelInstance.virtualModel.name" icon="controller.iconForObject(contextVirtualModelInstance.virtualModelInstance)" isEditable="false" filtered="false" defaultVisible="false" name="contextVirtualModelInstance">
+      	<Children data="contextVirtualModelInstance.getCDLUnits()" name="cdlUnit" />
+      </BrowserElement>
+      <BrowserElement dataClassName="org.openflexo.technologyadapter.cdl.model.CDLUnit" icon="controller.iconForObject(cdlUnit)" enabled="data.selection.contains(cdlUnit)" label="cdlUnit.name" isEditable="false" filtered="false" defaultVisible="true" name="cdlUnit">
+      </BrowserElement>
+      <BrowserElement dataClassName="org.openflexo.module.traceanalysis.model.ObserverVirtualModelInstance" label="observerVirtualModelInstance.virtualModelInstance.virtualModel.name" icon="controller.iconForObject(observerVirtualModelInstance.virtualModelInstance)" isEditable="false" filtered="false" defaultVisible="false" name="observerVirtualModelInstance">
+      </BrowserElement>
+    </Browser>
+    <Panel id="7" darkLevel="0" vGap="5" useScrollBar="false" protectContent="false" hGap="5" layout="flow" border="empty" flowAlignment="LEADING" trackViewPortWidth="true" constraints="border(location=south)" trackViewPortHeight="true">
+     <!-- <Button id="8" manageDynamicModel="false" useScrollBar="false" buttonType="Trigger" localize="true" constraints="flow()" label="Apply" readOnly="false" action="data.selectionUpdate(MaskBrowser.selection)" />-->
+      <Button id="9" manageDynamicModel="false" useScrollBar="false" buttonType="Trigger" localize="true" constraints="flow()" label="Save" readOnly="false" />
+    </Panel>
+  </Panel>
+</Panel>

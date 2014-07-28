@@ -8,6 +8,7 @@ import obp.fiacre.model.ComponentDecl;
 import obp.fiacre.model.Declaration;
 import obp.fiacre.model.Instance;
 import obp.fiacre.model.InterfacedComp;
+import obp.fiacre.model.LocalVariable;
 import obp.fiacre.model.Par;
 import obp.fiacre.model.ProcessDecl;
 import obp.fiacre.model.State;
@@ -22,6 +23,7 @@ import org.openflexo.technologyadapter.fiacre.model.FiacreObject;
 import org.openflexo.technologyadapter.fiacre.model.FiacreProcess;
 import org.openflexo.technologyadapter.fiacre.model.FiacreProgram;
 import org.openflexo.technologyadapter.fiacre.model.FiacreState;
+import org.openflexo.technologyadapter.fiacre.model.FiacreVariable;
 
 public class FiacreProgramConverter {
 
@@ -30,18 +32,27 @@ public class FiacreProgramConverter {
 	protected final Map<Object, FiacreObject> fiacreObjects = new HashMap<Object, FiacreObject>();
 
 	private ModelFactory factory;
-	private ModelContext modelContext;
+	
+	private FiacreTechnologyAdapter technologyAdapter;
 
 	/**
 	 * Constructor.
 	 */
 	public FiacreProgramConverter() {
 		try {
-			factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(FiacreObject.class, FiacreProgram.class));
+			factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext(FiacreObject.class, FiacreProcess.class,FiacreProgram.class, FiacreVariable.class,FiacreComponent.class ));
 		} catch (ModelDefinitionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public FiacreTechnologyAdapter getTechnologyAdapter() {
+		return technologyAdapter;
+	}
+
+	public void setTechnologyAdapter(FiacreTechnologyAdapter technologyAdapter) {
+		this.technologyAdapter = technologyAdapter;
 	}
 
 	public FiacreProgram convertFiacreProgram(obp.fiacre.model.Program fiacreProgram, FiacreTechnologyAdapter technologyAdapter) {
@@ -51,26 +62,29 @@ public class FiacreProgramConverter {
 		fiacreObjects.put(fiacreProgram, flexoFiacreProgram);
 		for (Declaration declaration : fiacreProgram.getDeclarationList()) {
 			if (declaration instanceof ProcessDecl) {
-				FiacreProcess fiacreProcess = convertFiacreProcess((ProcessDecl) declaration, flexoFiacreProgram, technologyAdapter);
+				FiacreProcess fiacreProcess = convertFiacreProcess((ProcessDecl) declaration, flexoFiacreProgram);
 				flexoFiacreProgram.addToFiacreProcesses(fiacreProcess);
 			}
 		}
 		for (Declaration declaration : fiacreProgram.getDeclarationList()) {
 			if (declaration instanceof ComponentDecl) {
-				FiacreComponent fiacreComponent = convertFiacreComponent((ComponentDecl) declaration, flexoFiacreProgram, technologyAdapter);
+				FiacreComponent fiacreComponent = convertFiacreComponent((ComponentDecl) declaration, flexoFiacreProgram);
 				flexoFiacreProgram.addToFiacreComponents(fiacreComponent);
 			}
 		}
 		return flexoFiacreProgram;
 	}
 	
-	public FiacreProcess convertFiacreProcess(ProcessDecl process, FiacreProgram flexoFiacreProgram, FiacreTechnologyAdapter technologyAdapter) {
+	public FiacreProcess convertFiacreProcess(ProcessDecl process, FiacreProgram flexoFiacreProgram) {
 		FiacreProcess fiacreProcess = null;
 		if (!getFiacreObjects().containsKey(process)) {
 			fiacreProcess = factory.newInstance(FiacreProcess.class);
-			fiacreProcess.setName(process.getName());
+			fiacreProcess.setFiacreProcess(process);
 			for(State state:process.getStateList()){
-				fiacreProcess.addToFiacreStates(convertFiacreState(state,flexoFiacreProgram,technologyAdapter));
+				fiacreProcess.addToFiacreStates(convertFiacreState(state,flexoFiacreProgram));
+			}
+			for(LocalVariable var:process.getVarList()){
+				fiacreProcess.addToFiacreVariables(convertFiacreVariable(var,flexoFiacreProgram));
 			}
 			fiacreProcess.setTechnologyAdapter(technologyAdapter);
 			getFiacreObjects().put(process, fiacreProcess);
@@ -80,10 +94,24 @@ public class FiacreProgramConverter {
 		return fiacreProcess;
 	}
 	
-	public FiacreComponent convertFiacreComponent(ComponentDecl component, FiacreProgram flexoFiacreProgram, FiacreTechnologyAdapter technologyAdapter) {
+	public FiacreVariable convertFiacreVariable(LocalVariable var, FiacreProgram flexoFiacreProgram) {
+		FiacreVariable fiacreVariable = null;
+		if (!getFiacreObjects().containsKey(var)) {
+			fiacreVariable = factory.newInstance(FiacreVariable.class);
+			fiacreVariable.setFiacreVariable(var);
+			fiacreVariable.setTechnologyAdapter(technologyAdapter);
+			getFiacreObjects().put(var, fiacreVariable);
+		} else {
+			fiacreVariable = (FiacreVariable) getFiacreObjects().get(var);
+		}
+		return fiacreVariable;
+	}
+	
+	public FiacreComponent convertFiacreComponent(ComponentDecl component, FiacreProgram flexoFiacreProgram) {
 		FiacreComponent fiacreComponent = null;
 		if (!getFiacreObjects().containsKey(component)) {
 			fiacreComponent = factory.newInstance(FiacreComponent.class);
+			fiacreComponent.setFiacreComponent(component);
 			if(component.getBody()!=null){
 				if(component.getBody() instanceof Par){
 					Par body = (Par)component.getBody();
@@ -98,7 +126,6 @@ public class FiacreProgramConverter {
 					}
 				}
 			}
-			fiacreComponent.setName(component.getName());
 			fiacreComponent.setTechnologyAdapter(technologyAdapter);
 			getFiacreObjects().put(component, fiacreComponent);
 		} else {
@@ -107,12 +134,12 @@ public class FiacreProgramConverter {
 		return fiacreComponent;
 	}
 
-	public FiacreState convertFiacreState(State state, FiacreProgram flexoFiacreProgram, FiacreTechnologyAdapter technologyAdapter) {
+	public FiacreState convertFiacreState(State state, FiacreProgram flexoFiacreProgram) {
 		FiacreState fiacreState = null;
 		if (!getFiacreObjects().containsKey(state)) {
 			fiacreState = factory.newInstance(FiacreState.class);
-			fiacreState.setName(state.getName());
 			fiacreState.setTechnologyAdapter(technologyAdapter);
+			fiacreState.setFiacreState(state);
 			getFiacreObjects().put(state, fiacreState);
 		} else {
 			fiacreState = (FiacreState) getFiacreObjects().get(state);

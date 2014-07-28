@@ -27,26 +27,24 @@ import javax.swing.Icon;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.module.traceanalysis.TAECst;
-import org.openflexo.module.traceanalysis.TAEIconLibrary;
-import org.openflexo.module.traceanalysis.model.TAEProject;
-import org.openflexo.module.traceanalysis.model.TraceAnalysis;
-import org.openflexo.module.traceanalysis.model.action.CreateTraceAnalysis;
+import org.openflexo.module.traceanalysis.TraceAnalysisCst;
+import org.openflexo.module.traceanalysis.TraceAnalysisIconLibrary;
+import org.openflexo.module.traceanalysis.model.TraceVirtualModelInstance;
 import org.openflexo.module.traceanalysis.model.action.CreateConfigurationMask;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
-public class CreateConfigurationMaskInitializer extends ActionInitializer<CreateConfigurationMask, TraceAnalysis, FlexoObject> {
+public class CreateConfigurationMaskInitializer extends ActionInitializer<CreateConfigurationMask, TraceVirtualModelInstance, FlexoObject> {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 
-	CreateConfigurationMaskInitializer(TAEControllerActionInitializer actionInitializer) {
+	CreateConfigurationMaskInitializer(TraceAnalysisControllerActionInitializer actionInitializer) {
 		super(CreateConfigurationMask.actionType, actionInitializer);
 	}
 
 	@Override
-	protected TAEControllerActionInitializer getControllerActionInitializer() {
-		return (TAEControllerActionInitializer) super.getControllerActionInitializer();
+	protected TraceAnalysisControllerActionInitializer getControllerActionInitializer() {
+		return (TraceAnalysisControllerActionInitializer) super.getControllerActionInitializer();
 	}
 
 	@Override
@@ -54,7 +52,7 @@ public class CreateConfigurationMaskInitializer extends ActionInitializer<Create
 		return new FlexoActionInitializer<CreateConfigurationMask>() {
 			@Override
 			public boolean run(EventObject e, CreateConfigurationMask action) {
-				return instanciateAndShowDialog(action, TAECst.CREATE_CONFIGURATION_MASK_DIALOG_FIB);
+				return instanciateAndShowDialog(action, TraceAnalysisCst.CREATE_CONFIGURATION_MASK_DIALOG_FIB);
 			}
 		};
 	}
@@ -72,7 +70,7 @@ public class CreateConfigurationMaskInitializer extends ActionInitializer<Create
 
 	@Override
 	protected Icon getEnabledIcon() {
-		return TAEIconLibrary.MASK_SMALL_ICON;
+		return TraceAnalysisIconLibrary.MASK_SMALL_ICON;
 	}
 
 }

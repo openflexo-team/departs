@@ -21,18 +21,21 @@
 package org.openflexo.module.traceanalysis;
 
 import org.openflexo.module.Module;
+import org.openflexo.module.NatureSpecificModule;
+import org.openflexo.module.traceanalysis.model.TraceAnalysisProjectNature;
 
-public class TraceAnalysisModule extends Module<TAEModule> {
+public class TraceAnalysisModule extends NatureSpecificModule<TAModule, TraceAnalysisProjectNature> {
 
-	public static Module<TAEModule> INSTANCE = null;
+	public static Module<TAModule> INSTANCE = null;
 
 	public TraceAnalysisModule() {
 			
-		super(TAEModule.TAE_MODULE_NAME, TAEModule.TAE_MODULE_NAME, TAEModule.class, TAEPreferences.class, "",
-				null , "TAE", TAEIconLibrary.TAE_SMALL_ICON, TAEIconLibrary.TAE_MEDIUM_ICON, TAEIconLibrary.TAE_MEDIUM_ICON,
-				TAEIconLibrary.TAE_BIG_ICON);
+		super(TAModule.TA_MODULE_NAME, TAModule.TA_MODULE_NAME, TAModule.class, TraceAnalysisPreferences.class, "",
+				null , "TA", TraceAnalysisIconLibrary.TA_SMALL_ICON, TraceAnalysisIconLibrary.TA_MEDIUM_ICON, TraceAnalysisIconLibrary.TA_MEDIUM_ICON,
+				TraceAnalysisIconLibrary.TA_BIG_ICON, TraceAnalysisProjectNature.class);
 
 		INSTANCE = this;
+		
 	}
 
 

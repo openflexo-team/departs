@@ -27,41 +27,41 @@ import javax.swing.Icon;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.action.FlexoActionFinalizer;
 import org.openflexo.foundation.action.FlexoActionInitializer;
-import org.openflexo.module.traceanalysis.TAECst;
-import org.openflexo.module.traceanalysis.TAEIconLibrary;
-import org.openflexo.module.traceanalysis.model.TAEProject;
-import org.openflexo.module.traceanalysis.model.action.CreateTraceAnalysis;
+import org.openflexo.module.traceanalysis.TraceAnalysisCst;
+import org.openflexo.module.traceanalysis.TraceAnalysisIconLibrary;
+import org.openflexo.module.traceanalysis.model.TraceAnalysisProject;
+import org.openflexo.module.traceanalysis.model.action.CreateTraceVirtualModelInstance;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
-public class CreateTraceAnalysisInitializer extends ActionInitializer<CreateTraceAnalysis, TAEProject, FlexoObject> {
+public class CreateTraceAnalysisInitializer extends ActionInitializer<CreateTraceVirtualModelInstance, TraceAnalysisProject, FlexoObject> {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 
-	CreateTraceAnalysisInitializer(TAEControllerActionInitializer actionInitializer) {
-		super(CreateTraceAnalysis.actionType, actionInitializer);
+	CreateTraceAnalysisInitializer(TraceAnalysisControllerActionInitializer actionInitializer) {
+		super(CreateTraceVirtualModelInstance.actionType, actionInitializer);
 	}
 
 	@Override
-	protected TAEControllerActionInitializer getControllerActionInitializer() {
-		return (TAEControllerActionInitializer) super.getControllerActionInitializer();
+	protected TraceAnalysisControllerActionInitializer getControllerActionInitializer() {
+		return (TraceAnalysisControllerActionInitializer) super.getControllerActionInitializer();
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateTraceAnalysis> getDefaultInitializer() {
-		return new FlexoActionInitializer<CreateTraceAnalysis>() {
+	protected FlexoActionInitializer<CreateTraceVirtualModelInstance> getDefaultInitializer() {
+		return new FlexoActionInitializer<CreateTraceVirtualModelInstance>() {
 			@Override
-			public boolean run(EventObject e, CreateTraceAnalysis action) {
-				return instanciateAndShowDialog(action, TAECst.CREATE_TRACE_ANALYSIS_DIALOG_FIB);
+			public boolean run(EventObject e, CreateTraceVirtualModelInstance action) {
+				return instanciateAndShowDialog(action, TraceAnalysisCst.CREATE_TRACE_VIRTUAL_MODEL_INSTANCE_DIALOG_FIB);
 			}
 		};
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CreateTraceAnalysis> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<CreateTraceAnalysis>() {
+	protected FlexoActionFinalizer<CreateTraceVirtualModelInstance> getDefaultFinalizer() {
+		return new FlexoActionFinalizer<CreateTraceVirtualModelInstance>() {
 			@Override
-			public boolean run(EventObject e, CreateTraceAnalysis action) {
+			public boolean run(EventObject e, CreateTraceVirtualModelInstance action) {
 				return true;
 			}
 		};
@@ -69,7 +69,7 @@ public class CreateTraceAnalysisInitializer extends ActionInitializer<CreateTrac
 
 	@Override
 	protected Icon getEnabledIcon() {
-		return TAEIconLibrary.TAE_SMALL_ICON;
+		return TraceAnalysisIconLibrary.TA_SMALL_ICON;
 	}
 
 }

@@ -23,7 +23,6 @@ package org.openflexo.technologyadapter.fiacre.model;
 import java.util.List;
 import java.util.Vector;
 
-import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -36,16 +35,19 @@ import org.openflexo.model.annotations.Getter.Cardinality;
 @ModelEntity
 @ImplementationClass(FiacreProcess.FiacreProcessImpl.class)
 @XMLElement(xmlTag = "FiacreProcess")
-public interface FiacreProcess extends FiacreObject, ResourceData<FiacreProcess> {
+public interface FiacreProcess extends FiacreObject{
 
 	public static final String FIACRE_PROCESS_KEY = "FiacreProcess";
 	
 	public static final String FIACRE_FIFOS_KEY = "FiacreFifos";
 	
 	public static final String FIACRE_STATES_KEY = "FiacreStates";
+	
+	public static final String FIACRE_VARIABLES_KEY = "FiacreVariables";
 
+	@Getter(value=FIACRE_PROCESS_KEY, ignoreType=true)
 	public obp.fiacre.model.ProcessDecl getFiacreProcess();
-
+	@Setter(FIACRE_PROCESS_KEY)
 	public void setFiacreProcess(obp.fiacre.model.ProcessDecl fiacreProcess);
 	
 	@Getter(value = FIACRE_FIFOS_KEY, cardinality = Cardinality.LIST)
@@ -60,7 +62,7 @@ public interface FiacreProcess extends FiacreObject, ResourceData<FiacreProcess>
 	@Remover(FIACRE_FIFOS_KEY)
 	public void removeFromFiacreFifos(FiacreFifo fiacreFifo);
 	
-	@Getter(value = FIACRE_STATES_KEY, cardinality = Cardinality.LIST)
+	@Getter(value = FIACRE_STATES_KEY, cardinality = Cardinality.LIST, inverse = FiacreState.FIACRE_PROCESS_KEY)
 	public List<FiacreState> getFiacreStates();
 
 	@Setter(FIACRE_STATES_KEY)
@@ -71,6 +73,18 @@ public interface FiacreProcess extends FiacreObject, ResourceData<FiacreProcess>
 
 	@Remover(FIACRE_STATES_KEY)
 	public void removeFromFiacreStates(FiacreState fiacreState);
+	
+	@Getter(value = FIACRE_VARIABLES_KEY, cardinality = Cardinality.LIST, inverse=FiacreVariable.FIACRE_PROCESS_KEY)
+	public List<FiacreVariable> getFiacreVariables();
+
+	@Setter(FIACRE_VARIABLES_KEY)
+	public void setFiacreVariables(Vector<FiacreVariable> fiacreVariable);
+
+	@Adder(FIACRE_VARIABLES_KEY)
+	public void addToFiacreVariables(FiacreVariable fiacreVariable);
+
+	@Remover(FIACRE_VARIABLES_KEY)
+	public void removeFromFiacreVariables(FiacreVariable fiacreVariable);
 
 	public static abstract class FiacreProcessImpl extends FiacreObjectImpl implements FiacreProcess {
 
@@ -83,6 +97,11 @@ public interface FiacreProcess extends FiacreObject, ResourceData<FiacreProcess>
 			return "Process" + getName();
 		}
 
+		@Override
+		public String getName() {
+			return getFiacreProcess().getName();
+		}
+		
 		@Override
 		public String getUri() {
 			return getName();
