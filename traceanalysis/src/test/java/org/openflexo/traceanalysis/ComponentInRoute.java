@@ -20,31 +20,25 @@
 
 package org.openflexo.traceanalysis;
 
-import java.util.List;
+public class ComponentInRoute {
 
-/**
- * Represents a OBP trace, as a chained list of OBPConfiguration, from a given configuration to another configuration
- * 
- * @author sylvain
- * 
- */
-public interface OBPTrace {
+	private final OBPRoute route;
+	private final Component component;
 
-	public OBPConfiguration getInitConfiguration();
+	public ComponentInRoute(Component component, OBPRoute route) {
+		this.route = route;
+		this.component = component;
+	}
 
-	public OBPConfiguration getLastConfiguration();
+	public OBPRoute getRoute() {
+		return route;
+	}
 
-	public OBPConfiguration getNextConfiguration(OBPConfiguration config);
+	public Component getComponent() {
+		return component;
+	}
 
-	public OBPConfiguration getPreviousConfiguration(OBPConfiguration config);
-
-	public OBPTransition getTransition(OBPConfiguration from, OBPConfiguration to);
-
-	public int getIndex(OBPConfiguration config);
-
-	public int getSize();
-
-	public OBPConfiguration getConfiguration(int index);
-
-	public List<Component> getComponents();
+	public int getIndex() {
+		return route.getTrace().getComponents().indexOf(component);
+	}
 }

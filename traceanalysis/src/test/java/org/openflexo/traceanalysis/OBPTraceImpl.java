@@ -9,10 +9,12 @@ public class OBPTraceImpl implements OBPTrace {
 
 	private final List<OBPConfiguration> configurations;
 	private final Map<OBPConfiguration, OBPTransition> transitions;
+	private final List<Component> components;
 
 	public OBPTraceImpl() {
 		configurations = new ArrayList<OBPConfiguration>();
 		transitions = new HashMap<OBPConfiguration, OBPTransition>();
+		components = new ArrayList<Component>();
 	}
 
 	@Override
@@ -69,15 +71,26 @@ public class OBPTraceImpl implements OBPTrace {
 		return transitions.get(from);
 	}
 
+	@Override
+	public List<Component> getComponents() {
+		return components;
+	}
+
+	public void addToComponents(Component aComponent) {
+		components.add(aComponent);
+	}
+
 	// Debug method to be removed
-	public void addConfiguration(int id) {
+	public OBPTransition addConfiguration(int id) {
 		OBPConfiguration previousConfig = (configurations.size() > 0 ? configurations.get(configurations.size() - 1) : null);
 		OBPConfiguration newConfig = new OBPConfigurationImpl(id);
 		configurations.add(newConfig);
 		if (previousConfig != null) {
 			OBPTransition newTransition = new OBPTransitionImpl(previousConfig, newConfig);
 			transitions.put(previousConfig, newTransition);
+			return newTransition;
 		}
+		return null;
 
 	}
 }

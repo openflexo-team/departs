@@ -32,6 +32,11 @@ public class OBPRouteImpl implements OBPRoute {
 	private final Map<OBPConfiguration, OBPConfigurationInRoute> configMap;
 	private final List<OBPConfigurationInRoute> visibleConfigurations;
 
+	private final Map<Component, ComponentInRoute> componentMap;
+	private final List<ComponentInRoute> visibleComponents;
+
+	private final Map<Message, MessageInRoute> messageMap;
+
 	private final PropertyChangeSupport pcSupport;
 
 	public OBPRouteImpl(OBPTrace trace) {
@@ -41,6 +46,12 @@ public class OBPRouteImpl implements OBPRoute {
 		configMap = new HashMap<OBPConfiguration, OBPConfigurationInRoute>();
 		visibleConfigurations.add(getOBPConfigurationInRoute(trace.getInitConfiguration()));
 		visibleConfigurations.add(getOBPConfigurationInRoute(trace.getLastConfiguration()));
+		visibleComponents = new ArrayList<ComponentInRoute>();
+		componentMap = new HashMap<Component, ComponentInRoute>();
+		for (Component c : trace.getComponents()) {
+			visibleComponents.add(getComponentInRoute(c));
+		}
+		messageMap = new HashMap<Message, MessageInRoute>();
 	}
 
 	@Override
@@ -126,22 +137,26 @@ public class OBPRouteImpl implements OBPRoute {
 	@Override
 	public void show(OBPConfiguration config) {
 		System.out.println("show " + config);
-		//System.out.println("visibleConfigurations=" + visibleConfigurations);
+		// System.out.println("visibleConfigurations=" + visibleConfigurations);
 
 		OBPConfigurationInRoute previousVisible = getPreviousVisibleConfiguration(config);
 
-		//System.out.println("previous visible = " + previousVisible);
-		//System.out.println("index = " + getIndex(previousVisible));
+		int oldSize = getSize();
+
+		// System.out.println("previous visible = " + previousVisible);
+		// System.out.println("index = " + getIndex(previousVisible));
 
 		visibleConfigurations.add(getIndex(previousVisible) + 1, getOBPConfigurationInRoute(config));
-		
-		//System.out.println("NOW visibleConfigurations=" + visibleConfigurations);
-		
+
+		// System.out.println("NOW visibleConfigurations=" + visibleConfigurations);
+
 		getPropertyChangeSupport().firePropertyChange("visibleConfigurations", null, getOBPConfigurationInRoute(config));
 
 		for (OBPConfigurationInRoute c : visibleConfigurations) {
 			c.getPropertyChangeSupport().firePropertyChange("location", null, c.getLocation());
 		}
+
+		getPropertyChangeSupport().firePropertyChange("size", oldSize, getSize());
 
 	}
 
@@ -150,14 +165,20 @@ public class OBPRouteImpl implements OBPRoute {
 		if (config == getTrace().getInitConfiguration() || config == getTrace().getLastConfiguration()) {
 			return;
 		}
+
+		int oldSize = getSize();
+
 		System.out.println("hide " + config);
 		visibleConfigurations.remove(getOBPConfigurationInRoute(config));
 
 		getPropertyChangeSupport().firePropertyChange("visibleConfigurations", null, getOBPConfigurationInRoute(config));
-		
+
 		for (OBPConfigurationInRoute c : visibleConfigurations) {
 			c.getPropertyChangeSupport().firePropertyChange("location", null, c.getLocation());
 		}
+
+		getPropertyChangeSupport().firePropertyChange("size", oldSize, getSize());
+
 	}
 
 	@Override
@@ -206,6 +227,31 @@ public class OBPRouteImpl implements OBPRoute {
 		if (returned == null) {
 			returned = new AbstractTransitionArtefactImpl(from, to);
 			map.put(to, returned);
+		}
+		return returned;
+	}
+
+	@Override
+	public List<ComponentInRoute> getVisibleComponents() {
+		return visibleComponents;
+	}
+
+	@Override
+	public ComponentInRoute getComponentInRoute(Component component) {
+		ComponentInRoute returned = componentMap.get(component);
+		if (returned == null) {
+			returned = new ComponentInRoute(component, this);
+			componentMap.put(component, returned);
+		}
+		return returned;
+	}
+
+	@Override
+	public MessageInRoute getMessageInRoute(Message message) {
+		MessageInRoute returned = messageMap.get(message);
+		if (returned == null) {
+			returned = new MessageInRoute(message, this);
+			messageMap.put(message, returned);
 		}
 		return returned;
 	}

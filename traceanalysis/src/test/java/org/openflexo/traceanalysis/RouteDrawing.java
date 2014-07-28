@@ -20,6 +20,7 @@ import org.openflexo.fge.GRStructureVisitor;
 import org.openflexo.fge.GraphicalRepresentation;
 import org.openflexo.fge.ShapeGraphicalRepresentation;
 import org.openflexo.fge.connectors.ConnectorSpecification.ConnectorType;
+import org.openflexo.fge.connectors.ConnectorSymbol.EndSymbolType;
 import org.openflexo.fge.control.AbstractDianaEditor;
 import org.openflexo.fge.control.MouseControl.MouseButton;
 import org.openflexo.fge.control.MouseControlContext;
@@ -39,6 +40,10 @@ public class RouteDrawing extends DrawingImpl<OBPRoute> {
 	private ConnectorGraphicalRepresentation concreteTransitionRepresentation;
 	private ConnectorGraphicalRepresentation abstractTransitionRepresentation;
 	private ShapeGraphicalRepresentation intermediateConfigurationRepresentation;
+
+	private ShapeGraphicalRepresentation lifeLineRepresentation;
+	private ShapeGraphicalRepresentation messageAnchorRepresentation;
+	private ConnectorGraphicalRepresentation messageRepresentation;
 
 	// private ShapeGraphicalRepresentation previousConfigurationRepresentation;
 
@@ -122,6 +127,36 @@ public class RouteDrawing extends DrawingImpl<OBPRoute> {
 		abstractTransitionRepresentation = getFactory().makeConnectorGraphicalRepresentation(ConnectorType.LINE);
 		abstractTransitionRepresentation.setForeground(getFactory().makeForegroundStyle(Color.LIGHT_GRAY, 0.5f, DashStyle.DOTS_DASHES));
 
+		lifeLineRepresentation = getFactory().makeShapeGraphicalRepresentation(ShapeType.RECTANGLE);
+		lifeLineRepresentation.setWidth(0);
+		lifeLineRepresentation.setHeight(10);
+		lifeLineRepresentation.setAbsoluteTextX(0);
+		lifeLineRepresentation.setAbsoluteTextY(-20);
+		lifeLineRepresentation.setTextStyle(getFactory().makeTextStyle(Color.DARK_GRAY,
+				FGEConstants.DEFAULT_TEXT_FONT.deriveFont(Font.BOLD)));
+		lifeLineRepresentation.setShadowStyle(getFactory().makeNoneShadowStyle());
+		lifeLineRepresentation.setBackground(getFactory().makeEmptyBackground());
+		lifeLineRepresentation.setForeground(getFactory().makeForegroundStyle(Color.LIGHT_GRAY, 3f));
+		lifeLineRepresentation.getForeground().setUseTransparency(true);
+		lifeLineRepresentation.getForeground().setTransparencyLevel(0.5f);
+		lifeLineRepresentation.setIsFocusable(false);
+		// lifeLineRepresentation.setLayer(9);
+
+		messageAnchorRepresentation = getFactory().makeShapeGraphicalRepresentation(ShapeType.RECTANGLE);
+		messageAnchorRepresentation.setWidth(0);
+		messageAnchorRepresentation.setHeight(0);
+		messageAnchorRepresentation.setShadowStyle(getFactory().makeNoneShadowStyle());
+		messageAnchorRepresentation.setBackground(getFactory().makeEmptyBackground());
+		messageAnchorRepresentation.setForeground(getFactory().makeNoneForegroundStyle());
+		messageAnchorRepresentation.setIsFocusable(false);
+		// messageAnchorRepresentation.setLayer(10);
+
+		messageRepresentation = getFactory().makeConnectorGraphicalRepresentation(ConnectorType.LINE);
+		messageRepresentation.setForeground(getFactory().makeForegroundStyle(Color.GRAY, 1.5f));
+		messageRepresentation.getConnectorSpecification().setEndSymbol(EndSymbolType.ARROW);
+		messageRepresentation.getConnectorSpecification().setEndSymbolSize(10.0);
+		// messageRepresentation.setLayer(11);
+
 		final DrawingGRBinding<OBPRoute> graphBinding = bindDrawing(OBPRoute.class, "route", new DrawingGRProvider<OBPRoute>() {
 			@Override
 			public DrawingGraphicalRepresentation provideGR(OBPRoute drawable, FGEModelFactory factory) {
@@ -172,6 +207,37 @@ public class RouteDrawing extends DrawingImpl<OBPRoute> {
 					}
 				});
 
+		final ShapeGRBinding<ComponentInRoute> lifeLineBinding = bindShape(ComponentInRoute.class, "lifeLine",
+				new ShapeGRProvider<ComponentInRoute>() {
+					@Override
+					public ShapeGraphicalRepresentation provideGR(ComponentInRoute drawable, FGEModelFactory factory) {
+						return lifeLineRepresentation;
+					}
+				});
+
+		final ShapeGRBinding<MessageInRoute> messageStartAnchorBinding = bindShape(MessageInRoute.class, "messageStartAnchor",
+				new ShapeGRProvider<MessageInRoute>() {
+					@Override
+					public ShapeGraphicalRepresentation provideGR(MessageInRoute drawable, FGEModelFactory factory) {
+						return messageAnchorRepresentation;
+					}
+				});
+
+		final ShapeGRBinding<MessageInRoute> messageEndAnchorBinding = bindShape(MessageInRoute.class, "messageEndAnchor",
+				new ShapeGRProvider<MessageInRoute>() {
+					@Override
+					public ShapeGraphicalRepresentation provideGR(MessageInRoute drawable, FGEModelFactory factory) {
+						return messageAnchorRepresentation;
+					}
+				});
+		final ConnectorGRBinding<MessageInRoute> messageBinding = bindConnector(MessageInRoute.class, "message", messageStartAnchorBinding,
+				messageEndAnchorBinding, graphBinding, new ConnectorGRProvider<MessageInRoute>() {
+					@Override
+					public ConnectorGraphicalRepresentation provideGR(MessageInRoute drawable, FGEModelFactory factory) {
+						return messageRepresentation;
+					}
+				});
+
 		graphBinding.addToWalkers(new GRStructureVisitor<OBPRoute>() {
 
 			@Override
@@ -210,9 +276,23 @@ public class RouteDrawing extends DrawingImpl<OBPRoute> {
 							OBPTransition transition = route.getTrace()
 									.getTransition(pConfig.getConfiguration(), config.getConfiguration());
 							drawConnector(concreteTransitionBinding, transition, pConfig, config, route);
+
+							for (Message m : transition.getMessages()) {
+								drawShape(messageStartAnchorBinding, route.getMessageInRoute(m));
+								drawShape(messageEndAnchorBinding, route.getMessageInRoute(m));
+								drawConnector(messageBinding, route.getMessageInRoute(m), messageStartAnchorBinding,
+										route.getMessageInRoute(m), messageEndAnchorBinding, route.getMessageInRoute(m), graphBinding,
+										route);
+							}
+
 						}
 					}
 				}
+
+				for (ComponentInRoute compInRoute : route.getVisibleComponents()) {
+					drawShape(lifeLineBinding, compInRoute);
+				}
+
 			}
 		});
 
@@ -224,25 +304,46 @@ public class RouteDrawing extends DrawingImpl<OBPRoute> {
 		// nodeBinding.setDynamicPropertyValue(GraphicalRepresentation.ABSOLUTE_TEXT_X, new DataBinding<Double>("drawable.labelX"));
 		// nodeBinding.setDynamicPropertyValue(GraphicalRepresentation.ABSOLUTE_TEXT_Y, new DataBinding<Double>("drawable.labelY"));
 		configurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>("10.0"), false);
-		configurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>("drawable.location"), false);
+		configurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>("drawable.location+50.0"),
+				false);
 
 		nextConfigurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.TEXT, new DataBinding<String>(
 				"drawable.configuration.name"), false);
 		nextConfigurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>("15.0"), false);
 		nextConfigurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>(
-				"drawable.configurationInRoute.location+25.0"), false);
+				"drawable.configurationInRoute.location+75.0"), false);
 
 		previousConfigurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.TEXT, new DataBinding<String>(
 				"drawable.configuration.name"), false);
 		previousConfigurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>("15.0"), false);
 		previousConfigurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>(
-				"drawable.configurationInRoute.location-15.0"), false);
+				"drawable.configurationInRoute.location+35.0"), false);
 
 		intermediateConfigurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.TEXT, new DataBinding<String>(
 				"drawable.configuration.name"), false);
 		intermediateConfigurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>("15.0"), false);
 		intermediateConfigurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>(
-				"drawable.configurationInRoute.location+35.0"), false);
+				"drawable.configurationInRoute.location+85.0"), false);
+
+		lifeLineBinding.setDynamicPropertyValue(GraphicalRepresentation.TEXT, new DataBinding<String>("drawable.component.componentName"),
+				false);
+		lifeLineBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>("drawable.index*100.0+120.0"),
+				false);
+		lifeLineBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>("50.0"), false);
+		lifeLineBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.HEIGHT, new DataBinding<Double>(
+				"(drawable.route.size-1)*60.0+20.0"), false);
+
+		messageStartAnchorBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>(
+				"drawable.startComponent.index*100+120.0"), false);
+		messageStartAnchorBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>(
+				"drawable.startConfiguration.location+60.0+10.0"), false);
+
+		messageEndAnchorBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>(
+				"drawable.endComponent.index*100+120.0"), false);
+		messageEndAnchorBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>(
+				"drawable.endConfiguration.location+60.0-10.0"), false);
+		messageBinding.setDynamicPropertyValue(GraphicalRepresentation.TEXT, new DataBinding<String>("drawable.message.messageLabel"),
+				false);
 
 	}
 }

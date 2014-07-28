@@ -114,7 +114,7 @@ public class LaunchRouteDrawing {
 			setChanged();
 			notifyObservers(new UniqueSelection(getDrawingGraphicalRepresentation(), null));
 		}
-		*/
+		 */
 
 		/*@Override
 		public JDrawingView<Graph> makeDrawingView() {
@@ -244,15 +244,34 @@ public class LaunchRouteDrawing {
 
 	public static OBPTrace makeExampleTrace() {
 
+		Component c1 = new Component("Component1");
+		Component c2 = new Component("Component2");
+		Component c3 = new Component("Component3");
+
 		OBPTraceImpl trace = new OBPTraceImpl();
+		trace.addToComponents(c1);
+		trace.addToComponents(c2);
+		trace.addToComponents(c3);
+
 		trace.addConfiguration(0);
-		trace.addConfiguration(7);
-		trace.addConfiguration(12);
-		trace.addConfiguration(23);
-		trace.addConfiguration(25);
-		trace.addConfiguration(432);
-		trace.addConfiguration(1027);
-		trace.addConfiguration(1029);
+		OBPTransitionImpl t1 = (OBPTransitionImpl) trace.addConfiguration(7);
+		OBPTransitionImpl t2 = (OBPTransitionImpl) trace.addConfiguration(12);
+		OBPTransitionImpl t3 = (OBPTransitionImpl) trace.addConfiguration(23);
+		OBPTransitionImpl t4 = (OBPTransitionImpl) trace.addConfiguration(25);
+		OBPTransitionImpl t5 = (OBPTransitionImpl) trace.addConfiguration(432);
+		OBPTransitionImpl t6 = (OBPTransitionImpl) trace.addConfiguration(1027);
+		OBPTransitionImpl t7 = (OBPTransitionImpl) trace.addConfiguration(1029);
+
+		t1.addToMessages(new Message("m1", c1, c2, t1));
+		t2.addToMessages(new Message("m2", c2, c1, t2));
+		t2.addToMessages(new Message("m3", c2, c3, t2));
+		t3.addToMessages(new Message("m4", c1, c2, t3));
+		t4.addToMessages(new Message("m5", c2, c3, t4));
+		t5.addToMessages(new Message("m6", c3, c1, t5));
+		t5.addToMessages(new Message("m7", c3, c2, t5));
+		t6.addToMessages(new Message("m8", c1, c2, t6));
+		t6.addToMessages(new Message("m9", c2, c3, t6));
+		t7.addToMessages(new Message("m10", c3, c2, t7));
 
 		return trace;
 	}

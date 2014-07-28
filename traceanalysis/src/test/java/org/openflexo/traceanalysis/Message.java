@@ -20,31 +20,33 @@
 
 package org.openflexo.traceanalysis;
 
-import java.util.List;
+public class Message {
 
-/**
- * Represents a OBP trace, as a chained list of OBPConfiguration, from a given configuration to another configuration
- * 
- * @author sylvain
- * 
- */
-public interface OBPTrace {
+	private final String messageLabel;
+	private final Component fromComponent, toComponent;
+	private final OBPTransition transition;
 
-	public OBPConfiguration getInitConfiguration();
+	public Message(String messageLabel, Component from, Component to, OBPTransition transition) {
+		this.messageLabel = messageLabel;
+		this.fromComponent = from;
+		this.toComponent = to;
+		this.transition = transition;
+	}
 
-	public OBPConfiguration getLastConfiguration();
+	public String getMessageLabel() {
+		return messageLabel;
+	}
 
-	public OBPConfiguration getNextConfiguration(OBPConfiguration config);
+	public OBPTransition getTransition() {
+		return transition;
+	}
 
-	public OBPConfiguration getPreviousConfiguration(OBPConfiguration config);
+	public Component getFromComponent() {
+		return fromComponent;
+	}
 
-	public OBPTransition getTransition(OBPConfiguration from, OBPConfiguration to);
+	public Component getToComponent() {
+		return toComponent;
+	}
 
-	public int getIndex(OBPConfiguration config);
-
-	public int getSize();
-
-	public OBPConfiguration getConfiguration(int index);
-
-	public List<Component> getComponents();
 }

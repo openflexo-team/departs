@@ -20,6 +20,8 @@
 
 package org.openflexo.traceanalysis;
 
+import java.util.List;
+
 import org.openflexo.toolbox.HasPropertyChangeSupport;
 
 /**
@@ -61,5 +63,11 @@ public interface OBPRoute extends HasPropertyChangeSupport {
 		public OBPConfigurationInRoute getEndConfiguration();
 
 	}
+
+	public List<ComponentInRoute> getVisibleComponents();
+
+	public ComponentInRoute getComponentInRoute(Component component);
+
+	public MessageInRoute getMessageInRoute(Message message);
 
 }

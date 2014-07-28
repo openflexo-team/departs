@@ -20,9 +20,13 @@
 
 package org.openflexo.traceanalysis;
 
+import java.util.List;
+
 public interface OBPTransition {
 
 	public OBPConfiguration getPreviousConfiguration();
 
 	public OBPConfiguration getNextConfiguration();
+
+	public List<Message> getMessages();
 }
