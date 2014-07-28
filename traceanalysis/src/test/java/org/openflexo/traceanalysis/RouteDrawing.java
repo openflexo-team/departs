@@ -12,11 +12,14 @@ import org.openflexo.fge.FGEModelFactory;
 import org.openflexo.fge.ForegroundStyle.DashStyle;
 import org.openflexo.fge.GRBinding.ConnectorGRBinding;
 import org.openflexo.fge.GRBinding.DrawingGRBinding;
+import org.openflexo.fge.GRBinding.GeometricGRBinding;
 import org.openflexo.fge.GRBinding.ShapeGRBinding;
 import org.openflexo.fge.GRProvider.ConnectorGRProvider;
 import org.openflexo.fge.GRProvider.DrawingGRProvider;
+import org.openflexo.fge.GRProvider.GeometricGRProvider;
 import org.openflexo.fge.GRProvider.ShapeGRProvider;
 import org.openflexo.fge.GRStructureVisitor;
+import org.openflexo.fge.GeometricGraphicalRepresentation;
 import org.openflexo.fge.GraphicalRepresentation;
 import org.openflexo.fge.ShapeGraphicalRepresentation;
 import org.openflexo.fge.connectors.ConnectorSpecification.ConnectorType;
@@ -26,6 +29,8 @@ import org.openflexo.fge.control.MouseControl.MouseButton;
 import org.openflexo.fge.control.MouseControlContext;
 import org.openflexo.fge.control.actions.MouseClickControlActionImpl;
 import org.openflexo.fge.control.actions.MouseClickControlImpl;
+import org.openflexo.fge.geom.FGEGeometricObject.Filling;
+import org.openflexo.fge.geom.FGERectangle;
 import org.openflexo.fge.impl.DrawingImpl;
 import org.openflexo.fge.shapes.ShapeSpecification.ShapeType;
 import org.openflexo.traceanalysis.OBPConfigurationInRoute.RelativeConfigurationArtefact;
@@ -239,6 +244,21 @@ public class RouteDrawing extends DrawingImpl<OBPRoute> {
 					}
 				});
 
+		final Object myRectangle = new Object();
+		FGERectangle rect = new FGERectangle(Filling.FILLED);
+		rect.setRect(200, 200, 200, 200);
+
+		final GeometricGraphicalRepresentation geomGR = getFactory().makeGeometricGraphicalRepresentation(rect);
+		geomGR.setBackground(getFactory().makeColoredBackground(/*TextureType.TEXTURE1, Color.red, Color.white*/Color.YELLOW));
+		geomGR.setForeground(getFactory().makeForegroundStyle(Color.blue));
+
+		final GeometricGRBinding<Object> geomBinding = bindGeometric(Object.class, "geometricObject", new GeometricGRProvider<Object>() {
+			@Override
+			public GeometricGraphicalRepresentation provideGR(Object drawable, FGEModelFactory factory) {
+				return geomGR;
+			}
+		});
+
 		graphBinding.addToWalkers(new GRStructureVisitor<OBPRoute>() {
 
 			@Override
@@ -293,6 +313,8 @@ public class RouteDrawing extends DrawingImpl<OBPRoute> {
 				for (ComponentInRoute compInRoute : route.getVisibleComponents()) {
 					drawShape(lifeLineBinding, compInRoute);
 				}
+
+				//drawGeometricObject(geomBinding, myRectangle);
 
 			}
 		});
