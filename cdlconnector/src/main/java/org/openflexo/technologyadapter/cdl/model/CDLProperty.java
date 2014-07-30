@@ -27,7 +27,7 @@ import org.openflexo.model.annotations.XMLElement;
 @ModelEntity
 @ImplementationClass(CDLProperty.CDLPropertyImpl.class)
 @XMLElement(xmlTag = "CDLProperty")
-public abstract interface CDLProperty extends CDLObject {
+public interface CDLProperty extends CDLObject {
 
 	public static abstract class CDLPropertyImpl extends CDLObjectImpl implements CDLProperty {
 

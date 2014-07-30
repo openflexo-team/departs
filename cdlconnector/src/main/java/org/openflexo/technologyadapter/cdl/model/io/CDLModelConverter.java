@@ -17,6 +17,7 @@ import obp.cdl.EventDeclaration;
 import obp.cdl.EventReference;
 import obp.cdl.ParActivity;
 import obp.cdl.PropertyDeclaration;
+import obp.cdl.PropertyReference;
 import obp.cdl.SeqActivity;
 import obp.cdl.TopActivity;
 import obp.event.CommunicationOp;
@@ -184,6 +185,9 @@ public class CDLModelConverter {
 			if (activity instanceof CDLTopActivity) {
 				setActivities((TopActivity) getCDLObjectFromFlexoCDLObject(activity), flexoCDLUnit);
 			}
+		}
+		for (PropertyReference propertyReference : cdlDeclaration.getPropertyList()) {
+			flexoCDLUnit.addToCDLProperties((CDLProperty) getCDLObjects().get(propertyReference.getReference().getIs()));
 		}
 		return flexoCDLUnit;
 	}
@@ -381,7 +385,6 @@ public class CDLModelConverter {
 		}	
 		cdlProperty.setTechnologyAdapter(technologyAdapter);
 		getCDLObjects().put(property, cdlProperty);
-		cdlUnit.addToCDLProperties(cdlProperty);
 		return cdlProperty;
 	}
 	

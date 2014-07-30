@@ -41,6 +41,8 @@ public abstract interface CDLObserverState extends CDLObject {
 	
 	public static final String PROPERTY_KEY = "CDLObserverState";
 	
+	public static final String OBSERVER_KEY = "CDLObserver";
+	
 	@PropertyIdentifier(type = List.class)
 	public static final String IN_TRANSITIONS_KEY = "inTransitions";
 	
@@ -52,6 +54,12 @@ public abstract interface CDLObserverState extends CDLObject {
 
 	@Setter(value = PROPERTY_KEY)
 	public void setCDLObserverState(State state);
+	
+	@Getter(value = OBSERVER_KEY, inverse = CDLObserver.STATES_KEY)
+	public CDLObserver getCDLObserver();
+
+	@Setter(value = OBSERVER_KEY)
+	public void setCDLObserver(CDLObserver cdlObserver);
 	
 	@Getter(value = IN_TRANSITIONS_KEY, cardinality = Cardinality.LIST , inverse = CDLObserverTransition.TO_STATE)
 	public List<CDLObserverTransition> getCDLObserverInTransitions();

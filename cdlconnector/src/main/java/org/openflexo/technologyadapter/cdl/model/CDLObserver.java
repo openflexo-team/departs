@@ -54,7 +54,7 @@ public abstract interface CDLObserver extends CDLProperty {
 	@Setter(value = PROPERTY_KEY)
 	public void setCDLPropertyObserver(PropertyObserver propertyObserver);
 	
-	@Getter(value = STATES_KEY, cardinality = Cardinality.LIST)
+	@Getter(value = STATES_KEY, cardinality = Cardinality.LIST, inverse = CDLObserverState.OBSERVER_KEY)
 	public List<CDLObserverState> getCDLObserverStates();
 
 	@Setter(STATES_KEY)

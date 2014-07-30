@@ -53,6 +53,7 @@ import org.openflexo.technologyadapter.cdl.virtualmodel.action.AddCDLProperty;
 import org.openflexo.technologyadapter.cdl.virtualmodel.action.SelectCDLAltActivity;
 import org.openflexo.technologyadapter.cdl.virtualmodel.action.SelectCDLParActivity;
 import org.openflexo.technologyadapter.cdl.virtualmodel.action.SelectCDLEventReference;
+import org.openflexo.technologyadapter.cdl.virtualmodel.action.SelectCDLProperties;
 
 /**
  * Implementation of the ModelSlot class for the CDL technology adapter<br>
@@ -82,7 +83,8 @@ import org.openflexo.technologyadapter.cdl.virtualmodel.action.SelectCDLEventRef
 @DeclareFetchRequests({ // All requests available through this model slot
 	@DeclareFetchRequest(FML = "SelectCDLAltActivity", fetchRequestClass = SelectCDLAltActivity.class),																	// Sheet
 	@DeclareFetchRequest(FML = "SelectCDLParActivity", fetchRequestClass = SelectCDLParActivity.class),
-	@DeclareFetchRequest(FML = "SelectCDLSeqActivity", fetchRequestClass = SelectCDLEventReference.class)
+	@DeclareFetchRequest(FML = "SelectCDLSeqActivity", fetchRequestClass = SelectCDLEventReference.class),
+	@DeclareFetchRequest(FML = "SelectCDLProperties", fetchRequestClass = SelectCDLProperties.class)
 })
 public interface CDLModelSlot extends FreeModelSlot<CDLUnit> {
 

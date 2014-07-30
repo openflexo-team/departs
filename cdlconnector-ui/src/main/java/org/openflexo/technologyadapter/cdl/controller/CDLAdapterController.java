@@ -61,6 +61,7 @@ import org.openflexo.technologyadapter.cdl.virtualmodel.action.AddCDLProperty;
 import org.openflexo.technologyadapter.cdl.virtualmodel.action.SelectCDLAltActivity;
 import org.openflexo.technologyadapter.cdl.virtualmodel.action.SelectCDLParActivity;
 import org.openflexo.technologyadapter.cdl.virtualmodel.action.SelectCDLEventReference;
+import org.openflexo.technologyadapter.cdl.virtualmodel.action.SelectCDLProperties;
 import org.openflexo.view.EmptyPanel;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.ControllerActionInitializer;
@@ -125,6 +126,8 @@ public class CDLAdapterController extends TechnologyAdapterController<CDLTechnol
 			return IconFactory.getImageIcon(getIconForTechnologyObject(CDLEventReference.class), IconLibrary.IMPORT);
 		}  else if (SelectCDLParActivity.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(getIconForTechnologyObject(CDLParActivity.class), IconLibrary.IMPORT);
+		} else if (SelectCDLProperties.class.isAssignableFrom(editionActionClass)) {
+			return IconFactory.getImageIcon(getIconForTechnologyObject(CDLProperty.class), IconLibrary.IMPORT);
 		}
 		return super.getIconForEditionAction(editionActionClass);
 	}
