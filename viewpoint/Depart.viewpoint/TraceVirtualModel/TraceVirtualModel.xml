@@ -6,7 +6,7 @@
       <VirtualModelModelSlot idref="4" />
     </PrimitiveRole>
   </FlexoConcept>
-  <Inspector id="5" flexoID="-1" userID="FLX" useSpecificDescriptions="false" inspectorTitle="TracesVirtualModel" />
+  <Inspector id="5" flexoID="-1" userID="FLX" useSpecificDescriptions="false" inspectorTitle="TraceVirtualModel" />
   <ModelSlot_VirtualModelModelSlot id="4" cloningStratgey="Reference" flexoID="1" isRequired="false" userID="FLX" useSpecificDescriptions="false" name="virtualModelInstance" isReadOnly="false" virtualModelURI="http://depart.v1/TraceVirtualModel" />
   <ModelSlot_TraceModelSlot id="6" cloningStratgey="Reference" flexoID="10" isRequired="true" name="traceModelSlot" useSpecificDescriptions="false" userID="FLX" isReadOnly="false" />
   <ModelSlot_VirtualModelModelSlot id="7" cloningStratgey="Reference" flexoID="11" isRequired="true" userID="FLX" useSpecificDescriptions="false" name="contextVirtualModel" isReadOnly="false" virtualModelURI="http://depart.v1/ContextVirtualModel" />
