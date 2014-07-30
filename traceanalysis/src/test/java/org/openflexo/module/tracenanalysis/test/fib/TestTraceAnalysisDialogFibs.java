@@ -19,6 +19,6 @@ public class TestTraceAnalysisDialogFibs extends GenericFIBTestCase {
 
 	@Test
 	public void testCreateTraceAnalysisDialog() {
-		validateFIB("Fib/Dialog/CreateTraceAnalysisDialog.fib");
+		validateFIB("Fib/Dialog/CreateTraceAnalysisProjectDialog.fib");
 	}
 }

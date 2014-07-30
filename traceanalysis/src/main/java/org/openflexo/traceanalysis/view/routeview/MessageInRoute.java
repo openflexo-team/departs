@@ -18,14 +18,16 @@
  *
  */
 
-package org.openflexo.traceanalysis;
+package org.openflexo.traceanalysis.view.routeview;
+
+import org.openflexo.technologyadapter.trace.model.OBPTraceMessage;
 
 public class MessageInRoute {
 
 	private final OBPRoute route;
-	private final Message message;
+	private final OBPTraceMessage message;
 
-	public MessageInRoute(Message message, OBPRoute route) {
+	public MessageInRoute(OBPTraceMessage message, OBPRoute route) {
 		this.route = route;
 		this.message = message;
 	}
@@ -34,24 +36,24 @@ public class MessageInRoute {
 		return route;
 	}
 
-	public Message getMessage() {
+	public OBPTraceMessage getMessage() {
 		return message;
 	}
 
-	public ComponentInRoute getStartComponent() {
-		return route.getComponentInRoute(message.getFromComponent());
+	public BehaviourObjectInRoute getStartBehaviourObject() {
+		return route.getBehaviourObjectInRoute(message.getFromBehaviourObject());
 	}
 
 	public OBPConfigurationInRoute getStartConfiguration() {
-		return route.getOBPConfigurationInRoute(message.getTransition().getPreviousConfiguration());
+		return route.getOBPConfigurationInRoute(message.getOBPTraceTransition().getSourceOBPTraceConfiguration());
 	}
 
-	public ComponentInRoute getEndComponent() {
-		return route.getComponentInRoute(message.getToComponent());
+	public BehaviourObjectInRoute getEndBehaviourObject() {
+		return route.getBehaviourObjectInRoute(message.getToBehaviourObject());
 	}
 
 	public OBPConfigurationInRoute getEndConfiguration() {
-		return route.getOBPConfigurationInRoute(message.getTransition().getNextConfiguration());
+		return route.getOBPConfigurationInRoute(message.getOBPTraceTransition().getTargetOBPTraceConfiguration());
 	}
 
 }

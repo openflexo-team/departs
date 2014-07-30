@@ -34,6 +34,7 @@ import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.View;
 import org.openflexo.foundation.view.VirtualModelInstance;
+import org.openflexo.foundation.view.rm.ViewResource;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.VirtualModel;
@@ -73,6 +74,11 @@ public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectW
 		if (traceAnalysisViewPoint == null) {
 			throw new InvalidArgumentException("Could not load traceAnalysisViewPoint");
 		}
+		
+		if(project.getViewLibrary().getViewsForViewPointWithURI(TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI).size()>0){
+			traceAnalysisView = project.getViewLibrary().getViewsForViewPointWithURI(TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI).get(0);
+		}
+		
 	}
 
 	public String getName() {
@@ -91,6 +97,26 @@ public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectW
 	
 	public ViewPoint getTraceAnaylsisViewPoint() {
 		return traceAnalysisViewPoint;
+	}
+	
+	public void setSystemVirtualModelInstance(SystemVirtualModelInstance systemVirtualModelInstance) {
+		this.systemVirtualModelInstance = systemVirtualModelInstance;
+	}
+
+	public void setContextVirtualModelInstance(ContextVirtualModelInstance contextVirtualModelInstance) {
+		this.contextVirtualModelInstance = contextVirtualModelInstance;
+	}
+
+	public void setObserverVirtualModelInstance(ObserverVirtualModelInstance observerVirtualModelInstance) {
+		this.observerVirtualModelInstance = observerVirtualModelInstance;
+	}
+
+	public View getTraceAnalysisView() {
+		return traceAnalysisView;
+	}
+
+	public void setTraceAnalysisView(View traceAnalysisView) {
+		this.traceAnalysisView = traceAnalysisView;
 	}
 	
 	public VirtualModel getTraceVirtualModel(){
@@ -123,6 +149,7 @@ public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectW
 		
 		if(traceAnalysisVirtualModelInstances==null){
 			traceAnalysisVirtualModelInstances = new ArrayList<TraceAnalysisVirtualModelInstance>();
+			traceAnalysisVirtualModelInstances.addAll(getTraceVirtualModelInstances());
 			traceAnalysisVirtualModelInstances.add(getContextVirtualModelInstance());
 			traceAnalysisVirtualModelInstances.add(getSystemVirtualModelInstance());
 			traceAnalysisVirtualModelInstances.add(getObserverVirtualModelInstance());
@@ -167,8 +194,26 @@ public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectW
 	public List<TraceVirtualModelInstance> getTraceVirtualModelInstances() {
 		if(traceVirtualModelInstances==null){
 			traceVirtualModelInstances=new ArrayList<TraceVirtualModelInstance>();
+			for (VirtualModelInstance vmi : traceAnalysisView.getVirtualModelInstances()) {
+				if(vmi.getVirtualModel().getName().equals("TraceVirtualModel")){
+					createTraceVirtualModelInstance(vmi);
+				}
+			}
 		}
 		return traceVirtualModelInstances;
+	}
+	
+	public TraceVirtualModelInstance createTraceVirtualModelInstance(VirtualModelInstance vmi){
+		TraceVirtualModelInstance traceVirtualModelInstance;
+		try {
+			traceVirtualModelInstance = new TraceVirtualModelInstance(vmi,this);
+			getTraceVirtualModelInstances().add(traceVirtualModelInstance);
+			getPropertyChangeSupport().firePropertyChange("traceVirtualModelInstances", null, getTraceVirtualModelInstances());
+			return traceVirtualModelInstance;
+		} catch (InvalidArgumentException e) {
+			logger.log(Level.SEVERE, "Problem occurs while creating a trace virtual model instance");
+			return null;
+		}
 	}
 	
 	public TraceVirtualModelInstance getTraceVirtualModelInstance(VirtualModelInstance vmi) {
@@ -177,36 +222,7 @@ public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectW
 				return traceVirtualModelInstance;
 			}
 		}
-
-		try {
-			TraceVirtualModelInstance traceVirtualModelInstance = new TraceVirtualModelInstance(getVirtualModelInstanceConformToNamedVirtualModel("TraceVirtualModel"), this);
-			getTraceVirtualModelInstances().add(traceVirtualModelInstance);
-			getPropertyChangeSupport().firePropertyChange("traceVirtualModelInstances", null, getTraceVirtualModelInstances());
-			return traceVirtualModelInstance;
-		} catch (InvalidArgumentException e) {
-			logger.log(Level.SEVERE, "Trace virtual model instance cannot be instanciated");
-		};
-		return null;
-	}
-	
-	public void setSystemVirtualModelInstance(SystemVirtualModelInstance systemVirtualModelInstance) {
-		this.systemVirtualModelInstance = systemVirtualModelInstance;
-	}
-
-	public void setContextVirtualModelInstance(ContextVirtualModelInstance contextVirtualModelInstance) {
-		this.contextVirtualModelInstance = contextVirtualModelInstance;
-	}
-
-	public void setObserverVirtualModelInstance(ObserverVirtualModelInstance observerVirtualModelInstance) {
-		this.observerVirtualModelInstance = observerVirtualModelInstance;
-	}
-
-	public View getTraceAnalysisView() {
-		return traceAnalysisView;
-	}
-
-	public void setTraceAnalysisView(View traceAnalysisView) {
-		this.traceAnalysisView = traceAnalysisView;
+		return createTraceVirtualModelInstance(vmi);
 	}
 
 }

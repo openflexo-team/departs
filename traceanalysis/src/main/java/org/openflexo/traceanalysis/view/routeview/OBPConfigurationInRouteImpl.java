@@ -18,26 +18,28 @@
  *
  */
 
-package org.openflexo.traceanalysis;
+package org.openflexo.traceanalysis.view.routeview;
 
 import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.openflexo.technologyadapter.trace.model.OBPTraceConfiguration;
+
 public class OBPConfigurationInRouteImpl implements OBPConfigurationInRoute {
 
 	private final OBPRoute route;
-	private final OBPConfiguration configuration;
-	private final Map<OBPConfiguration, RelativeConfigurationArtefact> relativeConfigurationArtefacts;
+	private final OBPTraceConfiguration configuration;
+	private final Map<OBPTraceConfiguration, RelativeConfigurationArtefact> relativeConfigurationArtefacts;
 
 	private final PropertyChangeSupport pcSupport;
 
-	public OBPConfigurationInRouteImpl(OBPConfiguration configuration, OBPRoute route) {
+	public OBPConfigurationInRouteImpl(OBPTraceConfiguration configuration, OBPRoute route) {
 		super();
 		pcSupport = new PropertyChangeSupport(this);
 		this.route = route;
 		this.configuration = configuration;
-		relativeConfigurationArtefacts = new HashMap<OBPConfiguration, RelativeConfigurationArtefact>();
+		relativeConfigurationArtefacts = new HashMap<OBPTraceConfiguration, RelativeConfigurationArtefact>();
 	}
 
 	@Override
@@ -56,7 +58,7 @@ public class OBPConfigurationInRouteImpl implements OBPConfigurationInRoute {
 	}
 
 	@Override
-	public OBPConfiguration getConfiguration() {
+	public OBPTraceConfiguration getConfiguration() {
 		return configuration;
 	}
 
@@ -81,7 +83,7 @@ public class OBPConfigurationInRouteImpl implements OBPConfigurationInRoute {
 		return getRelativeConfigurationArtefact(getRoute().getTrace().getNextConfiguration(getConfiguration()));
 	}
 
-	private RelativeConfigurationArtefact getRelativeConfigurationArtefact(OBPConfiguration config) {
+	private RelativeConfigurationArtefact getRelativeConfigurationArtefact(OBPTraceConfiguration config) {
 		RelativeConfigurationArtefact returned = relativeConfigurationArtefacts.get(config);
 		if (returned == null) {
 			returned = new RelativeConfigurationArtefactImpl(config);
@@ -92,14 +94,14 @@ public class OBPConfigurationInRouteImpl implements OBPConfigurationInRoute {
 
 	public class RelativeConfigurationArtefactImpl implements RelativeConfigurationArtefact {
 
-		private final OBPConfiguration config;
+		private final OBPTraceConfiguration config;
 
-		public RelativeConfigurationArtefactImpl(OBPConfiguration config) {
+		public RelativeConfigurationArtefactImpl(OBPTraceConfiguration config) {
 			this.config = config;
 		}
 
 		@Override
-		public OBPConfiguration getConfiguration() {
+		public OBPTraceConfiguration getConfiguration() {
 			return config;
 		}
 
@@ -117,6 +119,6 @@ public class OBPConfigurationInRouteImpl implements OBPConfigurationInRoute {
 
 	@Override
 	public String toString() {
-		return "OBPConfigurationInRoute " + getConfiguration().getIdentifier();
+		return "OBPConfigurationInRoute " + getConfiguration().getIndex();
 	}
 }

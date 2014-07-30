@@ -1,7 +1,10 @@
-package org.openflexo.traceanalysis;
+package org.openflexo.traceanalysis.view.routeview;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.util.List;
+
+import javax.sound.midi.Receiver;
 
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.fge.ColorGradientBackgroundStyle.ColorGradientDirection;
@@ -28,24 +31,32 @@ import org.openflexo.fge.control.actions.MouseClickControlActionImpl;
 import org.openflexo.fge.control.actions.MouseClickControlImpl;
 import org.openflexo.fge.impl.DrawingImpl;
 import org.openflexo.fge.shapes.ShapeSpecification.ShapeType;
-import org.openflexo.traceanalysis.OBPConfigurationInRoute.RelativeConfigurationArtefact;
-import org.openflexo.traceanalysis.OBPRoute.AbstractTransitionArtefact;
+import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObject;
+import org.openflexo.technologyadapter.trace.model.OBPTraceMessage;
+import org.openflexo.technologyadapter.trace.model.OBPTraceMessageReceive;
+import org.openflexo.technologyadapter.trace.model.OBPTraceMessageSend;
+import org.openflexo.technologyadapter.trace.model.OBPTraceState;
+import org.openflexo.technologyadapter.trace.model.OBPTraceTransition;
+import org.openflexo.traceanalysis.view.routeview.OBPConfigurationInRoute.RelativeConfigurationArtefact;
+import org.openflexo.traceanalysis.view.routeview.OBPRoute.AbstractTransitionArtefact;
 
 public class RouteDrawing extends DrawingImpl<OBPRoute> {
 
 	public static final double ROW_HEIGHT = 60.0;
 	public static final double LIFE_LINE_WIDTH = 150.0;
+	public static final double STATE_WIDTH = 50.0;
+	public static final double STATE_HEIGHT = 20.0;
 
 	private DrawingGraphicalRepresentation graphRepresentation;
 	private ShapeGraphicalRepresentation configurationRepresentation;
 	private ConnectorGraphicalRepresentation concreteTransitionRepresentation;
 	private ConnectorGraphicalRepresentation abstractTransitionRepresentation;
 	private ShapeGraphicalRepresentation intermediateConfigurationRepresentation;
+	private ShapeGraphicalRepresentation stateRepresentation;
 
 	private ShapeGraphicalRepresentation lifeLineRepresentation;
 	private ShapeGraphicalRepresentation messageAnchorRepresentation;
 	private ConnectorGraphicalRepresentation messageRepresentation;
-
 	// private ShapeGraphicalRepresentation previousConfigurationRepresentation;
 
 	public RouteDrawing(OBPRoute graph, FGEModelFactory factory) {
@@ -122,6 +133,18 @@ public class RouteDrawing extends DrawingImpl<OBPRoute> {
 					}
 				}, false, false, false, false, null));
 
+		stateRepresentation = getFactory().makeShapeGraphicalRepresentation(ShapeType.RECTANGLE);
+		stateRepresentation.setWidth(STATE_WIDTH);
+		stateRepresentation.setHeight(STATE_HEIGHT);
+		stateRepresentation.setAbsoluteTextX(STATE_WIDTH/2);
+		stateRepresentation.setAbsoluteTextY(STATE_HEIGHT/2);
+		stateRepresentation.setTextStyle(getFactory().makeTextStyle(Color.BLACK,
+				FGEConstants.DEFAULT_TEXT_FONT.deriveFont(Font.PLAIN)));
+		stateRepresentation.setShadowStyle(getFactory().makeNoneShadowStyle());
+		stateRepresentation.setBackground(getFactory().makeColorGradientBackground(Color.LIGHT_GRAY,
+				Color.white, ColorGradientDirection.SOUTH_EAST_NORTH_WEST));
+		stateRepresentation.setForeground(getFactory().makeForegroundStyle(Color.LIGHT_GRAY));
+		
 		concreteTransitionRepresentation = getFactory().makeConnectorGraphicalRepresentation(ConnectorType.LINE);
 		concreteTransitionRepresentation.setForeground(getFactory().makeForegroundStyle(Color.GRAY, 0.5f));
 
@@ -141,7 +164,6 @@ public class RouteDrawing extends DrawingImpl<OBPRoute> {
 		lifeLineRepresentation.getForeground().setUseTransparency(true);
 		lifeLineRepresentation.getForeground().setTransparencyLevel(0.5f);
 		lifeLineRepresentation.setIsFocusable(false);
-		// lifeLineRepresentation.setLayer(9);
 
 		messageAnchorRepresentation = getFactory().makeShapeGraphicalRepresentation(ShapeType.RECTANGLE);
 		messageAnchorRepresentation.setWidth(0);
@@ -157,7 +179,7 @@ public class RouteDrawing extends DrawingImpl<OBPRoute> {
 		messageRepresentation.getConnectorSpecification().setEndSymbol(EndSymbolType.ARROW);
 		messageRepresentation.getConnectorSpecification().setEndSymbolSize(10.0);
 		// messageRepresentation.setLayer(11);
-
+		
 		final DrawingGRBinding<OBPRoute> graphBinding = bindDrawing(OBPRoute.class, "route", new DrawingGRProvider<OBPRoute>() {
 			@Override
 			public DrawingGraphicalRepresentation provideGR(OBPRoute drawable, FGEModelFactory factory) {
@@ -192,10 +214,17 @@ public class RouteDrawing extends DrawingImpl<OBPRoute> {
 						return intermediateConfigurationRepresentation;
 					}
 				});
-		final ConnectorGRBinding<OBPTransition> concreteTransitionBinding = bindConnector(OBPTransition.class, "concreteTransition",
-				configurationBinding, configurationBinding, graphBinding, new ConnectorGRProvider<OBPTransition>() {
+		final ShapeGRBinding<OBPStateInRoute> stateBinding = bindShape(
+				OBPStateInRoute.class, "state", new ShapeGRProvider<OBPStateInRoute>() {
 					@Override
-					public ConnectorGraphicalRepresentation provideGR(OBPTransition drawable, FGEModelFactory factory) {
+					public ShapeGraphicalRepresentation provideGR(OBPStateInRoute drawable, FGEModelFactory factory) {
+						return stateRepresentation;
+					}
+				});
+		final ConnectorGRBinding<OBPTraceTransition> concreteTransitionBinding = bindConnector(OBPTraceTransition.class, "concreteTransition",
+				configurationBinding, configurationBinding, graphBinding, new ConnectorGRProvider<OBPTraceTransition>() {
+					@Override
+					public ConnectorGraphicalRepresentation provideGR(OBPTraceTransition drawable, FGEModelFactory factory) {
 						return concreteTransitionRepresentation;
 					}
 				});
@@ -208,10 +237,10 @@ public class RouteDrawing extends DrawingImpl<OBPRoute> {
 					}
 				});
 
-		final ShapeGRBinding<ComponentInRoute> lifeLineBinding = bindShape(ComponentInRoute.class, "lifeLine",
-				new ShapeGRProvider<ComponentInRoute>() {
+		final ShapeGRBinding<BehaviourObjectInRoute> lifeLineBinding = bindShape(BehaviourObjectInRoute.class, "lifeLine",
+				new ShapeGRProvider<BehaviourObjectInRoute>() {
 					@Override
-					public ShapeGraphicalRepresentation provideGR(ComponentInRoute drawable, FGEModelFactory factory) {
+					public ShapeGraphicalRepresentation provideGR(BehaviourObjectInRoute drawable, FGEModelFactory factory) {
 						return lifeLineRepresentation;
 					}
 				});
@@ -243,14 +272,17 @@ public class RouteDrawing extends DrawingImpl<OBPRoute> {
 
 			@Override
 			public void visit(OBPRoute route) {
+				for (BehaviourObjectInRoute compInRoute : route.getVisibleBehaviourObjects()) {
+					drawShape(lifeLineBinding, compInRoute);
+				}
 				for (int i = 0; i < route.getSize(); i++) {
 					OBPConfigurationInRoute config = route.getConfiguration(i);
 					drawShape(configurationBinding, config);
 					if (i > 0) {
 						OBPConfigurationInRoute pConfig = route.getConfiguration(i - 1);
-						OBPTransition nextTransition = route.getTrace().getTransition(pConfig.getConfiguration(),
+						OBPTraceTransition nextTransition = route.getTrace().getTransition(pConfig.getConfiguration(),
 								pConfig.getNextConfigurationArtefact().getConfiguration());
-						OBPTransition previousTransition = route.getTrace().getTransition(
+						OBPTraceTransition previousTransition = route.getTrace().getTransition(
 								config.getPreviousConfigurationArtefact().getConfiguration(), config.getConfiguration());
 						if (pConfig.nextTransitionIsAbstract()) {
 							if (pConfig.getNextConfigurationArtefact().getConfiguration() == config.getPreviousConfigurationArtefact()
@@ -274,26 +306,51 @@ public class RouteDrawing extends DrawingImpl<OBPRoute> {
 										config, route);
 							}
 						} else {
-							OBPTransition transition = route.getTrace()
+							OBPTraceTransition transition = route.getTrace()
 									.getTransition(pConfig.getConfiguration(), config.getConfiguration());
 							drawConnector(concreteTransitionBinding, transition, pConfig, config, route);
 
-							for (Message m : transition.getMessages()) {
-								drawShape(messageStartAnchorBinding, route.getMessageInRoute(m));
-								drawShape(messageEndAnchorBinding, route.getMessageInRoute(m));
-								drawConnector(messageBinding, route.getMessageInRoute(m), messageStartAnchorBinding,
-										route.getMessageInRoute(m), messageEndAnchorBinding, route.getMessageInRoute(m), graphBinding,
-										route);
+							for (OBPTraceMessage m : transition.getOBPTraceMessages()) {
+								
+								if(m instanceof OBPTraceMessageSend){
+									// Show an asynchronous message only if all configuration between send/receive are visible
+									boolean showMessage = true;
+									OBPTraceMessageSend sendMessage = (OBPTraceMessageSend)m;
+									
+									for(OBPConfigurationInRoute configuration : route.getAsyncMessageConfigurations(sendMessage, sendMessage.getOBPTraceMessageReceive())){
+										if(!route.isVisible(configuration.getConfiguration())){
+											showMessage = false;
+										}
+									}
+									
+									if(showMessage){
+										drawShape(messageStartAnchorBinding, route.getMessageInRoute(sendMessage));
+										drawShape(messageEndAnchorBinding, route.getMessageInRoute(sendMessage.getOBPTraceMessageReceive()));
+										drawConnector(messageBinding, route.getMessageInRoute(sendMessage), messageStartAnchorBinding,
+											route.getMessageInRoute(sendMessage), messageEndAnchorBinding, route.getMessageInRoute(sendMessage.getOBPTraceMessageReceive()), graphBinding,route);
+									}
+									
+								} 
+								// A receive cannot happen without a send(the inverse can happen), so only process send messages
+								else if(m instanceof OBPTraceMessageReceive){
+									// Do nothing
+								}
+								else{	
+									drawShape(messageStartAnchorBinding, route.getMessageInRoute(m));
+									drawShape(messageEndAnchorBinding, route.getMessageInRoute(m));
+									drawConnector(messageBinding, route.getMessageInRoute(m), messageStartAnchorBinding,
+										route.getMessageInRoute(m), messageEndAnchorBinding, route.getMessageInRoute(m), graphBinding,route);
+								}
+								
 							}
 
 						}
+						// Show states for visible BehaviourObjects
+						for (BehaviourObjectInRoute objectInRoute : route.getVisibleBehaviourObjects()) {
+							drawShape(stateBinding, route.getOBPStateInRoute(objectInRoute, pConfig));
+						}
 					}
 				}
-
-				for (ComponentInRoute compInRoute : route.getVisibleComponents()) {
-					drawShape(lifeLineBinding, compInRoute);
-				}
-
 			}
 		});
 
@@ -306,6 +363,12 @@ public class RouteDrawing extends DrawingImpl<OBPRoute> {
 		// nodeBinding.setDynamicPropertyValue(GraphicalRepresentation.ABSOLUTE_TEXT_Y, new DataBinding<Double>("drawable.labelY"));
 		configurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>("10.0"), false);
 		configurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>("drawable.visibleIndex*"
+				+ ROW_HEIGHT + "+50.0"), false);
+		
+		stateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.TEXT, new DataBinding<String>(
+				"drawable.state.value"), false);
+		stateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>("drawable.behaviourObjectInRoute.index*"+LIFE_LINE_WIDTH+"+"+STATE_WIDTH+"+45.0"), false);
+		stateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>("drawable.configurationInRoute.visibleIndex*"
 				+ ROW_HEIGHT + "+50.0"), false);
 
 		nextConfigurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.TEXT, new DataBinding<String>(
@@ -326,7 +389,7 @@ public class RouteDrawing extends DrawingImpl<OBPRoute> {
 		intermediateConfigurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>(
 				"drawable.configurationInRoute.visibleIndex*" + ROW_HEIGHT + "+85.0"), false);
 
-		lifeLineBinding.setDynamicPropertyValue(GraphicalRepresentation.TEXT, new DataBinding<String>("drawable.component.componentName"),
+		lifeLineBinding.setDynamicPropertyValue(GraphicalRepresentation.TEXT, new DataBinding<String>("drawable.behaviourObject.name"),
 				false);
 		lifeLineBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>("drawable.index*" + LIFE_LINE_WIDTH
 				+ "+120.0"), false);
@@ -335,15 +398,15 @@ public class RouteDrawing extends DrawingImpl<OBPRoute> {
 				+ ROW_HEIGHT + "+20.0"), false);
 
 		messageStartAnchorBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>(
-				"drawable.startComponent.index*" + LIFE_LINE_WIDTH + "+120.0"), false);
+				"drawable.startBehaviourObject.index*" + LIFE_LINE_WIDTH + "+120.0"), false);
 		messageStartAnchorBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>(
 				"(drawable.startConfiguration.visibleIndex+1)*" + ROW_HEIGHT + "+10.0"), false);
 
 		messageEndAnchorBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>(
-				"drawable.endComponent.index*" + LIFE_LINE_WIDTH + "+120.0"), false);
+				"drawable.endBehaviourObject.index*" + LIFE_LINE_WIDTH + "+120.0"), false);
 		messageEndAnchorBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>(
 				"(drawable.endConfiguration.visibleIndex+1)*" + ROW_HEIGHT + "-10.0"), false);
-		messageBinding.setDynamicPropertyValue(GraphicalRepresentation.TEXT, new DataBinding<String>("drawable.message.messageLabel"),
+		messageBinding.setDynamicPropertyValue(GraphicalRepresentation.TEXT, new DataBinding<String>("drawable.message.informationLabel"),
 				false);
 
 	}

@@ -14,7 +14,7 @@ public class TestTraceAnalysisInspectorFibs extends GenericFIBInspectorTestCase 
 
 	@Test
 	public void testTraceAnalysisInspector() {
-		validateFIB("Inspectors/TRACEANALYSIS/FIBTraceAnalysis.inspector");
+		validateFIB("Inspectors/TRACEANALYSIS/FIBTraceVirtualModelInstance.inspector");
 	}
 
 }

@@ -50,6 +50,7 @@ public class TraceAnalysisProjectNature implements ProjectNature<TraceAnalysisPr
 	public static final String TRACE_ANALYSIS_VIEW_RELATIVE_URI = "/" + TRACE_ANALYSIS_VIEW_NAME;
 	public static final String TRACE_ANALYSIS_VIEWPOINT_NAME = "http://depart.v1";
 	public static final String TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI = TRACE_ANALYSIS_VIEWPOINT_NAME;
+	public boolean askForProjectResources = true;
 
 	private final Map<FlexoProject, TraceAnalysisProject> traceAnalysisProjects;
 
@@ -118,10 +119,12 @@ public class TraceAnalysisProjectNature implements ProjectNature<TraceAnalysisPr
 		}
 		TraceAnalysisProject traceAnalysisProject = getProjectWrapper(project);
 		CreateTraceAnalysisProject action = CreateTraceAnalysisProject.actionType.makeNewAction(traceAnalysisProject, null, editor);
+		if(askForProjectResources){
+			FIBComponent fibComponent = FIBLibrary.instance().retrieveFIBComponent(TraceAnalysisCst.CREATE_TRACE_ANALYSIS_PROJECT_DIALOG_FIB);
+			FIBDialog dialog = FIBDialog.instanciateAndShowDialog(fibComponent, action, ProgressWindow.instance(), true,
+					new FlexoFIBController(fibComponent));
+		}
 		
-		FIBComponent fibComponent = FIBLibrary.instance().retrieveFIBComponent(TraceAnalysisCst.CREATE_TRACE_ANALYSIS_PROJECT_DIALOG_FIB);
-		FIBDialog dialog = FIBDialog.instanciateAndShowDialog(fibComponent, action, ProgressWindow.instance(), true,
-				new FlexoFIBController(fibComponent));
 		action.doAction();
 
 	}

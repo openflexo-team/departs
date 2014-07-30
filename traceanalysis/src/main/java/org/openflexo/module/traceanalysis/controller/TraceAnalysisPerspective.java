@@ -23,16 +23,25 @@ import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
+import org.openflexo.fge.FGEModelFactory;
+import org.openflexo.fge.FGEModelFactoryImpl;
+import org.openflexo.fge.swing.control.SwingToolFactory;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
+import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.module.traceanalysis.TraceAnalysisIconLibrary;
 import org.openflexo.module.traceanalysis.model.ConfigurationMask;
 import org.openflexo.module.traceanalysis.model.TraceAnalysisProject;
 import org.openflexo.module.traceanalysis.model.TraceVirtualModelInstance;
 import org.openflexo.module.traceanalysis.view.ConfigurationMaskModuleView;
-import org.openflexo.module.traceanalysis.view.TraceVirtualModelInstanceModuleView;
+import org.openflexo.module.traceanalysis.view.OBPRouteModuleView;
 import org.openflexo.module.traceanalysis.widget.FIBTraceAnalysisProjectConceptBrowser;
 import org.openflexo.module.traceanalysis.widget.FIBTraceAnalysisProjectBrowser;
+import org.openflexo.technologyadapter.trace.model.OBPTrace;
+import org.openflexo.traceanalysis.view.routeview.OBPRoute;
+import org.openflexo.traceanalysis.view.routeview.OBPRouteEditor;
+import org.openflexo.traceanalysis.view.routeview.OBPRouteImpl;
+import org.openflexo.traceanalysis.view.routeview.RouteDrawing;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.FlexoPerspective;
@@ -138,14 +147,36 @@ public class TraceAnalysisPerspective extends FlexoPerspective {
 	@Override
 	public ModuleView<?> createModuleViewForObject(FlexoObject object, boolean editable) {
 		if (object instanceof TraceVirtualModelInstance) {
-			return new TraceVirtualModelInstanceModuleView((TraceVirtualModelInstance) object,getController(), this);
+			try {
+				TraceVirtualModelInstance traceVirtualModelInstance = (TraceVirtualModelInstance) object;
+				RouteDrawing routeDrawing = makeRouteDrawing(traceVirtualModelInstance.getTraceOBP());
+				OBPRouteEditor editor = new OBPRouteEditor(routeDrawing,new FGEModelFactoryImpl(),SwingToolFactory.DEFAULT,traceVirtualModelInstance );
+				return new OBPRouteModuleView(editor,getController(), this);
+			} catch (ModelDefinitionException e) {
+				logger.warning("Not able to create an OBP route drawing" + e.getMessage());
+				return null;
+			}
 		} else if(object instanceof ConfigurationMask){
 			return new ConfigurationMaskModuleView((ConfigurationMask) object,getController(), this);
 		}
 		return super.createModuleViewForObject(object, editable);
 	}
+	
 	public void setProject(FlexoProject project) {
 		taProjectBrowser.setRootObject(project);
+	}
+	
+	public RouteDrawing makeRouteDrawing(OBPTrace traceOBP) {
+		FGEModelFactory factory = null;
+		try {
+			factory = new FGEModelFactoryImpl();
+		} catch (ModelDefinitionException e) {
+			e.printStackTrace();
+		}
+		OBPRoute route = new OBPRouteImpl(traceOBP);
+		RouteDrawing returned = new RouteDrawing(route, factory);
+		returned.printGraphicalObjectHierarchy();
+		return returned;
 	}
 
 }

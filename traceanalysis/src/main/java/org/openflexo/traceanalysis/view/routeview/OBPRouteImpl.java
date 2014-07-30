@@ -17,7 +17,7 @@
  * along with OpenFlexo. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package org.openflexo.traceanalysis;
+package org.openflexo.traceanalysis.view.routeview;
 
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
@@ -25,33 +25,50 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
+import org.openflexo.module.traceanalysis.model.ConfigurationMask;
+import org.openflexo.technologyadapter.trace.model.OBPTrace;
+import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObject;
+import org.openflexo.technologyadapter.trace.model.OBPTraceConfiguration;
+import org.openflexo.technologyadapter.trace.model.OBPTraceMessage;
+
 public class OBPRouteImpl implements OBPRoute {
 
+	private Map<OBPTraceConfiguration, OBPConfigurationInRoute> configMap;
+	private List<OBPConfigurationInRoute> visibleConfigurations;
+
+	private Map<OBPTraceBehaviourObject, BehaviourObjectInRoute> behaviourObjectsMap;
+	private List<BehaviourObjectInRoute> visibleBehaviourObjects;
+
+	private Map<OBPTraceMessage, MessageInRoute> messageMap;
+	
+	private List<OBPStateInRoute> visibleStates;
+	private List<OBPStateInRoute> allStates;
+
+	private PropertyChangeSupport pcSupport;
+	
 	private final OBPTrace trace;
-
-	private final Map<OBPConfiguration, OBPConfigurationInRoute> configMap;
-	private final List<OBPConfigurationInRoute> visibleConfigurations;
-
-	private final Map<Component, ComponentInRoute> componentMap;
-	private final List<ComponentInRoute> visibleComponents;
-
-	private final Map<Message, MessageInRoute> messageMap;
-
-	private final PropertyChangeSupport pcSupport;
-
+	
 	public OBPRouteImpl(OBPTrace trace) {
 		pcSupport = new PropertyChangeSupport(this);
 		this.trace = trace;
 		visibleConfigurations = new ArrayList<OBPConfigurationInRoute>();
-		configMap = new HashMap<OBPConfiguration, OBPConfigurationInRoute>();
+		configMap = new HashMap<OBPTraceConfiguration, OBPConfigurationInRoute>();
 		visibleConfigurations.add(getOBPConfigurationInRoute(trace.getInitConfiguration()));
 		visibleConfigurations.add(getOBPConfigurationInRoute(trace.getLastConfiguration()));
-		visibleComponents = new ArrayList<ComponentInRoute>();
-		componentMap = new HashMap<Component, ComponentInRoute>();
-		for (Component c : trace.getComponents()) {
-			visibleComponents.add(getComponentInRoute(c));
+		visibleBehaviourObjects = new ArrayList<BehaviourObjectInRoute>();
+		visibleStates = new ArrayList<OBPStateInRoute>();
+		allStates = new ArrayList<OBPStateInRoute>();
+		behaviourObjectsMap = new HashMap<OBPTraceBehaviourObject, BehaviourObjectInRoute>();
+		for (OBPTraceBehaviourObject c : trace.getBehaviourObjects()) {
+			visibleBehaviourObjects.add(getBehaviourObjectInRoute(c));
 		}
-		messageMap = new HashMap<Message, MessageInRoute>();
+		for(BehaviourObjectInRoute behaviourObject : visibleBehaviourObjects){
+			for(OBPConfigurationInRoute configuration : visibleConfigurations){
+				visibleStates.add(getOBPStateInRoute(behaviourObject, configuration));
+			}
+		}
+		messageMap = new HashMap<OBPTraceMessage, MessageInRoute>();
 	}
 
 	@Override
@@ -60,17 +77,12 @@ public class OBPRouteImpl implements OBPRoute {
 	}
 
 	@Override
-	public String getDeletedProperty() {
-		return null;
-	}
-
-	@Override
 	public OBPTrace getTrace() {
 		return trace;
 	}
 
 	@Override
-	public OBPConfigurationInRoute getOBPConfigurationInRoute(OBPConfiguration configuration) {
+	public OBPConfigurationInRoute getOBPConfigurationInRoute(OBPTraceConfiguration configuration) {
 		OBPConfigurationInRoute returned = configMap.get(configuration);
 		if (returned == null) {
 			returned = new OBPConfigurationInRouteImpl(configuration, this);
@@ -80,12 +92,12 @@ public class OBPRouteImpl implements OBPRoute {
 	}
 
 	@Override
-	public boolean isVisible(OBPConfiguration config) {
+	public boolean isVisible(OBPTraceConfiguration config) {
 		return visibleConfigurations.contains(getOBPConfigurationInRoute(config));
 	}
 
 	@Override
-	public int getIndex(OBPConfiguration config) {
+	public int getIndex(OBPTraceConfiguration config) {
 		return visibleConfigurations.indexOf(getOBPConfigurationInRoute(config));
 	}
 
@@ -95,11 +107,11 @@ public class OBPRouteImpl implements OBPRoute {
 	}
 
 	@Override
-	public OBPConfigurationInRoute getPreviousVisibleConfiguration(OBPConfiguration config) {
+	public OBPConfigurationInRoute getPreviousVisibleConfiguration(OBPTraceConfiguration config) {
 		int i = getIndex(config);
 		if (i == -1) {
 			// This config is not visible
-			OBPConfiguration pConfig = trace.getPreviousConfiguration(config);
+			OBPTraceConfiguration pConfig = getTrace().getPreviousConfiguration(config);
 			if (pConfig != null) {
 				if (getIndex(pConfig) > -1) {
 					return getOBPConfigurationInRoute(pConfig);
@@ -115,11 +127,11 @@ public class OBPRouteImpl implements OBPRoute {
 	}
 
 	@Override
-	public OBPConfigurationInRoute getNextVisibleConfiguration(OBPConfiguration config) {
+	public OBPConfigurationInRoute getNextVisibleConfiguration(OBPTraceConfiguration config) {
 		int i = getIndex(config);
 		if (i == -1) {
 			// This config is not visible
-			OBPConfiguration nConfig = trace.getNextConfiguration(config);
+			OBPTraceConfiguration nConfig = getTrace().getNextConfiguration(config);
 			if (nConfig != null) {
 				if (getIndex(nConfig) > -1) {
 					return getOBPConfigurationInRoute(nConfig);
@@ -135,7 +147,7 @@ public class OBPRouteImpl implements OBPRoute {
 	}
 
 	@Override
-	public void show(OBPConfiguration config) {
+	public void show(OBPTraceConfiguration config) {
 		System.out.println("show " + config);
 		// System.out.println("visibleConfigurations=" + visibleConfigurations);
 
@@ -161,7 +173,7 @@ public class OBPRouteImpl implements OBPRoute {
 	}
 
 	@Override
-	public void hide(OBPConfiguration config) {
+	public void hide(OBPTraceConfiguration config) {
 		if (config == getTrace().getInitConfiguration() || config == getTrace().getLastConfiguration()) {
 			return;
 		}
@@ -181,6 +193,33 @@ public class OBPRouteImpl implements OBPRoute {
 
 	}
 
+	@Override
+	public void showBehaviourObject(OBPTraceBehaviourObject behaviourObject) {
+
+		visibleBehaviourObjects.add(getBehaviourObjectInRoute(behaviourObject));
+
+		getPropertyChangeSupport().firePropertyChange("visibleBehaviourObjects", null, getBehaviourObjectInRoute(behaviourObject));
+
+		for (BehaviourObjectInRoute c : visibleBehaviourObjects) {
+			c.getPropertyChangeSupport().firePropertyChange("index", null, c.getIndex());
+		}
+
+	}
+
+	@Override
+	public void hideBehaviourObject(OBPTraceBehaviourObject behaviourObject) {
+		
+		visibleBehaviourObjects.remove(getBehaviourObjectInRoute(behaviourObject));
+
+		getPropertyChangeSupport().firePropertyChange("visibleBehaviourObjects", null, getBehaviourObjectInRoute(behaviourObject));
+
+		for (BehaviourObjectInRoute c : visibleBehaviourObjects) {
+			c.getPropertyChangeSupport().firePropertyChange("index", null, c.getIndex());
+		}
+
+	}
+
+	
 	@Override
 	public int getSize() {
 		return visibleConfigurations.size();
@@ -232,22 +271,22 @@ public class OBPRouteImpl implements OBPRoute {
 	}
 
 	@Override
-	public List<ComponentInRoute> getVisibleComponents() {
-		return visibleComponents;
+	public List<BehaviourObjectInRoute> getVisibleBehaviourObjects() {
+		return visibleBehaviourObjects;
 	}
 
 	@Override
-	public ComponentInRoute getComponentInRoute(Component component) {
-		ComponentInRoute returned = componentMap.get(component);
+	public BehaviourObjectInRoute getBehaviourObjectInRoute(OBPTraceBehaviourObject behaviourObject) {
+		BehaviourObjectInRoute returned = behaviourObjectsMap.get(behaviourObject);
 		if (returned == null) {
-			returned = new ComponentInRoute(component, this);
-			componentMap.put(component, returned);
+			returned = new BehaviourObjectInRoute(behaviourObject, this);
+			behaviourObjectsMap.put(behaviourObject, returned);
 		}
 		return returned;
 	}
 
 	@Override
-	public MessageInRoute getMessageInRoute(Message message) {
+	public MessageInRoute getMessageInRoute(OBPTraceMessage message) {
 		MessageInRoute returned = messageMap.get(message);
 		if (returned == null) {
 			returned = new MessageInRoute(message, this);
@@ -255,5 +294,54 @@ public class OBPRouteImpl implements OBPRoute {
 		}
 		return returned;
 	}
+	
+	@Override
+	public List<OBPConfigurationInRoute> getAsyncMessageConfigurations(OBPTraceMessage sendMessage, OBPTraceMessage receiveMessage){
+		List<OBPConfigurationInRoute> returned = new ArrayList<OBPConfigurationInRoute>();
+		OBPConfigurationInRoute send = getOBPConfigurationInRoute(sendMessage.getOBPTraceTransition().getSourceOBPTraceConfiguration());
+		OBPConfigurationInRoute receive = getOBPConfigurationInRoute(receiveMessage.getOBPTraceTransition().getTargetOBPTraceConfiguration());
+		addNextConfiguration(send, receive, returned);
+		return returned;
+	}
+	
+	private void addNextConfiguration(OBPConfigurationInRoute send, OBPConfigurationInRoute receive, List<OBPConfigurationInRoute> configs){
+		if(!send.getConfiguration().equals(receive.getConfiguration())){
+			configs.add(receive);
+			addNextConfiguration(getOBPConfigurationInRoute(send.getNextConfigurationArtefact().getConfiguration()), receive, configs);
+		}
+	}
+	
+	@Override
+	public String getDeletedProperty() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
+	@Override
+	public OBPStateInRoute getOBPStateInRoute(BehaviourObjectInRoute behaviourObjectInRoute,
+			OBPConfigurationInRoute configuration) {
+		for(OBPStateInRoute state : allStates){
+			if(state.getBehaviourObjectInRoute().equals(behaviourObjectInRoute)&&
+					state.getConfigurationInRoute().equals(configuration)){
+				return state;
+			}
+		}
+		
+		OBPStateInRoute returned = new OBPStateInRoute(configuration, behaviourObjectInRoute);
+		allStates.add(returned);
+
+		return returned;
+	}
+
+	public void synchronizeWithMask(ConfigurationMask mask){
+		for(BehaviourObjectInRoute behaviourObjectInRoute : getVisibleBehaviourObjects()){
+			if(mask.getFilteredSelection(OBPTraceBehaviourObject.class).contains(behaviourObjectInRoute.getBehaviourObject())){
+				showBehaviourObject(behaviourObjectInRoute.getBehaviourObject());
+			}
+			if(!mask.getFilteredSelection(OBPTraceBehaviourObject.class).contains(behaviourObjectInRoute.getBehaviourObject())){
+				hideBehaviourObject(behaviourObjectInRoute.getBehaviourObject());
+			}
+		}
+	}
+	
 }

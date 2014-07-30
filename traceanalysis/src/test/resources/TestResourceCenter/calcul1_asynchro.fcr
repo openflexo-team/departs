@@ -1,0 +1,190 @@
+/*------------------------------------------
+   calcul1_asynchro.fcr  version 29 nov 13
+ 
+   3 processus de calcul : For, While, Until
+   communication assynchrone entre les processus 
+   la valeur echangee est de type structure t_data {index, value}
+   Iteration sur :
+     - ProcFor transmet le couple (i, i*i)
+     - ProcWhile calcule et transmet le couple (i, racine carre de i*i)
+     - ProcUntil receptionne le couple (i, i)
+ 
+----------------------------------- 
+   Ph. Dhaussy Ensta-Bretagne  
+-------------------------------------------*/
+
+const I_MAX  : nat is 3 
+
+type t_data is record
+	index   : int,    /* value index */
+	value   : int     /* value  */
+end
+
+const data1  : t_data is {index = 1, value = 1}
+const data2  : t_data is {index = 2, value = 4}
+const data3  : t_data is {index = 3, value = 9}
+
+// la derniere donnee : ProcFor --> (I_MAX, I_MAX * I_MAX) --> ProcWhile --> (I_MAX, I_MAX) --> ProcUntil
+const last_data_For	: t_data  is {index = I_MAX, value = I_MAX * I_MAX}
+const last_data_While	: t_data  is {index = I_MAX, value = I_MAX}
+
+const SIZE_FIFO  : nat is 5
+type t_fifo is queue SIZE_FIFO of t_data
+
+/*====================== ProcFor ================================*/
+// Envoi des valeurs 1 a I_MAX inclus au carre
+
+process ProcFor (&output : t_fifo)
+is 
+
+states Start, S2, End
+var
+	i  : int,
+	n  : int,
+	data : t_data
+init
+	i  := 0;
+	n  := 0;
+	data := {index = 0, value = 0};
+	to Start
+  
+/*-----------------------*/
+from Start
+	i := i + 1;
+	if i > I_MAX  then
+	     to End
+	end;
+	to S2
+
+from S2
+		//---- envoi de data si fifo non pleine ---
+		if (full (output)) then  loop  end;
+		n := i*i;     
+	  data.index := i;
+	  data.value := n; 
+	/*@ For: ecrire */
+	output := enqueue (output, data);
+      to Start
+ 
+from End 
+	loop
+ 
+/*====================== ProcWhile ================================*/
+
+process ProcWhile  ( &input : t_fifo, &output : t_fifo ) 
+is 
+
+states Start, S2, S3
+var
+	i  : int,
+	n  : int,
+	r  : int,
+	s  : int,
+	data : t_data	
+init
+	n  := 0;
+	s  := 0;
+    r  := 0;
+	data := {index = 0, value = 0};
+	to Start
+ 
+/*-----------------------*/
+from Start
+	//----- attente si fifo vide et reception de data  -------				
+	if (empty input) then loop end;
+	/*@ While: lire */
+	data := first input;
+	input := dequeue (input);
+	
+	i := data.index;
+	n := data.value;
+	s := 1;
+    r := 3;
+	to S2
+	
+from S2
+    if (s <= n) then
+      s := s+r;
+      r := r+2;
+      loop
+    else
+      to S3  
+    end if
+
+from S3
+	//---- envoi de data si fifo non pleine ---
+	if (full (output)) then  loop  end;
+	
+    r := r/2 - 1;
+	// data.index := i;  inutile car inchange
+	data.value := r; 
+ 	/*@ While: ecrire */
+	output := enqueue (output, data);
+    to Start
+
+
+//======== procUntil ===============
+// reception des I_MAX valeurs 
+//  data.index et data.value doivent etre toujours egaux
+//-------------------------------------------------
+process ProcUntil ( &input : t_fifo ) 
+is
+  
+states
+    Start, End
+var
+	b : bool,
+	i  : int,
+	n  : int,
+	data : t_data
+init
+	b := true;
+	i  := 1;
+	n  := 0;
+	data := {index = 0, value = 0};
+	to Start
+	
+from Start
+	if i > I_MAX  then
+	     to End
+	else
+		//----- attente si fifo vide et reception de data  -------				
+		if (empty input) then loop end;
+		/*@ Until: lire */
+		data := first input;
+		input := dequeue (input);
+		i := i + 1;
+		to Start
+	end
+ 
+from End 
+	loop
+		
+	
+/*======================================================*/
+
+component Comp is
+
+var  
+	fifoFor2While     : t_fifo,	
+	fifoWhile2Until   : t_fifo
+	
+init
+	fifoFor2While 	:= {||};
+	fifoWhile2Until := {||}
+
+par
+	  	ProcFor (&fifoFor2While)
+	 ||	ProcWhile (&fifoFor2While, &fifoWhile2Until)
+	 ||	ProcUntil (&fifoWhile2Until)
+end
+
+Comp
+
+
+
+
+
+
+
+

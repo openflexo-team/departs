@@ -18,8 +18,9 @@
  *
  */
 
-package org.openflexo.traceanalysis;
+package org.openflexo.traceanalysis.view.routeview;
 
+import org.openflexo.technologyadapter.trace.model.OBPTraceConfiguration;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
 
 /**
@@ -32,7 +33,7 @@ public interface OBPConfigurationInRoute extends HasPropertyChangeSupport {
 
 	public OBPRoute getRoute();
 
-	public OBPConfiguration getConfiguration();
+	public OBPTraceConfiguration getConfiguration();
 
 	public double getVisibleIndex();
 
@@ -56,7 +57,7 @@ public interface OBPConfigurationInRoute extends HasPropertyChangeSupport {
 		 * 
 		 * @return
 		 */
-		public OBPConfiguration getConfiguration();
+		public OBPTraceConfiguration getConfiguration();
 
 	}
 
