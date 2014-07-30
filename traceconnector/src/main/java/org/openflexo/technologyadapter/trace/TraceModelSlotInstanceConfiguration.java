@@ -22,9 +22,9 @@ package org.openflexo.technologyadapter.trace;
 
 import org.openflexo.foundation.technologyadapter.FreeModelSlotInstanceConfiguration;
 import org.openflexo.foundation.view.action.CreateVirtualModelInstance;
-import org.openflexo.technologyadapter.trace.model.FlexoTraceOBP;
+import org.openflexo.technologyadapter.trace.model.OBPTrace;
 
-public class TraceModelSlotInstanceConfiguration extends FreeModelSlotInstanceConfiguration<FlexoTraceOBP, TraceModelSlot> {
+public class TraceModelSlotInstanceConfiguration extends FreeModelSlotInstanceConfiguration<OBPTrace, TraceModelSlot> {
 
 	protected TraceModelSlotInstanceConfiguration(TraceModelSlot ms, CreateVirtualModelInstance action) {
 		super(ms, action);

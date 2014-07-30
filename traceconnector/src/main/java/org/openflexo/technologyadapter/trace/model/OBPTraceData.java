@@ -19,29 +19,29 @@
  */
 
 package org.openflexo.technologyadapter.trace.model;
+
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
 
 @ModelEntity
-@ImplementationClass(FlexoTraceOBPState.FlexoTraceOBPStateImpl.class)
-@XMLElement(xmlTag = "FlexoTraceOBPState")
-public interface FlexoTraceOBPState extends FlexoTraceOBPObject{
-	
-	@PropertyIdentifier(type = FlexoTraceOBPProcess.class)
-	public static final String PROCESS_KEY = "process";
-	
-	@Getter(value = PROCESS_KEY, inverse = FlexoTraceOBPProcess.PROCESS_STATE_KEY)
-	public FlexoTraceOBPProcess getProcess();
-	@Setter(PROCESS_KEY)
-	public void setProcess(FlexoTraceOBPProcess process);
+@ImplementationClass(OBPTraceData.OBPTraceDataImpl.class)
+@XMLElement(xmlTag = "OBPTraceData")
+public interface OBPTraceData extends OBPTraceObject{
 
-	public static abstract class FlexoTraceOBPStateImpl extends FlexoTraceOBPObjectImpl implements FlexoTraceOBPState {
+	public static final String DATA_KEY = "data";
+	
+	@Getter(value=DATA_KEY, ignoreType=true)
+	public Parser.Donnee getDonnee();
+	
+	@Setter(DATA_KEY)
+	public void setDonnee(Parser.Donnee donnee);
+	
+	public static abstract class OBPTraceDataImpl extends OBPTraceObjectImpl implements OBPTraceData {
 
-		public FlexoTraceOBPStateImpl() {
+		public OBPTraceDataImpl() {
 			// TODO Auto-generated constructor stub
 		}
 
@@ -49,12 +49,17 @@ public interface FlexoTraceOBPState extends FlexoTraceOBPObject{
 		public String getUri() {
 			return getName();
 		}
+
+		@Override
+		public String getName() {
+			return getDonnee().varName;
+		}
 		
 		@Override
 		public String getValue() {
-			return getName();
+			return getDonnee().varValue.toString();
 		}
-
+		
 	}
 
 }

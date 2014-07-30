@@ -20,37 +20,31 @@
 
 package org.openflexo.technologyadapter.trace.model;
 
-import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
+import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
 
 @ModelEntity
-@ImplementationClass(FlexoTraceOBPProperty.FlexoTraceOBPPropertyImpl.class)
-@XMLElement(xmlTag = "FlexoTraceOBPProperty")
-public interface FlexoTraceOBPProperty extends FlexoTraceOBPObject {
-
-	public static final String PROPERTY_KEY = "property";
+@ImplementationClass(OBPTraceBehaviourObject.OBPTraceBehaviourObjectImpl.class)
+@XMLElement(xmlTag = "OBPTraceBehaviourObject")
+public interface OBPTraceBehaviourObject extends OBPTraceObject {
 	
-	@Getter(value=PROPERTY_KEY, ignoreType=true)
-	public Parser.Property getProperty();
+	@PropertyIdentifier(type = OBPTraceState.class)
+	public static final String STATE_KEY = "state";
 	
-	@Setter(PROPERTY_KEY)
-	public void setProperty(Parser.Property property);
+	@Getter(value = STATE_KEY, inverse = OBPTraceState.BEHAVIOUR_OBJECT_KEY)
+	public OBPTraceState getState();
+	@Setter(STATE_KEY)
+	public void setState(OBPTraceState state);
 
-	public static abstract class FlexoTraceOBPPropertyImpl extends FlexoTraceOBPObjectImpl implements FlexoTraceOBPProperty {
+	public static abstract class OBPTraceBehaviourObjectImpl extends OBPTraceObjectImpl implements OBPTraceBehaviourObject {
 
-		public FlexoTraceOBPPropertyImpl() {
+		public OBPTraceBehaviourObjectImpl() {
 			// TODO Auto-generated constructor stub
 		}
-
-		@Override
-		public String getUri() {
-			return getName();
-		}
-
 	}
 
 }

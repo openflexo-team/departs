@@ -36,47 +36,41 @@ import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.model.annotations.Getter.Cardinality;
 
 @ModelEntity
-@ImplementationClass(FlexoTraceOBPProcess.FlexoTraceOBPProcessImpl.class)
-@XMLElement(xmlTag = "FlexoTraceOBPProcess")
-public interface FlexoTraceOBPProcess extends FlexoTraceOBPObject{
+@ImplementationClass(OBPTraceProcess.OBPTraceProcessImpl.class)
+@XMLElement(xmlTag = "OBPTraceProcess")
+public interface OBPTraceProcess extends OBPTraceBehaviourObject{
 
 	public static final String PROCESS_KEY = "process";
 	
 	@PropertyIdentifier(type = List.class)
 	public static final String DATA_KEY = "data";
 	
-	@PropertyIdentifier(type = FlexoTraceOBPState.class)
-	public static final String PROCESS_STATE_KEY = "state";
-	
 	@Getter(value=PROCESS_KEY, ignoreType=true)
 	public Parser.Process getProcess();
 	@Setter(PROCESS_KEY)
 	public void setProcess(Parser.Process process);
 	
-	@Getter(value = PROCESS_STATE_KEY, inverse = FlexoTraceOBPState.PROCESS_KEY)
-	public FlexoTraceOBPState getState();
-	@Setter(PROCESS_STATE_KEY)
-	public void setState(FlexoTraceOBPState state);
-	
 	@Getter(value = DATA_KEY, cardinality = Cardinality.LIST)
-	public List<FlexoTraceOBPData> getFlexoData();
+	public List<OBPTraceData> getOBPTraceData();
 
 	@Setter(DATA_KEY)
-	public void setFlexoData(List<FlexoTraceOBPData> flexoData);
+	public void setOBPTraceData(List<OBPTraceData> data);
 
 	@Adder(DATA_KEY)
-	public void addToFlexoData(FlexoTraceOBPData flexoData);
+	public void addToOBPTraceData(OBPTraceData data);
 
 	@Remover(DATA_KEY)
-	public void removeFromFlexoData(FlexoTraceOBPData flexoData);
+	public void removeFromOBPTraceData(OBPTraceData data);
 	
 	public String getProcessID();
 	
 	public String getProcessType();
 
-	public static abstract class FlexoTraceOBPProcessImpl extends FlexoTraceOBPObjectImpl implements FlexoTraceOBPProcess {
+	public static abstract class OBPTraceProcessImpl extends OBPTraceBehaviourObjectImpl implements OBPTraceProcess {
 
-		public FlexoTraceOBPProcessImpl() {
+		private String REGEX = "(\\w+)(\\d+)";
+		
+		public OBPTraceProcessImpl() {
 			// TODO Auto-generated constructor stub
 		}
 
@@ -87,18 +81,18 @@ public interface FlexoTraceOBPProcess extends FlexoTraceOBPObject{
 		
 		@Override
 		public String getProcessID(){
-			Pattern id = Pattern.compile("\\d+\\b");
+			Pattern id = Pattern.compile(REGEX);
 			Matcher makeMatch = id.matcher(getName());
 			makeMatch.find();
-			return makeMatch.group();
+			return makeMatch.group(2);
 		}
 		
 		@Override
 		public String getProcessType(){
-			Pattern id = Pattern.compile("\\D+");
+			Pattern id = Pattern.compile(REGEX);
 			Matcher makeMatch = id.matcher(getName());
 			makeMatch.find();
-			return makeMatch.group();
+			return makeMatch.group(1);
 		}
 		
 		@Override
@@ -108,7 +102,7 @@ public interface FlexoTraceOBPProcess extends FlexoTraceOBPObject{
 		
 		@Override
 		public String getValue() {
-			return getProcessType()+"{"+getProcessID()+"}";
+			return "{" + getProcessType()+"}"+getProcessID();
 		}
 
 	}

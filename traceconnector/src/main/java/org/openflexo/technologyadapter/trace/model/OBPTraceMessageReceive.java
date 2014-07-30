@@ -19,36 +19,50 @@
  */
 
 package org.openflexo.technologyadapter.trace.model;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
-
-import Parser.Transition;
+import Parser.TransitionSequenceReceiveAsynchro;
 
 @ModelEntity
-@ImplementationClass(FlexoTraceOBPTransition.FlexoTraceOBPTransitionImpl.class)
-@XMLElement(xmlTag = "FlexoTraceOBPTransition")
-public interface FlexoTraceOBPTransition extends FlexoTraceOBPObject{
-
-	public static final String TRANSITION_KEY = "Transition";
+@ImplementationClass(OBPTraceMessageReceive.OBPTraceMessageReceiveImpl.class)
+@XMLElement(xmlTag = "OBPTraceMessageReceive")
+public interface OBPTraceMessageReceive extends OBPTraceMessage{
 	
-	@Getter(value=TRANSITION_KEY, ignoreType=true)
-	public Transition getTransition();
-	@Setter(TRANSITION_KEY)
-	public void setTransition(Transition transition);
+	public static final String SEND_KEY = "send";
+	
+	@Getter(value = SEND_KEY, inverse=OBPTraceMessageSend.RECEIVE_KEY)
+	public OBPTraceMessageSend getOBPTraceMessageSend();
+	@Setter(value = SEND_KEY)
+	public void setOBPTraceMessageSend(OBPTraceMessageSend obpTraceMessageSend);
+	
+	public static abstract class OBPTraceMessageReceiveImpl extends OBPTraceMessageImpl implements OBPTraceMessageReceive {
 
-	public static abstract class FlexoTraceOBPTransitionImpl extends FlexoTraceOBPObjectImpl implements FlexoTraceOBPTransition {
-
-		public FlexoTraceOBPTransitionImpl() {
+		public OBPTraceMessageReceiveImpl() {
 			// TODO Auto-generated constructor stub
 		}
 
 		@Override
 		public String getUri() {
 			return getName();
+		}
+		
+		@Override
+		public String getValue() {
+			return getName();
+		}
+		
+		@Override
+		public String getTargetProcName(){
+			Pattern id = Pattern.compile(PROC_REGEX);
+			Matcher makeMatch = id.matcher(((TransitionSequenceReceiveAsynchro)getTransitionSequence()).getNomProcTarget());
+			makeMatch.find();
+			return "{" + makeMatch.group(1) + "}" + makeMatch.group(2);
 		}
 
 	}

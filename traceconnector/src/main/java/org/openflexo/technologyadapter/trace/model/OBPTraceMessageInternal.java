@@ -19,40 +19,18 @@
  */
 
 package org.openflexo.technologyadapter.trace.model;
-
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.openflexo.foundation.resource.ResourceData;
-import org.openflexo.model.annotations.Adder;
-import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Remover;
-import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.model.annotations.Getter.Cardinality;
-
-import Parser.ConfigData;
 
 @ModelEntity
-@ImplementationClass(FlexoTraceOBPContext.FlexoTraceOBPContextImpl.class)
-@XMLElement(xmlTag = "FlexoTraceOBPContext")
-public interface FlexoTraceOBPContext extends FlexoTraceOBPObject{
-
-	public static final String CONTEXT_KEY = "context";
+@ImplementationClass(OBPTraceMessageInternal.OBPTraceMessageInternalImpl.class)
+@XMLElement(xmlTag = "OBPTraceMessageInternal")
+public interface OBPTraceMessageInternal extends OBPTraceMessage{
 	
-	@Getter(value=CONTEXT_KEY, ignoreType=true)
-	public Parser.Context getTraceOBPContext();
-	
-	@Setter(CONTEXT_KEY)
-	public void setTraceOBPContext(Parser.Context context);
+	public static abstract class OBPTraceMessageInternalImpl extends OBPTraceMessageImpl implements OBPTraceMessageInternal {
 
-	public static abstract class FlexoTraceOBPContextImpl extends FlexoTraceOBPObjectImpl implements FlexoTraceOBPContext {
-
-		public FlexoTraceOBPContextImpl() {
+		public OBPTraceMessageInternalImpl() {
 			// TODO Auto-generated constructor stub
 		}
 
@@ -60,7 +38,12 @@ public interface FlexoTraceOBPContext extends FlexoTraceOBPObject{
 		public String getUri() {
 			return getName();
 		}
-
+		
+		@Override
+		public String getValue() {
+			return getName();
+		}
+		
 	}
 
 }

@@ -20,7 +20,7 @@
 package org.openflexo.technologyadapter.trace.gui.view;
 
 import org.openflexo.technologyadapter.trace.controller.TraceCst;
-import org.openflexo.technologyadapter.trace.model.FlexoTraceOBP;
+import org.openflexo.technologyadapter.trace.model.OBPTrace;
 import org.openflexo.view.FIBModuleView;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.FlexoPerspective;
@@ -32,9 +32,9 @@ import org.openflexo.view.controller.model.FlexoPerspective;
  * 
  */
 @SuppressWarnings("serial")
-public class FIBTraceView extends FIBModuleView<FlexoTraceOBP> {
+public class FIBTraceView extends FIBModuleView<OBPTrace> {
 
-	public FIBTraceView(FlexoTraceOBP traceOBP, FlexoController controller) {
+	public FIBTraceView(OBPTrace traceOBP, FlexoController controller) {
 		super(traceOBP, controller, TraceCst.TRACE_OBP_VIEW_FIB);
 	}
 

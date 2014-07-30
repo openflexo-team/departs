@@ -40,14 +40,14 @@ import org.openflexo.foundation.resource.SaveResourcePermissionDeniedException;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.technologyadapter.trace.TraceTechnologyContextManager;
-import org.openflexo.technologyadapter.trace.model.FlexoTraceOBP;
+import org.openflexo.technologyadapter.trace.model.OBPTrace;
 import org.openflexo.technologyadapter.trace.model.io.TraceModelConverter;
 import org.openflexo.toolbox.IProgress;
 
 import Parser.TraceExploObpParser;
 import Parser.TraceOBP;
 
-public abstract class TraceOBPResourceImpl extends FlexoFileResourceImpl<FlexoTraceOBP> implements TraceOBPResource {
+public abstract class TraceOBPResourceImpl extends FlexoFileResourceImpl<OBPTrace> implements TraceOBPResource {
 	private static final Logger logger = Logger.getLogger(TraceOBPResourceImpl.class.getPackage().getName());
 
 	private TraceModelConverter converter;
@@ -98,8 +98,8 @@ public abstract class TraceOBPResourceImpl extends FlexoFileResourceImpl<FlexoTr
 	}
 
 	@Override
-	public FlexoTraceOBP loadResourceData(IProgress progress) throws ResourceLoadingCancelledException, FileNotFoundException, FlexoException {
-		FlexoTraceOBP resourceData = null;
+	public OBPTrace loadResourceData(IProgress progress) throws ResourceLoadingCancelledException, FileNotFoundException, FlexoException {
+		OBPTrace resourceData = null;
 		TraceOBP traceObp = null;
 		TraceExploObpParser parser = new TraceExploObpParser();
 		
@@ -127,7 +127,7 @@ public abstract class TraceOBPResourceImpl extends FlexoFileResourceImpl<FlexoTr
 		try {
 			resourceData = getResourceData(progress);
 		} catch (FileNotFoundException e) {
-			FlexoTraceOBP resourceData;
+			OBPTrace resourceData;
 			e.printStackTrace();
 			throw new SaveResourceException(this);
 		} catch (ResourceLoadingCancelledException e) {
@@ -137,7 +137,7 @@ public abstract class TraceOBPResourceImpl extends FlexoFileResourceImpl<FlexoTr
 			e.printStackTrace();
 			throw new SaveResourceException(this);
 		}
-		FlexoTraceOBP resourceData = null;
+		OBPTrace resourceData = null;
 
 		if (!hasWritePermission()) {
 			if (logger.isLoggable(Level.WARNING)) {
@@ -162,7 +162,7 @@ public abstract class TraceOBPResourceImpl extends FlexoFileResourceImpl<FlexoTr
 	}
 
 	@Override
-	public Class<FlexoTraceOBP> getResourceDataClass() {
-		return FlexoTraceOBP.class;
+	public Class<OBPTrace> getResourceDataClass() {
+		return OBPTrace.class;
 	}
 }

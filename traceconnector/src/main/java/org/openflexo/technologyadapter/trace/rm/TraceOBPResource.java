@@ -28,12 +28,12 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.technologyadapter.trace.TraceTechnologyAdapter;
 import org.openflexo.technologyadapter.trace.TraceTechnologyContextManager;
-import org.openflexo.technologyadapter.trace.model.FlexoTraceOBP;
+import org.openflexo.technologyadapter.trace.model.OBPTrace;
 import org.openflexo.technologyadapter.trace.model.io.TraceModelConverter;
 
 @ModelEntity
 @ImplementationClass(TraceOBPResourceImpl.class)
-public abstract interface TraceOBPResource extends FlexoFileResource<FlexoTraceOBP>, TechnologyAdapterResource<FlexoTraceOBP, TraceTechnologyAdapter> {
+public abstract interface TraceOBPResource extends FlexoFileResource<OBPTrace>, TechnologyAdapterResource<OBPTrace, TraceTechnologyAdapter> {
 	public static final String TECHNOLOGY_CONTEXT_MANAGER = "technologyContextManager";
 
 	@Getter(value = "technologyContextManager", ignoreType = true)

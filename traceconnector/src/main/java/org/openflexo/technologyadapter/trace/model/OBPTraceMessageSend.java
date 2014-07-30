@@ -13,35 +13,37 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have a copy of the GNU General Public License
  * along with OpenFlexo. If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
 package org.openflexo.technologyadapter.trace.model;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
+import Parser.TransitionSequenceSendAsynchro;
 
 @ModelEntity
-@ImplementationClass(FlexoTraceOBPData.FlexoTraceOBPDataImpl.class)
-@XMLElement(xmlTag = "FlexoTraceOBPData")
-public interface FlexoTraceOBPData extends FlexoTraceOBPObject{
+@ImplementationClass(OBPTraceMessageSend.OBPTraceMessageSendImpl.class)
+@XMLElement(xmlTag = "OBPTraceMessageSend")
+public interface OBPTraceMessageSend extends OBPTraceMessage{
+	
+	public static final String RECEIVE_KEY = "receive";
+	
+	@Getter(value = RECEIVE_KEY, inverse=OBPTraceMessageReceive.SEND_KEY)
+	public OBPTraceMessageReceive getOBPTraceMessageReceive();
+	@Setter(value = RECEIVE_KEY)
+	public void setOBPTraceMessageReceive(OBPTraceMessageReceive obpTraceMessageReceive);
+	
+	public static abstract class OBPTraceMessageSendImpl extends OBPTraceMessageImpl implements OBPTraceMessageSend {
 
-	public static final String DATA_KEY = "data";
-	
-	@Getter(value=DATA_KEY, ignoreType=true)
-	public Parser.Donnee getDonnee();
-	
-	@Setter(DATA_KEY)
-	public void setDonnee(Parser.Donnee donnee);
-	
-	public static abstract class FlexoTraceOBPDataImpl extends FlexoTraceOBPObjectImpl implements FlexoTraceOBPData {
-
-		public FlexoTraceOBPDataImpl() {
+		public OBPTraceMessageSendImpl() {
 			// TODO Auto-generated constructor stub
 		}
 
@@ -49,17 +51,20 @@ public interface FlexoTraceOBPData extends FlexoTraceOBPObject{
 		public String getUri() {
 			return getName();
 		}
-
-		@Override
-		public String getName() {
-			return getDonnee().varName;
-		}
 		
 		@Override
 		public String getValue() {
-			return getDonnee().varValue.toString();
+			return getName();
 		}
 		
+		@Override
+		public String getSourceProcName(){
+			Pattern id = Pattern.compile(PROC_REGEX);
+			Matcher makeMatch = id.matcher(((TransitionSequenceSendAsynchro)getTransitionSequence()).getNomProcSource());
+			makeMatch.find();
+			return "{" + makeMatch.group(1) + "}" + makeMatch.group(2);
+		}
+
 	}
 
 }

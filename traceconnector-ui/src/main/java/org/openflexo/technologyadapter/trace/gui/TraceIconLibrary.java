@@ -26,9 +26,9 @@ import javax.swing.ImageIcon;
 
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.rm.ResourceLocator;
-import org.openflexo.technologyadapter.trace.model.FlexoTraceOBPConfigData;
-import org.openflexo.technologyadapter.trace.model.FlexoTraceOBPTransition;
-import org.openflexo.technologyadapter.trace.model.FlexoTraceOBP;
+import org.openflexo.technologyadapter.trace.model.OBPTraceConfiguration;
+import org.openflexo.technologyadapter.trace.model.OBPTraceTransition;
+import org.openflexo.technologyadapter.trace.model.OBPTrace;
 import org.openflexo.toolbox.ImageIconResource;
 
 public class TraceIconLibrary {
@@ -42,11 +42,11 @@ public class TraceIconLibrary {
 	public static final ImageIcon TRACE_TRANSITIONS_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/trace_transitions.png"));
 	
 	public static ImageIcon iconForObject(Class<? extends TechnologyObject> objectClass) {
-		if (FlexoTraceOBP.class.isAssignableFrom(objectClass)) {
+		if (OBPTrace.class.isAssignableFrom(objectClass)) {
 			return TRACE_TECHNOLOGY_ICON;
-		}  else if (FlexoTraceOBPTransition.class.isAssignableFrom(objectClass)) {
+		}  else if (OBPTraceTransition.class.isAssignableFrom(objectClass)) {
 			return TRACE_TRANSITIONS_ICON;
-		} else if (FlexoTraceOBPConfigData.class.isAssignableFrom(objectClass)) {
+		} else if (OBPTraceConfiguration.class.isAssignableFrom(objectClass)) {
 			return TRACE_CONFIG_DATA_ICON;
 		}
 		return null;

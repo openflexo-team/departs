@@ -30,9 +30,9 @@ import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.technologyadapter.trace.TraceTechnologyAdapter;
 
 @ModelEntity
-@ImplementationClass(FlexoTraceOBPObject.FlexoTraceOBPObjectImpl.class)
-@XMLElement(xmlTag = "FlexoTraceOBPObject")
-public interface FlexoTraceOBPObject extends TechnologyObject<TraceTechnologyAdapter> {
+@ImplementationClass(OBPTraceObject.OBPTraceObjectImpl.class)
+@XMLElement(xmlTag = "OBPTraceObject")
+public interface OBPTraceObject extends TechnologyObject<TraceTechnologyAdapter> {
 
 	@PropertyIdentifier(type = String.class)
 	public static final String NAME_KEY = "name";
@@ -59,7 +59,7 @@ public interface FlexoTraceOBPObject extends TechnologyObject<TraceTechnologyAda
 	
 	String getValue();
 
-	public static abstract class FlexoTraceOBPObjectImpl extends FlexoObjectImpl implements FlexoTraceOBPObject {
+	public static abstract class OBPTraceObjectImpl extends FlexoObjectImpl implements OBPTraceObject {
 
 		private TraceTechnologyAdapter technologyAdapter;
 

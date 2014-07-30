@@ -31,7 +31,7 @@ import org.openflexo.rm.ResourceLocator;
 import org.openflexo.technologyadapter.trace.TraceTechnologyAdapter;
 import org.openflexo.technologyadapter.trace.gui.TraceIconLibrary;
 import org.openflexo.technologyadapter.trace.gui.view.FIBTraceView;
-import org.openflexo.technologyadapter.trace.model.FlexoTraceOBP;
+import org.openflexo.technologyadapter.trace.model.OBPTrace;
 import org.openflexo.view.EmptyPanel;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.ControllerActionInitializer;
@@ -91,8 +91,8 @@ public class TraceAdapterController extends TechnologyAdapterController<TraceTec
 
 	@Override
 	public ModuleView<?> createModuleViewForObject(TechnologyObject<TraceTechnologyAdapter> arg0, FlexoController arg1, FlexoPerspective arg2) {
-		if (arg0 instanceof FlexoTraceOBP) {
-			return new FIBTraceView((FlexoTraceOBP) arg0, arg1);
+		if (arg0 instanceof OBPTrace) {
+			return new FIBTraceView((OBPTrace) arg0, arg1);
 		}
 		return new EmptyPanel<TechnologyObject<TraceTechnologyAdapter>>(arg1, arg2, arg0);
 	}
@@ -104,15 +104,15 @@ public class TraceAdapterController extends TechnologyAdapterController<TraceTec
 
 	@Override
 	public String getWindowTitleforObject(TechnologyObject<TraceTechnologyAdapter> arg0, FlexoController arg1) {
-		if (arg0 instanceof FlexoTraceOBP) {
-			return ((FlexoTraceOBP) arg0).getName();
+		if (arg0 instanceof OBPTrace) {
+			return ((OBPTrace) arg0).getName();
 		}
 		return arg0.toString();
 	}
 
 	@Override
 	public boolean hasModuleViewForObject(TechnologyObject<TraceTechnologyAdapter> arg0, FlexoController arg1) {
-		if (arg0 instanceof FlexoTraceOBP) {
+		if (arg0 instanceof OBPTrace) {
 			return true;
 		}
 		return false;

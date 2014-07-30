@@ -11,7 +11,7 @@ import org.openflexo.antar.binding.FunctionPathElement;
 import org.openflexo.antar.binding.SimplePathElement;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterBindingFactory;
 import org.openflexo.foundation.viewpoint.TechnologySpecificCustomType;
-import org.openflexo.technologyadapter.trace.model.FlexoTraceOBP;
+import org.openflexo.technologyadapter.trace.model.OBPTrace;
 
 /**
  * This class represent the {@link BindingFactory} dedicated to handle trace technology-specific binding elements
@@ -34,7 +34,7 @@ public final class TraceBindingFactory extends TechnologyAdapterBindingFactory {
 
 	@Override
 	public boolean handleType(TechnologySpecificCustomType technologySpecificType) {
-		if (technologySpecificType instanceof FlexoTraceOBP) {
+		if (technologySpecificType instanceof OBPTrace) {
 			return true;
 		}
 		return true;

@@ -31,7 +31,7 @@ import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.technologyadapter.trace.model.FlexoTraceOBP;
+import org.openflexo.technologyadapter.trace.model.OBPTrace;
 
 /**
  * Implementation of the ModelSlot class for the Trace technology adapter<br>
@@ -42,12 +42,12 @@ import org.openflexo.technologyadapter.trace.model.FlexoTraceOBP;
 @ModelEntity
 @ImplementationClass(TraceModelSlot.TraceModelSlotImpl.class)
 @XMLElement
-public interface TraceModelSlot extends FreeModelSlot<FlexoTraceOBP> {
+public interface TraceModelSlot extends FreeModelSlot<OBPTrace> {
 
 	@Override
 	public TraceTechnologyAdapter getTechnologyAdapter();
 
-	public static abstract class TraceModelSlotImpl extends FreeModelSlotImpl<FlexoTraceOBP> implements TraceModelSlot {
+	public static abstract class TraceModelSlotImpl extends FreeModelSlotImpl<OBPTrace> implements TraceModelSlot {
 
 		private static final Logger logger = Logger.getLogger(TraceModelSlot.class.getPackage().getName());
 
@@ -70,7 +70,7 @@ public interface TraceModelSlot extends FreeModelSlot<FlexoTraceOBP> {
 		}
 
 		@Override
-		public String getURIForObject(FreeModelSlotInstance<FlexoTraceOBP, ? extends FreeModelSlot<FlexoTraceOBP>> msInstance, Object o) {
+		public String getURIForObject(FreeModelSlotInstance<OBPTrace, ? extends FreeModelSlot<OBPTrace>> msInstance, Object o) {
 			if (o instanceof IFlexoOntologyObject) {
 				return ((IFlexoOntologyObject) o).getURI();
 			}
@@ -78,13 +78,13 @@ public interface TraceModelSlot extends FreeModelSlot<FlexoTraceOBP> {
 		}
 
 		@Override
-		public Object retrieveObjectWithURI(FreeModelSlotInstance<FlexoTraceOBP, ? extends FreeModelSlot<FlexoTraceOBP>> msInstance, String objectURI) {
+		public Object retrieveObjectWithURI(FreeModelSlotInstance<OBPTrace, ? extends FreeModelSlot<OBPTrace>> msInstance, String objectURI) {
 			return msInstance.getResourceData().getObject(objectURI);
 		}
 
 		@Override
 		public Type getType() {
-			return FlexoTraceOBP.class;
+			return OBPTrace.class;
 		}
 
 		@Override
