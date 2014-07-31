@@ -19,14 +19,25 @@
  */
 
 package org.openflexo.traceanalysis.view.routeview;
+import java.awt.Color;
+
+import org.openflexo.fge.BackgroundStyle;
+import org.openflexo.fge.FGEModelFactory;
+import org.openflexo.fge.FGEModelFactoryImpl;
+import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObject;
+import org.openflexo.technologyadapter.trace.model.OBPTraceProperty;
 import org.openflexo.technologyadapter.trace.model.OBPTraceState;
 
 public class OBPStateInRoute {
+	
+	public final static String SUCCESS = "success";
+	public final static String REJECT = "reject";
+	public final static String CUT = "cut";
 
 	private final OBPConfigurationInRoute configuration;
 	private final BehaviourObjectInRoute behaviourObjectInRoute;
-
+	
 	public OBPStateInRoute(OBPConfigurationInRoute configuration,  BehaviourObjectInRoute behaviourObjectInRoute) {
 		super();
 		this.behaviourObjectInRoute = behaviourObjectInRoute;
@@ -48,6 +59,38 @@ public class OBPStateInRoute {
 			}
 		}
 		return null;
+	}
+
+	public boolean isSuccess(){
+		if(getState().getOBPTraceBehaviourObject() instanceof OBPTraceProperty && getState().getName().equals(SUCCESS)){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	public boolean isReject(){
+		if(getState().getOBPTraceBehaviourObject() instanceof OBPTraceProperty && getState().getName().equals(REJECT)){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	public boolean isCut(){
+		if(getState().getOBPTraceBehaviourObject() instanceof OBPTraceProperty && getState().getName().equals(CUT)){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	public boolean isNormal(){
+		if(getState().getOBPTraceBehaviourObject() instanceof OBPTraceProperty){
+			return true;
+		}else{
+			return false;
+		}
 	}
 	
 }

@@ -5,8 +5,11 @@ import java.awt.Font;
 import java.util.List;
 
 import javax.sound.midi.Receiver;
+import javax.swing.ImageIcon;
 
 import org.openflexo.antar.binding.DataBinding;
+import org.openflexo.fge.BackgroundImageBackgroundStyle;
+import org.openflexo.fge.BackgroundStyle;
 import org.openflexo.fge.ColorGradientBackgroundStyle.ColorGradientDirection;
 import org.openflexo.fge.ConnectorGraphicalRepresentation;
 import org.openflexo.fge.DrawingGraphicalRepresentation;
@@ -30,13 +33,18 @@ import org.openflexo.fge.control.MouseControlContext;
 import org.openflexo.fge.control.actions.MouseClickControlActionImpl;
 import org.openflexo.fge.control.actions.MouseClickControlImpl;
 import org.openflexo.fge.impl.DrawingImpl;
+import org.openflexo.fge.shapes.Rectangle;
+import org.openflexo.fge.shapes.ShapeSpecification;
 import org.openflexo.fge.shapes.ShapeSpecification.ShapeType;
+import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObject;
 import org.openflexo.technologyadapter.trace.model.OBPTraceMessage;
 import org.openflexo.technologyadapter.trace.model.OBPTraceMessageReceive;
 import org.openflexo.technologyadapter.trace.model.OBPTraceMessageSend;
 import org.openflexo.technologyadapter.trace.model.OBPTraceState;
 import org.openflexo.technologyadapter.trace.model.OBPTraceTransition;
+import org.openflexo.toolbox.ImageIconResource;
 import org.openflexo.traceanalysis.view.routeview.OBPConfigurationInRoute.RelativeConfigurationArtefact;
 import org.openflexo.traceanalysis.view.routeview.OBPRoute.AbstractTransitionArtefact;
 
@@ -44,15 +52,29 @@ public class RouteDrawing extends DrawingImpl<OBPRoute> {
 
 	public static final double ROW_HEIGHT = 60.0;
 	public static final double LIFE_LINE_WIDTH = 150.0;
-	public static final double STATE_WIDTH = 50.0;
-	public static final double STATE_HEIGHT = 20.0;
-
+	public static final double RECTANGLE_STATE_WIDTH = 70.0;
+	public static final double RECTANGLE_STATE_HEIGHT = 20.0;
+	public static final double CIRCLE_STATE_WIDTH = 20.0;
+	public static final double CIRCLE_STATE_HEIGHT = 20.0;
+	
+	public static final Resource SUCCESS = ResourceLocator.locateResource("Icons/cdl_success.png");
+	public static final Resource REJECT = ResourceLocator.locateResource("Icons/cdl_reject.png");
+	public static final Resource CUT = ResourceLocator.locateResource("Icons/cdl_cut.png");
+	public static final Resource NORMAL = ResourceLocator.locateResource("Icons/cdl_normal.png");
+	
 	private DrawingGraphicalRepresentation graphRepresentation;
 	private ShapeGraphicalRepresentation configurationRepresentation;
 	private ConnectorGraphicalRepresentation concreteTransitionRepresentation;
 	private ConnectorGraphicalRepresentation abstractTransitionRepresentation;
 	private ShapeGraphicalRepresentation intermediateConfigurationRepresentation;
-	private ShapeGraphicalRepresentation stateRepresentation;
+	
+	private ShapeGraphicalRepresentation initialStateRepresentation;
+	private ShapeGraphicalRepresentation defaultStateRepresentation;
+	private ShapeGraphicalRepresentation successStateRepresentation;
+	private ShapeGraphicalRepresentation rejectStateRepresentation;
+	private ShapeGraphicalRepresentation cutStateRepresentation;
+	private ShapeGraphicalRepresentation normalStateRepresentation;
+	private ShapeGraphicalRepresentation finalStateRepresentation;
 
 	private ShapeGraphicalRepresentation lifeLineRepresentation;
 	private ShapeGraphicalRepresentation messageAnchorRepresentation;
@@ -133,17 +155,85 @@ public class RouteDrawing extends DrawingImpl<OBPRoute> {
 					}
 				}, false, false, false, false, null));
 
-		stateRepresentation = getFactory().makeShapeGraphicalRepresentation(ShapeType.RECTANGLE);
-		stateRepresentation.setWidth(STATE_WIDTH);
-		stateRepresentation.setHeight(STATE_HEIGHT);
-		stateRepresentation.setAbsoluteTextX(STATE_WIDTH/2);
-		stateRepresentation.setAbsoluteTextY(STATE_HEIGHT/2);
-		stateRepresentation.setTextStyle(getFactory().makeTextStyle(Color.BLACK,
+		
+		ShapeSpecification defaultStateSpecification = getFactory().makeShape(ShapeType.RECTANGLE);
+		((Rectangle)defaultStateSpecification).setIsRounded(true);
+		((Rectangle)defaultStateSpecification).setArcSize(10);
+		defaultStateRepresentation = getFactory().makeShapeGraphicalRepresentation(defaultStateSpecification);
+		defaultStateRepresentation.setWidth(RECTANGLE_STATE_WIDTH);
+		defaultStateRepresentation.setHeight(RECTANGLE_STATE_HEIGHT);
+		defaultStateRepresentation.setAbsoluteTextX(RECTANGLE_STATE_WIDTH/2);
+		defaultStateRepresentation.setAbsoluteTextY(RECTANGLE_STATE_HEIGHT/2);
+		defaultStateRepresentation.setTextStyle(getFactory().makeTextStyle(Color.BLACK,
 				FGEConstants.DEFAULT_TEXT_FONT.deriveFont(Font.PLAIN)));
-		stateRepresentation.setShadowStyle(getFactory().makeNoneShadowStyle());
-		stateRepresentation.setBackground(getFactory().makeColorGradientBackground(Color.LIGHT_GRAY,
-				Color.white, ColorGradientDirection.SOUTH_EAST_NORTH_WEST));
-		stateRepresentation.setForeground(getFactory().makeForegroundStyle(Color.LIGHT_GRAY));
+		defaultStateRepresentation.setShadowStyle(getFactory().makeNoneShadowStyle());
+		defaultStateRepresentation.setBackground(getFactory().makeColoredBackground(Color.white));
+		defaultStateRepresentation.setForeground(getFactory().makeForegroundStyle(Color.LIGHT_GRAY));
+		
+		ShapeSpecification initialStateSpecification = getFactory().makeShape(ShapeType.CIRCLE);
+		initialStateRepresentation = getFactory().makeShapeGraphicalRepresentation(initialStateSpecification);
+		initialStateRepresentation.setWidth(CIRCLE_STATE_WIDTH);
+		initialStateRepresentation.setHeight(CIRCLE_STATE_HEIGHT);
+		initialStateRepresentation.setAbsoluteTextX(0);
+		initialStateRepresentation.setAbsoluteTextY(-10);
+		initialStateRepresentation.setTextStyle(getFactory().makeTextStyle(Color.BLACK,
+				FGEConstants.DEFAULT_TEXT_FONT.deriveFont(Font.PLAIN)));
+		initialStateRepresentation.setShadowStyle(getFactory().makeNoneShadowStyle());
+		initialStateRepresentation.setBackground(getFactory().makeColoredBackground(Color.BLACK));
+		initialStateRepresentation.setForeground(getFactory().makeForegroundStyle(Color.BLACK));
+		
+		ShapeSpecification successStateSpecification = getFactory().makeShape(ShapeType.CIRCLE);
+		successStateRepresentation = getFactory().makeShapeGraphicalRepresentation(successStateSpecification);
+		successStateRepresentation.setWidth(CIRCLE_STATE_WIDTH);
+		successStateRepresentation.setHeight(CIRCLE_STATE_HEIGHT);
+		successStateRepresentation.setAbsoluteTextX(-5);
+		successStateRepresentation.setAbsoluteTextY(-10);
+		successStateRepresentation.setTextStyle(getFactory().makeTextStyle(Color.BLACK,
+				FGEConstants.DEFAULT_TEXT_FONT.deriveFont(Font.PLAIN)));
+		successStateRepresentation.setShadowStyle(getFactory().makeNoneShadowStyle());
+		successStateRepresentation.setBackground(getFactory().makeImageBackground(SUCCESS));
+		successStateRepresentation.setForeground(getFactory().makeForegroundStyle(Color.BLACK));
+		((BackgroundImageBackgroundStyle) successStateRepresentation.getBackground()).setFitToShape(true);
+		
+		
+		ShapeSpecification rejectStateSpecification = getFactory().makeShape(ShapeType.CIRCLE);
+		rejectStateRepresentation = getFactory().makeShapeGraphicalRepresentation(rejectStateSpecification);
+		rejectStateRepresentation.setWidth(CIRCLE_STATE_WIDTH);
+		rejectStateRepresentation.setHeight(CIRCLE_STATE_HEIGHT);
+		rejectStateRepresentation.setAbsoluteTextX(-5);
+		rejectStateRepresentation.setAbsoluteTextY(-10);
+		rejectStateRepresentation.setTextStyle(getFactory().makeTextStyle(Color.BLACK,
+				FGEConstants.DEFAULT_TEXT_FONT.deriveFont(Font.PLAIN)));
+		rejectStateRepresentation.setShadowStyle(getFactory().makeNoneShadowStyle());
+		rejectStateRepresentation.setBackground(getFactory().makeImageBackground(REJECT));
+		rejectStateRepresentation.setForeground(getFactory().makeForegroundStyle(Color.BLACK));
+		((BackgroundImageBackgroundStyle) rejectStateRepresentation.getBackground()).setFitToShape(true);
+		
+		ShapeSpecification cutStateSpecification = getFactory().makeShape(ShapeType.CIRCLE);
+		cutStateRepresentation = getFactory().makeShapeGraphicalRepresentation(cutStateSpecification);
+		cutStateRepresentation.setWidth(CIRCLE_STATE_WIDTH);
+		cutStateRepresentation.setHeight(CIRCLE_STATE_HEIGHT);
+		cutStateRepresentation.setAbsoluteTextX(5);
+		cutStateRepresentation.setAbsoluteTextY(-10);
+		cutStateRepresentation.setTextStyle(getFactory().makeTextStyle(Color.BLACK,
+				FGEConstants.DEFAULT_TEXT_FONT.deriveFont(Font.PLAIN)));
+		cutStateRepresentation.setShadowStyle(getFactory().makeNoneShadowStyle());
+		cutStateRepresentation.setBackground(getFactory().makeImageBackground(CUT));
+		cutStateRepresentation.setForeground(getFactory().makeForegroundStyle(Color.BLACK));
+		((BackgroundImageBackgroundStyle) cutStateRepresentation.getBackground()).setFitToShape(true);
+		
+		ShapeSpecification normalStateSpecification = getFactory().makeShape(ShapeType.CIRCLE);
+		normalStateRepresentation = getFactory().makeShapeGraphicalRepresentation(normalStateSpecification);
+		normalStateRepresentation.setWidth(CIRCLE_STATE_WIDTH);
+		normalStateRepresentation.setHeight(CIRCLE_STATE_HEIGHT);
+		normalStateRepresentation.setAbsoluteTextX(-5);
+		normalStateRepresentation.setAbsoluteTextY(-10);
+		normalStateRepresentation.setTextStyle(getFactory().makeTextStyle(Color.BLACK,
+				FGEConstants.DEFAULT_TEXT_FONT.deriveFont(Font.PLAIN)));
+		normalStateRepresentation.setShadowStyle(getFactory().makeNoneShadowStyle());
+		normalStateRepresentation.setBackground(getFactory().makeImageBackground(NORMAL));
+		normalStateRepresentation.setForeground(getFactory().makeForegroundStyle(Color.BLACK));
+		((BackgroundImageBackgroundStyle) normalStateRepresentation.getBackground()).setFitToShape(true);
 		
 		concreteTransitionRepresentation = getFactory().makeConnectorGraphicalRepresentation(ConnectorType.LINE);
 		concreteTransitionRepresentation.setForeground(getFactory().makeForegroundStyle(Color.GRAY, 0.5f));
@@ -214,11 +304,46 @@ public class RouteDrawing extends DrawingImpl<OBPRoute> {
 						return intermediateConfigurationRepresentation;
 					}
 				});
-		final ShapeGRBinding<OBPStateInRoute> stateBinding = bindShape(
-				OBPStateInRoute.class, "state", new ShapeGRProvider<OBPStateInRoute>() {
+		final ShapeGRBinding<OBPStateInRoute> defaultStateBinding = bindShape(
+				OBPStateInRoute.class, "defaultState", new ShapeGRProvider<OBPStateInRoute>() {
 					@Override
 					public ShapeGraphicalRepresentation provideGR(OBPStateInRoute drawable, FGEModelFactory factory) {
-						return stateRepresentation;
+						return defaultStateRepresentation;
+					}
+				});
+		final ShapeGRBinding<OBPStateInRoute> initialStateBinding = bindShape(
+				OBPStateInRoute.class, "initialState", new ShapeGRProvider<OBPStateInRoute>() {
+					@Override
+					public ShapeGraphicalRepresentation provideGR(OBPStateInRoute drawable, FGEModelFactory factory) {
+						return initialStateRepresentation;
+					}
+				});
+		final ShapeGRBinding<OBPStateInRoute> successStateBinding = bindShape(
+				OBPStateInRoute.class, "successState", new ShapeGRProvider<OBPStateInRoute>() {
+					@Override
+					public ShapeGraphicalRepresentation provideGR(OBPStateInRoute drawable, FGEModelFactory factory) {
+						return successStateRepresentation;
+					}
+				});
+		final ShapeGRBinding<OBPStateInRoute> rejectStateBinding = bindShape(
+				OBPStateInRoute.class, "rejectState", new ShapeGRProvider<OBPStateInRoute>() {
+					@Override
+					public ShapeGraphicalRepresentation provideGR(OBPStateInRoute drawable, FGEModelFactory factory) {
+						return rejectStateRepresentation;
+					}
+				});
+		final ShapeGRBinding<OBPStateInRoute> cutStateBinding = bindShape(
+				OBPStateInRoute.class, "cutState", new ShapeGRProvider<OBPStateInRoute>() {
+					@Override
+					public ShapeGraphicalRepresentation provideGR(OBPStateInRoute drawable, FGEModelFactory factory) {
+						return cutStateRepresentation;
+					}
+				});
+		final ShapeGRBinding<OBPStateInRoute> normalStateBinding = bindShape(
+				OBPStateInRoute.class, "normalState", new ShapeGRProvider<OBPStateInRoute>() {
+					@Override
+					public ShapeGraphicalRepresentation provideGR(OBPStateInRoute drawable, FGEModelFactory factory) {
+						return normalStateRepresentation;
 					}
 				});
 		final ConnectorGRBinding<OBPTraceTransition> concreteTransitionBinding = bindConnector(OBPTraceTransition.class, "concreteTransition",
@@ -347,7 +472,20 @@ public class RouteDrawing extends DrawingImpl<OBPRoute> {
 						}
 						// Show states for visible BehaviourObjects
 						for (BehaviourObjectInRoute objectInRoute : route.getVisibleBehaviourObjects()) {
-							drawShape(stateBinding, route.getOBPStateInRoute(objectInRoute, pConfig));
+							OBPStateInRoute state = route.getOBPStateInRoute(objectInRoute, pConfig);
+							if(state.isSuccess()){
+								drawShape(successStateBinding, route.getOBPStateInRoute(objectInRoute, pConfig));
+							}else if(state.isReject()){
+								drawShape(rejectStateBinding, route.getOBPStateInRoute(objectInRoute, pConfig));
+							}else if(state.isCut()){
+								drawShape(cutStateBinding, route.getOBPStateInRoute(objectInRoute, pConfig));
+							}else if(state.isNormal()){
+								drawShape(normalStateBinding, route.getOBPStateInRoute(objectInRoute, pConfig));
+							}else if(pConfig.getVisibleIndex()==0){
+								drawShape(initialStateBinding, route.getOBPStateInRoute(objectInRoute, pConfig));
+							}else{
+								drawShape(defaultStateBinding, route.getOBPStateInRoute(objectInRoute, pConfig));
+							}
 						}
 					}
 				}
@@ -365,12 +503,44 @@ public class RouteDrawing extends DrawingImpl<OBPRoute> {
 		configurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>("drawable.visibleIndex*"
 				+ ROW_HEIGHT + "+50.0"), false);
 		
-		stateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.TEXT, new DataBinding<String>(
+		initialStateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.TEXT, new DataBinding<String>(
 				"drawable.state.value"), false);
-		stateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>("drawable.behaviourObjectInRoute.index*"+LIFE_LINE_WIDTH+"+"+STATE_WIDTH+"+45.0"), false);
-		stateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>("drawable.configurationInRoute.visibleIndex*"
+		initialStateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>("drawable.behaviourObjectInRoute.index*"+LIFE_LINE_WIDTH+"+"+CIRCLE_STATE_WIDTH+"+90.0"), false);
+		initialStateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>("drawable.configurationInRoute.visibleIndex*"
 				+ ROW_HEIGHT + "+50.0"), false);
-
+		
+		defaultStateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.TEXT, new DataBinding<String>(
+				"drawable.state.value"), false);
+		defaultStateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>("drawable.behaviourObjectInRoute.index*"+LIFE_LINE_WIDTH+"+"+RECTANGLE_STATE_WIDTH+"+15.0"), false);
+		defaultStateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>("drawable.configurationInRoute.visibleIndex*"
+				+ ROW_HEIGHT + "+50.0"), false);
+		
+		successStateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.TEXT, new DataBinding<String>(
+				"drawable.state.value"), false);
+		successStateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>("drawable.behaviourObjectInRoute.index*"+LIFE_LINE_WIDTH+"+"+CIRCLE_STATE_WIDTH+"+90.0"), false);
+		successStateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>("drawable.configurationInRoute.visibleIndex*"
+				+ ROW_HEIGHT + "+50.0"), false);
+		
+		rejectStateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.TEXT, new DataBinding<String>(
+				"drawable.state.value"), false);
+		rejectStateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>("drawable.behaviourObjectInRoute.index*"+LIFE_LINE_WIDTH+"+"+CIRCLE_STATE_WIDTH+"+90.0"), false);
+		rejectStateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>("drawable.configurationInRoute.visibleIndex*"
+				+ ROW_HEIGHT + "+50.0"), false);
+		
+		cutStateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.TEXT, new DataBinding<String>(
+				"drawable.state.value"), false);
+		cutStateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>("drawable.behaviourObjectInRoute.index*"+LIFE_LINE_WIDTH+"+"+CIRCLE_STATE_WIDTH+"+90.0"), false);
+		cutStateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>("drawable.configurationInRoute.visibleIndex*"
+				+ ROW_HEIGHT + "+50.0"), false);
+		
+		normalStateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.TEXT, new DataBinding<String>(
+				"drawable.state.value"), false);
+		normalStateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>("drawable.behaviourObjectInRoute.index*"+LIFE_LINE_WIDTH+"+"+CIRCLE_STATE_WIDTH+"+90.0"), false);
+		normalStateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>("drawable.configurationInRoute.visibleIndex*"
+				+ ROW_HEIGHT + "+50.0"), false);
+		
+		//stateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.BACKGROUND, new DataBinding<BackgroundStyle>("drawable.stateBackgroundStyle"), false);
+		
 		nextConfigurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.TEXT, new DataBinding<String>(
 				"drawable.configuration.name"), false);
 		nextConfigurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>("15.0"), false);
