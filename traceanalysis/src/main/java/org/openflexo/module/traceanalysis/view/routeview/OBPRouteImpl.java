@@ -17,7 +17,7 @@
  * along with OpenFlexo. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package org.openflexo.traceanalysis.view.routeview;
+package org.openflexo.module.traceanalysis.view.routeview;
 
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;

@@ -17,7 +17,7 @@
  * along with OpenFlexo. If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package org.openflexo.traceanalysis.view.routeview;
+package org.openflexo.module.traceanalysis.view.routeview.sequencediagram;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -48,6 +48,8 @@ import org.openflexo.fib.utils.FlexoLoggingViewer;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.logging.FlexoLoggingManager;
 import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.module.traceanalysis.view.routeview.OBPRoute;
+import org.openflexo.module.traceanalysis.view.routeview.sequencediagram.SequenceDiagramDrawing.RouteLayout;
 
 public class LaunchRouteDrawing {
 
@@ -71,7 +73,7 @@ public class LaunchRouteDrawing {
 		private final JPopupMenu contextualMenu;
 		private final JDianaScaleSelector scaleSelector;
 
-		public TestDrawingController(RouteDrawing aDrawing) {
+		public TestDrawingController(SequenceDiagramDrawing aDrawing) {
 			super(aDrawing, aDrawing.getFactory(), SwingViewFactory.INSTANCE, SwingToolFactory.DEFAULT);
 			scaleSelector = (JDianaScaleSelector) getToolFactory().makeDianaScaleSelector(this);
 			contextualMenu = new JPopupMenu();
@@ -139,7 +141,7 @@ public class LaunchRouteDrawing {
 
 		// final TestInspector inspector = new TestInspector();
 
-		final RouteDrawing d = makeDrawing();
+		final SequenceDiagramDrawing d = makeDrawing();
 		final TestDrawingController dc = new TestDrawingController(d);
 		// dc.disablePaintingCache();
 		dc.getDrawingView().setName("[NO_CACHE]");
@@ -221,7 +223,7 @@ public class LaunchRouteDrawing {
 		// inspector.getWindow().setVisible(true);
 	}
 
-	public static RouteDrawing makeDrawing() {
+	public static SequenceDiagramDrawing makeDrawing() {
 		FGEModelFactory factory = null;
 		try {
 			factory = new FGEModelFactoryImpl();
@@ -229,7 +231,7 @@ public class LaunchRouteDrawing {
 			e.printStackTrace();
 		}
 		OBPRoute route = makeExampleRoute();
-		RouteDrawing returned = new RouteDrawing(route, factory);
+		SequenceDiagramDrawing returned = new SequenceDiagramDrawing(route, factory, RouteLayout.VERTICAL);
 		returned.printGraphicalObjectHierarchy();
 		return returned;
 	}

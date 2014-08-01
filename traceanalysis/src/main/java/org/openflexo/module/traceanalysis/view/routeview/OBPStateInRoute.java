@@ -18,7 +18,7 @@
  *
  */
 
-package org.openflexo.traceanalysis.view.routeview;
+package org.openflexo.module.traceanalysis.view.routeview;
 import java.awt.Color;
 
 import org.openflexo.fge.BackgroundStyle;

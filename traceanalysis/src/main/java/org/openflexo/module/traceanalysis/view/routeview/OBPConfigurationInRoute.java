@@ -18,7 +18,7 @@
  *
  */
 
-package org.openflexo.traceanalysis.view.routeview;
+package org.openflexo.module.traceanalysis.view.routeview;
 
 import org.openflexo.technologyadapter.trace.model.OBPTraceConfiguration;
 import org.openflexo.toolbox.HasPropertyChangeSupport;

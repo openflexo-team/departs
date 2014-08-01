@@ -6,10 +6,20 @@
       <VirtualModelModelSlot idref="4" />
     </PrimitiveRole>
   </FlexoConcept>
-  <Inspector id="5" flexoID="-1" userID="FLX" useSpecificDescriptions="false" inspectorTitle="TraceVirtualModel" />
+  <FlexoConcept id="5" userID="FLX" useSpecificDescriptions="false" flexoID="18" name="MaskedElement">
+    <Inspector id="6" flexoID="17" userID="FLX" useSpecificDescriptions="false" inspectorTitle="MaskedElement" />
+    <ParentFlexoConcept idref="1" />
+  </FlexoConcept>
+  <FlexoConcept id="7" userID="FLX" useSpecificDescriptions="false" flexoID="22" name="Configuration">
+    <Inspector id="8" flexoID="21" userID="FLX" useSpecificDescriptions="false" inspectorTitle="Configuration" />
+  </FlexoConcept>
+  <FlexoConcept id="9" userID="FLX" useSpecificDescriptions="false" flexoID="24" name="Transition">
+    <Inspector id="10" flexoID="23" userID="FLX" useSpecificDescriptions="false" inspectorTitle="Transition" />
+  </FlexoConcept>
+  <Inspector id="11" flexoID="-1" userID="FLX" useSpecificDescriptions="false" inspectorTitle="TraceVirtualModel" />
   <ModelSlot_VirtualModelModelSlot id="4" cloningStratgey="Reference" flexoID="1" isRequired="false" userID="FLX" useSpecificDescriptions="false" name="virtualModelInstance" isReadOnly="false" virtualModelURI="http://depart.v1/TraceVirtualModel" />
-  <ModelSlot_TraceModelSlot id="6" cloningStratgey="Reference" flexoID="10" isRequired="true" name="traceModelSlot" useSpecificDescriptions="false" userID="FLX" isReadOnly="false" />
-  <ModelSlot_VirtualModelModelSlot id="7" cloningStratgey="Reference" flexoID="11" isRequired="true" userID="FLX" useSpecificDescriptions="false" name="contextVirtualModel" isReadOnly="false" virtualModelURI="http://depart.v1/ContextVirtualModel" />
-  <ModelSlot_VirtualModelModelSlot id="8" cloningStratgey="Reference" flexoID="12" isRequired="true" userID="FLX" useSpecificDescriptions="false" name="systemVirtualModel" isReadOnly="false" virtualModelURI="http://depart.v1/SystemVirtualModel" />
-  <ModelSlot_VirtualModelModelSlot id="9" cloningStratgey="Reference" flexoID="13" isRequired="true" userID="FLX" useSpecificDescriptions="false" name="observerVirtualModel" isReadOnly="false" virtualModelURI="http://depart.v1/ObserverVirtualModel" />
+  <ModelSlot_TraceModelSlot id="12" cloningStratgey="Reference" flexoID="10" isRequired="true" name="traceModelSlot" useSpecificDescriptions="false" userID="FLX" isReadOnly="false" />
+  <ModelSlot_VirtualModelModelSlot id="13" cloningStratgey="Reference" flexoID="11" isRequired="true" userID="FLX" useSpecificDescriptions="false" name="contextVirtualModel" isReadOnly="false" virtualModelURI="http://depart.v1/ContextVirtualModel" />
+  <ModelSlot_VirtualModelModelSlot id="14" cloningStratgey="Reference" flexoID="12" isRequired="true" userID="FLX" useSpecificDescriptions="false" name="systemVirtualModel" isReadOnly="false" virtualModelURI="http://depart.v1/SystemVirtualModel" />
+  <ModelSlot_VirtualModelModelSlot id="15" cloningStratgey="Reference" flexoID="13" isRequired="true" userID="FLX" useSpecificDescriptions="false" name="observerVirtualModel" isReadOnly="false" virtualModelURI="http://depart.v1/ObserverVirtualModel" />
 </VirtualModel>

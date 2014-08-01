@@ -16,7 +16,7 @@ public class ConfigurationMask extends DefaultFlexoObject implements PropertyCha
 	private final FlexoConceptInstance flexoConceptInstance;
 	private String name;
 	private static String NAME = "name";
-	private LinkedHashSet<FlexoObject> selection;
+	private List<FlexoObject> selection;
 	private final TraceAnalysisProject project;
 	
 	
@@ -24,7 +24,7 @@ public class ConfigurationMask extends DefaultFlexoObject implements PropertyCha
 		super();
 		this.flexoConceptInstance = flexoConceptInstance;
 		name = flexoConceptInstance.getFlexoActor(NAME);
-		selection = new LinkedHashSet<FlexoObject>();
+		selection = new ArrayList<FlexoObject>();
 		this.project = project;
 	}
 
@@ -50,11 +50,11 @@ public class ConfigurationMask extends DefaultFlexoObject implements PropertyCha
 		return flexoConceptInstance;
 	}
 	
-	public LinkedHashSet<FlexoObject> getSelection() {
+	public List<FlexoObject> getSelection() {
 		return selection;
 	}
 
-	public void setSelection(LinkedHashSet<FlexoObject> selection) {
+	public void setSelection(List<FlexoObject> selection) {
 		this.selection = selection;
 	}
 	
@@ -67,8 +67,8 @@ public class ConfigurationMask extends DefaultFlexoObject implements PropertyCha
 		getPropertyChangeSupport().firePropertyChange("selection", null, selection);
 	}
 	
-	public LinkedHashSet<FlexoObject> getFilteredSelection(Class<?> objectKind){
-		LinkedHashSet<FlexoObject> filteredSelection = new LinkedHashSet<FlexoObject>();
+	public List<FlexoObject> getFilteredSelection(Class<?> objectKind){
+		List<FlexoObject> filteredSelection = new ArrayList<FlexoObject>();
 		for(FlexoObject object : selection){
 			if(object.getClass().isAssignableFrom(objectKind)){
 				filteredSelection.add(object);
