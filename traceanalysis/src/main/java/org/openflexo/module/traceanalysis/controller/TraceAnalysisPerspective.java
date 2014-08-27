@@ -33,8 +33,10 @@ import org.openflexo.module.traceanalysis.TraceAnalysisIconLibrary;
 import org.openflexo.module.traceanalysis.model.ConfigurationMask;
 import org.openflexo.module.traceanalysis.model.TraceAnalysisProject;
 import org.openflexo.module.traceanalysis.model.TraceVirtualModelInstance;
+import org.openflexo.module.traceanalysis.model.TransitionMask;
 import org.openflexo.module.traceanalysis.view.ConfigurationMaskModuleView;
 import org.openflexo.module.traceanalysis.view.OBPRouteModuleView;
+import org.openflexo.module.traceanalysis.view.TransitionMaskModuleView;
 import org.openflexo.module.traceanalysis.view.routeview.OBPRoute;
 import org.openflexo.module.traceanalysis.view.routeview.OBPRouteEditor;
 import org.openflexo.module.traceanalysis.view.routeview.OBPRouteImpl;
@@ -127,6 +129,8 @@ public class TraceAnalysisPerspective extends FlexoPerspective {
 		} 
 		else if (object instanceof ConfigurationMask) {
 			controller.selectAndFocusObject((ConfigurationMask) object);
+		} else if (object instanceof TransitionMask) {
+			controller.selectAndFocusObject((TransitionMask) object);
 		}
 		else {
 			super.objectWasDoubleClicked(object, controller);
@@ -140,7 +144,9 @@ public class TraceAnalysisPerspective extends FlexoPerspective {
 			return true;
 		}else if (object instanceof ConfigurationMask) {
 			return true;
-		}
+		}else if (object instanceof TransitionMask) {
+			return true;
+		} 
 		return super.hasModuleViewForObject(object);
 	}
 
@@ -153,6 +159,8 @@ public class TraceAnalysisPerspective extends FlexoPerspective {
 			return new OBPRouteModuleView(traceVirtualModelInstance,getController(), this);
 		} else if(object instanceof ConfigurationMask){
 			return new ConfigurationMaskModuleView((ConfigurationMask) object,getController(), this);
+		} else if(object instanceof TransitionMask){
+			return new TransitionMaskModuleView((TransitionMask) object,getController(), this);
 		}
 		return super.createModuleViewForObject(object, editable);
 	}

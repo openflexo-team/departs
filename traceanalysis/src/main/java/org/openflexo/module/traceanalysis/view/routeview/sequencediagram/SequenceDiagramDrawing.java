@@ -615,22 +615,22 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> {
 								}
 
 							}
-							// Show states for visible BehaviourObjects
-							for (BehaviourObjectInRoute objectInRoute : route.getVisibleBehaviourObjects()) {
-								OBPStateInRoute state = route.getOBPStateInRoute(objectInRoute, pConfig);
-								if(state.isSuccess()){
-									drawShape(successStateVerticalBinding, route.getOBPStateInRoute(objectInRoute, pConfig));
-								}else if(state.isReject()){
-									drawShape(rejectStateVerticalBinding, route.getOBPStateInRoute(objectInRoute, pConfig));
-								}else if(state.isCut()){
-									drawShape(cutStateVerticalBinding, route.getOBPStateInRoute(objectInRoute, pConfig));
-								}else if(state.isNormal()){
-									drawShape(normalStateVerticalBinding, route.getOBPStateInRoute(objectInRoute, pConfig));
-								}else if(pConfig.getVisibleIndex()==0){
-									drawShape(initialStateVerticalBinding, route.getOBPStateInRoute(objectInRoute, pConfig));
-								}else{
-									drawShape(defaultStateVerticalBinding, route.getOBPStateInRoute(objectInRoute, pConfig));
-								}
+						}
+						// Show states for visible BehaviourObjects
+						for (BehaviourObjectInRoute objectInRoute : route.getVisibleBehaviourObjects()) {
+							OBPStateInRoute state = route.getOBPStateInRoute(objectInRoute, config);
+							if(state.isSuccess()){
+								drawShape(successStateVerticalBinding, route.getOBPStateInRoute(objectInRoute, config));
+							}else if(state.isReject()){
+								drawShape(rejectStateVerticalBinding, route.getOBPStateInRoute(objectInRoute, config));
+							}else if(state.isCut()){
+								drawShape(cutStateVerticalBinding, route.getOBPStateInRoute(objectInRoute, config));
+							}else if(state.isNormal()){
+								drawShape(normalStateVerticalBinding, route.getOBPStateInRoute(objectInRoute, config));
+							}else if(config.getVisibleIndex()==0){
+								drawShape(initialStateVerticalBinding, route.getOBPStateInRoute(objectInRoute, config));
+							}else{
+								drawShape(defaultStateVerticalBinding, route.getOBPStateInRoute(objectInRoute, config));
 							}
 						}
 					}
@@ -709,22 +709,22 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> {
 								}
 
 							}
-							// Show states for visible BehaviourObjects
-							for (BehaviourObjectInRoute objectInRoute : route.getVisibleBehaviourObjects()) {
-								OBPStateInRoute state = route.getOBPStateInRoute(objectInRoute, pConfig);
-								if(state.isSuccess()){
-									drawShape(successStateHorizontalBinding, route.getOBPStateInRoute(objectInRoute, pConfig));
-								}else if(state.isReject()){
-									drawShape(rejectStateHorizontalBinding, route.getOBPStateInRoute(objectInRoute, pConfig));
-								}else if(state.isCut()){
-									drawShape(cutStateHorizontalBinding, route.getOBPStateInRoute(objectInRoute, pConfig));
-								}else if(state.isNormal()){
-									drawShape(normalStateHorizontalBinding, route.getOBPStateInRoute(objectInRoute, pConfig));
-								}else if(pConfig.getVisibleIndex()==0){
-									drawShape(initialStateHorizontalBinding, route.getOBPStateInRoute(objectInRoute, pConfig));
-								}else{
-									drawShape(defaultStateHorizontalBinding, route.getOBPStateInRoute(objectInRoute, pConfig));
-								}
+						}
+						// Show states for visible BehaviourObjects
+						for (BehaviourObjectInRoute objectInRoute : route.getVisibleBehaviourObjects()) {
+							OBPStateInRoute state = route.getOBPStateInRoute(objectInRoute, config);
+							if(state.isSuccess()){
+								drawShape(successStateHorizontalBinding, route.getOBPStateInRoute(objectInRoute, config));
+							}else if(state.isReject()){
+								drawShape(rejectStateHorizontalBinding, route.getOBPStateInRoute(objectInRoute, config));
+							}else if(state.isCut()){
+								drawShape(cutStateHorizontalBinding, route.getOBPStateInRoute(objectInRoute, config));
+							}else if(state.isNormal()){
+								drawShape(normalStateHorizontalBinding, route.getOBPStateInRoute(objectInRoute, config));
+							}else if(config.getVisibleIndex()==0){
+								drawShape(initialStateHorizontalBinding, route.getOBPStateInRoute(objectInRoute, config));
+							}else{
+								drawShape(defaultStateHorizontalBinding, route.getOBPStateInRoute(objectInRoute, config));
 							}
 						}
 					}
@@ -848,11 +848,11 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> {
 					"(drawable.endConfiguration.visibleIndex+1)*" + ROW_HEIGHT +"-" + RECTANGLE_STATE_HEIGHT), false);
 		}else if(layout==RouteLayout.HORIZONTAL){
 			startMessageBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>(
-					"drawable.startBehaviourObject.index*"+ ROW_HEIGHT + "+"+ UP_OFFSET), false);
+					"drawable.startBehaviourObject.index*"+ ROW_HEIGHT +"+" +ROW_HEIGHT + "+"+ UP_OFFSET), false);
 			startMessageBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>(
 					"(drawable.startConfiguration.visibleIndex+1)*" + LIFE_LINE_WIDTH ), false);
 			endMessageBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>(
-					"drawable.endBehaviourObject.index*" + ROW_HEIGHT + "+"+ UP_OFFSET), false);
+					"drawable.endBehaviourObject.index*" + ROW_HEIGHT +"+" +ROW_HEIGHT + "+"+ UP_OFFSET), false);
 			endMessageBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>(
 					"(drawable.endConfiguration.visibleIndex+1)*" + LIFE_LINE_WIDTH +"-" + RECTANGLE_STATE_WIDTH*2), false);
 		}

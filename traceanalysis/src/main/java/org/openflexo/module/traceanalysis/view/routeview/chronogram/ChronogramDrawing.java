@@ -1,7 +1,13 @@
 package org.openflexo.module.traceanalysis.view.routeview.chronogram;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import javassist.bytecode.Descriptor.Iterator;
 
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.fge.ColorGradientBackgroundStyle.ColorGradientDirection;
@@ -21,38 +27,70 @@ import org.openflexo.fge.graph.FGEFunctionGraph.Orientation;
 import org.openflexo.fge.graph.FGEGraph.GraphType;
 import org.openflexo.fge.impl.DrawingImpl;
 import org.openflexo.fge.shapes.ShapeSpecification.ShapeType;
+import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
+import org.openflexo.module.traceanalysis.view.routeview.BehaviourObjectInRoute;
 import org.openflexo.module.traceanalysis.view.routeview.OBPRoute;
 import org.openflexo.technologyadapter.trace.model.OBPTraceData;
 
 public class ChronogramDrawing extends DrawingImpl<OBPRoute> {
 
-	private FGEDiscreteFunctionGraph<OBPTraceData> graph;
-	private FGEFunction<String> sizeFunction;
-
+	private Map<FGEDiscreteFunctionGraph<OBPTraceData>,GraphGRBinding> chronograms;
+	
 	private DrawingGraphicalRepresentation drawingRepresentation;
-	private ShapeGraphicalRepresentation graphGR;
-
+	
 	public ChronogramDrawing(OBPRoute route, FGEModelFactory factory) {
 		super(route, factory, PersistenceMode.SharedGraphicalRepresentations);
 	}
 
 	@Override
 	public void init() {
-		List<OBPTraceData> data = getModel().getTrace().getConfiguration(0).getOBPTraceProcesses().get(0).getOBPTraceData();
+		chronograms = new HashMap<FGEDiscreteFunctionGraph<OBPTraceData>,GraphGRBinding>();
+		int y = 50;
+		for(BehaviourObjectInRoute object : getModel().getVisibleBehaviourObjects()){
+			for(OBPTraceData data : object.getBehaviourObject().getOBPTraceData()){
+				FGEDiscreteFunctionGraph dataChronogram = new FGEDiscreteFunctionGraph<OBPTraceData>();
 
-		graph = new FGEDiscreteFunctionGraph<OBPTraceData>();
+				dataChronogram.setParameter("data", OBPTraceData.class);
+				dataChronogram.setDiscreteValues(object.getBehaviourObject().getOBPTraceData());
+				dataChronogram.setDiscreteValuesLabel(new DataBinding<String>("data.value"));
+				dataChronogram.setParameterOrientation(Orientation.VERTICAL);
 
-		graph.setParameter("data", OBPTraceData.class);
-		graph.setDiscreteValues(data);
-		graph.setDiscreteValuesLabel(new DataBinding<String>("data.name"));
-		graph.setParameterOrientation(Orientation.VERTICAL);
+				FGEFunction<String> functionChronogram = dataChronogram.addFunction("data.name", String.class, new DataBinding<String>("data.name"), GraphType.RECT_POLYLIN);
+				//sizeFunction.setRange(0, 200);
+				functionChronogram.setForegroundStyle(getFactory().makeForegroundStyle(Color.BLUE, 1.0f));
+				functionChronogram.setBackgroundStyle(getFactory().makeColorGradientBackground(Color.BLUE, Color.WHITE,
+						ColorGradientDirection.NORTH_SOUTH));
+				
+				final ShapeGraphicalRepresentation chronogramGR = getFactory().makeShapeGraphicalRepresentation(ShapeType.RECTANGLE);
+				chronogramGR.setText("Example of chronogram");
+				chronogramGR.setX(50);
+				chronogramGR.setY(y);
+				chronogramGR.setWidth(700);
+				chronogramGR.setHeight(60);
+				chronogramGR.setAbsoluteTextX(20);
+				chronogramGR.setAbsoluteTextY(5);
+				chronogramGR.setHorizontalTextAlignment(HorizontalTextAlignment.LEFT);
+				chronogramGR.setTextStyle(getFactory().makeTextStyle(Color.BLACK, FGEConstants.DEFAULT_TEXT_FONT));
+				chronogramGR.setShadowStyle(getFactory().makeNoneShadowStyle());
+				chronogramGR.setBackground(getFactory().makeColoredBackground(Color.WHITE));
+				chronogramGR.setForeground(getFactory().makeForegroundStyle(Color.BLACK));
+				// Very important: give some place for labels, legend and other informations
+				chronogramGR.setBorder(getFactory().makeShapeBorder(20, 20, 20, 20));
 
-		sizeFunction = graph.addFunction("size", String.class, new DataBinding<String>("data.value"), GraphType.RECT_POLYLIN);
-		//sizeFunction.setRange(0, 200);
-		sizeFunction.setForegroundStyle(getFactory().makeForegroundStyle(Color.BLUE, 1.0f));
-		sizeFunction.setBackgroundStyle(getFactory().makeColorGradientBackground(Color.BLUE, Color.WHITE,
-				ColorGradientDirection.NORTH_SOUTH));
-
+				final GraphGRBinding<FGEDiscreteFunctionGraph> chronogramBinding = bindGraph(FGEDiscreteFunctionGraph.class, "graph",
+						new ShapeGRProvider<FGEDiscreteFunctionGraph>() {
+							@Override
+							public ShapeGraphicalRepresentation provideGR(FGEDiscreteFunctionGraph drawable, FGEModelFactory factory) {
+								return chronogramGR;
+							}
+						});
+				
+				chronograms.put(dataChronogram, chronogramBinding);
+				y= y +30;
+			}
+			
+		}
+		 
 		drawingRepresentation = getFactory().makeDrawingGraphicalRepresentation();
 
 		final DrawingGRBinding<OBPRoute> drawingBinding = bindDrawing(OBPRoute.class, "drawing", new DrawingGRProvider<OBPRoute>() {
@@ -62,38 +100,19 @@ public class ChronogramDrawing extends DrawingImpl<OBPRoute> {
 			}
 		});
 
-		graphGR = getFactory().makeShapeGraphicalRepresentation(ShapeType.RECTANGLE);
-		graphGR.setText("Example of chronogram");
-		graphGR.setX(50);
-		graphGR.setY(50);
-		graphGR.setWidth(700);
-		graphGR.setHeight(60);
-		graphGR.setAbsoluteTextX(20);
-		graphGR.setAbsoluteTextY(5);
-		graphGR.setHorizontalTextAlignment(HorizontalTextAlignment.LEFT);
-		graphGR.setTextStyle(getFactory().makeTextStyle(Color.BLACK, FGEConstants.DEFAULT_TEXT_FONT));
-		graphGR.setShadowStyle(getFactory().makeNoneShadowStyle());
-		graphGR.setBackground(getFactory().makeColorGradientBackground(Color.CYAN, Color.white,
-				ColorGradientDirection.SOUTH_EAST_NORTH_WEST));
-		graphGR.setForeground(getFactory().makeForegroundStyle(Color.ORANGE));
-		// Very important: give some place for labels, legend and other informations
-		graphGR.setBorder(getFactory().makeShapeBorder(20, 20, 20, 20));
-
-		final GraphGRBinding<FGEDiscreteFunctionGraph> graphBinding = bindGraph(FGEDiscreteFunctionGraph.class, "graph",
-				new ShapeGRProvider<FGEDiscreteFunctionGraph>() {
-					@Override
-					public ShapeGraphicalRepresentation provideGR(FGEDiscreteFunctionGraph drawable, FGEModelFactory factory) {
-						return graphGR;
-					}
-				});
+		
 
 		drawingBinding.addToWalkers(new GRStructureVisitor<OBPRoute>() {
 
 			@Override
 			public void visit(OBPRoute route) {
-				drawGraph(graphBinding, graph);
+				for (Entry<FGEDiscreteFunctionGraph<OBPTraceData>, GraphGRBinding> entry : chronograms.entrySet()) {	
+					drawGraph(entry.getValue(),entry.getKey());
+				}
 			}
 		});
 
 	}
+
+	
 }
