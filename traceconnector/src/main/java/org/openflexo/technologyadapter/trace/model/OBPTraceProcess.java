@@ -42,25 +42,10 @@ public interface OBPTraceProcess extends OBPTraceBehaviourObject{
 
 	public static final String PROCESS_KEY = "process";
 	
-	@PropertyIdentifier(type = List.class)
-	public static final String DATA_KEY = "data";
-	
 	@Getter(value=PROCESS_KEY, ignoreType=true)
 	public Parser.Process getProcess();
 	@Setter(PROCESS_KEY)
 	public void setProcess(Parser.Process process);
-	
-	@Getter(value = DATA_KEY, cardinality = Cardinality.LIST)
-	public List<OBPTraceData> getOBPTraceData();
-
-	@Setter(DATA_KEY)
-	public void setOBPTraceData(List<OBPTraceData> data);
-
-	@Adder(DATA_KEY)
-	public void addToOBPTraceData(OBPTraceData data);
-
-	@Remover(DATA_KEY)
-	public void removeFromOBPTraceData(OBPTraceData data);
 	
 	public String getProcessID();
 	

@@ -20,12 +20,17 @@
 
 package org.openflexo.technologyadapter.trace.model;
 
+import java.util.List;
+
+import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
+import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.model.annotations.Getter.Cardinality;
 
 @ModelEntity
 @ImplementationClass(OBPTraceBehaviourObject.OBPTraceBehaviourObjectImpl.class)
@@ -35,10 +40,25 @@ public interface OBPTraceBehaviourObject extends OBPTraceObject {
 	@PropertyIdentifier(type = OBPTraceState.class)
 	public static final String STATE_KEY = "state";
 	
+	@PropertyIdentifier(type = List.class)
+	public static final String DATA_KEY = "data";
+	
 	@Getter(value = STATE_KEY, inverse = OBPTraceState.BEHAVIOUR_OBJECT_KEY)
 	public OBPTraceState getState();
 	@Setter(STATE_KEY)
 	public void setState(OBPTraceState state);
+	
+	@Getter(value = DATA_KEY, cardinality = Cardinality.LIST)
+	public List<OBPTraceData> getOBPTraceData();
+
+	@Setter(DATA_KEY)
+	public void setOBPTraceData(List<OBPTraceData> data);
+
+	@Adder(DATA_KEY)
+	public void addToOBPTraceData(OBPTraceData data);
+
+	@Remover(DATA_KEY)
+	public void removeFromOBPTraceData(OBPTraceData data);
 
 	public static abstract class OBPTraceBehaviourObjectImpl extends OBPTraceObjectImpl implements OBPTraceBehaviourObject {
 
