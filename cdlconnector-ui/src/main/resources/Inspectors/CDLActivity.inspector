@@ -7,7 +7,5 @@
       <TextField index="1" data="data.name" constraints="twocols(expandHorizontally=true;expandVertically=false;index=1;location=right)" name="NameTF" localize="true" columns="10" />
     </Tab>
   </TabPanel>
-  <LocalizedDictionary>
-  </LocalizedDictionary>
   <Parameter name="title" value="Diagram" />
 </Panel>
