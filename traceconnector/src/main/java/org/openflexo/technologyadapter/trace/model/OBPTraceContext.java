@@ -41,10 +41,6 @@ public interface OBPTraceContext extends OBPTraceBehaviourObject{
 	
 	@Setter(CONTEXT_KEY)
 	public void setTraceOBPContext(Parser.Context context);
-	
-	public String getContextID();
-	
-	public String getContextType();
 
 	public static abstract class OBPTraceContextImpl extends OBPTraceBehaviourObjectImpl implements OBPTraceContext {
 
@@ -60,7 +56,7 @@ public interface OBPTraceContext extends OBPTraceBehaviourObject{
 		}
 
 		@Override
-		public String getContextID(){
+		public String getID(){
 			Pattern id = Pattern.compile(REGEX);
 			Matcher makeMatch = id.matcher(getName());
 			makeMatch.find();
@@ -68,7 +64,7 @@ public interface OBPTraceContext extends OBPTraceBehaviourObject{
 		}
 		
 		@Override
-		public String getContextType(){
+		public String getType(){
 			Pattern id = Pattern.compile(REGEX);
 			Matcher makeMatch = id.matcher(getName());
 			makeMatch.find();
@@ -82,7 +78,7 @@ public interface OBPTraceContext extends OBPTraceBehaviourObject{
 		
 		@Override
 		public String getValue() {
-			return "{"+getContextType()+"}"+getContextID();
+			return "{"+getType()+"}"+getID();
 		}
 	}
 

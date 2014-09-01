@@ -2,7 +2,6 @@ package org.openflexo.module.traceanalysis.model;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.openflexo.foundation.DefaultFlexoObject;
@@ -11,7 +10,7 @@ import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 
-public class TraceAnalysisVirtualModelInstance extends DefaultFlexoObject implements PropertyChangeListener {
+public abstract class TraceAnalysisVirtualModelInstance extends DefaultFlexoObject implements PropertyChangeListener {
 	
 	private final VirtualModelInstance virtualModelInstance;
 	

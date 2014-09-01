@@ -20,6 +20,7 @@
 package org.openflexo.module.traceanalysis.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,6 +37,7 @@ import org.openflexo.technologyadapter.cdl.model.CDLProperty;
 import org.openflexo.technologyadapter.fiacre.model.FiacreProcess;
 import org.openflexo.technologyadapter.fiacre.model.FiacreState;
 import org.openflexo.technologyadapter.fiacre.model.FiacreVariable;
+import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObject;
 import org.openflexo.technologyadapter.trace.model.OBPTraceConfiguration;
 import org.openflexo.technologyadapter.trace.model.OBPTraceContext;
 import org.openflexo.technologyadapter.trace.model.OBPTraceData;
@@ -50,42 +52,91 @@ public class TraceVirtualModelInstance extends TraceAnalysisVirtualModelInstance
 	
 	private static final Logger logger = Logger.getLogger(TraceVirtualModelInstance.class.getPackage().getName());
 	
-	private List<ConfigurationMask> configurationMasks;
+	// The trace is a set of configurations and transitions
+	private OBPTrace trace;
 	
-	private ConfigurationMask selectedMask;
-	private OBPTraceConfiguration selectedConfiguration;
+	private HashMap<FlexoObject, List<OBPTraceObject>> federatedTraceObjects;
+	
+	// A list of masks
+	private List<ConfigurationMask> configurationMasks;
+	private Mask selectedMask;
 	
 	public TraceVirtualModelInstance(VirtualModelInstance virtualModelInstance, TraceAnalysisProject traceAnalysisProject)
 			throws InvalidArgumentException {
 		super(virtualModelInstance,traceAnalysisProject);
-		for(FlexoConceptInstance fciMask : getVirtualModelInstance().getFlexoConceptInstances(getMaskFlexoConcept())){
-			ConfigurationMask mask = new ConfigurationMask(fciMask, traceAnalysisProject);
+		for(FlexoConceptInstance fciMask : getVirtualModelInstance().getFlexoConceptInstances(getConfigurationMaskFlexoConcept())){
+			ConfigurationMask mask = new ConfigurationMask(fciMask, traceAnalysisProject, this);
 			getConfigurationMasks().add(mask);
+		}
+		
+		// TEMP create associations between trace and others
+		federatedTraceObjects = new HashMap<FlexoObject, List<OBPTraceObject>>();
+		for(OBPTraceConfiguration conf :getConfigurations()){
+			for(OBPTraceBehaviourObject behaviourObject: conf.getBehaviourObjects()){
+				FlexoObject object = getFlexoObjectNamed(behaviourObject.getType());
+				List<OBPTraceObject> traceObjects = federatedTraceObjects.get(object);
+				if(traceObjects==null){
+					traceObjects = new ArrayList<OBPTraceObject>();
+				}
+				if(!traceObjects.contains(behaviourObject)){
+					traceObjects.add(behaviourObject);
+				}
+				federatedTraceObjects.put(object, traceObjects);
+			}
 		}
 	}
 	
+	private FlexoObject getFlexoObjectNamed(String name){
+		if(getTraceAnalysisProject().getContextVirtualModelInstance().getName().equals(name)){
+			return getTraceAnalysisProject().getContextVirtualModelInstance();
+		}
+		for(CDLProperty property: getTraceAnalysisProject().getObserverVirtualModelInstance().getCDLProperties()){
+			if(property!=null && property.getName().equals(name)){
+				return property;
+			}
+		}
+		for(FiacreProcess process : getTraceAnalysisProject().getSystemVirtualModelInstance().getFiacreProcesses()){
+			if(process!=null && process.getName().equals(name)){
+				return process;
+			}
+		}
+		return null;
+	}
+	
+	public List<OBPTraceObject> getOBPTraceObjects(FlexoObject object){
+		return federatedTraceObjects.get(object);
+	}
+	
+	// Get the trace
+	public OBPTrace getTraceOBP(){
+		if(trace==null){
+			FreeModelSlotInstance msi = (FreeModelSlotInstance) getVirtualModelInstance().getModelSlotInstance("traceModelSlot");
+			trace = (OBPTrace) msi.getAccessedResourceData();
+		}
+		return trace;
+	}
+	
+	// Get the whole set of Transitions
 	public List<OBPTraceTransition> getTransitions(){
 		return getTraceOBP().getTransitions();
 	}
 
+	// Get the whole set of Configurations
 	public List<OBPTraceConfiguration> getConfigurations(){
 		return getTraceOBP().getConfigurations();
 	}
 	
+	// Get the configuration from its ID
 	public OBPTraceConfiguration getConfiguration(int id){
 		return getTraceOBP().getConfigurations().get(id);
 	}
 	
-	public OBPTrace getTraceOBP(){
-		FreeModelSlotInstance msi = (FreeModelSlotInstance) getVirtualModelInstance().getModelSlotInstance("traceModelSlot");
-		return (OBPTrace) msi.getAccessedResourceData();
-	}
-	
+	// Get the value of a configuration's object
 	public String getConfigurationValue(FlexoObject object, int config){
 		OBPTraceConfiguration configuration = getTraceOBP().getConfigurations().get(config);
 		return getConfigurationValue(object, configuration);
 	}
-	
+	// Get the value of a configuration's object
 	public String getConfigurationValue(FlexoObject object, OBPTraceConfiguration configuration){
 		if(getConfigurationObject(object, configuration)!=null){
 			return getConfigurationObject(object, configuration).getValue();
@@ -94,11 +145,12 @@ public class TraceVirtualModelInstance extends TraceAnalysisVirtualModelInstance
 		}
 	}
 	
+	// Get the object of a configuration
 	public OBPTraceObject getConfigurationObject(FlexoObject object, int config){
 		OBPTraceConfiguration configuration = getTraceOBP().getConfigurations().get(config);
 		return getConfigurationObject(object, configuration);
 	}
-	
+	// Get the object of a configuration
 	public OBPTraceObject getConfigurationObject(FlexoObject object, OBPTraceConfiguration configuration){
 		if(object instanceof FiacreProcess){
 			return getProcessObject((FiacreProcess)object, configuration);
@@ -129,7 +181,7 @@ public class TraceVirtualModelInstance extends TraceAnalysisVirtualModelInstance
 	
 	public OBPTraceProperty getPropertyObject(CDLProperty property, OBPTraceConfiguration configuration){
 		for(OBPTraceProperty traceProperty : configuration.getOBPTraceProperties()){
-			if(traceProperty.getPropertyType().equals(property.getName())){
+			if(traceProperty.getType().equals(property.getName())){
 				return traceProperty;
 			}
 		}
@@ -139,7 +191,7 @@ public class TraceVirtualModelInstance extends TraceAnalysisVirtualModelInstance
 	
 	public OBPTraceProcess getProcessObject(FiacreProcess process, OBPTraceConfiguration configuration){
 		for(OBPTraceProcess traceProcess : configuration.getOBPTraceProcesses()){
-			if(traceProcess.getProcessType().equals(process.getName())){
+			if(traceProcess.getType().equals(process.getName())){
 				return traceProcess;
 			}
 		}
@@ -192,8 +244,8 @@ public class TraceVirtualModelInstance extends TraceAnalysisVirtualModelInstance
 		return null;
 	}
 
-	private FlexoConcept getMaskFlexoConcept(){
-		return getVirtualModelInstance().getVirtualModel().getFlexoConcept("Mask");
+	private FlexoConcept getConfigurationMaskFlexoConcept(){
+		return getVirtualModelInstance().getVirtualModel().getFlexoConcept("ConfigurationMask");
 	}
 	
 	public void setConfigurationMasks(List<ConfigurationMask> configurationMasks) {
@@ -201,7 +253,7 @@ public class TraceVirtualModelInstance extends TraceAnalysisVirtualModelInstance
 	}
 	
 	public ConfigurationMask getNewConfigurationMask(){
-		FlexoConceptInstance newFlexoConceptInstance = getVirtualModelInstance().makeNewFlexoConceptInstance(getMaskFlexoConcept());
+		FlexoConceptInstance newFlexoConceptInstance = getVirtualModelInstance().makeNewFlexoConceptInstance(getConfigurationMaskFlexoConcept());
 		return getConfigurationMask(newFlexoConceptInstance);
 	}
 	
@@ -211,27 +263,18 @@ public class TraceVirtualModelInstance extends TraceAnalysisVirtualModelInstance
 				return mask;
 			}
 		}
-		ConfigurationMask mask = new ConfigurationMask(flexoConceptInstance, getTraceAnalysisProject());
+		ConfigurationMask mask = new ConfigurationMask(flexoConceptInstance, getTraceAnalysisProject(), this);
 		getConfigurationMasks().add(mask);
 		getPropertyChangeSupport().firePropertyChange("configurationMasks", null, this);
 		return mask;
 	}
 	
-	
-	public ConfigurationMask getSelectedMask() {
+	public Mask getSelectedMask() {
 		return selectedMask;
 	}
 
-	public void setSelectedMask(ConfigurationMask selectedMask) {
+	public void setSelectedMask(Mask selectedMask) {
 		this.selectedMask = selectedMask;
-	}
-	
-	public OBPTraceConfiguration getSelectedConfiguration() {
-		return selectedConfiguration;
-	}
-
-	public void setSelectedFlexoConfigData(OBPTraceConfiguration selectedConfiguration) {
-		this.selectedConfiguration = selectedConfiguration;
 	}
 	
 }

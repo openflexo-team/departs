@@ -19,12 +19,6 @@
  */
 
 package org.openflexo.module.traceanalysis.view.routeview;
-import java.awt.Color;
-
-import org.openflexo.fge.BackgroundStyle;
-import org.openflexo.fge.FGEModelFactory;
-import org.openflexo.fge.FGEModelFactoryImpl;
-import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObject;
 import org.openflexo.technologyadapter.trace.model.OBPTraceProperty;
 import org.openflexo.technologyadapter.trace.model.OBPTraceState;

@@ -32,12 +32,10 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.nature.ProjectNatureService;
-import org.openflexo.foundation.view.View;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.module.traceanalysis.TraceAnalysisCst;
 import org.openflexo.module.traceanalysis.model.action.CreateTraceAnalysisProject;
-import org.openflexo.view.FlexoFrame;
 import org.openflexo.view.controller.FlexoFIBController;
 
 public class TraceAnalysisProjectNature implements ProjectNature<TraceAnalysisProjectNature, TraceAnalysisProject> {

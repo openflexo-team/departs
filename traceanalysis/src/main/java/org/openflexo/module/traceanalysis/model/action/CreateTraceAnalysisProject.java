@@ -98,7 +98,7 @@ public class CreateTraceAnalysisProject extends FlexoAction<CreateTraceAnalysisP
 
 		logger.info("Create trace analysis");
 		// Create the view
-		CreateView createView = CreateView.actionType.makeNewAction(getFocusedObject().getProject().getViewLibrary().getRootFolder(), null, getEditor());
+		CreateView createView = CreateView.actionType.makeNewAction(getEditor().getProject().getViewLibrary().getRootFolder(), null, getEditor());
 		createView.setNewViewName(getTraceAnalysisName());
 		createView.setNewViewTitle(getTraceAnalysisName());
 		createView.setViewpointResource((ViewPointResource) ((TraceAnalysisProject)getFocusedObject()).getTraceAnaylsisViewPoint().getResource());

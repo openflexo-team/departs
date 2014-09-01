@@ -10,6 +10,8 @@ import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.viewpoint.PrimitiveRole;
+import org.openflexo.technologyadapter.trace.model.OBPTraceConfiguration;
+import org.openflexo.technologyadapter.trace.model.OBPTraceObject;
 
 public class Mask extends DefaultFlexoObject implements PropertyChangeListener {
 	
@@ -18,14 +20,16 @@ public class Mask extends DefaultFlexoObject implements PropertyChangeListener {
 	private static String NAME = "name";
 	private List<FlexoObject> selection;
 	private final TraceAnalysisProject project;
+	private final TraceVirtualModelInstance trace;
 	
 	
-	public Mask(FlexoConceptInstance flexoConceptInstance,TraceAnalysisProject project) {
+	public Mask(FlexoConceptInstance flexoConceptInstance,TraceAnalysisProject project, TraceVirtualModelInstance trace) {
 		super();
 		this.flexoConceptInstance = flexoConceptInstance;
 		name = flexoConceptInstance.getFlexoActor(NAME);
 		selection = new ArrayList<FlexoObject>();
 		this.project = project;
+		this.trace = trace;
 	}
 
 	@Override
@@ -67,7 +71,7 @@ public class Mask extends DefaultFlexoObject implements PropertyChangeListener {
 		getPropertyChangeSupport().firePropertyChange("selection", null, selection);
 	}
 	
-	public List<FlexoObject> getFilteredSelection(Class<?> objectKind){
+	public List<?> getFilteredSelection(Class<?> objectKind){
 		List<FlexoObject> filteredSelection = new ArrayList<FlexoObject>();
 		for(FlexoObject object : selection){
 			if(object.getClass().isAssignableFrom(objectKind)){
@@ -77,6 +81,15 @@ public class Mask extends DefaultFlexoObject implements PropertyChangeListener {
 		return filteredSelection;
 	}
 	
+	public boolean isTraceOBPObjectFiltered(OBPTraceObject obpTraceObject){
+		for(FlexoObject object : selection){
+			List<OBPTraceObject> traceOBPObjects = trace.getOBPTraceObjects(object);
+			if(traceOBPObjects!=null && traceOBPObjects.contains(obpTraceObject)){
+				return true;
+			}
+		}
+		return false;
+	}
 }
 
 

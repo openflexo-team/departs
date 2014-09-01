@@ -111,9 +111,6 @@ public class TraceAnalysisController extends FlexoController {
 				setCurrentEditedObjectAsModuleView(object);
 			}
 			if (getCurrentPerspective() == TA_PERSPECTIVE) {
-				if (object instanceof TraceAnalysisProject) {
-					TA_PERSPECTIVE.focusOnTraceAnalysisProject((TraceAnalysisProject) object);
-				}
 				if (object instanceof ConfigurationMask) {
 					setCurrentEditedObjectAsModuleView(object);
 				}

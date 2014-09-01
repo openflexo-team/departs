@@ -40,7 +40,7 @@ import org.openflexo.toolbox.HasPropertyChangeSupport;
  * @author sylvain
  * 
  */
-public interface OBPRoute extends HasPropertyChangeSupport{
+public interface OBPRoute extends FlexoObject {
 
 	public OBPTrace getTrace();
 	
@@ -86,7 +86,7 @@ public interface OBPRoute extends HasPropertyChangeSupport{
 
 	public MessageInRoute getMessageInRoute(OBPTraceMessage message);
 	
-	public void synchronizeWithMask(ConfigurationMask mask);
+	public void synchronizeWithMask();
 	
 	public List<OBPConfigurationInRoute> getAsyncMessageConfigurations(OBPTraceMessage sendMessage, OBPTraceMessage receiveMessage);
 	

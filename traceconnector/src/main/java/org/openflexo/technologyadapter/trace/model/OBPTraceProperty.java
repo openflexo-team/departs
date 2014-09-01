@@ -41,10 +41,6 @@ public interface OBPTraceProperty extends OBPTraceBehaviourObject {
 	
 	@Setter(PROPERTY_KEY)
 	public void setProperty(Parser.Property property);
-	
-	public String getPropertyID();
-	
-	public String getPropertyType();
 
 	public static abstract class OBPTracePropertyImpl extends OBPTraceBehaviourObjectImpl implements OBPTraceProperty {
 
@@ -66,11 +62,11 @@ public interface OBPTraceProperty extends OBPTraceBehaviourObject {
 
 		@Override
 		public String getValue() {
-			return "{"+getPropertyID()+"}";
+			return "{"+getID()+"}";
 		}
 		
 		@Override
-		public String getPropertyID(){
+		public String getID(){
 			Pattern id = Pattern.compile(REGEX);
 			Matcher makeMatch = id.matcher(getName());
 			makeMatch.find();
@@ -78,7 +74,7 @@ public interface OBPTraceProperty extends OBPTraceBehaviourObject {
 		}
 		
 		@Override
-		public String getPropertyType(){
+		public String getType(){
 			Pattern id = Pattern.compile(REGEX);
 			Matcher makeMatch = id.matcher(getName());
 			makeMatch.find();

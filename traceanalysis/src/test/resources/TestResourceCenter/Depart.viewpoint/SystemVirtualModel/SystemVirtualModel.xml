@@ -93,40 +93,43 @@
       </AddFiacreFifo>
     </CreationScheme>
   </FlexoConcept>
-  <Inspector id="52" flexoID="-1" userID="FLX" useSpecificDescriptions="false" inspectorTitle="SystemVirtualModel" />
-  <ModelSlot_VirtualModelModelSlot id="53" cloningStratgey="Reference" flexoID="1" isRequired="false" userID="FLX" useSpecificDescriptions="false" name="virtualModelInstance" isReadOnly="false" virtualModelURI="http://depart.v1/SystemVirtualModel" />
+  <FlexoConcept id="52" userID="FLX" useSpecificDescriptions="false" flexoID="100" name="Variable">
+    <Inspector id="53" flexoID="99" userID="FLX" useSpecificDescriptions="false" inspectorTitle="Variable" />
+  </FlexoConcept>
+  <Inspector id="54" flexoID="-1" userID="FLX" useSpecificDescriptions="false" inspectorTitle="SystemVirtualModel" />
+  <ModelSlot_VirtualModelModelSlot id="55" cloningStratgey="Reference" flexoID="1" isRequired="false" userID="FLX" useSpecificDescriptions="false" name="virtualModelInstance" isReadOnly="false" virtualModelURI="http://depart.v1/SystemVirtualModel" />
   <ModelSlot_FiacreProgramModelSlot id="4" cloningStratgey="Reference" flexoID="15" isRequired="true" name="fiacreModelSlot" useSpecificDescriptions="false" userID="FLX" isReadOnly="false" />
-  <SynchronizationScheme id="54" useSpecificDescriptions="false" width="800" userID="FLX" label="synchronization" definePopupDefaultSize="false" height="600" flexoID="27" skipConfirmationPanel="false" name="synchronization">
-    <FetchRequestIterationAction id="55" flexoID="73" iteratorName="component" useSpecificDescriptions="false" userID="FLX">
+  <SynchronizationScheme id="56" useSpecificDescriptions="false" width="800" userID="FLX" label="synchronization" definePopupDefaultSize="false" height="600" flexoID="27" skipConfirmationPanel="false" name="synchronization">
+    <FetchRequestIterationAction id="57" flexoID="73" iteratorName="component" useSpecificDescriptions="false" userID="FLX">
       <FiacreProgramModelSlot idref="4" />
-      <FetchRequest_SelectFiacreComponents id="56" flexoID="74" userID="FLX" useSpecificDescriptions="false">
+      <FetchRequest_SelectFiacreComponents id="58" flexoID="74" userID="FLX" useSpecificDescriptions="false">
         <FiacreProgramModelSlot idref="4" />
       </FetchRequest_SelectFiacreComponents>
-      <MatchFlexoConceptInstance id="57" useSpecificDescriptions="false" userID="FLX" virtualModelInstance="virtualModelInstance" flexoID="75" creationSchemeURI="http://depart.v1/SystemVirtualModel#Component.federate_component">
-        <MatchingCriteria id="58" flexoID="71" useSpecificDescriptions="false" userID="FLX" value="component" patternRoleName="component" />
-        <CreateFlexoConceptInstanceParameter id="59" flexoID="72" useSpecificDescriptions="false" userID="FLX" value="component" paramName="component" />
+      <MatchFlexoConceptInstance id="59" useSpecificDescriptions="false" userID="FLX" virtualModelInstance="virtualModelInstance" flexoID="75" creationSchemeURI="http://depart.v1/SystemVirtualModel#Component.federate_component">
+        <MatchingCriteria id="60" flexoID="71" useSpecificDescriptions="false" userID="FLX" value="component" patternRoleName="component" />
+        <CreateFlexoConceptInstanceParameter id="61" flexoID="72" useSpecificDescriptions="false" userID="FLX" value="component" paramName="component" />
       </MatchFlexoConceptInstance>
     </FetchRequestIterationAction>
-    <FetchRequestIterationAction id="60" flexoID="57" iteratorName="process" useSpecificDescriptions="false" userID="FLX">
+    <FetchRequestIterationAction id="62" flexoID="57" iteratorName="process" useSpecificDescriptions="false" userID="FLX">
       <FiacreProgramModelSlot idref="4" />
-      <FetchRequest_SelectFiacreProcess id="61" flexoID="58" variableName="processFC" assignation="processFC" userID="FLX" useSpecificDescriptions="false">
+      <FetchRequest_SelectFiacreProcess id="63" flexoID="58" variableName="processFC" assignation="processFC" userID="FLX" useSpecificDescriptions="false">
         <FiacreProgramModelSlot idref="4" />
       </FetchRequest_SelectFiacreProcess>
-      <MatchFlexoConceptInstance id="62" useSpecificDescriptions="false" userID="FLX" virtualModelInstance="virtualModelInstance" flexoID="59" creationSchemeURI="http://depart.v1/SystemVirtualModel#Process.federate_process">
-        <MatchingCriteria id="63" flexoID="45" useSpecificDescriptions="false" userID="FLX" value="process" patternRoleName="process" />
-        <CreateFlexoConceptInstanceParameter id="64" flexoID="46" useSpecificDescriptions="false" userID="FLX" value="process" paramName="process" />
+      <MatchFlexoConceptInstance id="64" useSpecificDescriptions="false" userID="FLX" virtualModelInstance="virtualModelInstance" flexoID="59" creationSchemeURI="http://depart.v1/SystemVirtualModel#Process.federate_process">
+        <MatchingCriteria id="65" flexoID="45" useSpecificDescriptions="false" userID="FLX" value="process" patternRoleName="process" />
+        <CreateFlexoConceptInstanceParameter id="66" flexoID="46" useSpecificDescriptions="false" userID="FLX" value="process" paramName="process" />
       </MatchFlexoConceptInstance>
-      <SelectFlexoConceptInstance id="65" flexoID="76" variableName="processesList" assignation="processesList" userID="FLX" useSpecificDescriptions="false" flexoConceptTypeURI="http://depart.v1/SystemVirtualModel#Process">
-        <VirtualModelModelSlot idref="53" />
+      <SelectFlexoConceptInstance id="67" flexoID="76" variableName="processesList" assignation="processesList" userID="FLX" useSpecificDescriptions="false" flexoConceptTypeURI="http://depart.v1/SystemVirtualModel#Process">
+        <VirtualModelModelSlot idref="55" />
       </SelectFlexoConceptInstance>
-      <FetchRequestIterationAction id="66" flexoID="77" iteratorName="state" useSpecificDescriptions="false" userID="FLX">
+      <FetchRequestIterationAction id="68" flexoID="77" iteratorName="state" useSpecificDescriptions="false" userID="FLX">
         <FiacreProgramModelSlot idref="4" />
-        <FetchRequest_SelectFiacreStates id="67" useSpecificDescriptions="false" userID="FLX" fiacreProcess="process" flexoID="78">
+        <FetchRequest_SelectFiacreStates id="69" useSpecificDescriptions="false" userID="FLX" fiacreProcess="process" flexoID="78">
           <FiacreProgramModelSlot idref="4" />
         </FetchRequest_SelectFiacreStates>
-        <MatchFlexoConceptInstance id="68" useSpecificDescriptions="false" userID="FLX" virtualModelInstance="virtualModelInstance" flexoID="79" creationSchemeURI="http://depart.v1/SystemVirtualModel#State.federate_state">
-          <MatchingCriteria id="69" flexoID="68" useSpecificDescriptions="false" userID="FLX" value="state" patternRoleName="state" />
-          <CreateFlexoConceptInstanceParameter id="70" flexoID="69" useSpecificDescriptions="false" userID="FLX" value="state" paramName="state" />
+        <MatchFlexoConceptInstance id="70" useSpecificDescriptions="false" userID="FLX" virtualModelInstance="virtualModelInstance" flexoID="79" creationSchemeURI="http://depart.v1/SystemVirtualModel#State.federate_state">
+          <MatchingCriteria id="71" flexoID="68" useSpecificDescriptions="false" userID="FLX" value="state" patternRoleName="state" />
+          <CreateFlexoConceptInstanceParameter id="72" flexoID="69" useSpecificDescriptions="false" userID="FLX" value="state" paramName="state" />
         </MatchFlexoConceptInstance>
       </FetchRequestIterationAction>
     </FetchRequestIterationAction>

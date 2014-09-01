@@ -1,0 +1,338 @@
+config: 0 {
+- component: '{Calcul}1' [
+	- ProcWhile_1=[]
+	- fifoWhile2Until=[]
+]
+- proc: '{ProcWhile}1' [@Start,
+	- noVal=0
+	- n=0
+	- r=0
+	- s=0
+	- data={index=0,value=0}
+]
+- proc: '{ProcUntil}1' [@Start,
+	- data={index=0,value=0}
+]
+- context: '{env}1' [@start]
+- observer: '{pte_ProcUntil_End}1' [@start]
+- observer: '{pte_all_data_transmitted}1' [@start]
+- observer: '{pte_3_data_transmitted}1' [@start]
+- observer: '{pte_ProcUntil_lastData}1' [@start]
+- violated asserts: not_equal_values_and_ProcUntil
+}
+
+config: 1 {
+- component: '{Calcul}1' [
+	- ProcWhile_1=[{index=1,value=1}]
+	- fifoWhile2Until=[]
+]
+- proc: '{ProcWhile}1' [@Start,
+	- noVal=0
+	- n=0
+	- r=0
+	- s=0
+	- data={index=0,value=0}
+]
+- proc: '{ProcUntil}1' [@Start,
+	- data={index=0,value=0}
+]
+- context: '{env}1' [@s2]
+- observer: '{pte_ProcUntil_End}1' [@start]
+- observer: '{pte_all_data_transmitted}1' [@start]
+- observer: '{pte_3_data_transmitted}1' [@start]
+- observer: '{pte_ProcUntil_lastData}1' [@start]
+- violated asserts: not_equal_values_and_ProcUntil
+}
+
+config: 3 {
+- component: '{Calcul}1' [
+	- ProcWhile_1=[{index=2,value=4}, {index=1,value=1}]
+	- fifoWhile2Until=[]
+]
+- proc: '{ProcWhile}1' [@Start,
+	- noVal=0
+	- n=0
+	- r=0
+	- s=0
+	- data={index=0,value=0}
+]
+- proc: '{ProcUntil}1' [@Start,
+	- data={index=0,value=0}
+]
+- context: '{env}1' [@s3]
+- observer: '{pte_ProcUntil_End}1' [@start]
+- observer: '{pte_all_data_transmitted}1' [@start]
+- observer: '{pte_3_data_transmitted}1' [@start]
+- observer: '{pte_ProcUntil_lastData}1' [@start]
+- violated asserts: not_equal_values_and_ProcUntil
+}
+
+config: 5 {
+- component: '{Calcul}1' [
+	- ProcWhile_1=[{index=2,value=4}]
+	- fifoWhile2Until=[]
+]
+- proc: '{ProcWhile}1' [@calcul,
+	- noVal=1
+	- n=1
+	- r=3
+	- s=1
+	- data={index=1,value=1}
+]
+- proc: '{ProcUntil}1' [@Start,
+	- data={index=0,value=0}
+]
+- context: '{env}1' [@s3]
+- observer: '{pte_ProcUntil_End}1' [@start]
+- observer: '{pte_all_data_transmitted}1' [@start]
+- observer: '{pte_3_data_transmitted}1' [@start]
+- observer: '{pte_ProcUntil_lastData}1' [@start]
+- violated asserts: not_equal_values_and_ProcUntil
+}
+
+config: 7 {
+- component: '{Calcul}1' [
+	- ProcWhile_1=[{index=2,value=4}]
+	- fifoWhile2Until=[]
+]
+- proc: '{ProcWhile}1' [@calcul,
+	- noVal=1
+	- n=1
+	- r=5
+	- s=4
+	- data={index=1,value=1}
+]
+- proc: '{ProcUntil}1' [@Start,
+	- data={index=0,value=0}
+]
+- context: '{env}1' [@s3]
+- observer: '{pte_ProcUntil_End}1' [@start]
+- observer: '{pte_all_data_transmitted}1' [@start]
+- observer: '{pte_3_data_transmitted}1' [@start]
+- observer: '{pte_ProcUntil_lastData}1' [@start]
+- violated asserts: not_equal_values_and_ProcUntil
+}
+
+config: 9 {
+- component: '{Calcul}1' [
+	- ProcWhile_1=[{index=2,value=4}]
+	- fifoWhile2Until=[]
+]
+- proc: '{ProcWhile}1' [@ecrire_data,
+	- noVal=1
+	- n=1
+	- r=1
+	- s=4
+	- data={index=1,value=1}
+]
+- proc: '{ProcUntil}1' [@Start,
+	- data={index=0,value=0}
+]
+- context: '{env}1' [@s3]
+- observer: '{pte_ProcUntil_End}1' [@start]
+- observer: '{pte_all_data_transmitted}1' [@start]
+- observer: '{pte_3_data_transmitted}1' [@start]
+- observer: '{pte_ProcUntil_lastData}1' [@start]
+- violated asserts: not_equal_values_and_ProcUntil
+}
+
+config: 11 {
+- component: '{Calcul}1' [
+	- ProcWhile_1=[{index=2,value=4}]
+	- fifoWhile2Until=[{index=1,value=1}]
+]
+- proc: '{ProcWhile}1' [@Start,
+	- noVal=1
+	- n=1
+	- r=1
+	- s=4
+	- data={index=1,value=1}
+]
+- proc: '{ProcUntil}1' [@Start,
+	- data={index=0,value=0}
+]
+- context: '{env}1' [@s3]
+- observer: '{pte_ProcUntil_End}1' [@start]
+- observer: '{pte_all_data_transmitted}1' [@start]
+- observer: '{pte_3_data_transmitted}1' [@start]
+- observer: '{pte_ProcUntil_lastData}1' [@start]
+- violated asserts: not_equal_values_and_ProcUntil
+}
+
+config: 13 {
+- component: '{Calcul}1' [
+	- ProcWhile_1=[]
+	- fifoWhile2Until=[{index=1,value=1}]
+]
+- proc: '{ProcWhile}1' [@calcul,
+	- noVal=2
+	- n=4
+	- r=3
+	- s=1
+	- data={index=2,value=4}
+]
+- proc: '{ProcUntil}1' [@Start,
+	- data={index=0,value=0}
+]
+- context: '{env}1' [@s3]
+- observer: '{pte_ProcUntil_End}1' [@start]
+- observer: '{pte_all_data_transmitted}1' [@start]
+- observer: '{pte_3_data_transmitted}1' [@start]
+- observer: '{pte_ProcUntil_lastData}1' [@start]
+- violated asserts: not_equal_values_and_ProcUntil
+}
+
+config: 15 {
+- component: '{Calcul}1' [
+	- ProcWhile_1=[]
+	- fifoWhile2Until=[{index=1,value=1}]
+]
+- proc: '{ProcWhile}1' [@calcul,
+	- noVal=2
+	- n=4
+	- r=5
+	- s=4
+	- data={index=2,value=4}
+]
+- proc: '{ProcUntil}1' [@Start,
+	- data={index=0,value=0}
+]
+- context: '{env}1' [@s3]
+- observer: '{pte_ProcUntil_End}1' [@start]
+- observer: '{pte_all_data_transmitted}1' [@start]
+- observer: '{pte_3_data_transmitted}1' [@start]
+- observer: '{pte_ProcUntil_lastData}1' [@start]
+- violated asserts: not_equal_values_and_ProcUntil
+}
+
+config: 17 {
+- component: '{Calcul}1' [
+	- ProcWhile_1=[]
+	- fifoWhile2Until=[{index=1,value=1}]
+]
+- proc: '{ProcWhile}1' [@calcul,
+	- noVal=2
+	- n=4
+	- r=7
+	- s=9
+	- data={index=2,value=4}
+]
+- proc: '{ProcUntil}1' [@Start,
+	- data={index=0,value=0}
+]
+- context: '{env}1' [@s3]
+- observer: '{pte_ProcUntil_End}1' [@start]
+- observer: '{pte_all_data_transmitted}1' [@start]
+- observer: '{pte_3_data_transmitted}1' [@start]
+- observer: '{pte_ProcUntil_lastData}1' [@start]
+- violated asserts: not_equal_values_and_ProcUntil
+}
+
+config: 19 {
+- component: '{Calcul}1' [
+	- ProcWhile_1=[]
+	- fifoWhile2Until=[{index=1,value=1}]
+]
+- proc: '{ProcWhile}1' [@ecrire_data,
+	- noVal=2
+	- n=4
+	- r=2
+	- s=9
+	- data={index=2,value=4}
+]
+- proc: '{ProcUntil}1' [@Start,
+	- data={index=0,value=0}
+]
+- context: '{env}1' [@s3]
+- observer: '{pte_ProcUntil_End}1' [@start]
+- observer: '{pte_all_data_transmitted}1' [@start]
+- observer: '{pte_3_data_transmitted}1' [@start]
+- observer: '{pte_ProcUntil_lastData}1' [@start]
+- violated asserts: not_equal_values_and_ProcUntil
+}
+
+config: 21 {
+- component: '{Calcul}1' [
+	- ProcWhile_1=[]
+	- fifoWhile2Until=[{index=2,value=2}, {index=1,value=1}]
+]
+- proc: '{ProcWhile}1' [@Start,
+	- noVal=2
+	- n=4
+	- r=2
+	- s=9
+	- data={index=2,value=2}
+]
+- proc: '{ProcUntil}1' [@Start,
+	- data={index=0,value=0}
+]
+- context: '{env}1' [@s3]
+- observer: '{pte_ProcUntil_End}1' [@start]
+- observer: '{pte_all_data_transmitted}1' [@start]
+- observer: '{pte_3_data_transmitted}1' [@start]
+- observer: '{pte_ProcUntil_lastData}1' [@start]
+- violated asserts: not_equal_values_and_ProcUntil
+}
+
+config: 22 {
+- component: '{Calcul}1' [
+	- ProcWhile_1=[]
+	- fifoWhile2Until=[{index=2,value=2}]
+]
+- proc: '{ProcWhile}1' [@Start,
+	- noVal=2
+	- n=4
+	- r=2
+	- s=9
+	- data={index=2,value=2}
+]
+- proc: '{ProcUntil}1' [@Start,
+	- data={index=1,value=1}
+]
+- context: '{env}1' [@s3]
+- observer: '{pte_ProcUntil_End}1' [@start]
+- observer: '{pte_all_data_transmitted}1' [@start]
+- observer: '{pte_3_data_transmitted}1' [@wait1]
+- observer: '{pte_ProcUntil_lastData}1' [@start]
+- violated asserts: not_equal_values_and_ProcUntil
+}
+
+config: 23 {
+- component: '{Calcul}1' [
+	- ProcWhile_1=[]
+	- fifoWhile2Until=[]
+]
+- proc: '{ProcWhile}1' [@Start,
+	- noVal=2
+	- n=4
+	- r=2
+	- s=9
+	- data={index=2,value=2}
+]
+- proc: '{ProcUntil}1' [@Start,
+	- data={index=2,value=2}
+]
+- context: '{env}1' [@s3]
+- observer: '{pte_ProcUntil_End}1' [@start]
+- observer: '{pte_all_data_transmitted}1' [@start]
+- observer: '{pte_3_data_transmitted}1' [@wait2]
+- observer: '{pte_ProcUntil_lastData}1' [@start]
+- violated asserts: not_equal_values_and_ProcUntil
+}
+
+transitions: {
+(0,"async: {{env}1:!{index=1,value=1}}",1)
+(1,"async: {{env}1:!{index=2,value=4}}",3)
+(3,"informal: {{ProcWhile}1:'While: lire'};async: {{ProcWhile}1:?{index=1,value=1}}",5)
+(5,"informal: {{ProcWhile}1:'While: calculer'}",7)
+(7,"informal: {{ProcWhile}1:'While: calcul_fini'}",9)
+(9,"informal: {{ProcWhile}1:'While: ecrire'};async: {{ProcWhile}1:!{index=1,value=1}}",11)
+(11,"informal: {{ProcWhile}1:'While: lire'};async: {{ProcWhile}1:?{index=2,value=4}}",13)
+(13,"informal: {{ProcWhile}1:'While: calculer'}",15)
+(15,"informal: {{ProcWhile}1:'While: calculer'}",17)
+(17,"informal: {{ProcWhile}1:'While: calcul_fini'}",19)
+(19,"informal: {{ProcWhile}1:'While: ecrire'};async: {{ProcWhile}1:!{index=2,value=2}}",21)
+(21,"informal: {{ProcUntil}1:'Until: lire'};async: {{ProcUntil}1:?{index=1,value=1}}",22)
+(22,"informal: {{ProcUntil}1:'Until: lire'};async: {{ProcUntil}1:?{index=2,value=2}}",23)
+
+}

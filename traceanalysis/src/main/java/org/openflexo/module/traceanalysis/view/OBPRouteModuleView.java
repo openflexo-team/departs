@@ -19,11 +19,8 @@
  */
 package org.openflexo.module.traceanalysis.view;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -31,7 +28,6 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
 import org.openflexo.fge.FGEModelFactory;
 import org.openflexo.fge.FGEModelFactoryImpl;
@@ -44,7 +40,6 @@ import org.openflexo.module.traceanalysis.view.routeview.OBPRouteImpl;
 import org.openflexo.module.traceanalysis.view.routeview.chronogram.ChronogramDrawing;
 import org.openflexo.module.traceanalysis.view.routeview.sequencediagram.SequenceDiagramDrawing;
 import org.openflexo.module.traceanalysis.view.routeview.sequencediagram.SequenceDiagramDrawing.RouteLayout;
-import org.openflexo.technologyadapter.trace.model.OBPTrace;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.FlexoPerspective;
@@ -53,7 +48,7 @@ import org.openflexo.view.controller.model.FlexoPerspective;
 public class OBPRouteModuleView extends JPanel implements ModuleView<TraceVirtualModelInstance>, PropertyChangeListener {
 
 	private final FlexoPerspective perspective;
-    private final TraceVirtualModelInstance traceVirtualModelInstance;
+    private TraceVirtualModelInstance traceVirtualModelInstance;
     private final FlexoController controller;
 	
 	public OBPRouteModuleView(TraceVirtualModelInstance traceVirtualModelInstance, FlexoController controller, FlexoPerspective perspective) {
@@ -71,12 +66,12 @@ public class OBPRouteModuleView extends JPanel implements ModuleView<TraceVirtua
 		}
 	
 		
-		OBPRoute route = new OBPRouteImpl(traceVirtualModelInstance.getTraceOBP());
+		OBPRoute route = new OBPRouteImpl(traceVirtualModelInstance);
 		final SequenceDiagramDrawing sequenceDiagram = new SequenceDiagramDrawing(route, factory, RouteLayout.VERTICAL);
 		
 		ChronogramDrawing chronogram = new ChronogramDrawing(route, factory);
-		OBPRouteEditor sequence = new OBPRouteEditor(sequenceDiagram,factory, SwingToolFactory.DEFAULT);
-		OBPRouteEditor chrono = new OBPRouteEditor(chronogram,factory, SwingToolFactory.DEFAULT);
+		OBPRouteEditor sequence = new OBPRouteEditor(sequenceDiagram,controller.getSelectionManager(),factory, SwingToolFactory.DEFAULT);
+		OBPRouteEditor chrono = new OBPRouteEditor(chronogram,controller.getSelectionManager(),factory, SwingToolFactory.DEFAULT);
 
 		// Test layout
 		JButton switchLayout = new JButton("Change Layout");

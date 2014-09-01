@@ -1,0 +1,93 @@
+//========================================================================================
+// calcul1_asynchro.cdl  version 29 nov 13
+//
+// Ph. Dhaussy Ensta-Bretagne  
+//========================================================================================
+ 
+
+//========================================================================================
+//             Predicat declarations
+//========================================================================================
+
+predicate ProcFor_End is {{ProcFor}1@End }
+predicate ProcUntil_End is {{ProcUntil}1@End }
+
+predicate ProcFor_i_0 is 		{{ProcFor}1:i = 0 }
+predicate values1_ProcUntil is 	{{ProcUntil}1:data.index = 1 and {ProcUntil}1:data.value = 1}
+predicate equal_values_ProcUntil is { {ProcUntil}1:data.index = {ProcUntil}1:data.value}
+
+//========================================================================================
+//             Event declarations with predicats 
+//========================================================================================
+ 
+event evt_ProcFor_End is   { ProcFor_End becomes true}
+event evt_ProcUntil_End is { ProcUntil_End becomes true}
+event evt_ProcFor_i_0 is   { ProcFor_i_0 becomes false}
+
+//========================================================================================
+//             Event declarations with send and receive 
+//========================================================================================
+ 
+// exemple d'evenements  
+event evt_send_for_while_1 	is {send data1 from {ProcFor}1 to {ProcWhile}1}
+event evt_send_for_while_2 	is {send data2 from {ProcFor}1 to {ProcWhile}1}
+event evt_send_for_while_3 	is {send data3 from {ProcFor}1 to {ProcWhile}1}
+
+event evt_send_any       	is {send any from {ProcFor}1 to {ProcWhile}1}
+
+
+//========================================================================================
+//             Property declarations   
+//========================================================================================
+ 
+//---------  data1 sent from ProcFor to ProcWhile -----------------
+property pte_ProcForWhile_1 is {
+ 	start -- / / evt_send_for_while_1 / ->  success
+}
+
+//---------  End state of ProcFor is reached -----------------
+property pte_ProcForWhile_1_For_End is {
+ 	start -- / / evt_send_for_while_1 / -> wait;
+ 	wait -- / / evt_ProcFor_End / -> success
+}
+
+property pte_ProcFor_End is {
+	start -- / / evt_ProcFor_End / -> success
+}
+
+//---------  End state of ProcUntil is reached -----------------
+property pte_ProcForWhile_1_Until_End is {
+ 	start -- / / evt_send_for_while_1 / -> wait;
+ 	wait -- / / evt_ProcUntil_End / -> success
+}
+
+
+property pte_ProcUntil_End is {
+    start -- / / evt_ProcUntil_End / -> success
+}
+
+
+//========================================================================================
+//             Activity declarations  
+//========================================================================================
+
+// none
+ 
+//========================================================================================
+//            CDL Scenarii
+//========================================================================================
+ 
+cdl cdl_1 is {
+	properties  
+		pte_ProcForWhile_1, pte_ProcForWhile_1_For_End,
+		pte_ProcFor_End, pte_ProcForWhile_1_Until_End,
+		pte_ProcUntil_End
+		
+//	assert ProcFor_i_0;
+//	assert ProcFor_i_0;
+	assert equal_values_ProcUntil	
+	
+	main is { skip }
+}
+ 
+

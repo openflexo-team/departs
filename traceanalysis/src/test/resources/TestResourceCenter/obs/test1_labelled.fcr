@@ -1,0 +1,38 @@
+const FIFO_SIZE: nat is 5
+type t_msg is union a| b end union
+
+const DEFAULT_t_msg: t_msg is a
+type t_fifo is queue FIFO_SIZE of t_msg
+
+process system (&input: t_fifo, &output: t_fifo) is
+states s0
+var msg: t_msg 
+init msg := DEFAULT_t_msg;
+/*@system_t2*/
+to s0
+
+from s0
+	if ((empty input) or (full output)) then
+		/*@system_t0*/
+		to s0
+	end if;
+	msg := (first input);
+	input := (dequeue input);
+	case msg of
+	a -> output := (enqueue(output, b))
+	| any -> null
+	end case;
+	msg := DEFAULT_t_msg;
+	/*@system_t1*/
+	to s0
+
+
+component root is
+var system_1: t_fifo, toContext: t_fifo 
+init system_1 := {||};
+toContext := {||}
+par 
+	system(&system_1, &toContext) end par
+
+
+root

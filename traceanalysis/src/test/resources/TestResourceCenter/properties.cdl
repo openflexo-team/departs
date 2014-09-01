@@ -1,0 +1,286 @@
+event e1 is {informal #e1# }
+event e2 is {informal #e2# }
+event e3 is {informal #e3# }
+event e4 is {informal #e4# }
+event e5 is {informal #e5# }
+
+
+property existence_an is {
+	an {
+		exactly one occurrence of e1; 
+		exactly one occurrence of e2 
+	}
+
+	occurs [0..10[
+}
+
+property absence_all_order_exemple1 is {
+	 all ordered {
+		exactly one occurrence of e1;
+		exactly one occurrence of e2;
+		exactly one occurrence of e3 
+	}
+	
+	occurs never
+}
+
+property absence_all_Combined is {
+	all combined {
+		exactly one occurrence of e1;
+		exactly one occurrence of e3;
+		exactly one occurrence of e3			
+	}
+
+	occurs never
+
+}
+
+Property absence_all_Combined_OneOrMore is {
+	all combined {
+		exactly one occurrence of e1;
+		one or more occurrences of e2;	
+		exactly one occurrence of e3			
+	}
+
+	occurs never
+
+}
+
+Property absence_all_order is {
+	ALL ordered { 
+		exactly one occurrence of e1; 
+		exactly one occurrence of e2;			
+		exactly one occurrence of e3
+	}
+
+	occurs never
+
+}
+
+Property absence_all_orderOneOrMore is {
+	all ordered { 
+		one or more occurrences of e1; 
+		one or more occurrences of e2;			
+		one or more occurrences of e3
+	}
+
+	occurs never
+
+}
+
+Property absence_an is {
+	an {
+		one or more occurrences of e1;
+		exactly one occurrence of e2;
+		one or more occurrences of e3
+	}
+
+	occurs never
+
+}
+
+Property existence_all_Combined is {
+	all combined {
+		exactly one occurrence of e1;
+		exactly one occurrence of e2;
+		exactly one occurrence of e3
+	}
+
+	occurs [1..10[
+
+}
+
+Property existence_all_Combined_OneOrMore is {
+	all combined {
+		one or more occurrences of e1;
+		one or more occurrences of e2
+	}
+
+	occurs [1..10[
+
+}
+
+Property existence_all_Ordered is {
+	all ordered {
+		exactly one occurrence of e1;
+		exactly one occurrence of e2;
+		exactly one occurrence of e3
+	}
+
+	occurs [0..10[
+
+}
+
+Property existence_all_OrderedOneOrMore is {
+	all ordered {
+			one or more occurrences of e1;
+			one or more occurrences of e2;
+			one or more occurrences of e3
+	}
+
+	occurs [0..10[
+
+}
+
+Property response_all_Combined_all_Combined is {
+	all combined {
+		exactly one occurrence of e1;
+		exactly one occurrence of e2 
+	}
+
+	eventually leads-to [0..5[
+
+	all combined {
+		one or more occurrences of e3;
+		one or more occurrences of e4 
+	}
+
+	e1 may never occur
+	one of e3 may occur before the first one of e2
+	repeatability : true
+}
+
+Property response_all_Combined_all_Ordered is {
+	all combined {
+		exactly one occurrence of e1;
+		exactly one occurrence of e2 
+	}
+
+	eventually leads-to [0..5[
+
+	all ordered {
+		one or more occurrences of e3; 
+		one or more occurrences of e4 
+	}
+
+	e1 may never occur
+	one of e3 cannot occur before the first one of e2
+	repeatability : true
+
+}
+
+Property response_all_Combined_an is {
+	all combined {
+		exactly one occurrence of e1;
+		one or more occurrences of e2 
+	}
+
+	eventually leads-to [0..5[
+
+	an {
+		one or more occurrences of e3;
+		one or more occurrences of e4 
+	}
+
+	e1 may never occur
+	one of e3 cannot occur before the first one of e2
+	repeatability : true
+
+}
+
+Property response_all_Ordered_all_Combined is {
+	all ordered {
+		exactly one occurrence of e1; 
+		exactly one occurrence of e2 
+	}
+
+	eventually leads-to [0..5[
+	
+	all combined {
+		one or more occurrences of e3; 
+		one or more occurrences of e4 
+	}
+
+	e1 may never occur
+	one of e3 cannot occur before the first one of e2
+	repeatability : true
+
+}
+
+Property response_all_Ordered_all_Ordered is {
+	all ordered {
+		exactly one occurrence of e1;
+		exactly one occurrence of e2 
+	}
+
+	eventually leads-to [0..30[
+
+	all ordered {
+		exactly one occurrence of e3; 
+		exactly one occurrence of e4 
+	}
+
+	e1 must occur
+	one of e3 may occur before the first one of e2
+	repeatability : true
+
+}
+
+Property response_all_Ordered_an is {
+
+	all ordered {
+		exactly one occurrence of e1;
+		one or more occurrences of e2
+	}
+
+	eventually leads-to [0..30[
+
+	an {
+		exactly one occurrence of e3;
+		one or more occurrences of e4
+	}
+
+	e1 must occur
+	one of e3 may occur before the first one of e2
+	repeatability : false
+}
+
+Property response_an_all_Combined is {
+	an {
+		one or more occurrences of e1 
+	}
+
+	eventually leads-to [0..5[
+
+	all combined {
+		one or more occurrences of e2;
+		exactly one occurrence of e3 
+	}
+
+	e1 may never occur
+	one of e2 cannot occur before the first one of e1
+	repeatability : true
+
+}
+
+Property response_an_all_Ordered is {
+	an {
+		exactly one occurrence of e1; 
+		exactly one occurrence of e2 
+	}
+
+	eventually leads-to [0..30[
+
+	all ordered {
+		exactly one occurrence of e3; 
+		exactly one occurrence of e4 
+	}
+
+	e1  must occur
+	one of e4  may occur before the first one of e1
+	repeatability : true
+
+}
+
+Property response_an_an is {
+	an {
+		exactly one occurrence of e1
+	}
+	immediately leads-to [0..10[
+	an {
+		exactly one occurrence of e2
+	}
+	e1 may never occur
+	one of e2 may occur before the first one of e1
+	repeatability : true
+}

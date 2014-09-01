@@ -130,7 +130,7 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> {
 				Color.white, ColorGradientDirection.SOUTH_EAST_NORTH_WEST));
 		configurationRepresentation.setForeground(getFactory().makeForegroundStyle(Color.ORANGE));
 		configurationRepresentation.addToMouseClickControls(new MouseClickControlImpl<AbstractDianaEditor<?, ?, ?>>(
-				"toogleVisibleStateForConfiguration", MouseButton.LEFT, 1, new MouseClickControlActionImpl<AbstractDianaEditor<?, ?, ?>>() {
+				"toogleVisibleStateForConfiguration", MouseButton.LEFT, 2, new MouseClickControlActionImpl<AbstractDianaEditor<?, ?, ?>>() {
 					@Override
 					public boolean handleClick(DrawingTreeNode<?, ?> dtn, AbstractDianaEditor<?, ?, ?> controller,
 							MouseControlContext context) {
@@ -541,6 +541,7 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> {
 
 			@Override
 			public void visit(OBPRoute route) {
+				route.synchronizeWithMask();
 				if(layout==RouteLayout.VERTICAL){
 					for (BehaviourObjectInRoute compInRoute : route.getVisibleBehaviourObjects()) {
 						drawShape(lifeLineVerticalBinding, compInRoute);

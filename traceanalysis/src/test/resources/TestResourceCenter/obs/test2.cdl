@@ -1,0 +1,130 @@
+/* 
+	System:
+		init: c := 0
+		s0 -- ?set, c := 1, !ack -> s0
+		s0 -- ?reset, c := 0, !ack -> s0
+		
+	CDL:
+		!set; !reset; ! reset; !set
+	
+	Trace (+: simultané):
+		?set + c->1 + !ack;
+		?reset + c->0 + !ack;
+		?reset + !ack;
+		?set + c->1 + !ack;
+	
+	Observer:
+		start -- ?set -> s1
+		start -- ?reset -> s0
+		s0 -- c->1 -> reject
+		s0 -- !ack -> start
+		s1 -- c->0 -> reject
+		s1 -- !ack -> start
+	
+	Notes:
+
+*/
+
+activity send_set is {
+	event {send t_msg.set to {system}1}
+}
+
+activity send_reset is {
+	event {send t_msg.reset to {system}1}
+}
+
+cdl seq_srrs is {
+	properties 
+		test2, 
+		trace2, 
+		no_repeat_receive_set, 
+		no_repeat_receive_reset, 
+		no_repeat_send_ack, 
+		no_repeat_c0, 
+		no_repeat_c1
+
+	init is {
+		send_set;
+		send_reset;
+		send_reset;
+		send_set
+	}
+	
+	main is {
+		skip
+	}
+}
+
+event receive_set is {receive t_msg.set from {env}1 to {system}1}
+event receive_reset is {receive t_msg.reset from {env}1 to {system}1}
+event send_ack is {send t_msg.ack(true) from {system}1 to {env}1}
+event c1 is {{system}1:c = 1 becomes true}
+event c0 is {{system}1:c = 0 becomes true}
+
+property test2 is {
+	start -- / / receive_set / -> s1;
+	start -- / / receive_reset / -> s0;
+	s0 -- / / c1 / -> reject;
+	s0 -- / / send_ack / -> start;
+	s1 -- / / c0 / -> reject;
+	s1 -- / / send_ack / -> start
+}
+
+property trace2 is {
+	start -- / / receive_set / -> s0;
+	s0 -- / / c1 / -> s1;
+	s1 -- / / send_ack / -> s2;
+	s2 -- / / receive_reset / -> s3;
+	s3 -- / / c0 / -> s4;
+	s4 -- / / send_ack / -> s5;
+	s5 -- / / receive_reset / -> s6;
+	s6 -- / / send_ack / -> s7;
+	s7 -- / / receive_set / -> s8;
+	s8 -- / / c1 / -> s9;
+	s9 -- / / send_ack / -> success
+}
+
+property no_repeat_receive_set is {
+	start -- / / receive_set / -> wait;
+	wait -- / / receive_set / -> reject;
+	wait --  / / receive_reset / -> start;
+	wait -- / / send_ack / -> start;
+	wait -- / / c0 / -> start;
+	wait -- / / c1 / -> start
+}
+
+property no_repeat_receive_reset is {
+	start -- / / receive_reset / -> wait;
+	wait -- / / receive_reset / -> reject;
+	wait --  / / receive_set / -> start;
+	wait -- / / send_ack / -> start;
+	wait -- / / c0 / -> start;
+	wait -- / / c1 / -> start
+}
+
+property no_repeat_send_ack is {
+	start -- / / send_ack / -> wait;
+	wait -- / / send_ack / -> reject;
+	wait --  / / receive_set / -> start;
+	wait -- / / receive_reset / -> start;
+	wait -- / / c0 / -> start;
+	wait -- / / c1 / -> start
+}
+
+property no_repeat_c0 is {
+	start -- / / c0 / -> wait;
+	wait -- / / c0 / -> reject;
+	wait --  / / receive_set / -> start;
+	wait -- / / receive_reset / -> start;
+	wait -- / / send_ack / -> start;
+	wait -- / / c1 / -> start
+}
+
+property no_repeat_c1 is {
+	start -- / / c1 / -> wait;
+	wait -- / / c1 / -> reject;
+	wait --  / / receive_set / -> start;
+	wait -- / / receive_reset / -> start;
+	wait -- / / send_ack / -> start;
+	wait -- / / c0 / -> start
+}

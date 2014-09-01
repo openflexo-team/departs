@@ -20,20 +20,14 @@
 
 package org.openflexo.technologyadapter.trace.model;
 
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.openflexo.foundation.resource.ResourceData;
-import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.PropertyIdentifier;
-import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
-import org.openflexo.model.annotations.Getter.Cardinality;
 
 @ModelEntity
 @ImplementationClass(OBPTraceProcess.OBPTraceProcessImpl.class)
@@ -46,10 +40,6 @@ public interface OBPTraceProcess extends OBPTraceBehaviourObject{
 	public Parser.Process getProcess();
 	@Setter(PROCESS_KEY)
 	public void setProcess(Parser.Process process);
-	
-	public String getProcessID();
-	
-	public String getProcessType();
 
 	public static abstract class OBPTraceProcessImpl extends OBPTraceBehaviourObjectImpl implements OBPTraceProcess {
 
@@ -65,7 +55,7 @@ public interface OBPTraceProcess extends OBPTraceBehaviourObject{
 		}
 		
 		@Override
-		public String getProcessID(){
+		public String getID(){
 			Pattern id = Pattern.compile(REGEX);
 			Matcher makeMatch = id.matcher(getName());
 			makeMatch.find();
@@ -73,7 +63,7 @@ public interface OBPTraceProcess extends OBPTraceBehaviourObject{
 		}
 		
 		@Override
-		public String getProcessType(){
+		public String getType(){
 			Pattern id = Pattern.compile(REGEX);
 			Matcher makeMatch = id.matcher(getName());
 			makeMatch.find();
@@ -87,7 +77,7 @@ public interface OBPTraceProcess extends OBPTraceBehaviourObject{
 		
 		@Override
 		public String getValue() {
-			return "{" + getProcessType()+"}"+getProcessID();
+			return "{" + getType()+"}"+getID();
 		}
 
 	}

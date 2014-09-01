@@ -59,6 +59,10 @@ public interface OBPTraceBehaviourObject extends OBPTraceObject {
 
 	@Remover(DATA_KEY)
 	public void removeFromOBPTraceData(OBPTraceData data);
+	
+	public String getID();
+	
+	public String getType();
 
 	public static abstract class OBPTraceBehaviourObjectImpl extends OBPTraceObjectImpl implements OBPTraceBehaviourObject {
 

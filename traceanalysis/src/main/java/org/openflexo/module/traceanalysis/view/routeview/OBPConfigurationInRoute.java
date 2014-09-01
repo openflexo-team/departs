@@ -20,6 +20,7 @@
 
 package org.openflexo.module.traceanalysis.view.routeview;
 
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.technologyadapter.trace.model.OBPTraceConfiguration;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
 
@@ -29,7 +30,7 @@ import org.openflexo.toolbox.HasPropertyChangeSupport;
  * @author sylvain
  * 
  */
-public interface OBPConfigurationInRoute extends HasPropertyChangeSupport {
+public interface OBPConfigurationInRoute extends FlexoObject {
 
 	public OBPRoute getRoute();
 

@@ -24,9 +24,11 @@ import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.openflexo.foundation.DefaultFlexoObject;
+import org.openflexo.foundation.FlexoObject;
 import org.openflexo.technologyadapter.trace.model.OBPTraceConfiguration;
 
-public class OBPConfigurationInRouteImpl implements OBPConfigurationInRoute {
+public class OBPConfigurationInRouteImpl extends DefaultFlexoObject implements OBPConfigurationInRoute {
 
 	private final OBPRoute route;
 	private final OBPTraceConfiguration configuration;
@@ -47,10 +49,6 @@ public class OBPConfigurationInRouteImpl implements OBPConfigurationInRoute {
 		return pcSupport;
 	}
 
-	@Override
-	public String getDeletedProperty() {
-		return null;
-	}
 
 	@Override
 	public OBPRoute getRoute() {

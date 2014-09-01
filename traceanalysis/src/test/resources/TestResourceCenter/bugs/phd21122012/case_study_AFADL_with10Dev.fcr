@@ -1,0 +1,1283 @@
+/*****************************************************************
+Case_study_AFADL_With10Dev_20dec12.fcr  
+
+Le 20 Dec 2012  Version avec 10 acteurs dans Env
+-------------------------------------------------------------------
+
+-------- Exemple de syntaxe du foreach -------------------
+
+foreach numClock do  
+	tab_clocks [$numClock].must_tick := false;
+	tab_clocks [$numClock].act_tick := false;
+	tab_clocks [$numClock].cannot_tick := false
+end;
+ 
+-------- Exemple de syntaxe du case -------------------
+
+case i of 
+ 		0 -> start1 ! true
+ 	|	1 -> start2 ! true
+end;
+
+-------- Exemple de syntaxe du select -------------------
+
+select
+		input ? data;
+		to S1
+	[]
+		if (cond) then 
+			output ! ack1;
+		end;
+		to S2
+end	
+
+***************************************************************/
+
+/*========== DEV1 (4 Data) || ... || DEV10 (4 Data) || DEVOUT (4 rec) ===========
+           ou       DEV1 (4 Data) ||     ...    || DEV3 (4 Data) 
+
+------------------------------------------------------------------		   
+const NB_INSTANTS			: nat is 7
+onst SIZE_FIFO_INTERNAL 	: nat is 1 	
+const SIZE_FIFO_EXTERNAL 	: nat is 1
+
+Explored xxx states and xxx transitions in xxx seconds.
+- '{pte_SchedulerFin}1':  				xxx.
+- '{pty_Env_recv_result_10_20_30}1':  		pas de success
+------------------------------------------------------------------		   
+const NB_INSTANTS			: nat is 8
+onst SIZE_FIFO_INTERNAL 	: nat is 1 	
+const SIZE_FIFO_EXTERNAL 	: nat is 1
+
+Explored xxx states and xxx transitions in xxx seconds.
+- '{pte_SchedulerFin}1':  				xxx.
+- '{pty_Env_recv_result_10_20_30}1':  		xxx
+
+------------------------------------------------------------------		   
+const NB_INSTANTS			: nat is 9  au dela de 9 : idem
+onst SIZE_FIFO_INTERNAL 	: nat is 1 	
+const SIZE_FIFO_EXTERNAL 	: nat is 1
+
+Explored xxx states and xxx transitions in xxx seconds.
+- '{pte_SchedulerFin}1':  				pas de success
+- '{pty_Env_recv_result_10_20_30}1':  		xxx
+
+***************************************************************/
+
+const NB_INSTANTS		: nat is 7
+const SIZE_FILTER 		: nat is 5
+// const SIZE_SEQUENCE 	: nat is 5
+
+	//***** modif NB DEV ****
+const NB_SENSORS 	: nat is 10
+ 
+// Tailles pour les differentes fifos
+
+const  SIZE_FIFO_INTERNAL : nat is 1 	// fifo entre processus internes
+const  SIZE_FIFO_EXTERNAL : nat is 1	// fifo avec l'Env
+
+
+//-------- Contraintes ---------
+const NB_CSTR 			: nat is 22
+
+const CSTR_Alt1			: nat is 0
+const CSTR_Alt2			: nat is 1
+const CSTR_Alt3			: nat is 2
+const CSTR_Alt4			: nat is 3
+const CSTR_Alt5			: nat is 4
+const CSTR_Alt6			: nat is 5
+const CSTR_Alt7			: nat is 6
+const CSTR_Alt8			: nat is 7
+const CSTR_Alt9			: nat is 8
+const CSTR_Alt10		: nat is 9
+const CSTR_StrictPrec1	: nat is 10
+const CSTR_StrictPrec2	: nat is 11
+const CSTR_StrictPrec3	: nat is 12
+const CSTR_StrictPrec4	: nat is 13
+const CSTR_StrictPrec5	: nat is 14
+const CSTR_StrictPrec6	: nat is 15
+const CSTR_StrictPrec7	: nat is 16
+const CSTR_StrictPrec8	: nat is 17
+const CSTR_StrictPrec9	: nat is 18
+const CSTR_StrictPrec10	: nat is 19
+const CSTR_StrictPrec11	: nat is 20
+const CSTR_FiltredBy	: nat is 21
+
+//-------- Horloges ---------	
+const NB_CLOCKS 		: nat is 23
+
+const CLK_sync_pr1			: nat is 0
+const CLK_sync_pw1			: nat is 1
+const CLK_sync_pr2			: nat is 2
+const CLK_sync_pw2			: nat is 3
+const CLK_sync_pr3			: nat is 4
+const CLK_sync_pw3			: nat is 5
+const CLK_sync_pr4			: nat is 6
+const CLK_sync_pw4			: nat is 7
+const CLK_sync_pr5			: nat is 8
+const CLK_sync_pw5			: nat is 9
+const CLK_sync_pr6			: nat is 10
+const CLK_sync_pw6			: nat is 11
+const CLK_sync_pr7			: nat is 12
+const CLK_sync_pw7			: nat is 13
+const CLK_sync_pr8			: nat is 14
+const CLK_sync_pw8			: nat is 15
+const CLK_sync_pr9			: nat is 16
+const CLK_sync_pw9			: nat is 17
+const CLK_sync_pr10			: nat is 18
+const CLK_sync_pw10			: nat is 19
+const CLK_sync_calcul		: nat is 20
+const CLK_sync_calculOut	: nat is 21
+const CLK_sync_filtre		: nat is 22
+
+
+//---------------------------------------------------------
+type T_CLOCK is record
+	must_tick : bool,    
+	act_tick : bool,
+	cannot_tick : bool, 
+    dead : bool,
+	nb_tick : nat,
+	preced: bool
+end
+
+type T_ARRAY_CLOCK is array NB_CLOCKS of T_CLOCK
+type T_ARRAY_FILTER is array SIZE_FILTER of nat
+
+/*------------ Declaration des fifo et des tableaux---------*/
+
+type t_fifo_Internal is queue SIZE_FIFO_INTERNAL of int
+type t_fifo_External is queue SIZE_FIFO_EXTERNAL of int
+
+//------------ Pour les donnees partagees Mem et Data_Enable 
+
+type T_ARRAY_BOOL is array NB_SENSORS of bool
+type T_ARRAY_INT  is array NB_SENSORS of int
+
+//--------------- Donnees recues par les Sensors -------------	
+
+const DATA_1 : int  is 1
+const DATA_2 : int  is 2
+const DATA_3 : int  is 3
+const DATA_4 : int  is 4
+const DATA_5 : int  is 5
+const DATA_6 : int  is 6
+const DATA_7 : int  is 7
+const DATA_8 : int  is 8
+const DATA_9 : int  is 9
+
+const DATA_10 : int is 10
+const DATA_20 : int is 20
+const DATA_30 : int is 30
+
+
+const DATA_OUT : int  is 99
+const GO : int  is 999
+
+//============================================================		
+//                 Processus proc_Scheduler
+//============================================================		
+
+process Scheduler [startAlt1 : out none, 
+                   startAlt2 : out none,
+                   startAlt3 : out none,
+				   startAlt4 : out none,
+				   startAlt5 : out none,
+				   startAlt6 : out none,
+				   startAlt7 : out none,
+				   startAlt8 : out none,
+				   startAlt9 : out none,
+				   startAlt10 : out none,
+				   startStrictPrec1 : out none, 
+                   startStrictPrec2 : out none, 
+                   startStrictPrec3 : out none, 
+                   startStrictPrec4 : out none,		   
+				   startStrictPrec5 : out none,		
+				   startStrictPrec6 : out none,		
+				   startStrictPrec7 : out none,		
+				   startStrictPrec8 : out none,		
+				   startStrictPrec9 : out none,		
+				   startStrictPrec10 : out none,		
+				   startStrictPrec11 : out none,		
+				   startFiltredBy    : out none,
+				   
+				   endAlt1 : out none,
+				   endAlt2 : out none,
+				   endAlt3 : out none,
+				   endAlt4 : out none,
+				   endAlt5 : out none,
+				   endAlt6 : out none,
+				   endAlt7 : out none,
+				   endAlt8 : out none,
+				   endAlt9 : out none,
+				   endAlt10 : out none,
+				   endStrictPrec1 : out none,
+				   endStrictPrec2 : out none,
+				   endStrictPrec3 : out none,
+				   endStrictPrec4 : out none,
+				   endStrictPrec5 : out none,		
+				   endStrictPrec6 : out none,		
+				   endStrictPrec7 : out none,		
+				   endStrictPrec8 : out none,		
+				   endStrictPrec9 : out none,		
+				   endStrictPrec10 : out none,		
+				   endStrictPrec11 : out none,		
+				   endFiltredBy    : out none,
+
+	//***** modif NB DEV ****				   
+				   sync_pr1: out int, // none --> int pour declarer l'event avec sync
+				   sync_pw1: out int,
+				   sync_pr2: out int,
+				   sync_pw2: out int,
+				   sync_pr3: out int,
+				   sync_pw3: out int,
+				   sync_pr4: out int,
+				   sync_pw4: out int,				   
+				   sync_pr5: out int,
+				   sync_pw5: out int,
+				   sync_pr6: out int,
+				   sync_pw6: out int,
+				   sync_pr7: out int,
+				   sync_pw7: out int,
+				   sync_pr8: out int,
+				   sync_pw8: out int,				   
+				   sync_pr9: out int,
+				   sync_pw9: out int,				   
+				   sync_pr10: out int,
+				   sync_pw10: out int,
+				   
+				   sync_calcul: out int,
+				   sync_calculOut: out int,
+				   sync_filtre: out int,
+				   				   
+				   UpdateCstrAlt1:in none,
+				   UpdateCstrAlt2:in none,
+				   UpdateCstrAlt3:in none,
+				   UpdateCstrAlt4:in none,
+				   UpdateCstrAlt5:in none,
+				   UpdateCstrAlt6:in none,
+				   UpdateCstrAlt7:in none,
+				   UpdateCstrAlt8:in none,
+				   UpdateCstrAlt9:in none,
+				   UpdateCstrAlt10:in none,
+				   UpdateCstrStrictPrec1:in none,
+				   UpdateCstrStrictPrec2:in none,
+				   UpdateCstrStrictPrec3:in none,
+				   UpdateCstrStrictPrec4:in none,
+				   UpdateCstrStrictPrec5 : out none,		
+				   UpdateCstrStrictPrec6 : out none,		
+				   UpdateCstrStrictPrec7 : out none,		
+				   UpdateCstrStrictPrec8 : out none,		
+				   UpdateCstrStrictPrec9 : out none,		
+				   UpdateCstrStrictPrec10 : out none,		
+				   UpdateCstrStrictPrec11 : out none,		
+				   UpdateCstrFiltre:in none
+				   ]  
+				   (&fifo_fromEnv: read write t_fifo_External, &tab_Clocks : T_ARRAY_CLOCK, &nbSub: nat)
+is
+	
+states 
+     run0, run1,run2,run3,run4,run5,run6,Error,fin,runinter,runUserArch, run22
+
+var 
+	inst   : bool,	
+	clk  : int,
+	constr  : int,
+	nbBoucle: int, 
+	data : int
+
+init 
+    
+    nbBoucle :=0;
+	inst := false;
+	clk := 0;
+	constr := 0;	
+	data := 0;
+	to run0
+	
+from run0
+		//----- si fifo non vide : lecture du Go  -------
+		if (empty fifo_fromEnv) then loop end;
+		data := first fifo_fromEnv;
+		fifo_fromEnv := dequeue (fifo_fromEnv);
+		if (data = GO)  then
+				to run1
+		end;
+		to run0
+
+from run1
+
+	/*@Start_instant*/
+	clk := 0; 
+
+	inst := false; 
+	
+	while (clk < NB_CLOCKS) do
+		tab_Clocks [$clk].must_tick := false;
+		tab_Clocks [$clk].act_tick := false;
+		tab_Clocks [$clk].cannot_tick := false;
+		tab_Clocks [$clk].dead := false;
+		clk := clk + 1
+	end; // while
+
+	constr := 0;
+    to run2	
+
+from run2
+	
+	if ( constr >= NB_CSTR) then 	
+			 constr := NB_CSTR - 1;
+			/*@ to run4 */ 			
+			to run4
+			
+	elsif ( constr = CSTR_Alt1) then startAlt1
+	elsif ( constr = CSTR_Alt2) then startAlt2
+	elsif ( constr = CSTR_Alt3) then startAlt3
+	elsif ( constr = CSTR_Alt4) then startAlt4
+	elsif ( constr = CSTR_Alt5) then startAlt5
+	elsif ( constr = CSTR_Alt6) then startAlt6
+	elsif ( constr = CSTR_Alt7) then startAlt7
+	elsif ( constr = CSTR_Alt8) then startAlt8
+	elsif ( constr = CSTR_Alt9) then startAlt9
+	elsif ( constr = CSTR_Alt10) then startAlt10
+	
+	elsif ( constr = CSTR_StrictPrec1) then startStrictPrec1
+	elsif ( constr = CSTR_StrictPrec2) then startStrictPrec2
+	elsif ( constr = CSTR_StrictPrec3) then startStrictPrec3
+	elsif ( constr = CSTR_StrictPrec4) then startStrictPrec4
+	elsif ( constr = CSTR_StrictPrec5) then startStrictPrec5
+	elsif ( constr = CSTR_StrictPrec6) then startStrictPrec6
+	elsif ( constr = CSTR_StrictPrec7) then startStrictPrec7
+	elsif ( constr = CSTR_StrictPrec8) then startStrictPrec8
+	elsif ( constr = CSTR_StrictPrec9) then startStrictPrec9
+	elsif ( constr = CSTR_StrictPrec10) then startStrictPrec10
+	elsif ( constr = CSTR_StrictPrec11) then startStrictPrec11
+	
+	elsif ( constr = CSTR_FiltredBy) then startFiltredBy
+	end;
+	
+	to run3	
+	
+from run3
+
+	// fin modification de must et cannot 
+
+	if    ( constr = CSTR_Alt1) then UpdateCstrAlt1  
+	elsif ( constr = CSTR_Alt2) then UpdateCstrAlt2
+	elsif ( constr = CSTR_Alt3) then UpdateCstrAlt3
+	elsif ( constr = CSTR_Alt4) then UpdateCstrAlt4
+	elsif ( constr = CSTR_Alt5) then UpdateCstrAlt5
+	elsif ( constr = CSTR_Alt6) then UpdateCstrAlt6
+	elsif ( constr = CSTR_Alt7) then UpdateCstrAlt7
+	elsif ( constr = CSTR_Alt8) then UpdateCstrAlt8
+	elsif ( constr = CSTR_Alt9) then UpdateCstrAlt9
+	elsif ( constr = CSTR_Alt10) then UpdateCstrAlt10
+	elsif ( constr = CSTR_StrictPrec1) then UpdateCstrStrictPrec1
+	elsif ( constr = CSTR_StrictPrec2) then UpdateCstrStrictPrec2
+    elsif ( constr = CSTR_StrictPrec3) then UpdateCstrStrictPrec3
+    elsif ( constr = CSTR_StrictPrec4) then UpdateCstrStrictPrec4
+	elsif ( constr = CSTR_StrictPrec5) then UpdateCstrStrictPrec5
+	elsif ( constr = CSTR_StrictPrec6) then UpdateCstrStrictPrec6
+	elsif ( constr = CSTR_StrictPrec7) then UpdateCstrStrictPrec7
+	elsif ( constr = CSTR_StrictPrec8) then UpdateCstrStrictPrec8
+	elsif ( constr = CSTR_StrictPrec9) then UpdateCstrStrictPrec9
+	elsif ( constr = CSTR_StrictPrec10) then UpdateCstrStrictPrec10
+	elsif ( constr = CSTR_StrictPrec11) then UpdateCstrStrictPrec11
+	
+	elsif ( constr = CSTR_FiltredBy) then UpdateCstrFiltre
+	end; 
+	to runinter
+	
+from runinter
+
+	constr :=  constr + 1;
+    clk := 0;
+	
+	while (clk < NB_CLOCKS) 
+	do 	
+	if (tab_Clocks [$clk].dead = false) then
+		if ((tab_Clocks [$clk].must_tick = true) and 
+			(tab_Clocks [$clk].cannot_tick = true)) then
+				to Error
+		end;
+		if ((tab_Clocks [$clk].must_tick = true) and 
+			(tab_Clocks [$clk].cannot_tick = false)) then
+							tab_Clocks [$clk].act_tick := true 
+		end;
+		if ((tab_Clocks [$clk].must_tick = false) and 
+			(tab_Clocks [$clk].cannot_tick = true)) then
+							tab_Clocks [$clk].act_tick := false			
+		end;
+		if ((tab_Clocks [$clk].must_tick = false) and 
+			(tab_Clocks [$clk].cannot_tick = false)) then
+							tab_Clocks [$clk].act_tick := false
+		end
+		
+		/*
+		if ((tab_Clocks [$clk].must_tick = false) and 
+			(tab_Clocks [$clk].cannot_tick = false)) then
+							tab_Clocks [$clk].act_tick := true
+		end  
+		*/
+		
+	end; // if dead
+	clk := clk + 1
+    end; // fin while
+	
+	to run2
+	
+	 
+from run4
+
+	if ( constr < 0) then 
+			clk := 0; 
+			// inst := true; 
+			to runUserArch /*@ to runUserArch */ 
+
+	elsif ( constr = CSTR_Alt1) then endAlt1
+	elsif ( constr = CSTR_Alt2) then endAlt2
+	elsif ( constr = CSTR_Alt3) then endAlt3
+	elsif ( constr = CSTR_Alt4) then endAlt4
+	elsif ( constr = CSTR_Alt5) then endAlt5
+	elsif ( constr = CSTR_Alt6) then endAlt6
+	elsif ( constr = CSTR_Alt7) then endAlt7
+	elsif ( constr = CSTR_Alt8) then endAlt8
+	elsif ( constr = CSTR_Alt9) then endAlt9
+	elsif ( constr = CSTR_Alt10) then endAlt10
+	
+	elsif ( constr = CSTR_StrictPrec1) 	then endStrictPrec1
+	elsif ( constr = CSTR_StrictPrec2) 	then endStrictPrec2
+    elsif ( constr = CSTR_StrictPrec3) 	then endStrictPrec3
+    elsif ( constr = CSTR_StrictPrec4) 	then endStrictPrec4
+	elsif ( constr = CSTR_StrictPrec5) then endStrictPrec5
+	elsif ( constr = CSTR_StrictPrec6) then endStrictPrec6
+	elsif ( constr = CSTR_StrictPrec7) then endStrictPrec7
+	elsif ( constr = CSTR_StrictPrec8) then endStrictPrec8
+	elsif ( constr = CSTR_StrictPrec9) then endStrictPrec9
+	elsif ( constr = CSTR_StrictPrec10) then endStrictPrec10
+	elsif ( constr = CSTR_StrictPrec11) then endStrictPrec11
+	
+	elsif ( constr = CSTR_FiltredBy) 	then endFiltredBy
+	end;	
+	
+	constr :=  constr - 1;
+	to run4
+
+from runUserArch
+
+        /* Produire les synchronisations selon les contraintes 
+		   selon la decision prise lors de la mise a jour des horloges 
+		*/ 			
+		if  (clk > NB_CLOCKS) then to run5
+		elsif ((clk = CLK_sync_pr1) 	and (tab_Clocks [CLK_sync_pr1].act_tick))  		then sync_pr1 !0 
+		elsif ((clk = CLK_sync_pw1) 	and (tab_Clocks [CLK_sync_pw1].act_tick))  		then sync_pw1 !0
+		elsif ((clk = CLK_sync_pr2) 	and (tab_Clocks [CLK_sync_pr2].act_tick))  		then sync_pr2 !0 
+		elsif ((clk = CLK_sync_pw2) 	and (tab_Clocks [CLK_sync_pw2].act_tick))  		then sync_pw2 !0 
+		elsif ((clk = CLK_sync_pr3) 	and (tab_Clocks [CLK_sync_pr3].act_tick))  		then sync_pr3 !0 
+		elsif ((clk = CLK_sync_pw3) 	and (tab_Clocks [CLK_sync_pw3].act_tick))  		then sync_pw3 !0 
+		elsif ((clk = CLK_sync_pr4) 	and (tab_Clocks [CLK_sync_pr4].act_tick))  		then sync_pr4 !0 
+		elsif ((clk = CLK_sync_pw4) 	and (tab_Clocks [CLK_sync_pw4].act_tick))  		then sync_pw4 !0 
+		elsif ((clk = CLK_sync_pr5) 	and (tab_Clocks [CLK_sync_pr5].act_tick))  		then sync_pr5 !0 
+		elsif ((clk = CLK_sync_pw5) 	and (tab_Clocks [CLK_sync_pw5].act_tick))  		then sync_pw5 !0 
+		elsif ((clk = CLK_sync_pr6) 	and (tab_Clocks [CLK_sync_pr6].act_tick))  		then sync_pr6 !0 
+		elsif ((clk = CLK_sync_pw6) 	and (tab_Clocks [CLK_sync_pw6].act_tick))  		then sync_pw6 !0 
+		elsif ((clk = CLK_sync_pr7) 	and (tab_Clocks [CLK_sync_pr7].act_tick))  		then sync_pr7 !0 
+		elsif ((clk = CLK_sync_pw7) 	and (tab_Clocks [CLK_sync_pw7].act_tick))  		then sync_pw7 !0 
+		elsif ((clk = CLK_sync_pr8) 	and (tab_Clocks [CLK_sync_pr8].act_tick))  		then sync_pr8 !0 
+		elsif ((clk = CLK_sync_pw8) 	and (tab_Clocks [CLK_sync_pw8].act_tick))  		then sync_pw8 !0 
+		elsif ((clk = CLK_sync_pr9) 	and (tab_Clocks [CLK_sync_pr9].act_tick))  		then sync_pr9 !0 
+		elsif ((clk = CLK_sync_pw9) 	and (tab_Clocks [CLK_sync_pw9].act_tick))  		then sync_pw9 !0 
+		elsif ((clk = CLK_sync_pr10) 	and (tab_Clocks [CLK_sync_pr10].act_tick))  	then sync_pr10 !0 
+		elsif ((clk = CLK_sync_pw10) 	and (tab_Clocks [CLK_sync_pw10].act_tick))  	then sync_pw10 !0 
+
+		elsif ((clk = CLK_sync_calcul) 	and (tab_Clocks [CLK_sync_calcul].act_tick))  	then sync_calcul !0
+		elsif ((clk = CLK_sync_calculOut) and (tab_Clocks [CLK_sync_calculOut].act_tick))  then sync_calculOut !0
+		elsif ((clk = CLK_sync_filtre) 	and (tab_Clocks [CLK_sync_filtre].act_tick))  	then sync_filtre !0
+		end;
+		clk := clk + 1;
+		to runUserArch
+	
+from run5
+
+   clk := 0;
+	while (clk < NB_CLOCKS) do
+		if tab_Clocks [$clk].act_tick = true then 
+					// tab_Clocks [$clk].nb_tick := tab_Clocks [$clk].nb_tick + 1;
+					// nombre max de nb_tick forcement <= NB_INSTANTS
+					tab_Clocks [$clk].preced := true
+		else 
+					tab_Clocks [$clk].preced :=false
+		end;
+		clk := clk + 1
+	end; // while
+	
+	inst := true; 	/*@End_instant*/
+	
+	nbBoucle := nbBoucle + 1;
+	if (nbBoucle = NB_INSTANTS) then 
+			to fin   					// Nbre d'instants 
+	end;
+	to run1
+
+from fin
+		loop
+//-------------- fin de proc_Scheduler -----------------
+	
+	 
+//============================================================		
+//                 Processus Sensor
+//============================================================		
+
+process Sensor [sync_pw : in int] 
+				(&numSensor : read write int, &fifo_fromEnv : read write t_fifo_External, 
+				 &Mem : read write T_ARRAY_INT, &Data_Enable : read write T_ARRAY_BOOL)
+is 
+states Start, sSynchro
+
+var
+	v			: int,
+	data 		: int,
+	nosensor 	: int
+init
+	data 		:= 0;
+	nosensor 	:= 0;
+	to Start
+  
+from Start
+		nosensor := numSensor;
+			
+		//----- si fifo non vide : lecture d'une data  -------
+		if (empty fifo_fromEnv) then loop end;
+		data := first fifo_fromEnv;
+		fifo_fromEnv := dequeue (fifo_fromEnv);
+
+		to sSynchro
+		
+from sSynchro	
+	
+		//----- Synchro provenant de l'ordonnanceur  -------
+		sync_pw ? v; 
+	
+		//----- Ecriture de la data  -------
+		Mem [numSensor - 1] := data;			// data memorisee
+		Data_Enable [numSensor - 1] := true;	// Data a ete mise a jour
+		to Start
+
+		
+
+//============================================================		
+//                 Processus Acq
+//============================================================	
+	
+process Acq 	[sync_pr : in int, port_Acq_Comput : out int] 
+				(&numSensor : read int, &Mem : read write T_ARRAY_INT, 
+				 &Data_Enable : read write T_ARRAY_BOOL)
+is 
+
+states Start, s2
+
+var
+	v		: int,
+	data 	: int
+
+init
+	data := 0;
+	to Start
+   
+from Start
+		  
+		//------- Synchro provenant de l'ordonnanceur  -------
+		sync_pr ? v; 	 	
+		
+		//----- Lecture de la data  -------
+		data := Mem [numSensor - 1];			// data memorisee
+		Data_Enable [numSensor - 1] := false;	// Data a ete lue
+		to s2
+		
+from s2
+		//----- Envoi de la data  vers Comput  -------
+		port_Acq_Comput ! data;     // demande de synchro avec Comput
+		to Start		
+		
+		
+//============================================================	
+//                 Processus Comput
+//============================================================	
+
+process Comput [sync_calcul: in int, sync_calculOut: in int, 
+				port_Acq_Comput1 : in int, port_Acq_Comput2 : in int, 
+				port_Acq_Comput3 : in int, port_Acq_Comput4 : in int,
+				port_Acq_Comput5 : in int, port_Acq_Comput6 : in int,
+				port_Acq_Comput7 : in int, port_Acq_Comput8 : in int,
+				port_Acq_Comput9 : in int, port_Acq_Comput10 : in int] 
+				(&fifo_toFilter : read write t_fifo_Internal)
+is 
+	
+states Start, lireAcq1, lireAcq2, lireAcq3, lireAcq4, lireAcq5,
+				lireAcq6, lireAcq7, lireAcq8, lireAcq9, lireAcq10, 
+				finCalcul, emetResult, Error
+var
+	v: int,
+	nbDataLues : int,
+	toutesLesDataLues : bool, 	// pour chronogramme
+	
+	// **** plus tard : prendre un tableau de int *****
+	data1, data2, data3, data4, data5, data6, data7, data8, data9, data10 : int,
+	result : int
+
+init
+	nbDataLues := 0;
+	toutesLesDataLues := false;
+	data1 := 0;
+	data2 := 0;
+	data3 := 0;
+	data4 := 0;
+	data5 := 0;
+	data6 := 0;
+	data7 := 0;
+	data8 := 0;
+	data9 := 0;
+	data10 := 0;	
+	result := 0;
+	to Start
+   
+from Start
+	sync_calcul ? v;   
+	to lireAcq1
+
+from lireAcq1
+		// lecture du port from Acq 1
+		port_Acq_Comput1 ? data1;
+		nbDataLues := nbDataLues + 1;
+		if (nbDataLues = NB_SENSORS) then  to Error end;
+		to lireAcq2
+
+from lireAcq2	
+		// lecture du port from Acq 2
+		port_Acq_Comput2 ? data2;
+		nbDataLues := nbDataLues + 1;
+		to lireAcq3
+
+from lireAcq3	
+		// lecture du port from Acq 3
+		port_Acq_Comput3 ? data3;
+		nbDataLues := nbDataLues + 1;
+		to lireAcq4
+
+from lireAcq4	
+		// lecture du port from Acq 4
+		port_Acq_Comput4 ? data4;
+		nbDataLues := nbDataLues + 1;
+		to lireAcq5
+
+from lireAcq5	
+		// lecture du port from Acq 5
+		port_Acq_Comput5 ? data5;
+		nbDataLues := nbDataLues + 1;
+		to lireAcq6
+
+from lireAcq6	
+		// lecture du port from Acq 6
+		port_Acq_Comput6 ? data6;
+		nbDataLues := nbDataLues + 1;
+		to lireAcq7
+
+from lireAcq7	
+		// lecture du port from Acq 7
+		port_Acq_Comput7 ? data7;
+		nbDataLues := nbDataLues + 1;
+		to lireAcq8
+
+from lireAcq8	
+		// lecture du port from Acq 8
+		port_Acq_Comput8 ? data8;
+		nbDataLues := nbDataLues + 1;
+		to lireAcq9
+
+from lireAcq9	
+		// lecture du port from Acq 9
+		port_Acq_Comput9 ? data10;
+		nbDataLues := nbDataLues + 1;
+		to lireAcq10
+		
+from lireAcq10	
+		// lecture du port from Acq 10
+		port_Acq_Comput10 ? data10;
+		nbDataLues := nbDataLues + 1;
+		
+		// Les NB_SENSORS data ont ete lues
+		// calcul de result et ecriture dans la fifo vers Filter
+		toutesLesDataLues := true;
+		result := data1 + data2 + data3 + data4 + data5 + data6 + data7 + data8 + data9 + data10; 
+		to finCalcul
+		
+from finCalcul		
+		sync_calculOut ? v;
+		to emetResult
+
+from emetResult		
+		//--- si fifo non pleine : emission de la valeur result dans la fifo vers Filter
+		if (full fifo_toFilter) then loop end;    
+		fifo_toFilter := enqueue (fifo_toFilter, result);
+		
+		nbDataLues := 0;		
+		toutesLesDataLues := false;
+		data1 := 0;
+		data2 := 0;
+		data3 := 0;
+		data4 := 0;
+		data5 := 0;
+		data6 := 0;
+		data7 := 0;
+		data8 := 0;
+		data9 := 0;
+		data10 := 0;	
+		to Start
+		
+		
+		
+//============================================================	
+//                 Processus Filter
+//============================================================	
+
+process Filter [sync_filter : in int] 
+						(&fifoFromComput : read write t_fifo_Internal, 
+						 &fifo_toEnv : read write t_fifo_External)
+is 
+	
+states Start, s2
+
+var 
+	v : int,
+	sync_filtre : bool,
+	data : int
+init
+	data := 0;
+	sync_filtre := false;
+	to Start
+   
+from Start
+
+		sync_filter ? v;  		 
+		sync_filtre := true;
+		
+		//----- si fifo non vide : lecture de Result de Comput  -------
+		if (empty fifoFromComput) then loop end;
+		data := first fifoFromComput;
+		fifoFromComput := dequeue (fifoFromComput);	
+		to s2
+		
+from s2			
+
+		//--- si fifo non pleine : emission de la valeur dans la fifo vers Env
+		if (full fifo_toEnv) then loop end;    
+		fifo_toEnv := enqueue (fifo_toEnv, data);
+		sync_filtre := false;
+
+		to Start
+	
+
+
+	
+	
+//=================== Contraintes CCSL ===================
+//=================== Contraintes CCSL ===================
+//=================== Contraintes CCSL ===================
+//=================== Contraintes CCSL ===================
+
+
+//============================================================		
+//            Processus StrictPrecedence c1 prec c2
+//============================================================		
+
+process StrictPrecedence [startStriPrec: in none, UpdateCstrStriPrec: out none, 
+							endStriPrec : in none]
+						 (&c1 : nat, &c2: nat, &tab_Clocks : T_ARRAY_CLOCK)
+is
+states
+     run1, run2, runInter
+
+var
+    decal1 : nat,
+	decal2 : nat
+
+init 
+    decal1 := 0;
+	decal2 := 0;
+    to run1
+
+from run1	
+		startStriPrec; 
+	  
+		if (decal1 = decal2)  then 
+					tab_Clocks [c2].must_tick := false
+		else 
+					tab_Clocks [c2].must_tick := true
+		end;
+		to runInter
+
+from runInter	  
+		if  tab_Clocks [c1].must_tick = true then  
+					tab_Clocks [c2].must_tick:=false end;
+		UpdateCstrStriPrec; 
+		to run2
+   
+from run2 
+		endStriPrec;	
+		if tab_Clocks [c1].act_tick = true then 
+					decal1 := (decal1 + 1) % 2 
+		end;
+		if tab_Clocks [c2].act_tick = true then 
+					decal2 := (decal2 + 1) % 2 
+		end;  
+		to run1		
+	
+
+
+//============================================================	
+//            Processus FiltredBy 
+//============================================================	
+
+process FiltredBy [startFiltredBy: in none, UpdateCstrFiltredBy: out none, 
+					endFiltredBy : in none]
+					(&cCalcul : nat, &cFiltre: nat, &nbSub: nat,
+					&tab_Clocks : T_ARRAY_CLOCK)
+ is
+states
+     run1, run2, run3, runInter
+
+var
+  y: nat,
+ tabFilter:  T_ARRAY_FILTER
+ 
+init 
+		y:=0;
+		tabFilter [0] := 1; tabFilter [1] := 1; tabFilter [2] := 1; // ***** 0; 
+		tabFilter [3] := 1; tabFilter [4] := 1; //  ***** 0;
+ 
+    to run1
+ 
+from run1
+        nbSub := 1;	
+		startFiltredBy;
+		to runInter
+		
+from runInter
+		UpdateCstrFiltredBy;
+		to run2
+	
+from run2
+     
+		if ((tab_Clocks [cCalcul].act_tick = true) 
+				and (tabFilter[y] = 1)) then 
+						tab_Clocks [cFiltre].act_tick:=true 
+		elsif (tabFilter [y]= 0) then 
+						tab_Clocks [cFiltre].cannot_tick:=true  
+		end;
+		y := y + 1;
+		if (y = SIZE_FILTER)  then y := 0 end;
+	  
+		to run3
+
+from run3   
+		endFiltredBy;
+		to run1	
+
+	
+	
+//============================================================	
+//       Processus AlternatesWith : c1 puis c2 puis c1 puis ...
+//============================================================	
+
+process AlternatesWith [startAlternat : in none, UpdateCstrAlternat: out none, 
+						endAlternat : in none]
+					   (&c2 : nat, &c1 : nat, &tab_Clocks : T_ARRAY_CLOCK) is
+states
+     run1, run2, runinter	
+var 
+	noState : nat	
+init 
+	noState := 1;
+    to run1
+
+from run1	
+	startAlternat;	/*@StartAlt*/
+	
+	if (noState = 1) then 
+		 tab_Clocks [c1].must_tick := true;  
+		 tab_Clocks [c2].cannot_tick := true
+	elsif (noState = 2) then
+		 tab_Clocks [c2].must_tick := true; 
+		 tab_Clocks [c1].cannot_tick := true
+	end;
+	to runinter
+	
+from runinter
+    UpdateCstrAlternat;
+	to run2	
+	
+from run2	
+	endAlternat;	/*@EndAlt*/
+	
+    if (tab_Clocks [c2].act_tick) 		then   	noState := 1  
+	elsif (tab_Clocks [c1].act_tick) 	then 	noState := 2 
+	end;
+	to run1	
+
+	
+//============================================================		
+//                Main component 
+//============================================================	
+
+component Comp is
+ 
+var 
+	// No et tableau des horloges  
+	//***** modif NB DEV ****
+	cRead1, cWrite1, cRead2, cWrite2, cRead3, cWrite3, 
+	cRead4, cWrite4, cRead5, cWrite5, cRead6, cWrite6, 
+	cRead7, cWrite7, cRead8, cWrite8, cRead9, cWrite9, 
+	cRead10, cWrite10,
+	cCalcul, cCalculOut, cFiltre : nat,
+	
+	tab_Clocks  : T_ARRAY_CLOCK,
+	
+	nbSub : int,	
+	Mem : T_ARRAY_INT,
+	Data_Enable : T_ARRAY_BOOL,	
+
+	// Fifo partagee entre les process Comput et Filter du systeme
+	fifoComput_Filter	: t_fifo_Internal,
+	
+	// Fifo partagees avec Env  	//***** modif NB DEV ****
+	Scheduler_1	: t_fifo_External,	// from Init
+	Sensor_1	: t_fifo_External,	// from DEV1
+	Sensor_2	: t_fifo_External,	// from DEV2
+	Sensor_3	: t_fifo_External,	// from DEV3
+	Sensor_4	: t_fifo_External,	// from DEV4
+	Sensor_5	: t_fifo_External,	// from DEV5
+	Sensor_6	: t_fifo_External,	// from DEV6
+	Sensor_7	: t_fifo_External,	// from DEV7
+	Sensor_8	: t_fifo_External,	// from DEV8
+	Sensor_9	: t_fifo_External,	// from DEV9
+	Sensor_10	: t_fifo_External,	// from DEV10
+	
+	toContext	: t_fifo_External,	// to DEVOUT (Si pas de contexte CDL : pas obligatoire)
+
+	//***** modif NB DEV ****
+	NumSensor1 : int,
+	NumSensor2 : int,
+	NumSensor3 : int,
+	NumSensor4 : int,
+	NumSensor5 : int,
+	NumSensor6 : int,
+	NumSensor7 : int,
+	NumSensor8 : int,
+	NumSensor9 : int,
+	NumSensor10 : int
+	
+port 
+    // ports de synchro pour les contraintes
+	startAlt1 				: none, 
+	startAlt2 				: none,
+	startAlt3 				: none,
+	startAlt4 				: none,
+	startAlt5 				: none,
+	startAlt6 				: none,
+	startAlt7 				: none,
+	startAlt8 				: none,
+	startAlt9 				: none,
+	startAlt10 				: none,
+	startStrictPrec1 		: none, 
+	startStrictPrec2 		: none, 
+	startStrictPrec3 		: none, 
+	startStrictPrec4 		: none,
+	startStrictPrec5 		: none,
+	startStrictPrec6 		: none,
+	startStrictPrec7 		: none,
+	startStrictPrec8 		: none,
+	startStrictPrec9 		: none,
+	startStrictPrec10 		: none,
+	startStrictPrec11 		: none,
+	
+
+    startFiltredBy      	: none,
+	
+	UpdateCstrAlt1 			: none,
+	UpdateCstrAlt2 			: none,
+	UpdateCstrAlt3 			: none,
+	UpdateCstrAlt4 			: none,
+	UpdateCstrAlt5 			: none,
+	UpdateCstrAlt6 			: none,
+	UpdateCstrAlt7 			: none,
+	UpdateCstrAlt8 			: none,
+	UpdateCstrAlt9 			: none,
+	UpdateCstrAlt10 		: none,
+	
+	UpdateCstrStrictPrec1 	: none,
+	UpdateCstrStrictPrec2 	: none,
+	UpdateCstrStrictPrec3 	: none,
+	UpdateCstrStrictPrec4 	: none,
+	UpdateCstrStrictPrec5 	: none,
+	UpdateCstrStrictPrec6 	: none,
+	UpdateCstrStrictPrec7 	: none,
+	UpdateCstrStrictPrec8 	: none,
+	UpdateCstrStrictPrec9 	: none,
+	UpdateCstrStrictPrec10 	: none,
+	UpdateCstrStrictPrec11 	: none, 
+
+	UpdateCstrFiltre 		: none,
+	
+	//***** modif NB DEV ****
+	sync_pw1				: int, // none --> int  pour declarer l'event avec sync 
+	sync_pr1				: int,
+	sync_pw2				: int, 
+	sync_pr2				: int,
+	sync_pw3				: int, 
+	sync_pr3				: int,
+	sync_pw4				: int, 
+	sync_pr4				: int,
+	sync_pw5				: int, 
+	sync_pr5				: int,
+	sync_pw6				: int, 
+	sync_pr6				: int,
+	sync_pw7				: int, 
+	sync_pr7				: int,
+	sync_pw8				: int, 
+	sync_pr8				: int,
+	sync_pw9				: int, 
+	sync_pr9				: int,
+	sync_pw10				: int, 
+	sync_pr10				: int,
+
+	sync_filtre				: int,
+	sync_calcul				: int,
+	sync_calculOut			: int,
+	
+	endAlt1 				: none,
+	endAlt2 				: none,
+	endAlt3 				: none,
+	endAlt4 				: none,
+	endAlt5 				: none,
+	endAlt6 				: none,
+	endAlt7 				: none,
+	endAlt8 				: none,
+	endAlt9 				: none,
+	endAlt10 				: none,
+
+	endStrictPrec1 			: none,
+	endStrictPrec2 			: none,
+	endStrictPrec3 			: none,
+	endStrictPrec4 			: none,
+	endStrictPrec5 			: none,
+	endStrictPrec6 			: none,
+	endStrictPrec7 			: none,
+	endStrictPrec8 			: none,
+	endStrictPrec9 			: none,
+	endStrictPrec10 		: none,
+	endStrictPrec11 		: none, 
+
+	endFiltredBy 			: none,
+ 
+	// port pour echanges de valeurs entre Acq et Comput
+	port_Acq_Comput1 		: int,
+	port_Acq_Comput2 		: int,
+	port_Acq_Comput3 		: int,
+	port_Acq_Comput4 		: int,
+	port_Acq_Comput5 		: int,
+	port_Acq_Comput6 		: int,
+	port_Acq_Comput7 		: int,
+	port_Acq_Comput8 		: int,
+	port_Acq_Comput9 		: int,
+	port_Acq_Comput10 		: int
+	
+	
+init
+    nbSub:=0;
+	
+	// No horloges   //***** modif NB DEV ****
+	cRead1 		:= CLK_sync_pr1;  	
+	cWrite1 	:= CLK_sync_pw1;  	
+	cRead2 		:= CLK_sync_pr2;  	
+	cWrite2 	:= CLK_sync_pw2; 
+	cRead3 		:= CLK_sync_pr3;  	
+	cWrite3 	:= CLK_sync_pw3;         
+	cRead4 		:= CLK_sync_pr4;  	
+	cWrite4 	:= CLK_sync_pw4;    
+	cRead5 		:= CLK_sync_pr5;  	
+	cWrite5 	:= CLK_sync_pw5;    
+	cRead6 		:= CLK_sync_pr6;  	
+	cWrite6 	:= CLK_sync_pw6;    
+	cRead7 		:= CLK_sync_pr7;  	
+	cWrite7 	:= CLK_sync_pw7;    
+	cRead8 		:= CLK_sync_pr8;  	
+	cWrite8 	:= CLK_sync_pw8;    
+	cRead9 		:= CLK_sync_pr9;  	
+	cWrite9 	:= CLK_sync_pw9;    
+	cRead10 	:= CLK_sync_pr10;  	
+	cWrite10 	:= CLK_sync_pw10;    
+
+	cCalcul		:= CLK_sync_calcul; 	
+	cCalculOut	:= CLK_sync_calculOut; 	
+	cFiltre		:= CLK_sync_filtre;  	
+	
+	// Donnees partagees //***** modif NB DEV ****
+	Mem := [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];	// pour memoriser les data entre Acq et Comput
+	Data_Enable := [false, false, false, false, false, false, false, false, false, false];
+		
+	// init des Fifo partagees   	//***** modif NB DEV ****
+	fifoComput_Filter 	:= {||};	
+	Scheduler_1			:= {||};
+	Sensor_1 			:= {||};
+	Sensor_2 			:= {||};
+	Sensor_3 			:= {||};
+	Sensor_4 			:= {||};
+	Sensor_5 			:= {||};
+	Sensor_6 			:= {||};
+	Sensor_7 			:= {||};
+	Sensor_8 			:= {||};
+	Sensor_9 			:= {||};
+	Sensor_10 			:= {||};
+	toContext 			:= {||};
+
+	NumSensor1 := 1;
+	NumSensor2 := 2;
+	NumSensor3 := 3;
+	NumSensor4 := 4;
+	NumSensor5 := 5;
+	NumSensor6 := 6;
+	NumSensor7 := 7;
+	NumSensor8 := 8;
+	NumSensor9 := 9;
+	NumSensor10 := 10
+
+par
+		//---------- proc Ordonnanceur
+					//***** modif NB DEV ****		
+		Scheduler [startAlt1, startAlt2, startAlt3, startAlt4, startAlt5, 
+					startAlt6, startAlt7, startAlt8, startAlt9, startAlt10,		
+					startStrictPrec1, startStrictPrec2, startStrictPrec3, startStrictPrec4,
+					startStrictPrec5, startStrictPrec6, startStrictPrec7, startStrictPrec8,
+					startStrictPrec9, startStrictPrec10, startStrictPrec11, 
+					 
+					startFiltredBy,
+					
+					endAlt1, endAlt2, endAlt3, endAlt4, endAlt5,
+					endAlt6, endAlt7, endAlt8, endAlt9, endAlt10,					
+					endStrictPrec1, endStrictPrec2, endStrictPrec3, endStrictPrec4, 
+					endStrictPrec5, endStrictPrec6, endStrictPrec7, endStrictPrec8, 
+					endStrictPrec9, endStrictPrec10, endStrictPrec11,
+					
+					endFiltredBy,
+					
+					sync_pr1, sync_pw1, sync_pr2, sync_pw2, sync_pr3, sync_pw3,
+					sync_pr4, sync_pw4, sync_pr5, sync_pw5, sync_pr6, sync_pw6,
+					sync_pr7, sync_pw7, sync_pr8, sync_pw8, sync_pr9, sync_pw9,
+					sync_pr10, sync_pw10, 			
+					
+					sync_calcul, sync_calculOut, sync_filtre,
+
+					UpdateCstrAlt1, UpdateCstrAlt2, UpdateCstrAlt3, UpdateCstrAlt4, UpdateCstrAlt5,
+					UpdateCstrAlt6, UpdateCstrAlt7, UpdateCstrAlt8, UpdateCstrAlt9, UpdateCstrAlt10,	
+					
+					UpdateCstrStrictPrec1, UpdateCstrStrictPrec2, 
+					UpdateCstrStrictPrec3, UpdateCstrStrictPrec4,
+					UpdateCstrStrictPrec5, UpdateCstrStrictPrec6, 
+					UpdateCstrStrictPrec7, UpdateCstrStrictPrec8, 
+					UpdateCstrStrictPrec9, UpdateCstrStrictPrec10, UpdateCstrStrictPrec11,
+					
+					UpdateCstrFiltre]
+					
+					(&Scheduler_1, &tab_Clocks, &nbSub)
+				
+		//---------- processus des contraintes CCSL
+		
+		//  pour  l'aternance des ecritures et lectures par Acq dans Mem
+		||  AlternatesWith [startAlt1, UpdateCstrAlt1, endAlt1](&cRead1, &cWrite1, &tab_Clocks)
+		||  AlternatesWith [startAlt2, UpdateCstrAlt2, endAlt2](&cRead2, &cWrite2, &tab_Clocks)
+		||  AlternatesWith [startAlt3, UpdateCstrAlt3, endAlt3](&cRead3, &cWrite3, &tab_Clocks)
+		||  AlternatesWith [startAlt4, UpdateCstrAlt4, endAlt4](&cRead4, &cWrite4, &tab_Clocks)
+		||  AlternatesWith [startAlt5, UpdateCstrAlt5, endAlt5](&cRead5, &cWrite5, &tab_Clocks)
+		||  AlternatesWith [startAlt6, UpdateCstrAlt6, endAlt6](&cRead6, &cWrite6, &tab_Clocks)
+		||  AlternatesWith [startAlt7, UpdateCstrAlt7, endAlt7](&cRead7, &cWrite7, &tab_Clocks)
+		||  AlternatesWith [startAlt8, UpdateCstrAlt8, endAlt8](&cRead8, &cWrite8, &tab_Clocks)
+		||  AlternatesWith [startAlt9, UpdateCstrAlt9, endAlt9](&cRead9, &cWrite9, &tab_Clocks)
+		||  AlternatesWith [startAlt10, UpdateCstrAlt10, endAlt10](&cRead10, &cWrite10, &tab_Clocks)
+
+	
+		//  pour  la precedence des lectures et acquisition par Comput
+		//  ????? a voir sI les 3 synchro avec cCalcul sont bien gerées ?????
+		||  StrictPrecedence [startStrictPrec1, UpdateCstrStrictPrec1, endStrictPrec1]
+									(&cRead1, &cCalcul, &tab_Clocks)
+		||  StrictPrecedence [startStrictPrec2, UpdateCstrStrictPrec2, endStrictPrec2]
+									(&cRead2, &cCalcul, &tab_Clocks)
+		||  StrictPrecedence [startStrictPrec3, UpdateCstrStrictPrec3, endStrictPrec3]
+									(&cRead3, &cCalcul, &tab_Clocks)
+		||  StrictPrecedence [startStrictPrec4, UpdateCstrStrictPrec4, endStrictPrec4]
+									(&cRead4, &cCalcul, &tab_Clocks)
+		||  StrictPrecedence [startStrictPrec5, UpdateCstrStrictPrec5, endStrictPrec5]
+									(&cRead5, &cCalcul, &tab_Clocks)
+		||  StrictPrecedence [startStrictPrec6, UpdateCstrStrictPrec6, endStrictPrec6]
+									(&cRead6, &cCalcul, &tab_Clocks)
+		||  StrictPrecedence [startStrictPrec7, UpdateCstrStrictPrec7, endStrictPrec7]
+									(&cRead7, &cCalcul, &tab_Clocks)
+		||  StrictPrecedence [startStrictPrec8, UpdateCstrStrictPrec8, endStrictPrec8]
+									(&cRead8, &cCalcul, &tab_Clocks)
+		||  StrictPrecedence [startStrictPrec9, UpdateCstrStrictPrec9, endStrictPrec9]
+									(&cRead9, &cCalcul, &tab_Clocks)
+		||  StrictPrecedence [startStrictPrec10, UpdateCstrStrictPrec10, endStrictPrec10]
+									(&cRead10, &cCalcul, &tab_Clocks)
+		||  StrictPrecedence [startStrictPrec11, UpdateCstrStrictPrec11, endStrictPrec11]
+									(&cCalcul, &cCalculOut, &tab_Clocks)
+
+
+									
+		//  pour le filtre applique a la sortie de Comput dans Filter									
+	    ||  FiltredBy [startFiltredBy, UpdateCstrFiltre, endFiltredBy]
+						(&cCalculOut, &cFiltre, &nbSub, &tab_Clocks)
+					
+		//---------- proc Sensor d'entree		
+		||  Sensor [sync_pw1] (&NumSensor1, &Sensor_1, &Mem, &Data_Enable)
+		||  Sensor [sync_pw2] (&NumSensor2, &Sensor_2, &Mem, &Data_Enable)
+		||  Sensor [sync_pw3] (&NumSensor3, &Sensor_3, &Mem, &Data_Enable)
+		||  Sensor [sync_pw4] (&NumSensor4, &Sensor_4, &Mem, &Data_Enable)
+		||  Sensor [sync_pw5] (&NumSensor5, &Sensor_5, &Mem, &Data_Enable)
+		||  Sensor [sync_pw6] (&NumSensor6, &Sensor_6, &Mem, &Data_Enable)
+		||  Sensor [sync_pw7] (&NumSensor7, &Sensor_7, &Mem, &Data_Enable)
+		||  Sensor [sync_pw8] (&NumSensor8, &Sensor_8, &Mem, &Data_Enable)
+		||  Sensor [sync_pw9] (&NumSensor9, &Sensor_9, &Mem, &Data_Enable)
+		||  Sensor [sync_pw10] (&NumSensor10, &Sensor_10, &Mem, &Data_Enable)
+
+		//---------- proc acquisition des data
+	    ||	Acq [sync_pr1, port_Acq_Comput1] 
+								(&NumSensor1, &Mem, &Data_Enable)		
+	    ||	Acq [sync_pr2, port_Acq_Comput2] 
+								(&NumSensor2, &Mem, &Data_Enable)
+	    ||	Acq [sync_pr3, port_Acq_Comput3] 
+								(&NumSensor3, &Mem, &Data_Enable)
+		||	Acq [sync_pr4, port_Acq_Comput4] 
+								(&NumSensor4, &Mem, &Data_Enable)
+		||	Acq [sync_pr5, port_Acq_Comput5] 
+								(&NumSensor5, &Mem, &Data_Enable)
+		||	Acq [sync_pr6, port_Acq_Comput6] 
+								(&NumSensor6, &Mem, &Data_Enable)
+		||	Acq [sync_pr7, port_Acq_Comput7] 
+								(&NumSensor7, &Mem, &Data_Enable)
+		||	Acq [sync_pr8, port_Acq_Comput8] 
+								(&NumSensor8, &Mem, &Data_Enable)
+		||	Acq [sync_pr9, port_Acq_Comput9] 
+								(&NumSensor9, &Mem, &Data_Enable)
+		||	Acq [sync_pr10, port_Acq_Comput10] 
+								(&NumSensor10, &Mem, &Data_Enable)								
+								
+		//---------- proc de calcul, filtre et difusion
+		
+		||  Comput [sync_calcul, sync_calculOut, 
+					port_Acq_Comput1, port_Acq_Comput2, port_Acq_Comput3,
+					port_Acq_Comput4, port_Acq_Comput5, port_Acq_Comput6,
+					port_Acq_Comput7, port_Acq_Comput8, port_Acq_Comput9, port_Acq_Comput10] 
+						(&fifoComput_Filter)
+		||  Filter [sync_filtre] (&fifoComput_Filter, &toContext)
+		
+end 
+Comp

@@ -2,15 +2,31 @@ package org.openflexo.module.traceanalysis.view.routeview;
 
 import org.openflexo.fge.Drawing;
 import org.openflexo.fge.FGEModelFactory;
-import org.openflexo.fge.swing.JDianaInteractiveEditor;
+import org.openflexo.fge.Drawing.DrawingTreeNode;
 import org.openflexo.fge.swing.control.SwingToolFactory;
-import org.openflexo.module.traceanalysis.view.routeview.OBPRoute;
+import org.openflexo.foundation.FlexoObject;
+import org.openflexo.selection.SelectionManager;
+import org.openflexo.selection.SelectionManagingDianaEditor;
+import org.openflexo.technologyadapter.trace.model.OBPTraceTransition;
 
-public class OBPRouteEditor extends JDianaInteractiveEditor<OBPRoute>{
-	public OBPRouteEditor(Drawing<OBPRoute> aDrawing, FGEModelFactory factory,
+public class OBPRouteEditor extends SelectionManagingDianaEditor<OBPRoute>{
+
+	public OBPRouteEditor(Drawing<OBPRoute> drawing,
+			SelectionManager selectionManager, FGEModelFactory factory,
 			SwingToolFactory toolFactory) {
-		super(aDrawing, factory, toolFactory);
-		
+		super(drawing, selectionManager, factory, toolFactory);
 	}
-
+	
+	@Override
+	protected FlexoObject getDrawableForDrawingTreeNode(
+			DrawingTreeNode<?, ?> node) {
+		if (node.getDrawable() instanceof OBPConfigurationInRoute) {
+			OBPConfigurationInRoute configInRoute = (OBPConfigurationInRoute)node.getDrawable();
+			return configInRoute.getConfiguration();
+		}else if (node.getDrawable() instanceof OBPTraceTransition){
+			return (OBPTraceTransition) node.getDrawable();
+		}else{
+			return super.getDrawableForDrawingTreeNode(node);
+		}
+	}
 }

@@ -22,23 +22,22 @@ package org.openflexo.module.traceanalysis.widget;
 import java.util.logging.Logger;
 
 import org.openflexo.module.traceanalysis.controller.TraceAnalysisController;
-import org.openflexo.module.traceanalysis.model.TraceAnalysisProject;
+import org.openflexo.module.traceanalysis.model.TraceVirtualModelInstance;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.FIBBrowserView;
 
 @SuppressWarnings("serial")
-public class FIBTraceAnalysisProjectConceptBrowser extends FIBBrowserView<TraceAnalysisProject> {
-	static final Logger logger = Logger.getLogger(FIBTraceAnalysisProjectConceptBrowser.class.getPackage().getName());
+public class FIBConfigurationMask extends FIBBrowserView<TraceVirtualModelInstance> {
+	static final Logger logger = Logger.getLogger(FIBConfigurationMask.class.getPackage().getName());
 
-	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/Widget/FIBAnalyzeConceptsBrowser.fib");
+	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/Widget/FIBConfigurationMask.fib");
 
-	public FIBTraceAnalysisProjectConceptBrowser(TraceAnalysisProject traceAnalysisProject, TraceAnalysisController controller) {
-		super(traceAnalysisProject, controller, FIB_FILE);
-		// System.out.println("Showing browser with " + project);
+	public FIBConfigurationMask(TraceVirtualModelInstance traceVirtualModelInstance, TraceAnalysisController controller) {
+		super(traceVirtualModelInstance, controller, FIB_FILE);
 	}
 
-	public void setTraceAnalysisProject(TraceAnalysisProject traceAnalysisProject) {
-		setDataObject(traceAnalysisProject);
+	public void setTraceVirtualModelInstance(TraceVirtualModelInstance traceVirtualModelInstance) {
+		setDataObject(traceVirtualModelInstance);
 	}
 }

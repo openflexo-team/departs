@@ -1,0 +1,22 @@
+event Ev2 is {send sample to {moteur}0}
+event Ev3 is {send sample to {moteur}0}
+event Ev4 is {receive sample from any}
+event Ev5 is {receive sample from any}
+
+activity s1 is atomic { 
+	event Ev4; 
+	event Ev2;
+	event Ev3
+}
+
+activity s2 is atomic { 
+	event Ev3; 
+	event Ev4; 
+	event Ev5
+} 
+
+cdl Exemple10 is {
+	main is { s1 || s2 }
+	
+}
+

@@ -1,0 +1,73 @@
+// train 1 and 2
+event enter1 is {send enter1 to {GB}1}
+event enter2 is {send enter2 to {GB}1}
+event exit1 is {send exit1 to {GB}1}
+event exit2 is {send exit2 to {GB}1}
+
+// clock
+event tick is {send tick to {GB}1}
+
+// user
+event close is {send close to {GB}1}
+event rec_close is {receive cl from any}
+
+event open is {send open to {GB}1}
+event rec_open is {receive op from any}
+
+// gate
+event down is {receive gate_down from any}
+event up is {receive gate_up from any}
+
+activity passageT1 is { event enter1; event exit1 }
+activity passageT2 is { event enter2; event exit2 }
+
+activity twoTicks is { event tick; event tick }
+activity clop is { event close; event open }
+activity downup is { event down; event up }
+
+// properties
+property p3 is {
+	start -- / / close / -> wait;
+	wait -- / / open / -> start;
+	wait -- / / up / -> reject
+}
+
+cdl tgc1x1 is {
+	main is { 
+		passageT1
+	||	passageT2
+	||	clop
+	||	twoTicks
+	||	downup
+	}
+}
+
+cdl tgc2x2 is {
+	main is { 
+		loop 2 passageT1
+	||	loop 2 passageT2
+	||	clop
+	||	twoTicks
+	||	downup
+	}
+}
+
+cdl tgc3x3 is {
+	main is { 
+		loop 3 passageT1
+	||	loop 3 passageT2
+	||	clop
+	||	twoTicks
+	||	downup
+	}
+}
+
+cdl tgc4x4 is {
+	main is { 
+		loop 4 passageT1
+	||	loop 4 passageT2
+	||	clop
+	||	twoTicks
+	||	downup
+	}
+}
