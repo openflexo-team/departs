@@ -20,9 +20,6 @@
 
 package org.openflexo.technologyadapter.trace.model;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -30,9 +27,9 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
 
 @ModelEntity
-@ImplementationClass(OBPTraceProperty.OBPTracePropertyImpl.class)
-@XMLElement(xmlTag = "OBPTraceProperty")
-public interface OBPTraceProperty extends OBPTraceBehaviourObject {
+@ImplementationClass(OBPTracePropertyState.OBPTracePropertyStateImpl.class)
+@XMLElement(xmlTag = "OBPTracePropertyState")
+public interface OBPTracePropertyState extends OBPTraceBehaviourObjectState {
 
 	public static final String PROPERTY_KEY = "property";
 	
@@ -42,43 +39,10 @@ public interface OBPTraceProperty extends OBPTraceBehaviourObject {
 	@Setter(PROPERTY_KEY)
 	public void setProperty(Parser.Property property);
 
-	public static abstract class OBPTracePropertyImpl extends OBPTraceBehaviourObjectImpl implements OBPTraceProperty {
+	public static abstract class OBPTracePropertyStateImpl extends OBPTraceBehaviourObjectStateImpl implements OBPTracePropertyState {
 
-		private String REGEX = "\\{{1}(\\w+)\\}{1}(\\d+)";
-		
-		public OBPTracePropertyImpl() {
+		public OBPTracePropertyStateImpl() {
 			// TODO Auto-generated constructor stub
-		}
-
-		@Override
-		public String getUri() {
-			return getName();
-		}
-		
-		@Override
-		public String getName() {
-			return getProperty().getPropertyName();
-		}
-
-		@Override
-		public String getValue() {
-			return "{"+getID()+"}";
-		}
-		
-		@Override
-		public String getID(){
-			Pattern id = Pattern.compile(REGEX);
-			Matcher makeMatch = id.matcher(getName());
-			makeMatch.find();
-			return makeMatch.group(2);
-		}
-		
-		@Override
-		public String getType(){
-			Pattern id = Pattern.compile(REGEX);
-			Matcher makeMatch = id.matcher(getName());
-			makeMatch.find();
-			return makeMatch.group(1);
 		}
 
 	}

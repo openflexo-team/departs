@@ -20,9 +20,6 @@
 
 package org.openflexo.technologyadapter.trace.model;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -30,9 +27,9 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
 
 @ModelEntity
-@ImplementationClass(OBPTraceProcess.OBPTraceProcessImpl.class)
-@XMLElement(xmlTag = "OBPTraceProcess")
-public interface OBPTraceProcess extends OBPTraceBehaviourObject{
+@ImplementationClass(OBPTraceProcessState.OBPTraceProcessStateImpl.class)
+@XMLElement(xmlTag = "OBPTraceProcessState")
+public interface OBPTraceProcessState extends OBPTraceBehaviourObjectState{
 
 	public static final String PROCESS_KEY = "process";
 	
@@ -41,43 +38,10 @@ public interface OBPTraceProcess extends OBPTraceBehaviourObject{
 	@Setter(PROCESS_KEY)
 	public void setProcess(Parser.Process process);
 
-	public static abstract class OBPTraceProcessImpl extends OBPTraceBehaviourObjectImpl implements OBPTraceProcess {
+	public static abstract class OBPTraceProcessStateImpl extends OBPTraceBehaviourObjectStateImpl implements OBPTraceProcessState {
 
-		private String REGEX = "(\\w+)(\\d+)";
-		
-		public OBPTraceProcessImpl() {
+		public OBPTraceProcessStateImpl() {
 			// TODO Auto-generated constructor stub
-		}
-
-		@Override
-		public String getUri() {
-			return getName();
-		}
-		
-		@Override
-		public String getID(){
-			Pattern id = Pattern.compile(REGEX);
-			Matcher makeMatch = id.matcher(getName());
-			makeMatch.find();
-			return makeMatch.group(2);
-		}
-		
-		@Override
-		public String getType(){
-			Pattern id = Pattern.compile(REGEX);
-			Matcher makeMatch = id.matcher(getName());
-			makeMatch.find();
-			return makeMatch.group(1);
-		}
-		
-		@Override
-		public String getName() {
-			return getProcess().getProcessName();
-		}
-		
-		@Override
-		public String getValue() {
-			return "{" + getType()+"}"+getID();
 		}
 
 	}

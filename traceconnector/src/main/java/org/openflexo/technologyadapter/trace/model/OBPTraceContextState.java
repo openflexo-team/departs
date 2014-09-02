@@ -20,9 +20,6 @@
 
 package org.openflexo.technologyadapter.trace.model;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -30,9 +27,9 @@ import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
 
 @ModelEntity
-@ImplementationClass(OBPTraceContext.OBPTraceContextImpl.class)
-@XMLElement(xmlTag = "OBPTraceContext")
-public interface OBPTraceContext extends OBPTraceBehaviourObject{
+@ImplementationClass(OBPTraceContextState.OBPTraceContextStateImpl.class)
+@XMLElement(xmlTag = "OBPTraceContextState")
+public interface OBPTraceContextState extends OBPTraceBehaviourObjectState{
 
 	public static final String CONTEXT_KEY = "context";
 	
@@ -42,44 +39,12 @@ public interface OBPTraceContext extends OBPTraceBehaviourObject{
 	@Setter(CONTEXT_KEY)
 	public void setTraceOBPContext(Parser.Context context);
 
-	public static abstract class OBPTraceContextImpl extends OBPTraceBehaviourObjectImpl implements OBPTraceContext {
+	public static abstract class OBPTraceContextStateImpl extends OBPTraceBehaviourObjectStateImpl implements OBPTraceContextState {
 
-		private String REGEX = "\\{{1}(\\w+)\\}{1}(\\d+)";
-		
-		public OBPTraceContextImpl() {
+		public OBPTraceContextStateImpl() {
 			// TODO Auto-generated constructor stub
 		}
 
-		@Override
-		public String getUri() {
-			return getName();
-		}
-
-		@Override
-		public String getID(){
-			Pattern id = Pattern.compile(REGEX);
-			Matcher makeMatch = id.matcher(getName());
-			makeMatch.find();
-			return makeMatch.group(2);
-		}
-		
-		@Override
-		public String getType(){
-			Pattern id = Pattern.compile(REGEX);
-			Matcher makeMatch = id.matcher(getName());
-			makeMatch.find();
-			return makeMatch.group(1);
-		}
-		
-		@Override
-		public String getName() {
-			return getTraceOBPContext().getContextName();
-		}
-		
-		@Override
-		public String getValue() {
-			return "{"+getType()+"}"+getID();
-		}
 	}
 
 }
