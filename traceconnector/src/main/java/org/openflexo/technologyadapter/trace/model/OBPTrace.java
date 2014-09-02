@@ -47,6 +47,9 @@ public interface OBPTrace extends OBPTraceObject, ResourceData<OBPTrace> {
 	
 	@PropertyIdentifier(type = List.class)
 	public static final String TRANSITIONS_KEY = "transitions";
+	
+	@PropertyIdentifier(type = OBPTraceBehaviourObjectInstance.class)
+	public static final String BEHAVIOUR_OBJECTS_KEY = "behaviourObjects";
 
 	@Getter(value = CONFIGURATION_KEY, cardinality = Cardinality.LIST)
 	public List<OBPTraceConfiguration> getConfigurations();
@@ -72,13 +75,25 @@ public interface OBPTrace extends OBPTraceObject, ResourceData<OBPTrace> {
 	@Remover(TRANSITIONS_KEY)
 	public void removeFromTransitions(OBPTraceTransition transition);
 	
+	@Getter(value = BEHAVIOUR_OBJECTS_KEY, cardinality = Cardinality.LIST)
+	public List<OBPTraceBehaviourObjectInstance> getOBPTraceBehaviourObjectInstances();
+
+	@Setter(BEHAVIOUR_OBJECTS_KEY)
+	public void setOBPTraceBehaviourObjectInstances(List<OBPTraceBehaviourObjectInstance> behaviourObjectInstances);
+
+	@Adder(BEHAVIOUR_OBJECTS_KEY)
+	public void addToOBPTraceBehaviourObjectInstances(OBPTraceBehaviourObjectInstance behaviourObjectInstance);
+
+	@Remover(BEHAVIOUR_OBJECTS_KEY)
+	public void removeFromOBPTraceBehaviourObjectInstances(OBPTraceBehaviourObjectInstance behaviourObjectInstance);
+	
 	public TraceOBP getOBPTrace();
 
 	public void setOBPTrace(TraceOBP obpTrace);
 	
-	public List<OBPTraceBehaviourObject> getBehaviourObjects();
+	public OBPTraceBehaviourObjectInstance getBehaviourObjectInstanceFromValue(String name);
 	
-	public OBPTraceBehaviourObject getBehaviourObject(String name);
+	public List<OBPTraceBehaviourObjectInstance> getBehaviourObjectInstancesFromType(String type);
 	
 	public OBPTraceConfiguration getInitConfiguration();
 
@@ -95,6 +110,11 @@ public interface OBPTrace extends OBPTraceObject, ResourceData<OBPTrace> {
 	public int getSize();
 
 	public OBPTraceConfiguration getConfiguration(int index);
+	
+	
+	//public getDataForBehaviourObjectInstance()
+	
+	//public getDataForBehaviourObjectInstance(String dataName)
 
 	public TraceModelConverter getConverter();
 
@@ -102,7 +122,7 @@ public interface OBPTrace extends OBPTraceObject, ResourceData<OBPTrace> {
 
 	public static abstract class OBPTraceImpl extends OBPTraceObjectImpl implements OBPTrace {
 
-		private List<OBPTraceBehaviourObject> behaviourObjects;
+		//private List<OBPTraceBehaviourObjectInstance> behaviourObjectInstances;
 		
 		public OBPTraceImpl() {
 			// TODO Auto-generated constructor stub
@@ -114,13 +134,24 @@ public interface OBPTrace extends OBPTraceObject, ResourceData<OBPTrace> {
 		}
 
 		@Override
-		public OBPTraceBehaviourObject getBehaviourObject(String name){
-			for(OBPTraceBehaviourObject behaviourObject : getBehaviourObjects()){
-				if(behaviourObject.getValue().equals(name)){
+		public OBPTraceBehaviourObjectInstance getBehaviourObjectInstanceFromValue(String value){
+			for(OBPTraceBehaviourObjectInstance behaviourObject : getOBPTraceBehaviourObjectInstances()){
+				if(behaviourObject.getValue().equals(value)){
 					return behaviourObject;
 				}
 			}
 			return null;
+		}
+		
+		@Override
+		public List<OBPTraceBehaviourObjectInstance> getBehaviourObjectInstancesFromType(String type){
+			ArrayList<OBPTraceBehaviourObjectInstance> instances = new ArrayList<OBPTraceBehaviourObjectInstance>();
+			for(OBPTraceBehaviourObjectInstance behaviourObject : getOBPTraceBehaviourObjectInstances()){
+				if(behaviourObject.getType().equals(type)){
+					instances.add(behaviourObject);
+				}
+			}
+			return instances;
 		}
 		
 		@Override
@@ -189,33 +220,34 @@ public interface OBPTrace extends OBPTraceObject, ResourceData<OBPTrace> {
 		}
 
 		
-		@Override
-		public List<OBPTraceBehaviourObject> getBehaviourObjects(){
-			if(behaviourObjects==null){
-				behaviourObjects = new ArrayList<OBPTraceBehaviourObject>();
+		/*@Override
+		public List<OBPTraceBehaviourObjectInstance> getBehaviourObjectInstances(){
+			if(behaviourObjectInstances==null){
+				behaviourObjectInstances = new ArrayList<OBPTraceBehaviourObjectInstance>();
 				for(OBPTraceConfiguration configuration :getConfigurations()){
 					addBehaviourObject(configuration.getOBPTraceContext());
 					addBehaviourObjects(configuration.getOBPTraceProcesses());
 					addBehaviourObjects(configuration.getOBPTraceProperties());
 				}
 			}
-			return behaviourObjects;
+			return behaviourObjectInstances;
 		}
 		
-		private void addBehaviourObject(OBPTraceBehaviourObject behaviourObject){
-			for(OBPTraceBehaviourObject object : behaviourObjects){
+		private void addBehaviourObject(OBPTraceBehaviourObjectInstance behaviourObject){
+			for(OBPTraceBehaviourObjectInstance object : behaviourObjectInstances){
 				if(behaviourObject.getName().equals(object.getName())){
 					return;
 				}
 			}
-			behaviourObjects.add(behaviourObject);
+			behaviourObjectInstances.add(behaviourObject);
 		}
 		
-		private void addBehaviourObjects(List<? extends OBPTraceBehaviourObject> behaviourObjects){
-			for(OBPTraceBehaviourObject object : behaviourObjects){
+		private void addBehaviourObjects(List<? extends OBPTraceBehaviourObjectInstance> behaviourObjects){
+			for(OBPTraceBehaviourObjectInstance object : behaviourObjects){
 				addBehaviourObject(object);
 			}
-		}
+		}*/
+		
 	}
 
 }

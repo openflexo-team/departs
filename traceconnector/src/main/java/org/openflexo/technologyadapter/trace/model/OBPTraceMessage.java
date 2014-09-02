@@ -49,14 +49,14 @@ public interface OBPTraceMessage extends OBPTraceObject{
 	public void setOBPTraceTransition(OBPTraceTransition transition);
 	
 	@Getter(value = FROM_BEHAVIOUR_OBJECT_KEY)
-	public OBPTraceBehaviourObject getFromBehaviourObject();
+	public OBPTraceBehaviourObjectInstance getFromBehaviourObject();
 	@Setter(FROM_BEHAVIOUR_OBJECT_KEY)
-	public void setFromBehaviourObject(OBPTraceBehaviourObject behaviourObject);
+	public void setFromBehaviourObject(OBPTraceBehaviourObjectInstance behaviourObject);
 	
 	@Getter(value = TO_BEHAVIOUR_OBJECT_KEY)
-	public OBPTraceBehaviourObject getToBehaviourObject();
+	public OBPTraceBehaviourObjectInstance getToBehaviourObject();
 	@Setter(TO_BEHAVIOUR_OBJECT_KEY)
-	public void setToBehaviourObject(OBPTraceBehaviourObject behaviourObject);
+	public void setToBehaviourObject(OBPTraceBehaviourObjectInstance behaviourObject);
 
 	public String getInformationLabel();
 	

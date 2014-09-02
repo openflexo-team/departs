@@ -45,7 +45,7 @@ import org.openflexo.module.traceanalysis.view.routeview.OBPConfigurationInRoute
 import org.openflexo.module.traceanalysis.view.routeview.OBPRoute.AbstractTransitionArtefact;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
-import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObject;
+import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObjectInstance;
 import org.openflexo.technologyadapter.trace.model.OBPTraceMessage;
 import org.openflexo.technologyadapter.trace.model.OBPTraceMessageReceive;
 import org.openflexo.technologyadapter.trace.model.OBPTraceMessageSend;

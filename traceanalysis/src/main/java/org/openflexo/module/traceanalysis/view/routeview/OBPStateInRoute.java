@@ -19,8 +19,9 @@
  */
 
 package org.openflexo.module.traceanalysis.view.routeview;
-import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObject;
-import org.openflexo.technologyadapter.trace.model.OBPTraceProperty;
+import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObjectInstance;
+import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObjectState;
+import org.openflexo.technologyadapter.trace.model.OBPTracePropertyState;
 import org.openflexo.technologyadapter.trace.model.OBPTraceState;
 
 public class OBPStateInRoute {
@@ -47,16 +48,18 @@ public class OBPStateInRoute {
 	}
 	
 	public OBPTraceState getState(){
-		for(OBPTraceBehaviourObject object : getConfigurationInRoute().getConfiguration().getBehaviourObjects()){
-			if(getBehaviourObjectInRoute().getBehaviourObject().getName().equals(object.getName())){
-				return object.getState();
+		for(OBPTraceBehaviourObjectState behaviourObjectState : getConfigurationInRoute().getConfiguration().getOBPTraceBehaviourObjectStates()){
+			if(behaviourObjectState.getOBPTraceBehaviourObjectInstance().equals(behaviourObjectInRoute.getBehaviourObject())){
+				return behaviourObjectState.getState();
 			}
 		}
 		return null;
 	}
 
 	public boolean isSuccess(){
-		if(getState().getOBPTraceBehaviourObject() instanceof OBPTraceProperty && getState().getName().equals(SUCCESS)){
+		if(getState() !=null && getState().getOBPTraceBehaviourObjectState() instanceof OBPTracePropertyState 
+				&& getState().getName()!=null 
+				&& getState().getName().equals(SUCCESS)){
 			return true;
 		}else{
 			return false;
@@ -64,7 +67,8 @@ public class OBPStateInRoute {
 	}
 	
 	public boolean isReject(){
-		if(getState().getOBPTraceBehaviourObject() instanceof OBPTraceProperty && getState().getName().equals(REJECT)){
+		if(getState() !=null && getState().getOBPTraceBehaviourObjectState() instanceof OBPTracePropertyState
+				&& getState().getName().equals(REJECT)){
 			return true;
 		}else{
 			return false;
@@ -72,7 +76,8 @@ public class OBPStateInRoute {
 	}
 	
 	public boolean isCut(){
-		if(getState().getOBPTraceBehaviourObject() instanceof OBPTraceProperty && getState().getName().equals(CUT)){
+		if(getState() !=null && getState().getOBPTraceBehaviourObjectState() instanceof OBPTracePropertyState 
+				&& getState().getName().equals(CUT)){
 			return true;
 		}else{
 			return false;
@@ -80,7 +85,7 @@ public class OBPStateInRoute {
 	}
 	
 	public boolean isNormal(){
-		if(getState().getOBPTraceBehaviourObject() instanceof OBPTraceProperty){
+		if(getState() !=null && getState().getOBPTraceBehaviourObjectState() instanceof OBPTracePropertyState){
 			return true;
 		}else{
 			return false;

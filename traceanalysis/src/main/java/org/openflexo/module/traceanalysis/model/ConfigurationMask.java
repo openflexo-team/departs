@@ -3,7 +3,7 @@ package org.openflexo.module.traceanalysis.model;
 import java.util.List;
 
 import org.openflexo.foundation.view.FlexoConceptInstance;
-import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObject;
+import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObjectInstance;
 
 public class ConfigurationMask extends Mask{
 
@@ -12,8 +12,8 @@ public class ConfigurationMask extends Mask{
 		super(flexoConceptInstance, project, trace);
 	}
 	
-	public List<OBPTraceBehaviourObject> getBehaviourObjects(){
-		return (List<OBPTraceBehaviourObject>) getFilteredSelection(OBPTraceBehaviourObject.class);
+	public List<OBPTraceBehaviourObjectInstance> getBehaviourObjects(){
+		return (List<OBPTraceBehaviourObjectInstance>) getFilteredSelection(OBPTraceBehaviourObjectInstance.class);
 	}
 	
 }

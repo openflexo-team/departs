@@ -43,55 +43,82 @@ public interface OBPTraceConfiguration extends OBPTraceObject{
 	public static final String CONFIGURATION_KEY = "configuration";
 	
 	@PropertyIdentifier(type = List.class)
+	public static final String BEHAVIOUR_OBJECT_STATES_KEY = "behaviourObjectStates";
+	
+	/*@PropertyIdentifier(type = List.class)
 	public static final String PROCESS_KEY = "process";
 	
 	@PropertyIdentifier(type = List.class)
 	public static final String PROPERTY_KEY = "properties";
 	
-	public static final String CONTEXT_KEY = "context";
+	public static final String CONTEXT_KEY = "context";*/
 	
 	@Getter(value=CONFIGURATION_KEY, ignoreType=true)
 	public ConfigData getConfigData();
 	@Setter(CONFIGURATION_KEY)
 	public void setConfigData(ConfigData configData);
 	
-	@Getter(value=CONTEXT_KEY)
-	public OBPTraceContext getOBPTraceContext();
+	@Getter(value = BEHAVIOUR_OBJECT_STATES_KEY, cardinality = Cardinality.LIST, inverse=OBPTraceBehaviourObjectState.CONFIGURATION_KEY)
+	public List<OBPTraceBehaviourObjectState> getOBPTraceBehaviourObjectStates();
+
+	@Setter(BEHAVIOUR_OBJECT_STATES_KEY)
+	public void setOBPTraceBehaviourObjectStates(List<OBPTraceBehaviourObjectState> behaviourObjectState);
+
+	@Adder(BEHAVIOUR_OBJECT_STATES_KEY)
+	public void addToOBPTraceBehaviourObjectStates(OBPTraceBehaviourObjectState behaviourObjectState);
+
+	@Remover(BEHAVIOUR_OBJECT_STATES_KEY)
+	public void removeFromOBPTraceBehaviourObjectStates(OBPTraceBehaviourObjectState behaviourObjectState);
+	
+	public OBPTraceContextState getOBPTraceContextState();
+	
+	public List<OBPTraceProcessState> getOBPTraceProcessState();
+	
+	public List<OBPTracePropertyState> getOBPTracePropertyState();
+	
+	/*@Getter(value=CONTEXT_KEY)
+	public OBPTraceContextState getOBPTraceContext();
 	
 	@Setter(CONTEXT_KEY)
-	public void setOBPTraceContext(OBPTraceContext context);
+	public void setOBPTraceContext(OBPTraceContextState context);
 	
 	@Getter(value = PROCESS_KEY, cardinality = Cardinality.LIST)
-	public List<OBPTraceProcess> getOBPTraceProcesses();
+	public List<OBPTraceProcessState> getOBPTraceProcesses();
 
 	@Setter(PROCESS_KEY)
-	public void setOBPTraceProcesses(List<OBPTraceProcess> processes);
+	public void setOBPTraceProcesses(List<OBPTraceProcessState> processes);
 
 	@Adder(PROCESS_KEY)
-	public void addToOBPTraceProcesses(OBPTraceProcess process);
+	public void addToOBPTraceProcesses(OBPTraceProcessState process);
 
 	@Remover(PROCESS_KEY)
-	public void removeFromOBPTraceProcesses(OBPTraceProcess process);
+	public void removeFromOBPTraceProcesses(OBPTraceProcessState process);
 	
 	@Getter(value = PROPERTY_KEY, cardinality = Cardinality.LIST)
-	public List<OBPTraceProperty> getOBPTraceProperties();
+	public List<OBPTracePropertyState> getOBPTraceProperties();
 
 	@Setter(PROPERTY_KEY)
-	public void setOBPTraceProperties(List<OBPTraceProperty> properties);
+	public void setOBPTraceProperties(List<OBPTracePropertyState> properties);
 
 	@Adder(PROPERTY_KEY)
-	public void addToOBPTraceProperties(OBPTraceProperty property);
+	public void addToOBPTraceProperties(OBPTracePropertyState property);
 
 	@Remover(PROPERTY_KEY)
-	public void removeFromOBPTraceProperties(OBPTraceProperty property);
+	public void removeFromOBPTraceProperties(OBPTracePropertyState property);*/
 	
 	public int getIndex();
 	
-	public List<OBPTraceBehaviourObject> getBehaviourObjects();
+	public List<OBPTraceBehaviourObjectInstance> getBehaviourObjects();
 	
 	public static abstract class OBPTraceConfigurationImpl extends OBPTraceObjectImpl implements OBPTraceConfiguration {
 
-		private List<OBPTraceBehaviourObject> behaviourObjects;
+		private List<OBPTraceBehaviourObjectInstance> behaviourObjects;
+		
+		private OBPTraceContextState contextState;
+		
+		private List<OBPTraceProcessState> processStates;
+		
+		private List<OBPTracePropertyState> propertyStates;
 		
 		public OBPTraceConfigurationImpl() {
 			// TODO Auto-generated constructor stub
@@ -108,9 +135,52 @@ public interface OBPTraceConfiguration extends OBPTraceObject{
 		}
 		
 		@Override
-		public List<OBPTraceBehaviourObject> getBehaviourObjects(){
+		public List<OBPTraceProcessState> getOBPTraceProcessState(){
+			if(processStates==null){
+				return processStates;
+			}else{
+				processStates = new ArrayList<OBPTraceProcessState>();
+			}
+			for(OBPTraceBehaviourObjectState object : getOBPTraceBehaviourObjectStates()){
+				if(object instanceof OBPTraceProcessState){
+					processStates.add((OBPTraceProcessState) object);
+				}
+			}
+			return processStates;
+		}
+		
+		@Override
+		public List<OBPTracePropertyState> getOBPTracePropertyState(){
+			if(propertyStates==null){
+				return propertyStates;
+			}else{
+				propertyStates = new ArrayList<OBPTracePropertyState>();
+			}
+			for(OBPTraceBehaviourObjectState object : getOBPTraceBehaviourObjectStates()){
+				if(object instanceof OBPTracePropertyState){
+					propertyStates.add((OBPTracePropertyState) object);
+				}
+			}
+			return propertyStates;
+		}
+		
+		@Override
+		public OBPTraceContextState getOBPTraceContextState(){
+			if(contextState!=null){
+				return contextState;
+			}
+			for(OBPTraceBehaviourObjectState object : getOBPTraceBehaviourObjectStates()){
+				if(object instanceof OBPTraceContextState){
+					return (OBPTraceContextState) object;
+				}
+			}
+			return null;
+		}
+		
+		/*@Override
+		public List<OBPTraceBehaviourObjectInstance> getBehaviourObjects(){
 			if(behaviourObjects==null){
-				behaviourObjects = new ArrayList<OBPTraceBehaviourObject>();
+				behaviourObjects = new ArrayList<OBPTraceBehaviourObjectInstance>();
 				addBehaviourObjects(getOBPTraceContext());
 				addBehaviourObjects(getOBPTraceProcesses());
 				addBehaviourObjects(getOBPTraceProperties());
@@ -118,8 +188,8 @@ public interface OBPTraceConfiguration extends OBPTraceObject{
 			return behaviourObjects;
 		}
 		
-		private void addBehaviourObjects(OBPTraceBehaviourObject behaviourObject){
-			for(OBPTraceBehaviourObject object : behaviourObjects){
+		private void addBehaviourObjects(OBPTraceBehaviourObjectInstance behaviourObject){
+			for(OBPTraceBehaviourObjectInstance object : behaviourObjects){
 				if(behaviourObject.getName().equals(object.getName())){
 					return;
 				}
@@ -127,11 +197,11 @@ public interface OBPTraceConfiguration extends OBPTraceObject{
 			behaviourObjects.add(behaviourObject);
 		}
 		
-		private void addBehaviourObjects(List<? extends OBPTraceBehaviourObject> behaviourObjects){
-			for(OBPTraceBehaviourObject object : behaviourObjects){
+		private void addBehaviourObjects(List<? extends OBPTraceBehaviourObjectInstance> behaviourObjects){
+			for(OBPTraceBehaviourObjectInstance object : behaviourObjects){
 				addBehaviourObjects(object);
 			}
-		}
+		}*/
 
 	}
 

@@ -19,29 +19,42 @@
  */
 
 package org.openflexo.technologyadapter.trace.model;
+
+import java.util.List;
+
+import org.openflexo.model.annotations.Adder;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.PropertyIdentifier;
+import org.openflexo.model.annotations.Remover;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.model.annotations.Getter.Cardinality;
 
 @ModelEntity
-@ImplementationClass(OBPTraceState.OBPTraceStateImpl.class)
-@XMLElement(xmlTag = "OBPTraceState")
-public interface OBPTraceState extends OBPTraceObject{
+@ImplementationClass(OBPTraceVariable.OBPTraceVariableImpl.class)
+@XMLElement(xmlTag = "OBPTraceVariable")
+public interface OBPTraceVariable extends OBPTraceObject{
 	
-	@PropertyIdentifier(type = OBPTraceBehaviourObjectState.class)
-	public static final String BEHAVIOUR_OBJECT_STATE_KEY = "behaviourObjectState";
+	@PropertyIdentifier(type = OBPTraceData.class)
+	public static final String VALUES_KEY = "values";
 	
-	@Getter(value = BEHAVIOUR_OBJECT_STATE_KEY, inverse = OBPTraceBehaviourObjectState.STATE_KEY)
-	public OBPTraceBehaviourObjectState getOBPTraceBehaviourObjectState();
-	@Setter(BEHAVIOUR_OBJECT_STATE_KEY)
-	public void setOBPTraceBehaviourObjectState(OBPTraceBehaviourObjectState behaviour);
+	@Getter(value = VALUES_KEY, cardinality = Cardinality.LIST, inverse=OBPTraceData.VARIABLE_KEY)
+	public List<OBPTraceData> getValues();
 
-	public static abstract class OBPTraceStateImpl extends OBPTraceObjectImpl implements OBPTraceState {
+	@Setter(VALUES_KEY)
+	public void setValues(List<OBPTraceData> values);
 
-		public OBPTraceStateImpl() {
+	@Adder(VALUES_KEY)
+	public void addToValues(OBPTraceData value);
+
+	@Remover(VALUES_KEY)
+	public void removeFromValues(OBPTraceData value);
+	
+	public static abstract class OBPTraceVariableImpl extends OBPTraceObjectImpl implements OBPTraceVariable {
+
+		public OBPTraceVariableImpl() {
 			// TODO Auto-generated constructor stub
 		}
 
@@ -49,12 +62,6 @@ public interface OBPTraceState extends OBPTraceObject{
 		public String getUri() {
 			return getName();
 		}
-		
-		@Override
-		public String getValue() {
-			return getName();
-		}
-
 	}
 
 }

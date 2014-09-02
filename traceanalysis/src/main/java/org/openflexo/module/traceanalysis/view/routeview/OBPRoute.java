@@ -29,7 +29,7 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.module.traceanalysis.model.ConfigurationMask;
 import org.openflexo.technologyadapter.trace.model.OBPTrace;
-import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObject;
+import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObjectInstance;
 import org.openflexo.technologyadapter.trace.model.OBPTraceConfiguration;
 import org.openflexo.technologyadapter.trace.model.OBPTraceMessage;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
@@ -64,9 +64,9 @@ public interface OBPRoute extends FlexoObject {
 
 	public void hide(OBPTraceConfiguration config);
 
-	public void showBehaviourObject(OBPTraceBehaviourObject behaviourObject);
+	public void showBehaviourObject(OBPTraceBehaviourObjectInstance behaviourObject);
 
-	public void hideBehaviourObject(OBPTraceBehaviourObject behaviourObject);
+	public void hideBehaviourObject(OBPTraceBehaviourObjectInstance behaviourObject);
 	
 	public AbstractTransitionArtefact getAbstractTransition(OBPConfigurationInRoute from, OBPConfigurationInRoute to);
 
@@ -80,7 +80,7 @@ public interface OBPRoute extends FlexoObject {
 
 	public List<BehaviourObjectInRoute> getVisibleBehaviourObjects();
 
-	public BehaviourObjectInRoute getBehaviourObjectInRoute(OBPTraceBehaviourObject behaviourObject);
+	public BehaviourObjectInRoute getBehaviourObjectInRoute(OBPTraceBehaviourObjectInstance behaviourObject);
 	
 	public OBPStateInRoute getOBPStateInRoute(BehaviourObjectInRoute behaviourObject, OBPConfigurationInRoute configuration);
 

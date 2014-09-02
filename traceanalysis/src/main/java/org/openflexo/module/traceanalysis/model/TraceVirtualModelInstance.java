@@ -37,14 +37,14 @@ import org.openflexo.technologyadapter.cdl.model.CDLProperty;
 import org.openflexo.technologyadapter.fiacre.model.FiacreProcess;
 import org.openflexo.technologyadapter.fiacre.model.FiacreState;
 import org.openflexo.technologyadapter.fiacre.model.FiacreVariable;
-import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObject;
+import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObjectInstance;
 import org.openflexo.technologyadapter.trace.model.OBPTraceConfiguration;
-import org.openflexo.technologyadapter.trace.model.OBPTraceContext;
+import org.openflexo.technologyadapter.trace.model.OBPTraceContextState;
 import org.openflexo.technologyadapter.trace.model.OBPTraceData;
 import org.openflexo.technologyadapter.trace.model.OBPTraceObject;
-import org.openflexo.technologyadapter.trace.model.OBPTraceProcess;
+import org.openflexo.technologyadapter.trace.model.OBPTraceProcessState;
 import org.openflexo.technologyadapter.trace.model.OBPTrace;
-import org.openflexo.technologyadapter.trace.model.OBPTraceProperty;
+import org.openflexo.technologyadapter.trace.model.OBPTracePropertyState;
 import org.openflexo.technologyadapter.trace.model.OBPTraceState;
 import org.openflexo.technologyadapter.trace.model.OBPTraceTransition;
 
@@ -69,21 +69,32 @@ public class TraceVirtualModelInstance extends TraceAnalysisVirtualModelInstance
 			getConfigurationMasks().add(mask);
 		}
 		
-		// TEMP create associations between trace and others
 		federatedTraceObjects = new HashMap<FlexoObject, List<OBPTraceObject>>();
-		for(OBPTraceConfiguration conf :getConfigurations()){
-			for(OBPTraceBehaviourObject behaviourObject: conf.getBehaviourObjects()){
-				FlexoObject object = getFlexoObjectNamed(behaviourObject.getType());
-				List<OBPTraceObject> traceObjects = federatedTraceObjects.get(object);
-				if(traceObjects==null){
-					traceObjects = new ArrayList<OBPTraceObject>();
-				}
-				if(!traceObjects.contains(behaviourObject)){
-					traceObjects.add(behaviourObject);
-				}
-				federatedTraceObjects.put(object, traceObjects);
+		
+		federate();
+	}
+	
+	
+	/**
+	 * Create associations among all OBP resources which would'nt be effecient through viewpoints
+	 */
+	private void federate(){
+		// Associate BehaviourObject instance with their corresponding System or context element
+		for(OBPTraceBehaviourObjectInstance behaviourObjectInstance : getTraceOBP().getOBPTraceBehaviourObjectInstances()){
+			FlexoObject object = getFlexoObjectNamed(behaviourObjectInstance.getType());
+			List<OBPTraceObject> traceObjects = federatedTraceObjects.get(object);
+			if(traceObjects==null){
+				traceObjects = new ArrayList<OBPTraceObject>();
 			}
+			if(!traceObjects.contains(behaviourObjectInstance)){
+				traceObjects.add(behaviourObjectInstance);
+			}
+			federatedTraceObjects.put(object, traceObjects);
+			
+			// Associate Data Types with their corresponding System or context element
 		}
+		
+		
 	}
 	
 	private FlexoObject getFlexoObjectNamed(String name){
@@ -169,8 +180,8 @@ public class TraceVirtualModelInstance extends TraceAnalysisVirtualModelInstance
 		return null;
 	}
 	
-	public OBPTraceContext getContextObject(CDLParActivity cdlParActivity, OBPTraceConfiguration configuration){
-		OBPTraceContext context = configuration.getOBPTraceContext();
+	public OBPTraceContextState getContextObject(CDLParActivity cdlParActivity, OBPTraceConfiguration configuration){
+		OBPTraceContextState context = configuration.getOBPTraceContextState();
 		if( context == null ){
 			logger.log(Level.WARNING, "No value found for context " + context.getName());
 			return null;
@@ -179,9 +190,9 @@ public class TraceVirtualModelInstance extends TraceAnalysisVirtualModelInstance
 		}
 	}
 	
-	public OBPTraceProperty getPropertyObject(CDLProperty property, OBPTraceConfiguration configuration){
-		for(OBPTraceProperty traceProperty : configuration.getOBPTraceProperties()){
-			if(traceProperty.getType().equals(property.getName())){
+	public OBPTracePropertyState getPropertyObject(CDLProperty property, OBPTraceConfiguration configuration){
+		for(OBPTracePropertyState traceProperty : configuration.getOBPTracePropertyState()){
+			if(traceProperty.getOBPTraceBehaviourObjectInstance().getType().equals(property.getName())){
 				return traceProperty;
 			}
 		}
@@ -189,9 +200,9 @@ public class TraceVirtualModelInstance extends TraceAnalysisVirtualModelInstance
 		return null;
 	}
 	
-	public OBPTraceProcess getProcessObject(FiacreProcess process, OBPTraceConfiguration configuration){
-		for(OBPTraceProcess traceProcess : configuration.getOBPTraceProcesses()){
-			if(traceProcess.getType().equals(process.getName())){
+	public OBPTraceProcessState getProcessObject(FiacreProcess process, OBPTraceConfiguration configuration){
+		for(OBPTraceProcessState traceProcess : configuration.getOBPTraceProcessState()){
+			if(traceProcess.getOBPTraceBehaviourObjectInstance().getType().equals(process.getName())){
 				return traceProcess;
 			}
 		}

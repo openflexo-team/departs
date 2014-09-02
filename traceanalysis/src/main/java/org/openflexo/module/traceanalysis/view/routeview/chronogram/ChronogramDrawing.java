@@ -25,18 +25,23 @@ import org.openflexo.fge.graph.FGEDiscreteFunctionGraph;
 import org.openflexo.fge.graph.FGEFunction;
 import org.openflexo.fge.graph.FGEFunctionGraph.Orientation;
 import org.openflexo.fge.graph.FGEGraph.GraphType;
+import org.openflexo.fge.graph.FGENumericFunction;
 import org.openflexo.fge.impl.DrawingImpl;
 import org.openflexo.fge.shapes.ShapeSpecification.ShapeType;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.module.traceanalysis.view.routeview.BehaviourObjectInRoute;
 import org.openflexo.module.traceanalysis.view.routeview.OBPRoute;
+import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObjectInstance;
 import org.openflexo.technologyadapter.trace.model.OBPTraceData;
+import org.openflexo.technologyadapter.trace.model.OBPTraceVariable;
 
 public class ChronogramDrawing extends DrawingImpl<OBPRoute> {
 
 	private Map<FGEDiscreteFunctionGraph<OBPTraceData>,GraphGRBinding> chronograms;
 	
 	private DrawingGraphicalRepresentation drawingRepresentation;
+	
+	private int width = 900;
 	
 	public ChronogramDrawing(OBPRoute route, FGEModelFactory factory) {
 		super(route, factory, PersistenceMode.SharedGraphicalRepresentations);
@@ -47,28 +52,32 @@ public class ChronogramDrawing extends DrawingImpl<OBPRoute> {
 		chronograms = new HashMap<FGEDiscreteFunctionGraph<OBPTraceData>,GraphGRBinding>();
 		int y = 50;
 		for(BehaviourObjectInRoute object : getModel().getVisibleBehaviourObjects()){
-			for(OBPTraceData data : object.getBehaviourObject().getOBPTraceData()){
-				FGEDiscreteFunctionGraph dataChronogram = new FGEDiscreteFunctionGraph<OBPTraceData>();
+			
+			OBPTraceBehaviourObjectInstance instance = object.getBehaviourObject();
+			
+			for(OBPTraceVariable var : instance.getVariables()){
+				List<OBPTraceData> values = var.getValues();
+				FGEDiscreteFunctionGraph<OBPTraceData> dataChronogram = new FGEDiscreteFunctionGraph<OBPTraceData>();
 
 				dataChronogram.setParameter("data", OBPTraceData.class);
-				dataChronogram.setDiscreteValues(object.getBehaviourObject().getOBPTraceData());
-				dataChronogram.setDiscreteValuesLabel(new DataBinding<String>("data.value"));
-				dataChronogram.setParameterOrientation(Orientation.VERTICAL);
-
-				FGEFunction<String> functionChronogram = dataChronogram.addFunction("data.name", String.class, new DataBinding<String>("data.name"), GraphType.RECT_POLYLIN);
-				//sizeFunction.setRange(0, 200);
+				dataChronogram.setDiscreteValues(values);
+				dataChronogram.setDiscreteValuesLabel(new DataBinding<String>("data.behaviourObjectState.oBPTraceConfiguration.name"));
+				dataChronogram.setParameterOrientation(Orientation.HORIZONTAL);
+	
+				FGENumericFunction<Integer> functionChronogram = dataChronogram.addNumericFunction("values", Integer.class, new DataBinding<Integer>("data.getIntegerValue()"), GraphType.RECT_POLYLIN);
+				//functionChronogram.setRange(0, 50);
 				functionChronogram.setForegroundStyle(getFactory().makeForegroundStyle(Color.BLUE, 1.0f));
 				functionChronogram.setBackgroundStyle(getFactory().makeColorGradientBackground(Color.BLUE, Color.WHITE,
 						ColorGradientDirection.NORTH_SOUTH));
 				
 				final ShapeGraphicalRepresentation chronogramGR = getFactory().makeShapeGraphicalRepresentation(ShapeType.RECTANGLE);
-				chronogramGR.setText("Example of chronogram");
+				chronogramGR.setText(var.getName());
 				chronogramGR.setX(50);
 				chronogramGR.setY(y);
-				chronogramGR.setWidth(700);
-				chronogramGR.setHeight(60);
-				chronogramGR.setAbsoluteTextX(20);
-				chronogramGR.setAbsoluteTextY(5);
+				chronogramGR.setWidth(width);
+				chronogramGR.setHeight(50);
+				chronogramGR.setAbsoluteTextX(500);
+				chronogramGR.setAbsoluteTextY(3);
 				chronogramGR.setHorizontalTextAlignment(HorizontalTextAlignment.LEFT);
 				chronogramGR.setTextStyle(getFactory().makeTextStyle(Color.BLACK, FGEConstants.DEFAULT_TEXT_FONT));
 				chronogramGR.setShadowStyle(getFactory().makeNoneShadowStyle());
@@ -86,9 +95,9 @@ public class ChronogramDrawing extends DrawingImpl<OBPRoute> {
 						});
 				
 				chronograms.put(dataChronogram, chronogramBinding);
-				y= y +30;
+				y= y +85;
 			}
-			
+			y = y+20;
 		}
 		 
 		drawingRepresentation = getFactory().makeDrawingGraphicalRepresentation();
@@ -112,6 +121,14 @@ public class ChronogramDrawing extends DrawingImpl<OBPRoute> {
 			}
 		});
 
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public void setWidth(int width) {
+		this.width = width;
 	}
 
 	

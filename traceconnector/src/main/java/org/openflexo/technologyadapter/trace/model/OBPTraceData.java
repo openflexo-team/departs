@@ -33,11 +33,30 @@ public interface OBPTraceData extends OBPTraceObject{
 
 	public static final String DATA_KEY = "data";
 	
+	public static final String VARIABLE_KEY = "variable";
+	
+	public static final String BEHAVIOUR_OBECT_STATE_KEY = "behaviourObjectState";
+	
+	
 	@Getter(value=DATA_KEY, ignoreType=true)
 	public Parser.Donnee getDonnee();
 	
 	@Setter(DATA_KEY)
 	public void setDonnee(Parser.Donnee donnee);
+	
+	@Getter(value = VARIABLE_KEY, inverse = OBPTraceVariable.VALUES_KEY)
+	public OBPTraceVariable getVariable();
+	
+	@Setter(VARIABLE_KEY)
+	public void setVariable(OBPTraceVariable variable);
+	
+	@Getter(value = BEHAVIOUR_OBECT_STATE_KEY, inverse = OBPTraceBehaviourObjectState.DATA_KEY)
+	public OBPTraceBehaviourObjectState getBehaviourObjectState();
+	
+	@Setter(BEHAVIOUR_OBECT_STATE_KEY)
+	public void setBehaviourObjectState(OBPTraceBehaviourObjectState behaviourObjectState);
+	
+	public Integer getIntegerValue();
 	
 	public static abstract class OBPTraceDataImpl extends OBPTraceObjectImpl implements OBPTraceData {
 
@@ -59,6 +78,17 @@ public interface OBPTraceData extends OBPTraceObject{
 		public String getValue() {
 			return getDonnee().varValue.toString();
 		}
+		
+		@Override
+		public Integer getIntegerValue() {
+			try {
+				
+				return Integer.parseInt(getValue());
+			} catch (Exception e) {
+				return 0;
+			}
+		}
+		
 		
 	}
 

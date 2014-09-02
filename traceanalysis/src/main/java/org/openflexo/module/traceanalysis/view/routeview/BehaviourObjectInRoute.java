@@ -22,7 +22,7 @@ package org.openflexo.module.traceanalysis.view.routeview;
 
 import java.beans.PropertyChangeSupport;
 
-import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObject;
+import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObjectInstance;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
 
 /**
@@ -33,10 +33,10 @@ import org.openflexo.toolbox.HasPropertyChangeSupport;
 public class BehaviourObjectInRoute implements HasPropertyChangeSupport {
 
 	private final OBPRoute route;
-	private final OBPTraceBehaviourObject behaviourObject;
+	private final OBPTraceBehaviourObjectInstance behaviourObject;
 	private final PropertyChangeSupport pcSupport;
 
-	public BehaviourObjectInRoute(OBPTraceBehaviourObject behaviourObject, OBPRoute route) {
+	public BehaviourObjectInRoute(OBPTraceBehaviourObjectInstance behaviourObject, OBPRoute route) {
 		this.route = route;
 		this.behaviourObject = behaviourObject;
 		pcSupport = new PropertyChangeSupport(this);
@@ -56,11 +56,11 @@ public class BehaviourObjectInRoute implements HasPropertyChangeSupport {
 		return route;
 	}
 
-	public OBPTraceBehaviourObject getBehaviourObject() {
+	public OBPTraceBehaviourObjectInstance getBehaviourObject() {
 		return behaviourObject;
 	}
 
 	public int getIndex() {
-		return route.getTrace().getBehaviourObjects().indexOf(behaviourObject);
+		return route.getTrace().getOBPTraceBehaviourObjectInstances().indexOf(behaviourObject);
 	}
 }

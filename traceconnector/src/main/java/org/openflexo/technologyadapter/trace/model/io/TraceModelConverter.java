@@ -4,26 +4,37 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.technologyadapter.trace.TraceTechnologyAdapter;
+import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObjectInstance;
+import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObjectState;
 import org.openflexo.technologyadapter.trace.model.OBPTraceComponent;
 import org.openflexo.technologyadapter.trace.model.OBPTraceConfiguration;
-import org.openflexo.technologyadapter.trace.model.OBPTraceContext;
+import org.openflexo.technologyadapter.trace.model.OBPTraceContextInstance;
+import org.openflexo.technologyadapter.trace.model.OBPTraceContextInstance.OBPTraceContextInstanceImpl;
+import org.openflexo.technologyadapter.trace.model.OBPTraceContextState;
 import org.openflexo.technologyadapter.trace.model.OBPTraceData;
 import org.openflexo.technologyadapter.trace.model.OBPTraceMessage;
 import org.openflexo.technologyadapter.trace.model.OBPTraceMessageInternal;
 import org.openflexo.technologyadapter.trace.model.OBPTraceMessageReceive;
 import org.openflexo.technologyadapter.trace.model.OBPTraceMessageSend;
 import org.openflexo.technologyadapter.trace.model.OBPTraceMessageSynchro;
-import org.openflexo.technologyadapter.trace.model.OBPTraceProcess;
+import org.openflexo.technologyadapter.trace.model.OBPTraceProcessInstance;
+import org.openflexo.technologyadapter.trace.model.OBPTraceProcessInstance.OBPTraceProcessInstanceImpl;
+import org.openflexo.technologyadapter.trace.model.OBPTraceProcessState;
 import org.openflexo.technologyadapter.trace.model.OBPTraceObject;
 import org.openflexo.technologyadapter.trace.model.OBPTrace;
-import org.openflexo.technologyadapter.trace.model.OBPTraceProperty;
+import org.openflexo.technologyadapter.trace.model.OBPTracePropertyInstance;
+import org.openflexo.technologyadapter.trace.model.OBPTracePropertyInstance.OBPTracePropertyInstanceImpl;
+import org.openflexo.technologyadapter.trace.model.OBPTracePropertyState;
 import org.openflexo.technologyadapter.trace.model.OBPTraceState;
 import org.openflexo.technologyadapter.trace.model.OBPTraceTransition;
+import org.openflexo.technologyadapter.trace.model.OBPTraceVariable;
 
 import Parser.ConfigData;
 import Parser.Donnee;
@@ -53,18 +64,24 @@ public class TraceModelConverter {
 					OBPTraceObject.class, 
 					OBPTrace.class,
 					OBPTraceComponent.class,
-					OBPTraceContext.class,
+					OBPTraceContextState.class,
 					OBPTraceData.class,
-					OBPTraceProcess.class,
+					OBPTraceProcessState.class,
 					OBPTraceTransition.class,
 					OBPTraceConfiguration.class,
-					OBPTraceProperty.class,
+					OBPTracePropertyState.class,
 					OBPTraceMessageReceive.class,
 					OBPTraceMessageInternal.class,
 					OBPTraceMessageSend.class,
 					OBPTraceMessageSynchro.class,
 					OBPTraceMessage.class,
-					OBPTraceState.class));
+					OBPTraceState.class,
+					OBPTraceBehaviourObjectInstance.class,
+					OBPTraceBehaviourObjectState.class,
+					OBPTraceContextInstance.class,
+					OBPTraceProcessInstance.class,
+					OBPTracePropertyInstance.class,
+					OBPTraceVariable.class));
 		} catch (ModelDefinitionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -107,7 +124,7 @@ public class TraceModelConverter {
 			OBPTraceTransition nextTransition = flexoTraceOBP.getTransition(config, nextConfig);
 			for(OBPTraceMessage nextMessage : nextTransition.getOBPTraceMessages()){
 				if(nextMessage instanceof OBPTraceMessageReceive){
-					message.setToBehaviourObject(flexoTraceOBP.getBehaviourObject(nextMessage.getTargetProcName()));
+					message.setToBehaviourObject(flexoTraceOBP.getBehaviourObjectInstanceFromValue(nextMessage.getTargetProcName()));
 					((OBPTraceMessageSend) message).setOBPTraceMessageReceive((OBPTraceMessageReceive) nextMessage);
 				}
 			}
@@ -118,7 +135,7 @@ public class TraceModelConverter {
 			OBPTraceTransition previousTransition = flexoTraceOBP.getTransition(previousConfig, config);
 			for(OBPTraceMessage previousMessage : previousTransition.getOBPTraceMessages()){
 				if(previousMessage instanceof OBPTraceMessageSend){
-					message.setFromBehaviourObject(flexoTraceOBP.getBehaviourObject(previousMessage.getSourceProcName()));
+					message.setFromBehaviourObject(flexoTraceOBP.getBehaviourObjectInstanceFromValue(previousMessage.getSourceProcName()));
 					((OBPTraceMessageReceive) message).setOBPTraceMessageSend((OBPTraceMessageSend) previousMessage);
 				}
 			}
@@ -164,7 +181,7 @@ public class TraceModelConverter {
 	public OBPTraceMessage convertMessageReceiveAsynchro(TransitionSequenceReceiveAsynchro transitionSequence, OBPTrace traceOBP){
 		OBPTraceMessageReceive flexoMessage = factory.newInstance(OBPTraceMessageReceive.class);
 		flexoMessage.setTransitionSequence(transitionSequence);
-		flexoMessage.setToBehaviourObject(traceOBP.getBehaviourObject(flexoMessage.getTargetProcName()));
+		flexoMessage.setToBehaviourObject(traceOBP.getBehaviourObjectInstanceFromValue(flexoMessage.getTargetProcName()));
 		flexoMessage.setTechnologyAdapter(technologyAdapter);
 		traceObjects.put(transitionSequence, flexoMessage);
 		return flexoMessage;
@@ -173,7 +190,7 @@ public class TraceModelConverter {
 	public OBPTraceMessage convertMessageSendAsynchro(TransitionSequenceSendAsynchro transitionSequence, OBPTrace traceOBP){
 		OBPTraceMessageSend flexoMessage = factory.newInstance(OBPTraceMessageSend.class);
 		flexoMessage.setTransitionSequence(transitionSequence);
-		flexoMessage.setFromBehaviourObject(traceOBP.getBehaviourObject(flexoMessage.getSourceProcName()));
+		flexoMessage.setFromBehaviourObject(traceOBP.getBehaviourObjectInstanceFromValue(flexoMessage.getSourceProcName()));
 		flexoMessage.setTechnologyAdapter(technologyAdapter);
 		traceObjects.put(transitionSequence, flexoMessage);
 		return flexoMessage;
@@ -182,8 +199,8 @@ public class TraceModelConverter {
 	public OBPTraceMessage convertMessageSynchro(TransitionSequenceSynchro transitionSequence, OBPTrace traceOBP){
 		OBPTraceMessageSynchro flexoMessage = factory.newInstance(OBPTraceMessageSynchro.class);
 		flexoMessage.setTransitionSequence(transitionSequence);
-		flexoMessage.setToBehaviourObject(traceOBP.getBehaviourObject(flexoMessage.getTargetProcName()));
-		flexoMessage.setFromBehaviourObject(traceOBP.getBehaviourObject(flexoMessage.getSourceProcName()));
+		flexoMessage.setToBehaviourObject(traceOBP.getBehaviourObjectInstanceFromValue(flexoMessage.getTargetProcName()));
+		flexoMessage.setFromBehaviourObject(traceOBP.getBehaviourObjectInstanceFromValue(flexoMessage.getSourceProcName()));
 		flexoMessage.setTechnologyAdapter(technologyAdapter);
 		traceObjects.put(transitionSequence, flexoMessage);
 		return flexoMessage;
@@ -192,12 +209,12 @@ public class TraceModelConverter {
 	public OBPTraceConfiguration convertConfigData(ConfigData configData, OBPTrace traceOBP){
 		OBPTraceConfiguration flexoConfigData = factory.newInstance(OBPTraceConfiguration.class);
 		for (Parser.Process process : configData.getProcessList()) {
-			flexoConfigData.addToOBPTraceProcesses(convertProcess(process,traceOBP));
+			flexoConfigData.addToOBPTraceBehaviourObjectStates(convertProcess(process,traceOBP));
 		}
 		for (Parser.Property property : configData.getPropertyList()) {
-			flexoConfigData.addToOBPTraceProperties(convertProperty(property,traceOBP));
+			flexoConfigData.addToOBPTraceBehaviourObjectStates(convertProperty(property,traceOBP));
 		}
-		flexoConfigData.setOBPTraceContext(convertContext(configData.context,traceOBP));
+		flexoConfigData.addToOBPTraceBehaviourObjectStates(convertContext(configData.context,traceOBP));
 		flexoConfigData.setConfigData(configData);
 		flexoConfigData.setTechnologyAdapter(technologyAdapter);
 		flexoConfigData.setName(Integer.toString(configData.getNoConfig()));
@@ -205,32 +222,64 @@ public class TraceModelConverter {
 		return flexoConfigData;
 	}
 	
-	public OBPTraceContext convertContext(Parser.Context context, OBPTrace traceOBP){
-		OBPTraceContext flexoContext = factory.newInstance(OBPTraceContext.class);
+	public OBPTraceContextState convertContext(Parser.Context context, OBPTrace traceOBP){
+		String contextValue = OBPTraceContextInstanceImpl.computeValueFromRowName(context.contextName);
+		OBPTraceContextInstance instance = (OBPTraceContextInstance) traceOBP.getBehaviourObjectInstanceFromValue(contextValue);
+		if(instance==null){
+			instance = factory.newInstance(OBPTraceContextInstance.class);
+			instance.setName(context.contextName);
+			traceOBP.addToOBPTraceBehaviourObjectInstances(instance);
+		}
+		OBPTraceContextState flexoContext = factory.newInstance(OBPTraceContextState.class);
 		flexoContext.setTraceOBPContext(context);
 		flexoContext.setTechnologyAdapter(technologyAdapter);
 		flexoContext.setState(convertState(context.getContextState(), traceOBP));
+		flexoContext.setOBPTraceBehaviourObjectInstance(instance);
 		traceObjects.put(context, flexoContext);
 		return flexoContext;
 	}
 	
-	public OBPTraceProcess convertProcess(Parser.Process process, OBPTrace traceOBP){
-		OBPTraceProcess flexoProcess = factory.newInstance(OBPTraceProcess.class);
+	public OBPTraceProcessState convertProcess(Parser.Process process, OBPTrace traceOBP){
+		String processValue = OBPTraceProcessInstanceImpl.computeValueFromRowName(process.processName);
+		OBPTraceProcessInstance instance = (OBPTraceProcessInstance) traceOBP.getBehaviourObjectInstanceFromValue(processValue);
+		if(instance==null){
+			instance = factory.newInstance(OBPTraceProcessInstance.class);
+			instance.setName(process.processName);
+			traceOBP.addToOBPTraceBehaviourObjectInstances(instance);
+		}
+		OBPTraceProcessState flexoProcess = factory.newInstance(OBPTraceProcessState.class);
 		for(Donnee donnee : process.getDonneeList()){
-			flexoProcess.addToOBPTraceData(convertData(donnee,traceOBP));
+			OBPTraceData data = convertData(donnee,traceOBP);
+			flexoProcess.addToOBPTraceData(data);
+			OBPTraceVariable var = instance.getVariableNamed(data.getName());
+			if(var==null){
+				var = factory.newInstance(OBPTraceVariable.class);
+				var.setName(data.getName());
+				instance.addToVariables(var);
+			}
+			var.addToValues(data);
 		}
 		flexoProcess.setProcess(process);
 		flexoProcess.setTechnologyAdapter(technologyAdapter);
 		flexoProcess.setState(convertState(process.getProcessState(), traceOBP));
+		flexoProcess.setOBPTraceBehaviourObjectInstance(instance);
 		traceObjects.put(process, flexoProcess);
 		return flexoProcess;
 	}
 	
-	public OBPTraceProperty convertProperty(Parser.Property property, OBPTrace traceOBP){
-		OBPTraceProperty flexoProperty = factory.newInstance(OBPTraceProperty.class);
+	public OBPTracePropertyState convertProperty(Parser.Property property, OBPTrace traceOBP){
+		String propertyValue = OBPTracePropertyInstanceImpl.computeValueFromRowName(property.propertyName);
+		OBPTracePropertyInstance instance = (OBPTracePropertyInstance) traceOBP.getBehaviourObjectInstanceFromValue(propertyValue);
+		if(instance==null){
+			instance = factory.newInstance(OBPTracePropertyInstance.class);
+			instance.setName(property.propertyName);
+			traceOBP.addToOBPTraceBehaviourObjectInstances(instance);
+		}
+		OBPTracePropertyState flexoProperty = factory.newInstance(OBPTracePropertyState.class);
 		flexoProperty.setProperty(property);
 		flexoProperty.setTechnologyAdapter(technologyAdapter);
 		flexoProperty.setState(convertState(property.getPropertyState(), traceOBP));
+		flexoProperty.setOBPTraceBehaviourObjectInstance(instance);
 		traceObjects.put(property, flexoProperty);
 		return flexoProperty;
 	}

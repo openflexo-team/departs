@@ -29,7 +29,7 @@ import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.module.traceanalysis.model.ConfigurationMask;
 import org.openflexo.module.traceanalysis.model.TraceVirtualModelInstance;
 import org.openflexo.technologyadapter.trace.model.OBPTrace;
-import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObject;
+import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObjectInstance;
 import org.openflexo.technologyadapter.trace.model.OBPTraceConfiguration;
 import org.openflexo.technologyadapter.trace.model.OBPTraceMessage;
 import org.openflexo.technologyadapter.trace.model.OBPTraceObject;
@@ -39,7 +39,7 @@ public class OBPRouteImpl extends DefaultFlexoObject implements OBPRoute {
 	private Map<OBPTraceConfiguration, OBPConfigurationInRoute> configMap;
 	private List<OBPConfigurationInRoute> visibleConfigurations;
 
-	private Map<OBPTraceBehaviourObject, BehaviourObjectInRoute> behaviourObjectsMap;
+	private Map<OBPTraceBehaviourObjectInstance, BehaviourObjectInRoute> behaviourObjectsMap;
 	private List<BehaviourObjectInRoute> visibleBehaviourObjects;
 
 	private Map<OBPTraceMessage, MessageInRoute> messageMap;
@@ -63,8 +63,8 @@ public class OBPRouteImpl extends DefaultFlexoObject implements OBPRoute {
 		visibleBehaviourObjects = new ArrayList<BehaviourObjectInRoute>();
 		visibleStates = new ArrayList<OBPStateInRoute>();
 		allStates = new ArrayList<OBPStateInRoute>();
-		behaviourObjectsMap = new HashMap<OBPTraceBehaviourObject, BehaviourObjectInRoute>();
-		for (OBPTraceBehaviourObject c : trace.getBehaviourObjects()) {
+		behaviourObjectsMap = new HashMap<OBPTraceBehaviourObjectInstance, BehaviourObjectInRoute>();
+		for (OBPTraceBehaviourObjectInstance c : trace.getOBPTraceBehaviourObjectInstances()) {
 			visibleBehaviourObjects.add(getBehaviourObjectInRoute(c));
 		}
 		for(BehaviourObjectInRoute behaviourObject : visibleBehaviourObjects){
@@ -198,7 +198,7 @@ public class OBPRouteImpl extends DefaultFlexoObject implements OBPRoute {
 	}
 
 	@Override
-	public void showBehaviourObject(OBPTraceBehaviourObject behaviourObject) {
+	public void showBehaviourObject(OBPTraceBehaviourObjectInstance behaviourObject) {
 
 		visibleBehaviourObjects.add(getBehaviourObjectInRoute(behaviourObject));
 
@@ -211,7 +211,7 @@ public class OBPRouteImpl extends DefaultFlexoObject implements OBPRoute {
 	}
 
 	@Override
-	public void hideBehaviourObject(OBPTraceBehaviourObject behaviourObject) {
+	public void hideBehaviourObject(OBPTraceBehaviourObjectInstance behaviourObject) {
 		BehaviourObjectInRoute oldValue = getBehaviourObjectInRoute(behaviourObject);
 		visibleBehaviourObjects.remove(getBehaviourObjectInRoute(behaviourObject));
 
@@ -280,7 +280,7 @@ public class OBPRouteImpl extends DefaultFlexoObject implements OBPRoute {
 	}
 
 	@Override
-	public BehaviourObjectInRoute getBehaviourObjectInRoute(OBPTraceBehaviourObject behaviourObject) {
+	public BehaviourObjectInRoute getBehaviourObjectInRoute(OBPTraceBehaviourObjectInstance behaviourObject) {
 		BehaviourObjectInRoute returned = behaviourObjectsMap.get(behaviourObject);
 		if (returned == null) {
 			returned = new BehaviourObjectInRoute(behaviourObject, this);
@@ -333,8 +333,8 @@ public class OBPRouteImpl extends DefaultFlexoObject implements OBPRoute {
 
 	public void synchronizeWithMask(){
 		ConfigurationMask mask = (ConfigurationMask) traceVirtualModelInstance.getSelectedMask();
-		List<OBPTraceBehaviourObject> objectsToHide = new ArrayList<OBPTraceBehaviourObject>();
-		List<OBPTraceBehaviourObject> objectsToShow = new ArrayList<OBPTraceBehaviourObject>();
+		List<OBPTraceBehaviourObjectInstance> objectsToHide = new ArrayList<OBPTraceBehaviourObjectInstance>();
+		List<OBPTraceBehaviourObjectInstance> objectsToShow = new ArrayList<OBPTraceBehaviourObjectInstance>();
 		if(mask!=null){
 			for(BehaviourObjectInRoute behaviourObjectInRoute : getVisibleBehaviourObjects()){
 				if(mask.isTraceOBPObjectFiltered(behaviourObjectInRoute.getBehaviourObject())){
@@ -344,10 +344,10 @@ public class OBPRouteImpl extends DefaultFlexoObject implements OBPRoute {
 				}
 			}
 		}
-		for(OBPTraceBehaviourObject object : objectsToHide){
+		for(OBPTraceBehaviourObjectInstance object : objectsToHide){
 			hideBehaviourObject(object);
 		}
-		for(OBPTraceBehaviourObject object : objectsToShow){
+		for(OBPTraceBehaviourObjectInstance object : objectsToShow){
 			showBehaviourObject(object);
 		}
 		
