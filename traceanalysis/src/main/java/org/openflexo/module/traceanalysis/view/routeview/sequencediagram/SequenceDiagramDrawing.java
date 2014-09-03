@@ -36,6 +36,7 @@ import org.openflexo.fge.impl.DrawingImpl;
 import org.openflexo.fge.shapes.Rectangle;
 import org.openflexo.fge.shapes.ShapeSpecification;
 import org.openflexo.fge.shapes.ShapeSpecification.ShapeType;
+import org.openflexo.model.annotations.Getter.GetterImpl;
 import org.openflexo.module.traceanalysis.view.routeview.BehaviourObjectInRoute;
 import org.openflexo.module.traceanalysis.view.routeview.MessageInRoute;
 import org.openflexo.module.traceanalysis.view.routeview.OBPConfigurationInRoute;
@@ -98,7 +99,7 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> {
 	}
 
 	private RouteLayout layout;
-
+	
 	public SequenceDiagramDrawing(OBPRoute graph, FGEModelFactory factory, RouteLayout layout) {
 		super(graph, factory, PersistenceMode.SharedGraphicalRepresentations);
 		this.layout=layout;
@@ -110,6 +111,9 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> {
 
 	public void setLayout(RouteLayout layout) {
 		this.layout = layout;
+		invalidateGraphicalObjectsHierarchy(getModel());
+		updateGraphicalObjectsHierarchy(getModel());
+		//invalidateGraphicalObjectsHierarchy(getModel());
 	}
 	
 	@Override

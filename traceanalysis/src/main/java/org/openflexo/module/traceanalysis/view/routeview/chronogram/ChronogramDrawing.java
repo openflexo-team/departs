@@ -41,8 +41,6 @@ public class ChronogramDrawing extends DrawingImpl<OBPRoute> {
 	
 	private DrawingGraphicalRepresentation drawingRepresentation;
 	
-	private int width = 900;
-	
 	public ChronogramDrawing(OBPRoute route, FGEModelFactory factory) {
 		super(route, factory, PersistenceMode.SharedGraphicalRepresentations);
 	}
@@ -74,7 +72,7 @@ public class ChronogramDrawing extends DrawingImpl<OBPRoute> {
 				chronogramGR.setText(var.getName());
 				chronogramGR.setX(50);
 				chronogramGR.setY(y);
-				chronogramGR.setWidth(width);
+				chronogramGR.setWidth(900);
 				chronogramGR.setHeight(50);
 				chronogramGR.setAbsoluteTextX(500);
 				chronogramGR.setAbsoluteTextY(3);
@@ -122,14 +120,5 @@ public class ChronogramDrawing extends DrawingImpl<OBPRoute> {
 		});
 
 	}
-
-	public int getWidth() {
-		return width;
-	}
-
-	public void setWidth(int width) {
-		this.width = width;
-	}
-
 	
 }

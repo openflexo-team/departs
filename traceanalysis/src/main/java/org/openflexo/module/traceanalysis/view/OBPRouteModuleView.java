@@ -19,6 +19,7 @@
  */
 package org.openflexo.module.traceanalysis.view;
 
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -73,7 +74,8 @@ public class OBPRouteModuleView extends JPanel implements ModuleView<TraceVirtua
 		OBPRouteEditor sequence = new OBPRouteEditor(sequenceDiagram,controller.getSelectionManager(),factory, SwingToolFactory.DEFAULT);
 		OBPRouteEditor chrono = new OBPRouteEditor(chronogram,controller.getSelectionManager(),factory, SwingToolFactory.DEFAULT);
 
-		// Test layout
+		// Layout
+
 		JButton switchLayout = new JButton("Change Layout");
 		switchLayout.addActionListener(new ActionListener() {
 			
@@ -93,17 +95,22 @@ public class OBPRouteModuleView extends JPanel implements ModuleView<TraceVirtua
 		c1.fill = GridBagConstraints.HORIZONTAL;
 		c1.weightx = 1;
 		c1.gridx = 0;
-		c1.gridy = 0;
+		c1.gridy = 1;
 		
 		GridBagConstraints c2 = new GridBagConstraints();
 		c2.fill = GridBagConstraints.HORIZONTAL;
 		c2.weightx = 1;
 		c2.gridx = 0;
-		c2.gridy = 1;
+		c2.gridy = 2;
+		
+		GridBagConstraints c3 = new GridBagConstraints();
+		c3.weightx = 0.2;
+		c3.gridx = 0;
+		c3.gridy = 0;
 		
 		add(sequence.getDrawingView(),c1);
 		add(chrono.getDrawingView(),c2);
-		add(switchLayout);
+		add(switchLayout, c3);
 		
 		sequenceDiagram.printGraphicalObjectHierarchy();
 		chronogram.printGraphicalObjectHierarchy();

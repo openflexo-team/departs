@@ -199,7 +199,7 @@ public class OBPRouteImpl extends DefaultFlexoObject implements OBPRoute {
 
 	@Override
 	public void showBehaviourObject(OBPTraceBehaviourObjectInstance behaviourObject) {
-
+		BehaviourObjectInRoute oldValue = getBehaviourObjectInRoute(behaviourObject);
 		visibleBehaviourObjects.add(getBehaviourObjectInRoute(behaviourObject));
 
 		/*getPropertyChangeSupport().firePropertyChange("visibleBehaviourObjects", null, getBehaviourObjectInRoute(behaviourObject));

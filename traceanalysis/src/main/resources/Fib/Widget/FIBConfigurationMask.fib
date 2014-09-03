@@ -29,5 +29,6 @@
      </BrowserElement>
      <BrowserElement dataClassName="org.openflexo.technologyadapter.cdl.model.CDLProperty" icon="controller.iconForObject(cdlProperty)" enabled="data.selectedMask.selection.contains(cdlProperty)" label="cdlProperty.name" isEditable="false" filtered="false" defaultVisible="true" name="cdlProperty">
      </BrowserElement>
+     <Dependancy componentName="maskDD" />
    </Browser>
 </Panel>
