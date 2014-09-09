@@ -30,16 +30,16 @@ import org.openflexo.foundation.action.FlexoActionInitializer;
 import org.openflexo.module.traceanalysis.TraceAnalysisCst;
 import org.openflexo.module.traceanalysis.TraceAnalysisIconLibrary;
 import org.openflexo.module.traceanalysis.model.TraceVirtualModelInstance;
-import org.openflexo.module.traceanalysis.model.action.CreateConfigurationMask;
+import org.openflexo.module.traceanalysis.model.action.CreateMask;
 import org.openflexo.view.controller.ActionInitializer;
 import org.openflexo.view.controller.ControllerActionInitializer;
 
-public class CreateConfigurationMaskInitializer extends ActionInitializer<CreateConfigurationMask, TraceVirtualModelInstance, FlexoObject> {
+public class MaskInitializer extends ActionInitializer<CreateMask, TraceVirtualModelInstance, FlexoObject> {
 
 	private static final Logger logger = Logger.getLogger(ControllerActionInitializer.class.getPackage().getName());
 
-	CreateConfigurationMaskInitializer(TraceAnalysisControllerActionInitializer actionInitializer) {
-		super(CreateConfigurationMask.actionType, actionInitializer);
+	MaskInitializer(TraceAnalysisControllerActionInitializer actionInitializer) {
+		super(CreateMask.actionType, actionInitializer);
 	}
 
 	@Override
@@ -48,21 +48,21 @@ public class CreateConfigurationMaskInitializer extends ActionInitializer<Create
 	}
 
 	@Override
-	protected FlexoActionInitializer<CreateConfigurationMask> getDefaultInitializer() {
-		return new FlexoActionInitializer<CreateConfigurationMask>() {
+	protected FlexoActionInitializer<CreateMask> getDefaultInitializer() {
+		return new FlexoActionInitializer<CreateMask>() {
 			@Override
-			public boolean run(EventObject e, CreateConfigurationMask action) {
-				return instanciateAndShowDialog(action, TraceAnalysisCst.CREATE_CONFIGURATION_MASK_DIALOG_FIB);
+			public boolean run(EventObject e, CreateMask action) {
+				return instanciateAndShowDialog(action, TraceAnalysisCst.CREATE_MASK_DIALOG_FIB);
 			}
 		};
 	}
 
 	@Override
-	protected FlexoActionFinalizer<CreateConfigurationMask> getDefaultFinalizer() {
-		return new FlexoActionFinalizer<CreateConfigurationMask>() {
+	protected FlexoActionFinalizer<CreateMask> getDefaultFinalizer() {
+		return new FlexoActionFinalizer<CreateMask>() {
 			@Override
-			public boolean run(EventObject e, CreateConfigurationMask action) {
-				getController().selectAndFocusObject(action.getConfigurationMask());
+			public boolean run(EventObject e, CreateMask action) {
+				getController().selectAndFocusObject(action.getMask());
 				return true;
 			}
 		};

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Panel className="org.openflexo.inspector.FIBInspector" layout="border" titleFont="SansSerif,0,12" darkLevel="0" dataClassName="org.openflexo.module.traceanalysis.model.mask.MaskedConfiguration" controllerClassName="org.openflexo.module.traceanalysis.controller.TraceAnalysisFIBController" font="SansSerif,0,12" name="Inspector">
+  <TabPanel name="Tab" constraints="border(location=center)">
+    <Tab title="Mask" layout="twocols" titleFont="SansSerif,0,11" darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
+   	  <Label id="5" manageDynamicModel="false" useScrollBar="false" name="Inspected Configuration" localize="true" align="center" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=left)" label="inspected_configuration" readOnly="false" />
+      <Browser root="data" iteratorClassName="java.lang.Object" visibleRowCount="5" constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=center)" rowHeight="18" boundToSelectionManager="true" selectionMode="DiscontiguousTreeSelection" selected="" showFooter="false" rootVisible="true" showRootsHandle="true" localize="true" manageDynamicModel="true" clickAction="" doubleClickAction="" rightClickAction="" name="MaskedConfigurationBrowser" index="0" visible="">
+      	 <BrowserElement dataClassName="org.openflexo.module.traceanalysis.model.mask.MaskedConfiguration" label="mask.maskedElement.name" icon="controller.iconForObject(mask.maskedElement)" isEditable="false" filtered="false" defaultVisible="false" name="mask">
+        	<Children data="mask.getMask().getBehaviourObjects()" name="behaviours" />
+      	 </BrowserElement>
+      	 <BrowserElement dataClassName="org.openflexo.technologyadapter.trace.model.OBPTraceProcessInstance" label="process.name" icon="controller.iconForObject(process)" isEditable="false" filtered="false" defaultVisible="false" name="process">
+        	<Children data="process.getOBPTraceBehaviourObjectStateInConfig(data.maskedElement).state" name="state" />
+        	<Children data="process.variables" name="variable" />
+      	 </BrowserElement>
+      	 <BrowserElement dataClassName="org.openflexo.technologyadapter.trace.model.OBPTraceState" label="state.name" icon="controller.iconForObject(state)" isEditable="false" filtered="false" defaultVisible="false" name="state">
+      	 </BrowserElement>
+      	 <BrowserElement dataClassName="org.openflexo.technologyadapter.trace.model.OBPTraceContextInstance" label="context.name" icon="controller.iconForObject(context)" isEditable="false" filtered="false" defaultVisible="false" name="context">
+        	<Children data="context.getOBPTraceBehaviourObjectStateInConfig(data.maskedElement).state" name="state" />
+        	<Children data="context.variables" name="variable" />
+      	 </BrowserElement>
+      	  <BrowserElement dataClassName="org.openflexo.technologyadapter.trace.model.OBPTracePropertyInstance" label="property.name" icon="controller.iconForObject(property)" isEditable="false" filtered="false" defaultVisible="false" name="property">
+        	<Children data="property.getOBPTraceBehaviourObjectStateInConfig(data.maskedElement).state" name="state" />
+        	<Children data="property.variables" name="variable" />
+      	 </BrowserElement>
+      	 <BrowserElement dataClassName="org.openflexo.technologyadapter.trace.model.OBPTraceVariable" visible="data.getElements().contains(variable)" label="variable.getStringValueForConfiguration(data.maskedElement)" icon="controller.iconForObject(variable)" isEditable="false" filtered="false" defaultVisible="false" name="variable">
+      	 </BrowserElement>
+      </Browser>
+    </Tab>
+  </TabPanel> 
+</Panel>

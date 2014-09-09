@@ -1,4 +1,4 @@
-package org.openflexo.module.traceanalysis.model;
+package org.openflexo.module.traceanalysis.model.mask;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -10,8 +10,13 @@ import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.viewpoint.PrimitiveRole;
+import org.openflexo.module.traceanalysis.model.TraceAnalysisProject;
+import org.openflexo.module.traceanalysis.model.TraceVirtualModelInstance;
+import org.openflexo.module.traceanalysis.model.TraceVirtualModelInstance.FederatedElement;
+import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObjectInstance;
 import org.openflexo.technologyadapter.trace.model.OBPTraceConfiguration;
 import org.openflexo.technologyadapter.trace.model.OBPTraceObject;
+import org.openflexo.technologyadapter.trace.model.OBPTraceVariable;
 
 public class Mask extends DefaultFlexoObject implements PropertyChangeListener {
 	
@@ -30,6 +35,9 @@ public class Mask extends DefaultFlexoObject implements PropertyChangeListener {
 		selection = new ArrayList<FlexoObject>();
 		this.project = project;
 		this.trace = trace;
+		for(FederatedElement element : trace.getFederatedElements()){
+			selection.add(element.getType());
+		}
 	}
 
 	@Override
@@ -81,15 +89,50 @@ public class Mask extends DefaultFlexoObject implements PropertyChangeListener {
 		return filteredSelection;
 	}
 	
-	public boolean isTraceOBPObjectFiltered(OBPTraceObject obpTraceObject){
-		for(FlexoObject object : selection){
-			List<OBPTraceObject> traceOBPObjects = trace.getOBPTraceObjects(object);
-			if(traceOBPObjects!=null && traceOBPObjects.contains(obpTraceObject)){
+	public List<?> getFilteredSelection(List<?> elements){
+		List<Object> filteredSelection = new ArrayList<Object>();
+		for(Object object : selection){
+			if(elements.contains(object)){
+				filteredSelection.add(object);
+			}
+		}
+		return filteredSelection;
+	}
+	
+	
+	public boolean isContainedInSelection(Object object){
+		for(FlexoObject selectedObject : selection){
+			if(selectedObject.equals(object)){
 				return true;
 			}
 		}
 		return false;
 	}
+
+	public TraceVirtualModelInstance getTrace() {
+		return trace;
+	}
+	
+	public List<OBPTraceBehaviourObjectInstance> getBehaviourObjects(){
+		List<FederatedElement> elements = getTrace().getFilteredFederatedElement(OBPTraceBehaviourObjectInstance.class);
+		return (List<OBPTraceBehaviourObjectInstance>)getOBPTraceObjectsFromFederatedElements(elements);
+	}
+	
+	public List<OBPTraceVariable> getVariables(){
+		List<FederatedElement> elements = getTrace().getFilteredFederatedElement(OBPTraceVariable.class);
+		return (List<OBPTraceVariable>)getOBPTraceObjectsFromFederatedElements(elements);
+	}
+
+	public List<?> getOBPTraceObjectsFromFederatedElements(List<FederatedElement> elements){
+		List<OBPTraceObject> returned = new ArrayList<OBPTraceObject>();
+		for(FederatedElement federatedElement : elements){
+			if(isContainedInSelection(federatedElement.getType())){
+				returned.add((OBPTraceObject) federatedElement.getValue());
+			}
+		}
+		return returned;
+	}
+	
 }
 
 

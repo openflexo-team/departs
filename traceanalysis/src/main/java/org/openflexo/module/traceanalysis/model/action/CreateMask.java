@@ -29,23 +29,23 @@ import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.localization.FlexoLocalization;
-import org.openflexo.module.traceanalysis.model.ConfigurationMask;
 import org.openflexo.module.traceanalysis.model.TraceVirtualModelInstance;
+import org.openflexo.module.traceanalysis.model.mask.Mask;
 import org.openflexo.toolbox.StringUtils;
 
-public class CreateConfigurationMask extends FlexoAction<CreateConfigurationMask, TraceVirtualModelInstance, FlexoObject> {
+public class CreateMask extends FlexoAction<CreateMask, TraceVirtualModelInstance, FlexoObject> {
 
-	private static final Logger logger = Logger.getLogger(CreateConfigurationMask.class.getPackage().getName());
+	private static final Logger logger = Logger.getLogger(CreateMask.class.getPackage().getName());
 
-	public static FlexoActionType<CreateConfigurationMask, TraceVirtualModelInstance, FlexoObject> actionType = new FlexoActionType<CreateConfigurationMask, TraceVirtualModelInstance, FlexoObject>(
+	public static FlexoActionType<CreateMask, TraceVirtualModelInstance, FlexoObject> actionType = new FlexoActionType<CreateMask, TraceVirtualModelInstance, FlexoObject>(
 			"create_configuration_mask", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method
 		 */
 		@Override
-		public CreateConfigurationMask makeNewAction(TraceVirtualModelInstance focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
-			return new CreateConfigurationMask(focusedObject, globalSelection, editor);
+		public CreateMask makeNewAction(TraceVirtualModelInstance focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
+			return new CreateMask(focusedObject, globalSelection, editor);
 		}
 
 		@Override
@@ -61,40 +61,40 @@ public class CreateConfigurationMask extends FlexoAction<CreateConfigurationMask
 	};
 
 	static {
-		FlexoObjectImpl.addActionForClass(CreateConfigurationMask.actionType, TraceVirtualModelInstance.class);
+		FlexoObjectImpl.addActionForClass(CreateMask.actionType, TraceVirtualModelInstance.class);
 	}
 
-	CreateConfigurationMask(TraceVirtualModelInstance focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
+	CreateMask(TraceVirtualModelInstance focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
-	private ConfigurationMask configurationMask;
+	private Mask mask;
 	
 	@Override
 	protected void doAction(Object context) throws SaveResourceException {
 
-		logger.info("Create trace exploration mask");
-		configurationMask = getFocusedObject().getNewConfigurationMask();
-		configurationMask.setName(getConfigurationMaskName());
+		logger.info("Create mask");
+		mask = getFocusedObject().getNewMask();
+		mask.setName(getMaskName());
 	}
 	
-	public String getConfigurationMaskName() {
-		return configurationMaskName;
+	public String getMaskName() {
+		return maskName;
 	}
 
-	public void setConfigurationMaskName(String configurationMaskName) {
+	public void setMaskName(String maskName) {
 		boolean wasValid = isValid();
-		this.configurationMaskName = configurationMaskName;
-		getPropertyChangeSupport().firePropertyChange("configurationMaskName", null, configurationMaskName);
+		this.maskName = maskName;
+		getPropertyChangeSupport().firePropertyChange("maskName", null, maskName);
 		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
 		getPropertyChangeSupport().firePropertyChange("errorMessage", null, getErrorMessage());
 	}
 
 	private String errorMessage;
 	
-	private String configurationMaskName;
+	private String maskName;
 	
-	private String configurationMaskDescription;
+	private String maskDescription;
 
 	public String getErrorMessage() {
 		isValid();
@@ -106,32 +106,32 @@ public class CreateConfigurationMask extends FlexoAction<CreateConfigurationMask
 	@Override
 	public boolean isValid() {
 
-		if (StringUtils.isEmpty(configurationMaskName)) {
-			errorMessage = FlexoLocalization.localizedForKey("no_configurationMask_name_defined");
+		if (StringUtils.isEmpty(maskName)) {
+			errorMessage = FlexoLocalization.localizedForKey("no_mask_name_defined");
 			return false;
 		}
 
 		return true;
 	}
 
-	public String getConfigurationMaskDescription() {
-		return configurationMaskDescription;
+	public String getMaskDescription() {
+		return maskDescription;
 	}
 
-	public void setConfigurationMaskDescription(String configurationMaskDescription) {
+	public void setMaskDescription(String maskDescription) {
 		boolean wasValid = isValid();
-		this.configurationMaskDescription = configurationMaskDescription;
-		getPropertyChangeSupport().firePropertyChange("configurationMaskDescription", null, configurationMaskDescription);
+		this.maskDescription = maskDescription;
+		getPropertyChangeSupport().firePropertyChange("maskDescription", null, maskDescription);
 		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
 		getPropertyChangeSupport().firePropertyChange("errorMessage", null, getErrorMessage());
 	}
 
-	public ConfigurationMask getConfigurationMask() {
-		return configurationMask;
+	public Mask getMask() {
+		return mask;
 	}
 
-	public void setConfigurationMask(ConfigurationMask configurationMask) {
-		this.configurationMask = configurationMask;
+	public void setMask(Mask mask) {
+		this.mask = mask;
 	}
 
 }
