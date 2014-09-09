@@ -85,6 +85,8 @@ public interface FiacreProcess extends FiacreObject{
 
 	@Remover(FIACRE_VARIABLES_KEY)
 	public void removeFromFiacreVariables(FiacreVariable fiacreVariable);
+	
+	public FiacreVariable getFiacreVariableNamed(String name);
 
 	public static abstract class FiacreProcessImpl extends FiacreObjectImpl implements FiacreProcess {
 
@@ -105,6 +107,16 @@ public interface FiacreProcess extends FiacreObject{
 		@Override
 		public String getUri() {
 			return getName();
+		}
+		
+		@Override
+		public FiacreVariable getFiacreVariableNamed(String name){
+			for(FiacreVariable variable : getFiacreVariables()){
+				if(variable.getName().equals(name)){
+					return variable;
+				}
+			}
+			return null;
 		}
 
 	}
