@@ -52,6 +52,10 @@ public interface OBPTraceVariable extends OBPTraceObject{
 	@Remover(VALUES_KEY)
 	public void removeFromValues(OBPTraceData value);
 	
+	public OBPTraceData getOBPTraceDataForConfiguration(OBPTraceConfiguration configuration);
+	
+	public String getStringValueForConfiguration(OBPTraceConfiguration configuration);
+	
 	public static abstract class OBPTraceVariableImpl extends OBPTraceObjectImpl implements OBPTraceVariable {
 
 		public OBPTraceVariableImpl() {
@@ -61,6 +65,20 @@ public interface OBPTraceVariable extends OBPTraceObject{
 		@Override
 		public String getUri() {
 			return getName();
+		}
+		
+		public OBPTraceData getOBPTraceDataForConfiguration(OBPTraceConfiguration configuration){
+			for(OBPTraceData data :getValues()){
+				if(data.getBehaviourObjectState().getOBPTraceConfiguration().equals(configuration)){
+					return data;
+				}
+			}
+			return null;
+		}
+		
+		@Override
+		public String getStringValueForConfiguration(OBPTraceConfiguration configuration){
+			return getName() + " =" + getOBPTraceDataForConfiguration(configuration).getValue();
 		}
 	}
 

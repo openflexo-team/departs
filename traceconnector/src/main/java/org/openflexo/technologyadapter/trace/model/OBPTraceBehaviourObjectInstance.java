@@ -20,7 +20,6 @@
 
 package org.openflexo.technologyadapter.trace.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.openflexo.model.annotations.Adder;

@@ -229,6 +229,7 @@ public class TraceModelConverter {
 			instance = factory.newInstance(OBPTraceContextInstance.class);
 			instance.setName(context.contextName);
 			traceOBP.addToOBPTraceBehaviourObjectInstances(instance);
+			instance.setTechnologyAdapter(technologyAdapter);
 		}
 		OBPTraceContextState flexoContext = factory.newInstance(OBPTraceContextState.class);
 		flexoContext.setTraceOBPContext(context);
@@ -246,6 +247,7 @@ public class TraceModelConverter {
 			instance = factory.newInstance(OBPTraceProcessInstance.class);
 			instance.setName(process.processName);
 			traceOBP.addToOBPTraceBehaviourObjectInstances(instance);
+			instance.setTechnologyAdapter(technologyAdapter);
 		}
 		OBPTraceProcessState flexoProcess = factory.newInstance(OBPTraceProcessState.class);
 		for(Donnee donnee : process.getDonneeList()){
@@ -256,6 +258,7 @@ public class TraceModelConverter {
 				var = factory.newInstance(OBPTraceVariable.class);
 				var.setName(data.getName());
 				instance.addToVariables(var);
+				var.setTechnologyAdapter(technologyAdapter);
 			}
 			var.addToValues(data);
 		}
@@ -274,6 +277,7 @@ public class TraceModelConverter {
 			instance = factory.newInstance(OBPTracePropertyInstance.class);
 			instance.setName(property.propertyName);
 			traceOBP.addToOBPTraceBehaviourObjectInstances(instance);
+			instance.setTechnologyAdapter(technologyAdapter);
 		}
 		OBPTracePropertyState flexoProperty = factory.newInstance(OBPTracePropertyState.class);
 		flexoProperty.setProperty(property);
