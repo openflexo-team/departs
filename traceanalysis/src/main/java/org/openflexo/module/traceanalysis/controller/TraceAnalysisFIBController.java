@@ -39,5 +39,4 @@ public class TraceAnalysisFIBController extends FlexoFIBController {
 	public TraceAnalysisController getFlexoController() {
 		return (TraceAnalysisController) super.getFlexoController();
 	}
-
 }

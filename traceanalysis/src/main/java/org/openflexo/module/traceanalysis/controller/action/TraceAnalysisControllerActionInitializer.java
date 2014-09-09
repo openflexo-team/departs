@@ -52,7 +52,7 @@ public class TraceAnalysisControllerActionInitializer extends ControllerActionIn
 		super.initializeActions();
 		new CreateTraceAnalysisInitializer(this);
 		new ConvertToTraceAnalysisProjectInitializer(this);
-		new CreateConfigurationMaskInitializer(this);
+		new MaskInitializer(this);
 	}
 
 }

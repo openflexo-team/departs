@@ -39,6 +39,7 @@ import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
+import org.openflexo.technologyadapter.trace.model.OBPTraceConfiguration;
 
 public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectWrapper<TraceAnalysisProjectNature> {
 
@@ -224,5 +225,4 @@ public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectW
 		}
 		return createTraceVirtualModelInstance(vmi);
 	}
-
 }

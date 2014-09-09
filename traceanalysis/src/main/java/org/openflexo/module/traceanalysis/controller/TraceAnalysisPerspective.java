@@ -26,13 +26,11 @@ import javax.swing.ImageIcon;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.module.traceanalysis.TraceAnalysisIconLibrary;
-import org.openflexo.module.traceanalysis.model.ConfigurationMask;
-import org.openflexo.module.traceanalysis.model.TraceAnalysisProject;
 import org.openflexo.module.traceanalysis.model.TraceVirtualModelInstance;
-import org.openflexo.module.traceanalysis.view.ConfigurationMaskModuleView;
+import org.openflexo.module.traceanalysis.model.mask.Mask;
 import org.openflexo.module.traceanalysis.view.OBPRouteModuleView;
-import org.openflexo.module.traceanalysis.widget.FIBTraceAnalysisProjectBrowser;
 import org.openflexo.module.traceanalysis.widget.FIBConfigurationMask;
+import org.openflexo.module.traceanalysis.widget.FIBTraceAnalysisProjectBrowser;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.FlexoPerspective;
@@ -75,8 +73,8 @@ public class TraceAnalysisPerspective extends FlexoPerspective {
 	public String getWindowTitleforObject(FlexoObject object, FlexoController controller) {
 		if (object instanceof TraceVirtualModelInstance) {
 			return ((TraceVirtualModelInstance) object).getName();
-		}else if (object instanceof ConfigurationMask) {
-			return ((ConfigurationMask) object).getName();
+		}else if (object instanceof Mask) {
+			return ((Mask) object).getName();
 		} 
 		if (object != null) {
 			return object.toString();
@@ -117,8 +115,8 @@ public class TraceAnalysisPerspective extends FlexoPerspective {
 			controller.selectAndFocusObject((TraceVirtualModelInstance) object);
 			focusOnObject((TraceVirtualModelInstance)object);
 		} 
-		else if (object instanceof ConfigurationMask) {
-			controller.selectAndFocusObject((ConfigurationMask) object);
+		else if (object instanceof Mask) {
+			controller.selectAndFocusObject((Mask) object);
 		} 
 		else {
 			super.objectWasDoubleClicked(object, controller);
@@ -130,8 +128,6 @@ public class TraceAnalysisPerspective extends FlexoPerspective {
 	public boolean hasModuleViewForObject(FlexoObject object) {
 		if (object instanceof TraceVirtualModelInstance) {
 			return true;
-		}else if (object instanceof ConfigurationMask) {
-			return true;
 		}
 		return super.hasModuleViewForObject(object);
 	}
@@ -141,8 +137,6 @@ public class TraceAnalysisPerspective extends FlexoPerspective {
 		if (object instanceof TraceVirtualModelInstance) {
 			TraceVirtualModelInstance traceVirtualModelInstance = (TraceVirtualModelInstance) object;
 			return new OBPRouteModuleView(traceVirtualModelInstance,getController(), this);
-		} else if(object instanceof ConfigurationMask){
-			return new ConfigurationMaskModuleView((ConfigurationMask) object,getController(), this);
 		} 
 		return super.createModuleViewForObject(object, editable);
 	}

@@ -133,8 +133,8 @@ public class OBPRouteModuleView extends JPanel implements ModuleView<TraceVirtua
 
 	@Override
 	public void deleteModuleView() {
-		// TODO Auto-generated method stub
-		
+		getRepresentedObject().getPropertyChangeSupport().removePropertyChangeListener(getRepresentedObject().getDeletedProperty(), this);
+		controller.removeModuleView(this);
 	}
 
 	@Override

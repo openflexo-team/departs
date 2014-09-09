@@ -23,36 +23,16 @@ package org.openflexo.module.traceanalysis.view.menu;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.io.File;
 import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.KeyStroke;
 
 import org.openflexo.FlexoCst;
-import org.openflexo.components.NewProjectComponent;
-import org.openflexo.fib.FIBLibrary;
-import org.openflexo.fib.controller.FIBDialog;
-import org.openflexo.fib.model.FIBComponent;
-import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.nature.ProjectNature;
-import org.openflexo.foundation.utils.ProjectInitializerException;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.view.FlexoFrame;
-import org.openflexo.view.controller.FlexoController;
-import org.openflexo.view.controller.FlexoFIBController;
+import org.openflexo.module.traceanalysis.controller.TraceAnalysisController;
 import org.openflexo.view.menu.FileMenu;
 import org.openflexo.view.menu.FlexoMenuItem;
-
-import javax.swing.AbstractAction;
-import javax.swing.KeyStroke;
-
-import org.openflexo.module.NatureSpecificModule;
-import org.openflexo.module.traceanalysis.TraceAnalysisCst;
-import org.openflexo.module.traceanalysis.controller.TraceAnalysisController;
-import org.openflexo.module.traceanalysis.controller.action.ImportAction;
-import org.openflexo.module.traceanalysis.model.TraceAnalysisProject;
-import org.openflexo.module.traceanalysis.model.action.CreateTraceAnalysisProject;
 
 
 /**
@@ -77,8 +57,6 @@ public class TraceAnalysisFileMenu extends FileMenu {
 	public void addSpecificItems() {
 		add(new SaveModifiedItem());
 		addSeparator();
-		add(new ImportItem());
-		addSeparator();
 	}
 
 	@Override
@@ -89,13 +67,6 @@ public class TraceAnalysisFileMenu extends FileMenu {
 			super.quit();
 		}
 
-	}
-
-	public class ImportItem extends FlexoMenuItem {
-		public ImportItem() {
-			super(new ImportAction(), "Import", KeyStroke.getKeyStroke(KeyEvent.VK_I, FlexoCst.META_MASK), getController(), true);
-			setIcon(IconLibrary.SAVE_ICON);
-		}
 	}
 	
 	public class SaveModifiedItem extends FlexoMenuItem {

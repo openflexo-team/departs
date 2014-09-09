@@ -23,16 +23,14 @@ package org.openflexo.module.traceanalysis.view.routeview;
 import java.util.List;
 
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.model.annotations.Getter;
-import org.openflexo.model.annotations.ImplementationClass;
-import org.openflexo.model.annotations.ModelEntity;
-import org.openflexo.model.annotations.Setter;
-import org.openflexo.module.traceanalysis.model.ConfigurationMask;
+import org.openflexo.module.traceanalysis.model.TraceVirtualModelInstance;
+import org.openflexo.module.traceanalysis.model.mask.MaskedConfiguration;
+import org.openflexo.module.traceanalysis.model.mask.MaskedTransition;
 import org.openflexo.technologyadapter.trace.model.OBPTrace;
 import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObjectInstance;
 import org.openflexo.technologyadapter.trace.model.OBPTraceConfiguration;
 import org.openflexo.technologyadapter.trace.model.OBPTraceMessage;
-import org.openflexo.toolbox.HasPropertyChangeSupport;
+import org.openflexo.technologyadapter.trace.model.OBPTraceTransition;
 
 /**
  * Represents a OBP route, as a filtered {@link OBPTrace}
@@ -44,11 +42,15 @@ public interface OBPRoute extends FlexoObject {
 
 	public OBPTrace getTrace();
 	
+	public TraceVirtualModelInstance getTraceVirtualModelInstance();
+	
 	public boolean isVisible(OBPTraceConfiguration config);
 
 	public int getIndex(OBPTraceConfiguration config);
 
 	public int getIndex(OBPConfigurationInRoute configInRoute);
+	
+	public int getIndex(BehaviourObjectInRoute behaviourInRoute);
 
 	public OBPConfigurationInRoute getOBPConfigurationInRoute(OBPTraceConfiguration configuration);
 
@@ -90,4 +92,8 @@ public interface OBPRoute extends FlexoObject {
 	
 	public List<OBPConfigurationInRoute> getAsyncMessageConfigurations(OBPTraceMessage sendMessage, OBPTraceMessage receiveMessage);
 	
+	
+	public MaskedConfiguration getMaskedElement(OBPTraceConfiguration object);
+	
+	public MaskedTransition getMaskedElement(OBPTraceTransition object);
 }

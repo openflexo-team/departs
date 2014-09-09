@@ -26,13 +26,17 @@ import java.util.List;
 import java.util.Map;
 
 import org.openflexo.foundation.DefaultFlexoObject;
-import org.openflexo.module.traceanalysis.model.ConfigurationMask;
 import org.openflexo.module.traceanalysis.model.TraceVirtualModelInstance;
+import org.openflexo.module.traceanalysis.model.TraceVirtualModelInstance.FederatedElement;
+import org.openflexo.module.traceanalysis.model.mask.Mask;
+import org.openflexo.module.traceanalysis.model.mask.MaskedConfiguration;
+import org.openflexo.module.traceanalysis.model.mask.MaskedTransition;
 import org.openflexo.technologyadapter.trace.model.OBPTrace;
 import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObjectInstance;
 import org.openflexo.technologyadapter.trace.model.OBPTraceConfiguration;
 import org.openflexo.technologyadapter.trace.model.OBPTraceMessage;
 import org.openflexo.technologyadapter.trace.model.OBPTraceObject;
+import org.openflexo.technologyadapter.trace.model.OBPTraceTransition;
 
 public class OBPRouteImpl extends DefaultFlexoObject implements OBPRoute {
 
@@ -58,12 +62,20 @@ public class OBPRouteImpl extends DefaultFlexoObject implements OBPRoute {
 		this.traceVirtualModelInstance = traceVM;
 		visibleConfigurations = new ArrayList<OBPConfigurationInRoute>();
 		configMap = new HashMap<OBPTraceConfiguration, OBPConfigurationInRoute>();
-		visibleConfigurations.add(getOBPConfigurationInRoute(trace.getInitConfiguration()));
-		visibleConfigurations.add(getOBPConfigurationInRoute(trace.getLastConfiguration()));
 		visibleBehaviourObjects = new ArrayList<BehaviourObjectInRoute>();
 		visibleStates = new ArrayList<OBPStateInRoute>();
 		allStates = new ArrayList<OBPStateInRoute>();
 		behaviourObjectsMap = new HashMap<OBPTraceBehaviourObjectInstance, BehaviourObjectInRoute>();
+		messageMap = new HashMap<OBPTraceMessage, MessageInRoute>();
+		initializeVisibleElements();
+	}
+
+	private void initializeVisibleElements(){
+		visibleConfigurations.clear();
+		visibleBehaviourObjects.clear();
+		visibleStates.clear();
+		visibleConfigurations.add(getOBPConfigurationInRoute(trace.getInitConfiguration()));
+		visibleConfigurations.add(getOBPConfigurationInRoute(trace.getLastConfiguration()));
 		for (OBPTraceBehaviourObjectInstance c : trace.getOBPTraceBehaviourObjectInstances()) {
 			visibleBehaviourObjects.add(getBehaviourObjectInRoute(c));
 		}
@@ -72,9 +84,8 @@ public class OBPRouteImpl extends DefaultFlexoObject implements OBPRoute {
 				visibleStates.add(getOBPStateInRoute(behaviourObject, configuration));
 			}
 		}
-		messageMap = new HashMap<OBPTraceMessage, MessageInRoute>();
 	}
-
+	
 	@Override
 	public PropertyChangeSupport getPropertyChangeSupport() {
 		return pcSupport;
@@ -108,6 +119,10 @@ public class OBPRouteImpl extends DefaultFlexoObject implements OBPRoute {
 	@Override
 	public int getIndex(OBPConfigurationInRoute configInRoute) {
 		return visibleConfigurations.indexOf(configInRoute);
+	}
+	
+	public int getIndex(BehaviourObjectInRoute behaviourInRoute){
+		return visibleBehaviourObjects.indexOf(behaviourInRoute);
 	}
 
 	@Override
@@ -202,11 +217,11 @@ public class OBPRouteImpl extends DefaultFlexoObject implements OBPRoute {
 		BehaviourObjectInRoute oldValue = getBehaviourObjectInRoute(behaviourObject);
 		visibleBehaviourObjects.add(getBehaviourObjectInRoute(behaviourObject));
 
-		/*getPropertyChangeSupport().firePropertyChange("visibleBehaviourObjects", null, getBehaviourObjectInRoute(behaviourObject));
+		//getPropertyChangeSupport().firePropertyChange("visibleBehaviourObjects", null, getBehaviourObjectInRoute(behaviourObject));
 
 		for (BehaviourObjectInRoute c : visibleBehaviourObjects) {
 			c.getPropertyChangeSupport().firePropertyChange("index", null, c.getIndex());
-		}*/
+		}
 
 	}
 
@@ -215,11 +230,11 @@ public class OBPRouteImpl extends DefaultFlexoObject implements OBPRoute {
 		BehaviourObjectInRoute oldValue = getBehaviourObjectInRoute(behaviourObject);
 		visibleBehaviourObjects.remove(getBehaviourObjectInRoute(behaviourObject));
 
-		/*getPropertyChangeSupport().firePropertyChange("visibleBehaviourObjects", oldValue, null);
+		//getPropertyChangeSupport().firePropertyChange("visibleBehaviourObjects", oldValue, null);
 
 		for (BehaviourObjectInRoute c : visibleBehaviourObjects) {
 			c.getPropertyChangeSupport().firePropertyChange("index", null, c.getIndex());
-		}*/
+		}
 
 	}
 
@@ -332,26 +347,39 @@ public class OBPRouteImpl extends DefaultFlexoObject implements OBPRoute {
 	}
 
 	public void synchronizeWithMask(){
-		ConfigurationMask mask = (ConfigurationMask) traceVirtualModelInstance.getSelectedMask();
-		List<OBPTraceBehaviourObjectInstance> objectsToHide = new ArrayList<OBPTraceBehaviourObjectInstance>();
-		List<OBPTraceBehaviourObjectInstance> objectsToShow = new ArrayList<OBPTraceBehaviourObjectInstance>();
+		Mask mask = (Mask) traceVirtualModelInstance.getSelectedMask();
 		if(mask!=null){
-			for(BehaviourObjectInRoute behaviourObjectInRoute : getVisibleBehaviourObjects()){
-				if(mask.isTraceOBPObjectFiltered(behaviourObjectInRoute.getBehaviourObject())){
-					objectsToShow.add(behaviourObjectInRoute.getBehaviourObject());
-				}else {
-					objectsToHide.add(behaviourObjectInRoute.getBehaviourObject());
+			List<OBPTraceBehaviourObjectInstance> objectsToHide = new ArrayList<OBPTraceBehaviourObjectInstance>();
+			for(Object object : mask.getBehaviourObjects()){
+				OBPTraceBehaviourObjectInstance visibleObject = (OBPTraceBehaviourObjectInstance)object;
+				if(!visibleBehaviourObjects.contains(getBehaviourObjectInRoute(visibleObject))){
+					showBehaviourObject(visibleObject);
 				}
 			}
-		}
-		for(OBPTraceBehaviourObjectInstance object : objectsToHide){
-			hideBehaviourObject(object);
-		}
-		for(OBPTraceBehaviourObjectInstance object : objectsToShow){
-			showBehaviourObject(object);
-		}
-		
+			for(BehaviourObjectInRoute object : visibleBehaviourObjects ){
+				if(!mask.getBehaviourObjects().contains(object.getBehaviourObject())){
+					objectsToHide.add(object.getBehaviourObject());
+				}
+			}
+			for(OBPTraceBehaviourObjectInstance objectToHide :objectsToHide ){
+				hideBehaviourObject(objectToHide);
+			}
+		}	
 	}
 	
+	@Override
+	public TraceVirtualModelInstance getTraceVirtualModelInstance() {
+		// TODO Auto-generated method stub
+		return traceVirtualModelInstance;
+	}
+	
+	
+	public MaskedConfiguration getMaskedElement(OBPTraceConfiguration object){
+		return (MaskedConfiguration) getTraceVirtualModelInstance().getMaskedElement(object);
+	}
+	
+	public MaskedTransition getMaskedElement(OBPTraceTransition object){
+		return (MaskedTransition) getTraceVirtualModelInstance().getMaskedElement(object);
+	}
 	
 }

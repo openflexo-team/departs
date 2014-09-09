@@ -9,9 +9,9 @@
         <Children data="project.traceVirtualModelInstances" name="traceVirtualModelInstance" />
     </BrowserElement>
     <BrowserElement dataClassName="org.openflexo.module.traceanalysis.model.TraceVirtualModelInstance" label="traceVirtualModelInstance.name" icon="controller.iconForObject(traceVirtualModelInstance)" isEditable="false" filtered="false" defaultVisible="true" name="traceVirtualModelInstance">
-    	<Children data="traceVirtualModelInstance.configurationMasks" name="configurationMask" />
+    	<Children data="traceVirtualModelInstance.masks" name="mask" />
     </BrowserElement>
-    <BrowserElement dataClassName="org.openflexo.module.traceanalysis.model.ConfigurationMask" label="configurationMask.getName()" icon="controller.iconForObject(configurationMask)" isEditable="false" filtered="false" defaultVisible="true" name="configurationMask">
+    <BrowserElement dataClassName="org.openflexo.module.traceanalysis.model.mask.Mask" label="mask.getName()" icon="controller.iconForObject(mask)" isEditable="false" filtered="false" defaultVisible="true" name="mask">
     </BrowserElement>
   </Browser>
   <LocalizedDictionary />

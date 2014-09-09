@@ -21,6 +21,7 @@
 package org.openflexo.module.traceanalysis.view.routeview;
 
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.module.traceanalysis.model.mask.MaskedConfiguration;
 import org.openflexo.technologyadapter.trace.model.OBPTraceConfiguration;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
 
@@ -43,6 +44,10 @@ public interface OBPConfigurationInRoute extends FlexoObject {
 	public RelativeConfigurationArtefact getPreviousConfigurationArtefact();
 
 	public RelativeConfigurationArtefact getNextConfigurationArtefact();
+	
+	public boolean isVisible();
+	
+	public MaskedConfiguration getMaskedConfiguration();
 
 	public interface RelativeConfigurationArtefact {
 

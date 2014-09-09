@@ -61,6 +61,7 @@ public class BehaviourObjectInRoute implements HasPropertyChangeSupport {
 	}
 
 	public int getIndex() {
-		return route.getTrace().getOBPTraceBehaviourObjectInstances().indexOf(behaviourObject);
+		return route.getIndex(this);
+		//return route.getTrace().getOBPTraceBehaviourObjectInstances().indexOf(behaviourObject);
 	}
 }

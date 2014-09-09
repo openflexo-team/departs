@@ -5,6 +5,7 @@ import org.openflexo.fge.FGEModelFactory;
 import org.openflexo.fge.Drawing.DrawingTreeNode;
 import org.openflexo.fge.swing.control.SwingToolFactory;
 import org.openflexo.foundation.FlexoObject;
+import org.openflexo.module.traceanalysis.model.mask.MaskedConfiguration;
 import org.openflexo.selection.SelectionManager;
 import org.openflexo.selection.SelectionManagingDianaEditor;
 import org.openflexo.technologyadapter.trace.model.OBPTraceTransition;
@@ -22,9 +23,9 @@ public class OBPRouteEditor extends SelectionManagingDianaEditor<OBPRoute>{
 			DrawingTreeNode<?, ?> node) {
 		if (node.getDrawable() instanceof OBPConfigurationInRoute) {
 			OBPConfigurationInRoute configInRoute = (OBPConfigurationInRoute)node.getDrawable();
-			return configInRoute.getConfiguration();
+			return getDrawing().getModel().getMaskedElement(configInRoute.getConfiguration());
 		}else if (node.getDrawable() instanceof OBPTraceTransition){
-			return (OBPTraceTransition) node.getDrawable();
+			return getDrawing().getModel().getMaskedElement((OBPTraceTransition) node.getDrawable());
 		}else{
 			return super.getDrawableForDrawingTreeNode(node);
 		}

@@ -26,10 +26,14 @@ import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.foundation.viewpoint.VirtualModelTechnologyAdapter;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.icon.VPMIconLibrary;
 import org.openflexo.module.FlexoModule;
+import org.openflexo.module.traceanalysis.TraceAnalysisIconLibrary;
+import org.openflexo.module.traceanalysis.controller.action.TraceAnalysisControllerActionInitializer;
+import org.openflexo.module.traceanalysis.model.TraceAnalysisProject;
+import org.openflexo.module.traceanalysis.model.TraceVirtualModelInstance;
+import org.openflexo.module.traceanalysis.model.mask.Mask;
+import org.openflexo.module.traceanalysis.view.menu.TraceAnalysisMenuBar;
 import org.openflexo.selection.MouseSelectionManager;
 import org.openflexo.technologyadapter.cdl.CDLTechnologyAdapter;
 import org.openflexo.technologyadapter.fiacre.FiacreTechnologyAdapter;
@@ -39,13 +43,6 @@ import org.openflexo.view.controller.ControllerActionInitializer;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.TechnologyAdapterController;
 import org.openflexo.view.menu.FlexoMenuBar;
-import org.openflexo.module.traceanalysis.TraceAnalysisIconLibrary;
-import org.openflexo.module.traceanalysis.controller.TraceAnalysisSelectionManager;
-import org.openflexo.module.traceanalysis.controller.action.TraceAnalysisControllerActionInitializer;
-import org.openflexo.module.traceanalysis.model.TraceAnalysisProject;
-import org.openflexo.module.traceanalysis.model.ConfigurationMask;
-import org.openflexo.module.traceanalysis.model.TraceVirtualModelInstance;
-import org.openflexo.module.traceanalysis.view.menu.TraceAnalysisMenuBar;
 
 public class TraceAnalysisController extends FlexoController {
 
@@ -111,9 +108,9 @@ public class TraceAnalysisController extends FlexoController {
 				setCurrentEditedObjectAsModuleView(object);
 			}
 			if (getCurrentPerspective() == TA_PERSPECTIVE) {
-				if (object instanceof ConfigurationMask) {
+				/*if (object instanceof Mask) {
 					setCurrentEditedObjectAsModuleView(object);
-				}
+				}*/
 			}
 			getSelectionManager().setSelectedObject(object);
 		} 
@@ -125,7 +122,7 @@ public class TraceAnalysisController extends FlexoController {
 			return IconLibrary.OPENFLEXO_NOTEXT_16;
 		} else if (object instanceof TraceVirtualModelInstance) {
 			return TraceAnalysisIconLibrary.TA_SMALL_ICON;
-		} else if (object instanceof ConfigurationMask) {
+		} else if (object instanceof Mask) {
 			return TraceAnalysisIconLibrary.MASK_SMALL_ICON;
 		} 
 		return super.iconForObject(object);

@@ -2,6 +2,8 @@ package org.openflexo.module.traceanalysis.view.routeview.sequencediagram;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.List;
 
 import javax.sound.midi.Receiver;
@@ -37,6 +39,7 @@ import org.openflexo.fge.shapes.Rectangle;
 import org.openflexo.fge.shapes.ShapeSpecification;
 import org.openflexo.fge.shapes.ShapeSpecification.ShapeType;
 import org.openflexo.model.annotations.Getter.GetterImpl;
+import org.openflexo.module.traceanalysis.model.mask.Mask;
 import org.openflexo.module.traceanalysis.view.routeview.BehaviourObjectInRoute;
 import org.openflexo.module.traceanalysis.view.routeview.MessageInRoute;
 import org.openflexo.module.traceanalysis.view.routeview.OBPConfigurationInRoute;
@@ -55,7 +58,7 @@ import org.openflexo.technologyadapter.trace.model.OBPTraceState;
 import org.openflexo.technologyadapter.trace.model.OBPTraceTransition;
 import org.openflexo.toolbox.ImageIconResource;
 
-public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> {
+public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> implements PropertyChangeListener{
 
 	public static final double ROW_HEIGHT = 60.0;
 	public static final double LIFE_LINE_WIDTH = 150.0;
@@ -103,6 +106,7 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> {
 	public SequenceDiagramDrawing(OBPRoute graph, FGEModelFactory factory, RouteLayout layout) {
 		super(graph, factory, PersistenceMode.SharedGraphicalRepresentations);
 		this.layout=layout;
+		graph.getTraceVirtualModelInstance().getPropertyChangeSupport().addPropertyChangeListener("selectedMask", this);
 	}
 
 	public RouteLayout getLayout() {
@@ -111,9 +115,22 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> {
 
 	public void setLayout(RouteLayout layout) {
 		this.layout = layout;
+		update();
+	}
+	
+	@Override
+	public void propertyChange(PropertyChangeEvent arg0) {
+		if(arg0.getPropertyName().equals("selectedMask")){
+			getModel().getTraceVirtualModelInstance().getSelectedMask().getPropertyChangeSupport().addPropertyChangeListener("selection", this);
+		}
+		if(arg0.getPropertyName().equals("selection")){
+			update();
+		}
+	}
+	
+	private void update(){
 		invalidateGraphicalObjectsHierarchy(getModel());
 		updateGraphicalObjectsHierarchy(getModel());
-		//invalidateGraphicalObjectsHierarchy(getModel());
 	}
 	
 	@Override

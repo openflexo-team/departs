@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openflexo.foundation.DefaultFlexoObject;
-import org.openflexo.foundation.FlexoObject;
+import org.openflexo.module.traceanalysis.model.mask.MaskedConfiguration;
 import org.openflexo.technologyadapter.trace.model.OBPTraceConfiguration;
 
 public class OBPConfigurationInRouteImpl extends DefaultFlexoObject implements OBPConfigurationInRoute {
@@ -35,6 +35,8 @@ public class OBPConfigurationInRouteImpl extends DefaultFlexoObject implements O
 	private final Map<OBPTraceConfiguration, RelativeConfigurationArtefact> relativeConfigurationArtefacts;
 
 	private final PropertyChangeSupport pcSupport;
+	
+	private MaskedConfiguration maskedConfiguration;
 
 	public OBPConfigurationInRouteImpl(OBPTraceConfiguration configuration, OBPRoute route) {
 		super();
@@ -118,5 +120,19 @@ public class OBPConfigurationInRouteImpl extends DefaultFlexoObject implements O
 	@Override
 	public String toString() {
 		return "OBPConfigurationInRoute " + getConfiguration().getIndex();
+	}
+
+	@Override
+	public boolean isVisible() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public MaskedConfiguration getMaskedConfiguration() {
+		if(maskedConfiguration == null){
+			maskedConfiguration = (MaskedConfiguration) getRoute().getTraceVirtualModelInstance().getMaskedElement(getConfiguration());
+		}
+		return maskedConfiguration;
 	}
 }

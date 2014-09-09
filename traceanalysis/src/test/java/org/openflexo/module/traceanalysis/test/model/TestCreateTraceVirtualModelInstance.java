@@ -1,28 +1,17 @@
 package org.openflexo.module.traceanalysis.test.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.io.FileNotFoundException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.FlexoEditor;
-import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.OpenflexoProjectAtRunTimeTestCase;
-import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
-import org.openflexo.foundation.resource.SaveResourceException;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
-import org.openflexo.module.traceanalysis.model.ConfigurationMask;
 import org.openflexo.module.traceanalysis.model.TraceAnalysisProject;
 import org.openflexo.module.traceanalysis.model.TraceAnalysisProjectNature;
 import org.openflexo.module.traceanalysis.model.TraceVirtualModelInstance;
-import org.openflexo.module.traceanalysis.model.action.CreateConfigurationMask;
-import org.openflexo.module.traceanalysis.model.action.CreateTraceVirtualModelInstance;
+import org.openflexo.module.traceanalysis.model.mask.Mask;
 import org.openflexo.technologyadapter.cdl.CDLTechnologyAdapter;
 import org.openflexo.technologyadapter.fiacre.FiacreTechnologyAdapter;
 import org.openflexo.technologyadapter.trace.TraceTechnologyAdapter;
@@ -42,7 +31,7 @@ public class TestCreateTraceVirtualModelInstance extends OpenflexoProjectAtRunTi
 	static FlexoProject project;
 	static TraceAnalysisProject taProject;
 	static TraceVirtualModelInstance traceVirtualModelInstance;
-	static ConfigurationMask configurationMask;
+	static Mask mask;
 	
 	static CDLTechnologyAdapter cdlTa;
 	static FiacreTechnologyAdapter fiacreTa;
