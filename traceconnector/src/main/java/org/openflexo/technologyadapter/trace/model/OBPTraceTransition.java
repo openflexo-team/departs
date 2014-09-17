@@ -20,6 +20,7 @@
 
 package org.openflexo.technologyadapter.trace.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openflexo.model.annotations.Adder;
@@ -40,6 +41,8 @@ public interface OBPTraceTransition extends OBPTraceObject{
 
 	public static final String TRANSITION_KEY = "Transition";
 	
+	public static final String TRACE_KEY = "Trace";
+	
 	public static final String SOURCE_CONFIG_KEY = "SourceConfig";
 	
 	public static final String TARGET_CONFIG_KEY = "TargetConfig";
@@ -56,6 +59,11 @@ public interface OBPTraceTransition extends OBPTraceObject{
 	@Setter(SOURCE_CONFIG_KEY)
 	public void setSourceOBPTraceConfiguration(OBPTraceConfiguration configuration);
 	
+	@Getter(value=TRACE_KEY, inverse=OBPTrace.TRANSITIONS_KEY)
+	public OBPTrace getOBPTrace();
+	@Setter(TRACE_KEY)
+	public void setOBPTrace(OBPTrace trace);
+	
 	@Getter(value=TARGET_CONFIG_KEY)
 	public OBPTraceConfiguration getTargetOBPTraceConfiguration();
 	@Setter(TARGET_CONFIG_KEY)
@@ -69,9 +77,13 @@ public interface OBPTraceTransition extends OBPTraceObject{
 	public void addToOBPTraceMessages(OBPTraceMessage message);
 	@Remover(MESSAGES_KEY)
 	public void removeFromOBPTraceMessages(OBPTraceMessage message);
-
+	
+	public List<OBPTraceObject> getUpdatedElements();
+	
 	public static abstract class OBPTraceTransitionImpl extends OBPTraceObjectImpl implements OBPTraceTransition {
 
+		private List<OBPTraceObject> updatedElements;
+		
 		public OBPTraceTransitionImpl() {
 			// TODO Auto-generated constructor stub
 		}
@@ -79,6 +91,23 @@ public interface OBPTraceTransition extends OBPTraceObject{
 		@Override
 		public String getUri() {
 			return getName();
+		}
+		
+		@Override
+		public List<OBPTraceObject> getUpdatedElements(){
+			if(updatedElements==null){
+				updatedElements = new ArrayList<OBPTraceObject>();
+			}
+			
+			for(OBPTraceBehaviourObjectInstance instance : getOBPTrace().getOBPTraceBehaviourObjectInstances()){
+				for(OBPTraceVariable var : instance.getVariables()){
+					if(!var.getStringValueForConfiguration(getSourceOBPTraceConfiguration()).
+							equals(var.getStringValueForConfiguration(getTargetOBPTraceConfiguration()))){
+						updatedElements.add(var);
+					}
+				}
+			}
+			return updatedElements;
 		}
 
 	}

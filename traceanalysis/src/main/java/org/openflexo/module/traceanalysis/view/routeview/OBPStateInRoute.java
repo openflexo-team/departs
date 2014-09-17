@@ -23,6 +23,7 @@ import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObjectInstan
 import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObjectState;
 import org.openflexo.technologyadapter.trace.model.OBPTracePropertyState;
 import org.openflexo.technologyadapter.trace.model.OBPTraceState;
+import org.openflexo.technologyadapter.trace.model.OBPTraceVariable;
 
 public class OBPStateInRoute {
 	
@@ -45,6 +46,27 @@ public class OBPStateInRoute {
 	
 	public BehaviourObjectInRoute getBehaviourObjectInRoute(){
 		return behaviourObjectInRoute;
+	}
+	
+	public boolean isVisible(){
+		OBPRoute route = configuration.getRoute();
+		if(route.getSelectedMask()!=null){
+			return route.getSelectedMask().isRelevant(configuration.getConfiguration(), behaviourObjectInRoute.getBehaviourObject());
+		}else{
+			return true;
+		}
+		
+	}
+	
+	public String getValue(){
+		if(behaviourObjectInRoute.getBehaviourObject() instanceof OBPTraceBehaviourObjectInstance){
+			OBPTraceBehaviourObjectInstance behaviourObject = ((OBPTraceBehaviourObjectInstance)behaviourObjectInRoute.getBehaviourObject());
+			return behaviourObject.getOBPTraceBehaviourObjectStateInConfig(getConfigurationInRoute().getConfiguration()).getState().getName();
+		}else if(behaviourObjectInRoute.getBehaviourObject() instanceof OBPTraceVariable){
+			OBPTraceVariable behaviourObject = ((OBPTraceVariable)behaviourObjectInRoute.getBehaviourObject());
+			return behaviourObject.getStringValueForConfiguration(getConfigurationInRoute().getConfiguration());
+		}
+		return null;
 	}
 	
 	public OBPTraceState getState(){

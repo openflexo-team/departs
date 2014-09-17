@@ -32,10 +32,12 @@ import org.openflexo.foundation.view.FreeModelSlotInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.module.traceanalysis.model.mask.Mask;
-import org.openflexo.module.traceanalysis.model.mask.MaskedConfiguration;
-import org.openflexo.module.traceanalysis.model.mask.MaskedElement;
-import org.openflexo.module.traceanalysis.model.mask.MaskedFederatedElement;
-import org.openflexo.module.traceanalysis.model.mask.MaskedTransition;
+import org.openflexo.module.traceanalysis.model.mask.MaskableBehaviourObject;
+import org.openflexo.module.traceanalysis.model.mask.MaskableConfiguration;
+import org.openflexo.module.traceanalysis.model.mask.MaskableElement;
+import org.openflexo.module.traceanalysis.model.mask.MaskableFederatedElement;
+import org.openflexo.module.traceanalysis.model.mask.MaskableTransition;
+import org.openflexo.module.traceanalysis.model.mask.MaskableVariable;
 import org.openflexo.technologyadapter.cdl.model.CDLObserverState;
 import org.openflexo.technologyadapter.cdl.model.CDLParActivity;
 import org.openflexo.technologyadapter.cdl.model.CDLProperty;
@@ -60,27 +62,47 @@ public class TraceVirtualModelInstance extends TraceAnalysisVirtualModelInstance
 	
 	// The trace is a set of configurations and transitions
 	private OBPTrace trace;
-	
-	private List<FederatedElement> federatedElements;
-
+	// A Set of elements came from diffents sources and which are here federated
+	private List<MaskableFederatedElement> federatedElements;
+	// A Set of configurations and transitions
+	private List<MaskableConfiguration> configurationElements;
+	private List<MaskableTransition> transitionElements;
 	// A list of masks
 	private List<Mask> masks;
+	// A selected mask
 	private Mask selectedMask;
 	
-	// A list of masked elements
-	private List<MaskedElement<?>> maskedElements;
-	
+	private List<MaskableElement> maskableElements;
+
 	public TraceVirtualModelInstance(VirtualModelInstance virtualModelInstance, TraceAnalysisProject traceAnalysisProject)
 			throws InvalidArgumentException {
 		super(virtualModelInstance,traceAnalysisProject);
+		
+		maskableElements = new ArrayList<MaskableElement>();
+		
+		federate();
+		
+		for(OBPTraceConfiguration configuration:getTraceOBP().getConfigurations()){
+			maskableElements.add(getMaskableElement(configuration));
+		}
+		
+		for(OBPTraceTransition transition:getTraceOBP().getTransitions()){
+			maskableElements.add(getMaskableElement(transition));
+		}
+		
 		for(FlexoConceptInstance fciMask : getVirtualModelInstance().getFlexoConceptInstances(getMaskFlexoConcept())){
 			Mask mask = new Mask(fciMask, traceAnalysisProject, this);
 			getMasks().add(mask);
 		}
-		maskedElements = new ArrayList<MaskedElement<?>>();
-		federatedElements = new ArrayList<FederatedElement>();
-		
-		federate();
+	}
+	
+	// Get the trace
+	public OBPTrace getTraceOBP(){
+		if(trace==null){
+			FreeModelSlotInstance msi = (FreeModelSlotInstance) getVirtualModelInstance().getModelSlotInstance("traceModelSlot");
+			trace = (OBPTrace) msi.getAccessedResourceData();
+		}
+		return trace;
 	}
 	
 	private void federate(){
@@ -93,28 +115,93 @@ public class TraceVirtualModelInstance extends TraceAnalysisVirtualModelInstance
 	private void federateBehaviourObjects(){
 		// Associate BehaviourObject instance with their corresponding System or context element
 		for(OBPTraceBehaviourObjectInstance behaviourObjectInstance : getTraceOBP().getOBPTraceBehaviourObjectInstances()){
-			FederatedElement element = new FederatedElement(getFlexoBehaviourObjectObjectNamed(behaviourObjectInstance.getType()), behaviourObjectInstance);	
-			federatedElements.add(element);
+			MaskableBehaviourObject element = new MaskableBehaviourObject(getFlexoBehaviourObjectObjectNamed(behaviourObjectInstance.getType()), behaviourObjectInstance, null, this);	
 			// Associate Data Types with their corresponding System or context element
 			federateVariables(element);
 		}
 	}
 	
-	private void federateVariables(FederatedElement element){
+	private void federateVariables(MaskableFederatedElement element){
 		for(OBPTraceVariable variable : ((OBPTraceBehaviourObjectInstance)element.getValue()).getVariables()){
 			FlexoObject object = getVariableFlexoObjectNamed(variable.getName(),element.getType());
-			federatedElements.add(new FederatedElement(object, variable));	
+			MaskableVariable var = new MaskableVariable(object, variable,element, this);
+			element.addChild(var);
 		}
 	}
 	
-	public List<FederatedElement> getFederatedElements() {
+	public List<MaskableFederatedElement> getFederatedElements() {
+		if(federatedElements==null){
+			federatedElements = new ArrayList<MaskableFederatedElement>();
+			for(MaskableElement element : maskableElements){
+				if(element instanceof MaskableFederatedElement){
+					federatedElements.add((MaskableFederatedElement)element);
+				}
+			}
+		}
 		return federatedElements;
 	}
 	
-	public List<FederatedElement> getFilteredFederatedElement(Class<?> objectKind){
-		List<FederatedElement> filteredElements = new ArrayList<FederatedElement>();
-		for(FederatedElement object : federatedElements){
-			
+	public List<MaskableConfiguration> getMaskedConfigurations() {
+		if(configurationElements==null){
+			configurationElements = new ArrayList<MaskableConfiguration>();
+			for(MaskableElement element : maskableElements){
+				if(element instanceof MaskableConfiguration){
+					configurationElements.add((MaskableConfiguration)element);
+				}
+			}
+		}
+		return configurationElements;
+	}
+	
+	public List<MaskableTransition> getMaskableTransitions() {
+		if(transitionElements==null){
+			transitionElements = new ArrayList<MaskableTransition>();
+			for(MaskableElement element : maskableElements){
+				if(element instanceof MaskableTransition){
+					transitionElements.add((MaskableTransition)element);
+				}
+			}
+		}
+		return transitionElements;
+	}
+	
+	public MaskableConfiguration getMaskableElement(OBPTraceConfiguration object){
+		for(MaskableElement element : getMaskableElements()){
+			if(element.getValue().equals(object)){
+				return (MaskableConfiguration) element;
+			}
+		}
+		MaskableConfiguration newMaskedElement = new MaskableConfiguration(object, null, this);
+		for(MaskableFederatedElement element : getFederatedElements()){
+			if(element.getValue() instanceof OBPTraceBehaviourObjectInstance){
+				newMaskedElement.addChild(element);
+			}
+		}
+		return newMaskedElement;		
+	}
+	
+	public MaskableTransition getMaskableElement(OBPTraceTransition object){
+		for(MaskableElement element : getMaskableElements()){
+			if(element.getValue().equals(object)){
+				return (MaskableTransition) element;
+			}
+		}
+		MaskableTransition transition = new MaskableTransition(object, null, this);
+		return transition;		
+	}
+	
+	public MaskableFederatedElement getMaskableElement(OBPTraceObject object){
+		for(MaskableElement maskableElement : getMaskableElements()){
+			if(maskableElement instanceof MaskableFederatedElement && maskableElement.getValue().equals(object)){
+				return (MaskableFederatedElement) maskableElement;
+			}
+		}
+		return null;
+	}
+	
+	public List<MaskableFederatedElement> getFilteredFederatedElement(Class<?> objectKind){
+		List<MaskableFederatedElement> filteredElements = new ArrayList<MaskableFederatedElement>();
+		for(MaskableFederatedElement object : getFederatedElements()){
 			if(TypeUtils.isAssignableTo(object.getValue(), objectKind)){
 				filteredElements.add(object);
 			}else if(TypeUtils.isAssignableTo(object.getType(), objectKind)){
@@ -149,14 +236,7 @@ public class TraceVirtualModelInstance extends TraceAnalysisVirtualModelInstance
 		return null;
 	}
 	
-	// Get the trace
-	public OBPTrace getTraceOBP(){
-		if(trace==null){
-			FreeModelSlotInstance msi = (FreeModelSlotInstance) getVirtualModelInstance().getModelSlotInstance("traceModelSlot");
-			trace = (OBPTrace) msi.getAccessedResourceData();
-		}
-		return trace;
-	}
+	
 	
 	// Get the whole set of Transitions
 	public List<OBPTraceTransition> getTransitions(){
@@ -320,58 +400,12 @@ public class TraceVirtualModelInstance extends TraceAnalysisVirtualModelInstance
 		getPropertyChangeSupport().firePropertyChange("selectedMask", null, selectedMask);
 	}
 	
-	public MaskedElement<OBPTraceConfiguration> getMaskedElement(OBPTraceConfiguration object){
-		for(MaskedElement maskedElement : maskedElements){
-			if(maskedElement.getMaskedElement().equals(object)){
-				return maskedElement;
-			}
-		}
-		MaskedElement newMaskedElement = new MaskedConfiguration(object, selectedMask);
-		maskedElements.add(newMaskedElement);
-		return newMaskedElement;		
+	public List<MaskableElement> getMaskableElements() {
+		return maskableElements;
 	}
-	
-	public MaskedElement<OBPTraceTransition> getMaskedElement(OBPTraceTransition object){
-		for(MaskedElement maskedElement : maskedElements){
-			if(maskedElement.getMaskedElement().equals(object)){
-				return maskedElement;
-			}
-		}
-		MaskedElement newMaskedElement = new MaskedTransition(object, selectedMask);
-		maskedElements.add(newMaskedElement);
-		return newMaskedElement;		
-	}
-	
-	public MaskedElement getMaskedElement(FederatedElement federatedElement){
-		for(MaskedElement maskedElement : maskedElements){
-			if(maskedElement.getMaskedElement().equals(federatedElement)){
-				return maskedElement;
-			}
-		}
-		MaskedElement newMaskedElement = new MaskedFederatedElement(federatedElement, selectedMask);
-		maskedElements.add(newMaskedElement);
-		return newMaskedElement;		
-	}
-	
-	public class FederatedElement{
-		
-		private final FlexoObject type;
-		
-		private final OBPTraceObject value;
 
-		public FederatedElement(FlexoObject type, OBPTraceObject value) {
-			super();
-			this.type = type;
-			this.value = value;
-		}
-
-		public FlexoObject getType() {
-			return type;
-		}
-
-		public OBPTraceObject getValue() {
-			return value;
-		}		
+	public void setMaskableElements(List<MaskableElement> maskableElements) {
+		this.maskableElements = maskableElements;
 	}
 	
 }

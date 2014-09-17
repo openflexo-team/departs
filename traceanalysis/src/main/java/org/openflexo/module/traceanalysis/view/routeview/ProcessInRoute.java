@@ -20,11 +20,11 @@
 
 package org.openflexo.module.traceanalysis.view.routeview;
 
-import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openflexo.technologyadapter.trace.model.OBPTraceObject;
+import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObjectInstance;
+import org.openflexo.technologyadapter.trace.model.OBPTraceVariable;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
 
 /**
@@ -32,42 +32,25 @@ import org.openflexo.toolbox.HasPropertyChangeSupport;
  * @author Vincent
  *
  */
-public class BehaviourObjectInRoute<O extends OBPTraceObject> implements HasPropertyChangeSupport {
+public class ProcessInRoute extends BehaviourObjectInRoute<OBPTraceBehaviourObjectInstance> implements HasPropertyChangeSupport {
 
-	private final OBPRoute route;
-	private final O behaviourObject;
-	private final PropertyChangeSupport pcSupport;
-
-	public BehaviourObjectInRoute(O behaviourObject, OBPRoute route) {
-		this.route = route;
-		this.behaviourObject = behaviourObject;
-		pcSupport = new PropertyChangeSupport(this);
-	}
-
-	@Override
-	public PropertyChangeSupport getPropertyChangeSupport() {
-		return pcSupport;
-	}
+	private List<Chronogram> chronograms;
 	
-	@Override
-	public String getDeletedProperty() {
-		return null;
-	}
-	
-	public OBPRoute getRoute() {
-		return route;
-	}
-
-	public O getBehaviourObject() {
-		return behaviourObject;
+	public ProcessInRoute(OBPTraceBehaviourObjectInstance behaviourObject,
+			OBPRoute route) {
+		super(behaviourObject, route);
+		chronograms = new ArrayList<Chronogram>();
+		for(OBPTraceVariable variable: behaviourObject.getVariables()){
+			chronograms.add(new Chronogram(this, variable));
+		}
 	}
 
-	public int getIndex() {
-		return route.getIndex(this);
-		//return route.getTrace().getOBPTraceBehaviourObjectInstances().indexOf(behaviourObject);
+	public List<Chronogram> getChronograms() {
+		return chronograms;
 	}
-	
-	public int getVirtualIndex() {
-		return route.getVirtualIndex(this);
+
+	public int getChronogramIndex(Chronogram chronogram){
+		return getChronograms().indexOf(chronogram);
 	}
+
 }

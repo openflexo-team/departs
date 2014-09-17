@@ -19,6 +19,8 @@
  */
 package org.openflexo.module.traceanalysis.view;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -29,6 +31,8 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 
 import org.openflexo.fge.FGEModelFactory;
 import org.openflexo.fge.FGEModelFactoryImpl;
@@ -65,17 +69,11 @@ public class OBPRouteModuleView extends JPanel implements ModuleView<TraceVirtua
 		} catch (ModelDefinitionException e) {
 			e.printStackTrace();
 		}
-	
 		
 		OBPRoute route = new OBPRouteImpl(traceVirtualModelInstance);
 		final SequenceDiagramDrawing sequenceDiagram = new SequenceDiagramDrawing(route, factory, RouteLayout.VERTICAL);
-		
-		ChronogramDrawing chronogram = new ChronogramDrawing(route, factory);
 		OBPRouteEditor sequence = new OBPRouteEditor(sequenceDiagram,controller.getSelectionManager(),factory, SwingToolFactory.DEFAULT);
-		OBPRouteEditor chrono = new OBPRouteEditor(chronogram,controller.getSelectionManager(),factory, SwingToolFactory.DEFAULT);
-
 		// Layout
-
 		JButton switchLayout = new JButton("Change Layout");
 		switchLayout.addActionListener(new ActionListener() {
 			
@@ -93,30 +91,21 @@ public class OBPRouteModuleView extends JPanel implements ModuleView<TraceVirtua
 		
 		GridBagConstraints c1 = new GridBagConstraints();
 		c1.fill = GridBagConstraints.HORIZONTAL;
-		c1.weightx = 1;
 		c1.gridx = 0;
 		c1.gridy = 1;
-		
-		GridBagConstraints c2 = new GridBagConstraints();
-		c2.fill = GridBagConstraints.HORIZONTAL;
-		c2.weightx = 1;
-		c2.gridx = 0;
-		c2.gridy = 2;
+		c1.weighty = 1;
 		
 		GridBagConstraints c3 = new GridBagConstraints();
-		c3.weightx = 0.2;
+		c3.weighty = 0.01;
 		c3.gridx = 0;
 		c3.gridy = 0;
 		
-		add(sequence.getDrawingView(),c1);
-		add(chrono.getDrawingView(),c2);
-		add(switchLayout, c3);
-		
 		sequenceDiagram.printGraphicalObjectHierarchy();
-		chronogram.printGraphicalObjectHierarchy();
-		
-		//getRepresentedObject().getPropertyChangeSupport().addPropertyChangeListener(getRepresentedObject().getDeletedProperty(), this);
-		
+		JScrollPane scrollPan = new JScrollPane(sequence.getDrawingView());
+		Dimension dimension = new Dimension(traceVirtualModelInstance.getFederatedElements().size()*100,traceVirtualModelInstance.getConfigurations().size() * 100);
+		scrollPan.setPreferredSize(dimension);
+		add(scrollPan, c1);
+		add(switchLayout, c3);
 	}
 
 	@Override

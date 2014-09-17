@@ -62,7 +62,7 @@ public class MaskInitializer extends ActionInitializer<CreateMask, TraceVirtualM
 		return new FlexoActionFinalizer<CreateMask>() {
 			@Override
 			public boolean run(EventObject e, CreateMask action) {
-				getController().selectAndFocusObject(action.getMask());
+				//getController().selectAndFocusObject(action.getMask());
 				return true;
 			}
 		};

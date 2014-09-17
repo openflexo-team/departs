@@ -21,9 +21,8 @@
 package org.openflexo.module.traceanalysis.view.routeview;
 
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.module.traceanalysis.model.mask.MaskedConfiguration;
+import org.openflexo.module.traceanalysis.model.mask.MaskableConfiguration;
 import org.openflexo.technologyadapter.trace.model.OBPTraceConfiguration;
-import org.openflexo.toolbox.HasPropertyChangeSupport;
 
 /**
  * Reification of the link between a configuration and a route
@@ -47,7 +46,7 @@ public interface OBPConfigurationInRoute extends FlexoObject {
 	
 	public boolean isVisible();
 	
-	public MaskedConfiguration getMaskedConfiguration();
+	public MaskableConfiguration getMaskableConfiguration();
 
 	public interface RelativeConfigurationArtefact {
 

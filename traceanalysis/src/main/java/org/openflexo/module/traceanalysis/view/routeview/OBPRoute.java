@@ -24,13 +24,13 @@ import java.util.List;
 
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.module.traceanalysis.model.TraceVirtualModelInstance;
-import org.openflexo.module.traceanalysis.model.mask.MaskedConfiguration;
-import org.openflexo.module.traceanalysis.model.mask.MaskedTransition;
+import org.openflexo.module.traceanalysis.model.mask.Mask;
 import org.openflexo.technologyadapter.trace.model.OBPTrace;
 import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObjectInstance;
 import org.openflexo.technologyadapter.trace.model.OBPTraceConfiguration;
 import org.openflexo.technologyadapter.trace.model.OBPTraceMessage;
-import org.openflexo.technologyadapter.trace.model.OBPTraceTransition;
+import org.openflexo.technologyadapter.trace.model.OBPTraceObject;
+import org.openflexo.technologyadapter.trace.model.OBPTraceVariable;
 
 /**
  * Represents a OBP route, as a filtered {@link OBPTrace}
@@ -45,12 +45,18 @@ public interface OBPRoute extends FlexoObject {
 	public TraceVirtualModelInstance getTraceVirtualModelInstance();
 	
 	public boolean isVisible(OBPTraceConfiguration config);
+	
+	public boolean isVisible(OBPTraceObject config);
 
 	public int getIndex(OBPTraceConfiguration config);
 
 	public int getIndex(OBPConfigurationInRoute configInRoute);
 	
 	public int getIndex(BehaviourObjectInRoute behaviourInRoute);
+	
+	public int getVirtualIndex(BehaviourObjectInRoute behaviourInRoute);
+	
+	public List<OBPConfigurationInRoute> getVisibleConfigurations();
 
 	public OBPConfigurationInRoute getOBPConfigurationInRoute(OBPTraceConfiguration configuration);
 
@@ -62,13 +68,9 @@ public interface OBPRoute extends FlexoObject {
 
 	public OBPConfigurationInRoute getConfiguration(int index);
 
-	public void show(OBPTraceConfiguration config);
+	public void show(OBPTraceObject object);
 
-	public void hide(OBPTraceConfiguration config);
-
-	public void showBehaviourObject(OBPTraceBehaviourObjectInstance behaviourObject);
-
-	public void hideBehaviourObject(OBPTraceBehaviourObjectInstance behaviourObject);
+	public void hide(OBPTraceObject object);
 	
 	public AbstractTransitionArtefact getAbstractTransition(OBPConfigurationInRoute from, OBPConfigurationInRoute to);
 
@@ -82,7 +84,7 @@ public interface OBPRoute extends FlexoObject {
 
 	public List<BehaviourObjectInRoute> getVisibleBehaviourObjects();
 
-	public BehaviourObjectInRoute getBehaviourObjectInRoute(OBPTraceBehaviourObjectInstance behaviourObject);
+	public BehaviourObjectInRoute getBehaviourObjectInRoute(OBPTraceObject behaviourObject);
 	
 	public OBPStateInRoute getOBPStateInRoute(BehaviourObjectInRoute behaviourObject, OBPConfigurationInRoute configuration);
 
@@ -92,8 +94,9 @@ public interface OBPRoute extends FlexoObject {
 	
 	public List<OBPConfigurationInRoute> getAsyncMessageConfigurations(OBPTraceMessage sendMessage, OBPTraceMessage receiveMessage);
 	
+	public Mask getSelectedMask();
 	
-	public MaskedConfiguration getMaskedElement(OBPTraceConfiguration object);
+	/*public MaskableConfiguration getMaskedElement(OBPTraceConfiguration object);
 	
-	public MaskedTransition getMaskedElement(OBPTraceTransition object);
+	public MaskableTransition getMaskedElement(OBPTraceTransition object);*/
 }

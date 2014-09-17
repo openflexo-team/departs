@@ -3,7 +3,6 @@ package org.openflexo.module.traceanalysis.model.mask;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.openflexo.foundation.DefaultFlexoObject;
@@ -12,42 +11,42 @@ import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.viewpoint.PrimitiveRole;
 import org.openflexo.module.traceanalysis.model.TraceAnalysisProject;
 import org.openflexo.module.traceanalysis.model.TraceVirtualModelInstance;
-import org.openflexo.module.traceanalysis.model.TraceVirtualModelInstance.FederatedElement;
+import org.openflexo.module.traceanalysis.model.mask.MaskableElement.MaskMode;
 import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObjectInstance;
 import org.openflexo.technologyadapter.trace.model.OBPTraceConfiguration;
 import org.openflexo.technologyadapter.trace.model.OBPTraceObject;
 import org.openflexo.technologyadapter.trace.model.OBPTraceVariable;
 
+
+/**
+ * A Mask reference a selection of masked elements that should be filterer.
+ * @author Vincent
+ *
+ */
 public class Mask extends DefaultFlexoObject implements PropertyChangeListener {
 	
 	private final FlexoConceptInstance flexoConceptInstance;
 	private String name;
 	private static String NAME = "name";
-	private List<FlexoObject> selection;
+	private List<MaskableElement> selection;
 	private final TraceAnalysisProject project;
 	private final TraceVirtualModelInstance trace;
-	
-	
+
 	public Mask(FlexoConceptInstance flexoConceptInstance,TraceAnalysisProject project, TraceVirtualModelInstance trace) {
 		super();
 		this.flexoConceptInstance = flexoConceptInstance;
 		name = flexoConceptInstance.getFlexoActor(NAME);
-		selection = new ArrayList<FlexoObject>();
+		selection = new ArrayList<MaskableElement>();
 		this.project = project;
 		this.trace = trace;
-		for(FederatedElement element : trace.getFederatedElements()){
-			selection.add(element.getType());
-		}
-	}
-
-	@Override
-	public void propertyChange(PropertyChangeEvent arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 	
 	public TraceAnalysisProject getTraceAnalysisProject(){
 		return project;
+	}
+	
+	public TraceVirtualModelInstance getTrace() {
+		return trace;
 	}
 
 	public String getName() {
@@ -62,75 +61,109 @@ public class Mask extends DefaultFlexoObject implements PropertyChangeListener {
 		return flexoConceptInstance;
 	}
 	
-	public List<FlexoObject> getSelection() {
+	public List<MaskableElement> getSelection() {
 		return selection;
 	}
-
-	public void setSelection(List<FlexoObject> selection) {
-		this.selection = selection;
-	}
 	
-	public void updateSelection(FlexoObject selected){
+	public void updateSelection(MaskableElement selected){
 		if(selection.contains(selected)){
 			selection.remove(selected);
-		} else{
+		}else{
 			selection.add(selected);
 		}
+		//selected.mask();
+		/*MaskableElement parent = selected.getParent();
+		if(parent!=null && parent instanceof MaskableFederatedElement){
+			parent.setInMask(true);
+		}*/
 		getPropertyChangeSupport().firePropertyChange("selection", null, selection);
 	}
 	
-	public List<?> getFilteredSelection(Class<?> objectKind){
-		List<FlexoObject> filteredSelection = new ArrayList<FlexoObject>();
-		for(FlexoObject object : selection){
-			if(object.getClass().isAssignableFrom(objectKind)){
-				filteredSelection.add(object);
-			}
+	public List<OBPTraceObject> getVisibleOBPTraceObjects(){
+		List<OBPTraceObject> visibleOBPTraceObjects = new ArrayList<OBPTraceObject>();
+		for(MaskableElement maskableElement : getSelection()){
+			visibleOBPTraceObjects.add((OBPTraceObject) maskableElement.getValue());
 		}
-		return filteredSelection;
+		return visibleOBPTraceObjects;
 	}
-	
-	public List<?> getFilteredSelection(List<?> elements){
-		List<Object> filteredSelection = new ArrayList<Object>();
-		for(Object object : selection){
-			if(elements.contains(object)){
-				filteredSelection.add(object);
-			}
-		}
-		return filteredSelection;
-	}
-	
 	
 	public boolean isContainedInSelection(Object object){
-		for(FlexoObject selectedObject : selection){
+		for(FlexoObject selectedObject : getSelection()){
 			if(selectedObject.equals(object)){
 				return true;
 			}
 		}
 		return false;
 	}
-
-	public TraceVirtualModelInstance getTrace() {
-		return trace;
+	
+	// All configurations for which a changes happenned
+	public List<OBPTraceConfiguration> getRelevantConfigurations(){
+		List<OBPTraceConfiguration> relevantConfigs = new ArrayList<OBPTraceConfiguration>();
+		for(MaskableElement maskableElement : getMaskableElements()){
+			if(maskableElement instanceof MaskableFederatedElement){
+				MaskableFederatedElement element = (MaskableFederatedElement)maskableElement;
+				if(isContainedInSelection(element)){
+					for(OBPTraceConfiguration config : getTrace().getConfigurations()){
+						if(element.isRelevant(config, getTrace().getTraceOBP().getPreviousConfiguration(config))){
+							relevantConfigs.add(config);
+						}
+					}
+				}
+				
+			}
+		}
+		return relevantConfigs;
+	}
+	
+	public boolean isRelevant(OBPTraceConfiguration configuration, OBPTraceObject object){
+		MaskableFederatedElement maskableElement = getTrace().getMaskableElement(object);
+		if(maskableElement.getMaskMode().equals(MaskMode.ALWAYS_VISIBLE)){
+			return true;
+		}else {
+			OBPTraceConfiguration previous = getTrace().getTraceOBP().getPreviousConfiguration(configuration);
+			return maskableElement.isRelevant(configuration, previous);
+		}
+	}
+	
+	public List<OBPTraceBehaviourObjectInstance> getConfigurations(){
+		List<MaskableFederatedElement> elements = getTrace().getFilteredFederatedElement(OBPTraceBehaviourObjectInstance.class);
+		return (List<OBPTraceBehaviourObjectInstance>)getOBPTraceObjectsFromFederatedElements(elements);
 	}
 	
 	public List<OBPTraceBehaviourObjectInstance> getBehaviourObjects(){
-		List<FederatedElement> elements = getTrace().getFilteredFederatedElement(OBPTraceBehaviourObjectInstance.class);
+		List<MaskableFederatedElement> elements = getTrace().getFilteredFederatedElement(OBPTraceBehaviourObjectInstance.class);
 		return (List<OBPTraceBehaviourObjectInstance>)getOBPTraceObjectsFromFederatedElements(elements);
 	}
 	
 	public List<OBPTraceVariable> getVariables(){
-		List<FederatedElement> elements = getTrace().getFilteredFederatedElement(OBPTraceVariable.class);
+		List<MaskableFederatedElement> elements = getTrace().getFilteredFederatedElement(OBPTraceVariable.class);
 		return (List<OBPTraceVariable>)getOBPTraceObjectsFromFederatedElements(elements);
 	}
 
-	public List<?> getOBPTraceObjectsFromFederatedElements(List<FederatedElement> elements){
+	public List<? extends OBPTraceObject> getOBPTraceObjectsFromFederatedElements(List<MaskableFederatedElement> elements){
 		List<OBPTraceObject> returned = new ArrayList<OBPTraceObject>();
-		for(FederatedElement federatedElement : elements){
-			if(isContainedInSelection(federatedElement.getType())){
+		for(MaskableFederatedElement federatedElement : elements){
+			if(isContainedInSelection(federatedElement)){
 				returned.add((OBPTraceObject) federatedElement.getValue());
 			}
 		}
 		return returned;
+	}
+	
+	// Get the set of maskable elements
+	public List<MaskableElement> getMaskableElements() {
+		return getTrace().getMaskableElements();
+	}
+
+	// Get the set of parent maskable elements
+	public List<MaskableFederatedElement> getParentMaskableElements() {
+		return getTrace().getFilteredFederatedElement(OBPTraceBehaviourObjectInstance.class);
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

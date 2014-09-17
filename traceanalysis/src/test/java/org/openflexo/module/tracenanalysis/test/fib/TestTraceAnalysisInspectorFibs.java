@@ -13,13 +13,13 @@ public class TestTraceAnalysisInspectorFibs extends GenericFIBInspectorTestCase 
 	}
 
 	@Test
-	public void testTraceAnalysisInspector() {
-	//	validateFIB("Inspectors/TRACEANALYSIS/FIBTraceVirtualModelInstance.inspector");
+	public void testFIBMaskableConfigurationInspector() {
+		validateFIB("Inspectors/TRACEANALYSIS/FIBMaskableConfiguration.inspector");
 	}
 	
 	@Test
-	public void testFIBMaskedConfigurationInspector() {
-		validateFIB("Inspectors/TRACEANALYSIS/FIBMaskedConfiguration.inspector");
+	public void testFIBMaskableTransitionInspector() {
+		validateFIB("Inspectors/TRACEANALYSIS/FIBMaskableTransition.inspector");
 	}
 
 }

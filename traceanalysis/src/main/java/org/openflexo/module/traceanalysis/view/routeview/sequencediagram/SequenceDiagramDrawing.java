@@ -4,14 +4,13 @@ import java.awt.Color;
 import java.awt.Font;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.HashMap;
 import java.util.List;
-
-import javax.sound.midi.Receiver;
-import javax.swing.ImageIcon;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.fge.BackgroundImageBackgroundStyle;
-import org.openflexo.fge.BackgroundStyle;
 import org.openflexo.fge.ColorGradientBackgroundStyle.ColorGradientDirection;
 import org.openflexo.fge.ConnectorGraphicalRepresentation;
 import org.openflexo.fge.DrawingGraphicalRepresentation;
@@ -20,12 +19,14 @@ import org.openflexo.fge.FGEModelFactory;
 import org.openflexo.fge.ForegroundStyle.DashStyle;
 import org.openflexo.fge.GRBinding.ConnectorGRBinding;
 import org.openflexo.fge.GRBinding.DrawingGRBinding;
+import org.openflexo.fge.GRBinding.GraphGRBinding;
 import org.openflexo.fge.GRBinding.ShapeGRBinding;
 import org.openflexo.fge.GRProvider.ConnectorGRProvider;
 import org.openflexo.fge.GRProvider.DrawingGRProvider;
 import org.openflexo.fge.GRProvider.ShapeGRProvider;
 import org.openflexo.fge.GRStructureVisitor;
 import org.openflexo.fge.GraphicalRepresentation;
+import org.openflexo.fge.GraphicalRepresentation.HorizontalTextAlignment;
 import org.openflexo.fge.ShapeGraphicalRepresentation;
 import org.openflexo.fge.connectors.ConnectorSpecification.ConnectorType;
 import org.openflexo.fge.connectors.ConnectorSymbol.EndSymbolType;
@@ -34,29 +35,35 @@ import org.openflexo.fge.control.MouseControl.MouseButton;
 import org.openflexo.fge.control.MouseControlContext;
 import org.openflexo.fge.control.actions.MouseClickControlActionImpl;
 import org.openflexo.fge.control.actions.MouseClickControlImpl;
+import org.openflexo.fge.graph.FGEDiscreteFunctionGraph;
+import org.openflexo.fge.graph.FGEFunctionGraph.Orientation;
+import org.openflexo.fge.graph.FGEGraph.GraphType;
+import org.openflexo.fge.graph.FGENumericFunction;
 import org.openflexo.fge.impl.DrawingImpl;
 import org.openflexo.fge.shapes.Rectangle;
 import org.openflexo.fge.shapes.ShapeSpecification;
 import org.openflexo.fge.shapes.ShapeSpecification.ShapeType;
-import org.openflexo.model.annotations.Getter.GetterImpl;
-import org.openflexo.module.traceanalysis.model.mask.Mask;
 import org.openflexo.module.traceanalysis.view.routeview.BehaviourObjectInRoute;
+import org.openflexo.module.traceanalysis.view.routeview.Chronogram;
+import org.openflexo.module.traceanalysis.view.routeview.DrawingFactory;
 import org.openflexo.module.traceanalysis.view.routeview.MessageInRoute;
 import org.openflexo.module.traceanalysis.view.routeview.OBPConfigurationInRoute;
-import org.openflexo.module.traceanalysis.view.routeview.OBPRoute;
-import org.openflexo.module.traceanalysis.view.routeview.OBPStateInRoute;
 import org.openflexo.module.traceanalysis.view.routeview.OBPConfigurationInRoute.RelativeConfigurationArtefact;
+import org.openflexo.module.traceanalysis.view.routeview.OBPRoute;
 import org.openflexo.module.traceanalysis.view.routeview.OBPRoute.AbstractTransitionArtefact;
+import org.openflexo.module.traceanalysis.view.routeview.OBPStateInRoute;
+import org.openflexo.module.traceanalysis.view.routeview.ProcessInRoute;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObjectInstance;
+import org.openflexo.technologyadapter.trace.model.OBPTraceData;
 import org.openflexo.technologyadapter.trace.model.OBPTraceMessage;
 import org.openflexo.technologyadapter.trace.model.OBPTraceMessageReceive;
 import org.openflexo.technologyadapter.trace.model.OBPTraceMessageSend;
 import org.openflexo.technologyadapter.trace.model.OBPTraceMessageSynchro;
-import org.openflexo.technologyadapter.trace.model.OBPTraceState;
+import org.openflexo.technologyadapter.trace.model.OBPTraceObject;
 import org.openflexo.technologyadapter.trace.model.OBPTraceTransition;
-import org.openflexo.toolbox.ImageIconResource;
+import org.openflexo.technologyadapter.trace.model.OBPTraceVariable;
 
 public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> implements PropertyChangeListener{
 
@@ -69,8 +76,10 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> implements Pro
 	public static final double CIRCLE_STATE_HEIGHT = 20.0;
 	public static final double LEFT_OFFSET = 70.0;
 	public static final double UP_OFFSET = 50.0;
-	public static final double PREVIOUS_CONFIGURATION_OFFSET = 35.0;
-	public static final double NEXT_CONFIGURATION_OFFSET = 75.0;
+	public static final double PREVIOUS_VERT_CONFIGURATION_OFFSET = 35.0;
+	public static final double NEXT_VERT_CONFIGURATION_OFFSET = 75.0;
+	public static final double PREVIOUS_HORIZ_CONFIGURATION_OFFSET = 15.0;
+	public static final double NEXT_HORIZ_CONFIGURATION_OFFSET = 95.0;
 	public static final double INTERMEDIATE_CONFIGURATION_OFFSET = 85.0;
 	
 	public static final Resource SUCCESS = ResourceLocator.locateResource("Icons/cdl_success.png");
@@ -97,6 +106,11 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> implements Pro
 	private ConnectorGraphicalRepresentation messageRepresentation;
 	// private ShapeGraphicalRepresentation previousConfigurationRepresentation;
 	
+	
+	private Map<FGEDiscreteFunctionGraph<OBPTraceData>,GraphGRBinding> chronograms;
+	
+	private DrawingGraphicalRepresentation drawingRepresentation;
+	
 	public enum RouteLayout {
 			HORIZONTAL, VERTICAL
 	}
@@ -122,6 +136,7 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> implements Pro
 	public void propertyChange(PropertyChangeEvent arg0) {
 		if(arg0.getPropertyName().equals("selectedMask")){
 			getModel().getTraceVirtualModelInstance().getSelectedMask().getPropertyChangeSupport().addPropertyChangeListener("selection", this);
+			update();
 		}
 		if(arg0.getPropertyName().equals("selection")){
 			update();
@@ -136,193 +151,32 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> implements Pro
 	@Override
 	public void init() {
 
-		graphRepresentation = getFactory().makeDrawingGraphicalRepresentation();
-		graphRepresentation.setHeight(500);
+		DrawingFactory drawingFactory = new DrawingFactory(getFactory());
 		
-		configurationRepresentation = getFactory().makeShapeGraphicalRepresentation(ShapeType.CIRCLE);
-		configurationRepresentation.setWidth(20);
-		configurationRepresentation.setHeight(20);
-		/*configurationRepresentation.setAbsoluteTextX(40);
-		configurationRepresentation.setAbsoluteTextY(13);*/
-		configurationRepresentation.setTextStyle(getFactory().makeTextStyle(Color.BLACK,
-				FGEConstants.DEFAULT_TEXT_FONT.deriveFont(Font.BOLD)));
-		configurationRepresentation.setShadowStyle(getFactory().makeNoneShadowStyle());
-		configurationRepresentation.setBackground(getFactory().makeColorGradientBackground(FGEConstants.DEFAULT_BACKGROUND_COLOR,
-				Color.white, ColorGradientDirection.SOUTH_EAST_NORTH_WEST));
-		configurationRepresentation.setForeground(getFactory().makeForegroundStyle(Color.ORANGE));
-		configurationRepresentation.addToMouseClickControls(new MouseClickControlImpl<AbstractDianaEditor<?, ?, ?>>(
-				"toogleVisibleStateForConfiguration", MouseButton.LEFT, 2, new MouseClickControlActionImpl<AbstractDianaEditor<?, ?, ?>>() {
-					@Override
-					public boolean handleClick(DrawingTreeNode<?, ?> dtn, AbstractDianaEditor<?, ?, ?> controller,
-							MouseControlContext context) {
-						System.out.println("toogleVisibleStateForConfiguration for " + dtn.getDrawable());
-						if (dtn.getDrawable() instanceof OBPConfigurationInRoute) {
-							OBPConfigurationInRoute configInRoute = (OBPConfigurationInRoute) dtn.getDrawable();
-							configInRoute.getRoute().hide(configInRoute.getConfiguration());
-						}
-						return true;
-					}
-				}, false, false, false, false, null));
-
-		intermediateConfigurationRepresentation = getFactory().makeShapeGraphicalRepresentation(ShapeType.CIRCLE);
-		intermediateConfigurationRepresentation.setWidth(10);
-		intermediateConfigurationRepresentation.setHeight(10);
-		intermediateConfigurationRepresentation.setAbsoluteTextX(35);
-		intermediateConfigurationRepresentation.setAbsoluteTextY(8);
-		intermediateConfigurationRepresentation.setTextStyle(getFactory().makeTextStyle(Color.LIGHT_GRAY,
-				FGEConstants.DEFAULT_SMALL_TEXT_FONT.deriveFont(Font.ITALIC)));
-		intermediateConfigurationRepresentation.setShadowStyle(getFactory().makeNoneShadowStyle());
-		intermediateConfigurationRepresentation.setBackground(getFactory().makeColorGradientBackground(Color.LIGHT_GRAY, Color.white,
-				ColorGradientDirection.SOUTH_EAST_NORTH_WEST));
-		intermediateConfigurationRepresentation.setForeground(getFactory().makeForegroundStyle(Color.ORANGE));
-		intermediateConfigurationRepresentation.addToMouseClickControls(new MouseClickControlImpl<AbstractDianaEditor<?, ?, ?>>(
-				"toogleVisibleStateForIntermediateConfiguration", MouseButton.LEFT, 1,
-				new MouseClickControlActionImpl<AbstractDianaEditor<?, ?, ?>>() {
-					@Override
-					public boolean handleClick(DrawingTreeNode<?, ?> dtn, AbstractDianaEditor<?, ?, ?> controller,
-							MouseControlContext context) {
-						/*FGEView view = controller.getDrawingView().viewForNode(dtn);
-						Point newPoint = getPointInView(dtn, controller, context);
-						controller.showContextualMenu(dtn, view, newPoint);*/
-						System.out.println("toogleVisibleStateForIntermediateConfiguration for " + dtn.getDrawable());
-						if (dtn.getDrawable() instanceof RelativeConfigurationArtefact) {
-							RelativeConfigurationArtefact artefact = (RelativeConfigurationArtefact) dtn.getDrawable();
-							artefact.getConfigurationInRoute().getRoute().show(artefact.getConfiguration());
-							// invalidateGraphicalObjectsHierarchy();
-						}
-						return true;
-					}
-				}, false, false, false, false, null));
-
-		
-		ShapeSpecification defaultStateSpecification = getFactory().makeShape(ShapeType.RECTANGLE);
-		((Rectangle)defaultStateSpecification).setIsRounded(true);
-		((Rectangle)defaultStateSpecification).setArcSize(10);
-		defaultStateRepresentation = getFactory().makeShapeGraphicalRepresentation(defaultStateSpecification);
-		defaultStateRepresentation.setWidth(RECTANGLE_STATE_WIDTH);
-		defaultStateRepresentation.setHeight(RECTANGLE_STATE_HEIGHT);
-		defaultStateRepresentation.setAbsoluteTextX(RECTANGLE_STATE_WIDTH/2);
-		defaultStateRepresentation.setAbsoluteTextY(RECTANGLE_STATE_HEIGHT/2);
-		defaultStateRepresentation.setTextStyle(getFactory().makeTextStyle(Color.BLACK,
-				FGEConstants.DEFAULT_TEXT_FONT.deriveFont(Font.PLAIN)));
-		defaultStateRepresentation.setShadowStyle(getFactory().makeNoneShadowStyle());
-		defaultStateRepresentation.setBackground(getFactory().makeColoredBackground(Color.white));
-		defaultStateRepresentation.setForeground(getFactory().makeForegroundStyle(Color.LIGHT_GRAY));
-		defaultStateRepresentation.setLayer(1);
-		
-		ShapeSpecification initialStateSpecification = getFactory().makeShape(ShapeType.CIRCLE);
-		initialStateRepresentation = getFactory().makeShapeGraphicalRepresentation(initialStateSpecification);
-		initialStateRepresentation.setWidth(CIRCLE_STATE_WIDTH);
-		initialStateRepresentation.setHeight(CIRCLE_STATE_HEIGHT);
-		initialStateRepresentation.setAbsoluteTextX(0);
-		initialStateRepresentation.setAbsoluteTextY(-10);
-		initialStateRepresentation.setTextStyle(getFactory().makeTextStyle(Color.BLACK,
-				FGEConstants.DEFAULT_TEXT_FONT.deriveFont(Font.PLAIN)));
-		initialStateRepresentation.setShadowStyle(getFactory().makeNoneShadowStyle());
-		initialStateRepresentation.setBackground(getFactory().makeColoredBackground(Color.BLACK));
-		initialStateRepresentation.setForeground(getFactory().makeForegroundStyle(Color.BLACK));
-		initialStateRepresentation.setLayer(1);
-		
-		ShapeSpecification successStateSpecification = getFactory().makeShape(ShapeType.CIRCLE);
-		successStateRepresentation = getFactory().makeShapeGraphicalRepresentation(successStateSpecification);
-		successStateRepresentation.setWidth(CIRCLE_STATE_WIDTH);
-		successStateRepresentation.setHeight(CIRCLE_STATE_HEIGHT);
-		successStateRepresentation.setAbsoluteTextX(-5);
-		successStateRepresentation.setAbsoluteTextY(-10);
-		successStateRepresentation.setTextStyle(getFactory().makeTextStyle(Color.BLACK,
-				FGEConstants.DEFAULT_TEXT_FONT.deriveFont(Font.PLAIN)));
-		successStateRepresentation.setShadowStyle(getFactory().makeNoneShadowStyle());
-		successStateRepresentation.setBackground(getFactory().makeImageBackground(SUCCESS));
-		successStateRepresentation.setForeground(getFactory().makeForegroundStyle(Color.BLACK));
-		((BackgroundImageBackgroundStyle) successStateRepresentation.getBackground()).setFitToShape(true);
-		successStateRepresentation.setLayer(1);
+		graphRepresentation = drawingFactory.createGraphRepresentation();
+		configurationRepresentation = drawingFactory.createConfigurationRepresentation();
+		intermediateConfigurationRepresentation = drawingFactory.createIntermediateConfigurationRepresentation();
+		defaultStateRepresentation = drawingFactory.createDefaultStateRepresentation(RECTANGLE_STATE_WIDTH, RECTANGLE_STATE_HEIGHT);
+		initialStateRepresentation = drawingFactory.createInitialStateRepresentation(CIRCLE_STATE_WIDTH, CIRCLE_STATE_HEIGHT);
+		rejectStateRepresentation = drawingFactory.createRejectObserverStateRepresentation(CIRCLE_STATE_WIDTH, CIRCLE_STATE_HEIGHT);
+		cutStateRepresentation = drawingFactory.createCutObserverStateRepresentation(CIRCLE_STATE_WIDTH, CIRCLE_STATE_HEIGHT);
+		normalStateRepresentation = drawingFactory.createNormalObserverStateRepresentation(CIRCLE_STATE_WIDTH, CIRCLE_STATE_HEIGHT);
+		successStateRepresentation = drawingFactory.createSucessObserverStateRepresentation(CIRCLE_STATE_WIDTH, CIRCLE_STATE_HEIGHT);
+		concreteTransitionRepresentation = drawingFactory.createConcreteTransitionRepresentation();
+		abstractTransitionRepresentation = drawingFactory.createAbstractTransitionRepresentation();
+		lifeLineRepresentation = drawingFactory.createLifeLineRepresentation();
+		messageAnchorRepresentation = drawingFactory.createMessageAnchorRepresentation();
+		messageRepresentation = drawingFactory.createMessageRepresentation();
 		
 		
-		ShapeSpecification rejectStateSpecification = getFactory().makeShape(ShapeType.CIRCLE);
-		rejectStateRepresentation = getFactory().makeShapeGraphicalRepresentation(rejectStateSpecification);
-		rejectStateRepresentation.setWidth(CIRCLE_STATE_WIDTH);
-		rejectStateRepresentation.setHeight(CIRCLE_STATE_HEIGHT);
-		rejectStateRepresentation.setAbsoluteTextX(-5);
-		rejectStateRepresentation.setAbsoluteTextY(-10);
-		rejectStateRepresentation.setTextStyle(getFactory().makeTextStyle(Color.BLACK,
-				FGEConstants.DEFAULT_TEXT_FONT.deriveFont(Font.PLAIN)));
-		rejectStateRepresentation.setShadowStyle(getFactory().makeNoneShadowStyle());
-		rejectStateRepresentation.setBackground(getFactory().makeImageBackground(REJECT));
-		rejectStateRepresentation.setForeground(getFactory().makeForegroundStyle(Color.BLACK));
-		((BackgroundImageBackgroundStyle) rejectStateRepresentation.getBackground()).setFitToShape(true);
-		rejectStateRepresentation.setLayer(1);
-		
-		ShapeSpecification cutStateSpecification = getFactory().makeShape(ShapeType.CIRCLE);
-		cutStateRepresentation = getFactory().makeShapeGraphicalRepresentation(cutStateSpecification);
-		cutStateRepresentation.setWidth(CIRCLE_STATE_WIDTH);
-		cutStateRepresentation.setHeight(CIRCLE_STATE_HEIGHT);
-		cutStateRepresentation.setAbsoluteTextX(5);
-		cutStateRepresentation.setAbsoluteTextY(-10);
-		cutStateRepresentation.setTextStyle(getFactory().makeTextStyle(Color.BLACK,
-				FGEConstants.DEFAULT_TEXT_FONT.deriveFont(Font.PLAIN)));
-		cutStateRepresentation.setShadowStyle(getFactory().makeNoneShadowStyle());
-		cutStateRepresentation.setBackground(getFactory().makeImageBackground(CUT));
-		cutStateRepresentation.setForeground(getFactory().makeForegroundStyle(Color.BLACK));
-		((BackgroundImageBackgroundStyle) cutStateRepresentation.getBackground()).setFitToShape(true);
-		cutStateRepresentation.setLayer(1);
-		
-		ShapeSpecification normalStateSpecification = getFactory().makeShape(ShapeType.CIRCLE);
-		normalStateRepresentation = getFactory().makeShapeGraphicalRepresentation(normalStateSpecification);
-		normalStateRepresentation.setWidth(CIRCLE_STATE_WIDTH);
-		normalStateRepresentation.setHeight(CIRCLE_STATE_HEIGHT);
-		normalStateRepresentation.setAbsoluteTextX(-5);
-		normalStateRepresentation.setAbsoluteTextY(-10);
-		normalStateRepresentation.setTextStyle(getFactory().makeTextStyle(Color.BLACK,
-				FGEConstants.DEFAULT_TEXT_FONT.deriveFont(Font.PLAIN)));
-		normalStateRepresentation.setShadowStyle(getFactory().makeNoneShadowStyle());
-		normalStateRepresentation.setBackground(getFactory().makeImageBackground(NORMAL));
-		normalStateRepresentation.setForeground(getFactory().makeForegroundStyle(Color.BLACK));
-		((BackgroundImageBackgroundStyle) normalStateRepresentation.getBackground()).setFitToShape(true);
-		normalStateRepresentation.setLayer(1);
-		
-		concreteTransitionRepresentation = getFactory().makeConnectorGraphicalRepresentation(ConnectorType.LINE);
-		concreteTransitionRepresentation.setForeground(getFactory().makeForegroundStyle(Color.GRAY, 0.5f));
-
-		abstractTransitionRepresentation = getFactory().makeConnectorGraphicalRepresentation(ConnectorType.LINE);
-		abstractTransitionRepresentation.setForeground(getFactory().makeForegroundStyle(Color.DARK_GRAY, 0.5f, DashStyle.DOTS_DASHES));
-
-		lifeLineRepresentation = getFactory().makeShapeGraphicalRepresentation(ShapeType.RECTANGLE);
-		lifeLineRepresentation.setWidth(0);
-		lifeLineRepresentation.setHeight(10);
-		lifeLineRepresentation.setAbsoluteTextX(0);
-		lifeLineRepresentation.setAbsoluteTextY(-20);
-		lifeLineRepresentation.setTextStyle(getFactory().makeTextStyle(Color.DARK_GRAY,
-				FGEConstants.DEFAULT_TEXT_FONT.deriveFont(Font.BOLD)));
-		lifeLineRepresentation.setShadowStyle(getFactory().makeNoneShadowStyle());
-		lifeLineRepresentation.setBackground(getFactory().makeEmptyBackground());
-		lifeLineRepresentation.setForeground(getFactory().makeForegroundStyle(Color.LIGHT_GRAY, 3f));
-		lifeLineRepresentation.getForeground().setUseTransparency(true);
-		lifeLineRepresentation.getForeground().setTransparencyLevel(0.5f);
-		lifeLineRepresentation.setIsFocusable(false);
-		lifeLineRepresentation.setLayer(0);
-
-		messageAnchorRepresentation = getFactory().makeShapeGraphicalRepresentation(ShapeType.RECTANGLE);
-		messageAnchorRepresentation.setWidth(0);
-		messageAnchorRepresentation.setHeight(0);
-		messageAnchorRepresentation.setShadowStyle(getFactory().makeNoneShadowStyle());
-		messageAnchorRepresentation.setBackground(getFactory().makeEmptyBackground());
-		messageAnchorRepresentation.setForeground(getFactory().makeNoneForegroundStyle());
-		messageAnchorRepresentation.setIsFocusable(false);
-		// messageAnchorRepresentation.setLayer(10);
-
-		messageRepresentation = getFactory().makeConnectorGraphicalRepresentation(ConnectorType.LINE);
-		messageRepresentation.setForeground(getFactory().makeForegroundStyle(Color.GRAY, 1.5f));
-		messageRepresentation.getConnectorSpecification().setEndSymbol(EndSymbolType.ARROW);
-		messageRepresentation.getConnectorSpecification().setEndSymbolSize(10.0);
-		// messageRepresentation.setLayer(11);
-		
-		// VERTICAL BINDINGS
 		final DrawingGRBinding<OBPRoute> graphBinding = bindDrawing(OBPRoute.class, "route", new DrawingGRProvider<OBPRoute>() {
 			@Override
 			public DrawingGraphicalRepresentation provideGR(OBPRoute drawable, FGEModelFactory factory) {
 				return graphRepresentation;
 			}
 		});
+		
+		// VERTICAL BINDINGS
 		final ShapeGRBinding<OBPConfigurationInRoute> configurationVerticalBinding = bindShape(OBPConfigurationInRoute.class, "configuration",
 				new ShapeGRProvider<OBPConfigurationInRoute>() {
 					@Override
@@ -557,12 +411,41 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> implements Pro
 						return messageRepresentation;
 					}
 				});
+		
+
+		final ShapeGraphicalRepresentation chronogramGR = getFactory().makeShapeGraphicalRepresentation(ShapeType.RECTANGLE);
+		//chronogramGR.setText(var.getName());
+		chronogramGR.setX(50);
+		chronogramGR.setY(50);
+		chronogramGR.setWidth(900);
+		chronogramGR.setHeight(40);
+		chronogramGR.setAbsoluteTextX(500);
+		chronogramGR.setAbsoluteTextY(3);
+		chronogramGR.setHorizontalTextAlignment(HorizontalTextAlignment.LEFT);
+		chronogramGR.setTextStyle(getFactory().makeTextStyle(Color.BLACK, FGEConstants.DEFAULT_TEXT_FONT));
+		chronogramGR.setShadowStyle(getFactory().makeNoneShadowStyle());
+		chronogramGR.setBackground(getFactory().makeColoredBackground(Color.WHITE));
+		chronogramGR.setForeground(getFactory().makeForegroundStyle(Color.BLACK));
+		// Very important: give some place for labels, legend and other informations
+		chronogramGR.setBorder(getFactory().makeShapeBorder(20, 20, 20, 20));
+
+		final GraphGRBinding<Chronogram> chronogramBinding = bindGraph(Chronogram.class, "graph",
+				new ShapeGRProvider<Chronogram>() {
+					@Override
+					public ShapeGraphicalRepresentation provideGR(Chronogram drawable, FGEModelFactory factory) {
+						return chronogramGR;
+					}
+				});
+		setChronogramBindingDynamicPropertyValues(chronogramBinding);
+
 
 		graphBinding.addToWalkers(new GRStructureVisitor<OBPRoute>() {
 
 			@Override
 			public void visit(OBPRoute route) {
-				route.synchronizeWithMask();
+				if(route.getTraceVirtualModelInstance().getSelectedMask()!=null){
+					route.synchronizeWithMask();
+				}
 				if(layout==RouteLayout.VERTICAL){
 					for (BehaviourObjectInRoute compInRoute : route.getVisibleBehaviourObjects()) {
 						drawShape(lifeLineVerticalBinding, compInRoute);
@@ -603,37 +486,37 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> implements Pro
 								drawConnector(concreteTransitionVerticalBinding, transition, pConfig, config, route);
 
 								for (OBPTraceMessage m : transition.getOBPTraceMessages()) {
-									
-									if(m instanceof OBPTraceMessageSend){
-										// Show an asynchronous message only if all configuration between send/receive are visible
-										boolean showMessage = true;
-										OBPTraceMessageSend sendMessage = (OBPTraceMessageSend)m;
-										
-										for(OBPConfigurationInRoute configuration : route.getAsyncMessageConfigurations(sendMessage, sendMessage.getOBPTraceMessageReceive())){
-											if(!route.isVisible(configuration.getConfiguration())){
-												showMessage = false;
+									if(route.isVisible(m.getFromBehaviourObject())&&route.isVisible(m.getToBehaviourObject())){
+										if(m instanceof OBPTraceMessageSend){
+											// Show an asynchronous message only if all configuration between send/receive are visible
+											boolean showMessage = true;
+											OBPTraceMessageSend sendMessage = (OBPTraceMessageSend)m;
+											
+											for(OBPConfigurationInRoute configuration : route.getAsyncMessageConfigurations(sendMessage, sendMessage.getOBPTraceMessageReceive())){
+												if(!route.isVisible(configuration.getConfiguration())){
+													showMessage = false;
+												}
 											}
+											
+											if(showMessage){
+												drawShape(messageStartAnchorVerticalBinding, route.getMessageInRoute(sendMessage));
+												drawShape(messageEndAnchorVerticalBinding, route.getMessageInRoute(sendMessage.getOBPTraceMessageReceive()));
+												drawConnector(messageVerticalBinding, route.getMessageInRoute(sendMessage), messageStartAnchorVerticalBinding,
+													route.getMessageInRoute(sendMessage), messageEndAnchorVerticalBinding, route.getMessageInRoute(sendMessage.getOBPTraceMessageReceive()), graphBinding,route);
+											}
+											
+										} 
+										// A receive cannot happen without a send(the inverse can happen), so only process send messages
+										else if(m instanceof OBPTraceMessageReceive){
+											// Do nothing
 										}
-										
-										if(showMessage){
-											drawShape(messageStartAnchorVerticalBinding, route.getMessageInRoute(sendMessage));
-											drawShape(messageEndAnchorVerticalBinding, route.getMessageInRoute(sendMessage.getOBPTraceMessageReceive()));
-											drawConnector(messageVerticalBinding, route.getMessageInRoute(sendMessage), messageStartAnchorVerticalBinding,
-												route.getMessageInRoute(sendMessage), messageEndAnchorVerticalBinding, route.getMessageInRoute(sendMessage.getOBPTraceMessageReceive()), graphBinding,route);
+										else if(m instanceof OBPTraceMessageSynchro){	
+											drawShape(messageStartAnchorVerticalBinding, route.getMessageInRoute(m));
+											drawShape(messageEndAnchorVerticalBinding, route.getMessageInRoute(m));
+											drawConnector(messageVerticalBinding, route.getMessageInRoute(m), messageStartAnchorVerticalBinding,
+												route.getMessageInRoute(m), messageEndAnchorVerticalBinding, route.getMessageInRoute(m), graphBinding,route);
 										}
-										
-									} 
-									// A receive cannot happen without a send(the inverse can happen), so only process send messages
-									else if(m instanceof OBPTraceMessageReceive){
-										// Do nothing
 									}
-									else if(m instanceof OBPTraceMessageSynchro){	
-										drawShape(messageStartAnchorVerticalBinding, route.getMessageInRoute(m));
-										drawShape(messageEndAnchorVerticalBinding, route.getMessageInRoute(m));
-										drawConnector(messageVerticalBinding, route.getMessageInRoute(m), messageStartAnchorVerticalBinding,
-											route.getMessageInRoute(m), messageEndAnchorVerticalBinding, route.getMessageInRoute(m), graphBinding,route);
-									}
-									
 								}
 
 							}
@@ -641,17 +524,17 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> implements Pro
 						// Show states for visible BehaviourObjects
 						for (BehaviourObjectInRoute objectInRoute : route.getVisibleBehaviourObjects()) {
 							OBPStateInRoute state = route.getOBPStateInRoute(objectInRoute, config);
-							if(state.isSuccess()){
+							if(state.isSuccess() && state.isVisible()){
 								drawShape(successStateVerticalBinding, route.getOBPStateInRoute(objectInRoute, config));
-							}else if(state.isReject()){
+							}else if(state.isReject() && state.isVisible()){
 								drawShape(rejectStateVerticalBinding, route.getOBPStateInRoute(objectInRoute, config));
-							}else if(state.isCut()){
+							}else if(state.isCut() && state.isVisible()){
 								drawShape(cutStateVerticalBinding, route.getOBPStateInRoute(objectInRoute, config));
-							}else if(state.isNormal()){
+							}else if(state.isNormal() && state.isVisible()){
 								drawShape(normalStateVerticalBinding, route.getOBPStateInRoute(objectInRoute, config));
-							}else if(config.getVisibleIndex()==0){
+							}else if(config.getVisibleIndex()==0 && state.isVisible()){
 								drawShape(initialStateVerticalBinding, route.getOBPStateInRoute(objectInRoute, config));
-							}else{
+							}else if(state.isVisible()){
 								drawShape(defaultStateVerticalBinding, route.getOBPStateInRoute(objectInRoute, config));
 							}
 						}
@@ -660,7 +543,18 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> implements Pro
 				else if(layout==RouteLayout.HORIZONTAL){
 					for (BehaviourObjectInRoute compInRoute : route.getVisibleBehaviourObjects()) {
 						drawShape(lifeLineHorizontalBinding, compInRoute);
+						if(compInRoute instanceof ProcessInRoute){
+							for(Chronogram chronogram : ((ProcessInRoute) compInRoute).getChronograms()){
+								drawGraph(chronogramBinding,chronogram);
+							}
+						}
+						
 					}
+					
+					/*for (Entry<FGEDiscreteFunctionGraph<OBPTraceData>, GraphGRBinding> entry : chronograms.entrySet()) {	
+						drawGraph(entry.getValue(),entry.getKey());
+					}*/
+					
 					for (int i = 0; i < route.getSize(); i++) {
 						OBPConfigurationInRoute config = route.getConfiguration(i);
 						drawShape(configurationHorizontalBinding, config);
@@ -697,55 +591,54 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> implements Pro
 								drawConnector(concreteTransitionHorizontalBinding, transition, pConfig, config, route);
 
 								for (OBPTraceMessage m : transition.getOBPTraceMessages()) {
-									
-									if(m instanceof OBPTraceMessageSend){
-										// Show an asynchronous message only if all configuration between send/receive are visible
-										boolean showMessage = true;
-										OBPTraceMessageSend sendMessage = (OBPTraceMessageSend)m;
-										
-										for(OBPConfigurationInRoute configuration : route.getAsyncMessageConfigurations(sendMessage, sendMessage.getOBPTraceMessageReceive())){
-											if(!route.isVisible(configuration.getConfiguration())){
-												showMessage = false;
+									if(route.isVisible(m.getFromBehaviourObject())&&route.isVisible(m.getToBehaviourObject())){
+										if(m instanceof OBPTraceMessageSend){
+											// Show an asynchronous message only if all configuration between send/receive are visible
+											boolean showMessage = true;
+											OBPTraceMessageSend sendMessage = (OBPTraceMessageSend)m;
+											
+											for(OBPConfigurationInRoute configuration : route.getAsyncMessageConfigurations(sendMessage, sendMessage.getOBPTraceMessageReceive())){
+												if(!route.isVisible(configuration.getConfiguration())){
+													showMessage = false;
+												}
 											}
+											
+											if(showMessage){
+												drawShape(messageStartAnchorHorizontalBinding, route.getMessageInRoute(sendMessage));
+												drawShape(messageEndAnchorHorizontalBinding, route.getMessageInRoute(sendMessage.getOBPTraceMessageReceive()));
+												drawConnector(messageHorizontalBinding, route.getMessageInRoute(sendMessage), messageStartAnchorHorizontalBinding,
+													route.getMessageInRoute(sendMessage), messageEndAnchorHorizontalBinding, route.getMessageInRoute(sendMessage.getOBPTraceMessageReceive()), graphBinding,route);
+											}
+											
+										} 
+										// A receive cannot happen without a send(the inverse can happen), so only process send messages
+										else if(m instanceof OBPTraceMessageReceive){
+											// Do nothing
 										}
-										
-										if(showMessage){
-											drawShape(messageStartAnchorHorizontalBinding, route.getMessageInRoute(sendMessage));
-											drawShape(messageEndAnchorHorizontalBinding, route.getMessageInRoute(sendMessage.getOBPTraceMessageReceive()));
-											drawConnector(messageHorizontalBinding, route.getMessageInRoute(sendMessage), messageStartAnchorHorizontalBinding,
-												route.getMessageInRoute(sendMessage), messageEndAnchorHorizontalBinding, route.getMessageInRoute(sendMessage.getOBPTraceMessageReceive()), graphBinding,route);
+										else if(m instanceof OBPTraceMessageSynchro){
+											drawShape(messageStartAnchorHorizontalBinding, route.getMessageInRoute(m));
+											drawShape(messageEndAnchorHorizontalBinding, route.getMessageInRoute(m));
+											drawConnector(messageHorizontalBinding, route.getMessageInRoute(m), messageStartAnchorHorizontalBinding,
+												route.getMessageInRoute(m), messageEndAnchorHorizontalBinding, route.getMessageInRoute(m), graphBinding,route);
 										}
-										
-									} 
-									// A receive cannot happen without a send(the inverse can happen), so only process send messages
-									else if(m instanceof OBPTraceMessageReceive){
-										// Do nothing
-									}
-									else if(m instanceof OBPTraceMessageSynchro){
-										drawShape(messageStartAnchorHorizontalBinding, route.getMessageInRoute(m));
-										drawShape(messageEndAnchorHorizontalBinding, route.getMessageInRoute(m));
-										drawConnector(messageHorizontalBinding, route.getMessageInRoute(m), messageStartAnchorHorizontalBinding,
-											route.getMessageInRoute(m), messageEndAnchorHorizontalBinding, route.getMessageInRoute(m), graphBinding,route);
-									}
-									
+									}		
 								}
-
 							}
 						}
 						// Show states for visible BehaviourObjects
 						for (BehaviourObjectInRoute objectInRoute : route.getVisibleBehaviourObjects()) {
 							OBPStateInRoute state = route.getOBPStateInRoute(objectInRoute, config);
-							if(state.isSuccess()){
+							if(state.isSuccess()&& state.isVisible()){
 								drawShape(successStateHorizontalBinding, route.getOBPStateInRoute(objectInRoute, config));
-							}else if(state.isReject()){
+							}else if(state.isReject()&& state.isVisible()){
 								drawShape(rejectStateHorizontalBinding, route.getOBPStateInRoute(objectInRoute, config));
-							}else if(state.isCut()){
+							}else if(state.isCut()&& state.isVisible()){
 								drawShape(cutStateHorizontalBinding, route.getOBPStateInRoute(objectInRoute, config));
-							}else if(state.isNormal()){
+							}else if(state.isNormal()&& state.isVisible()){
 								drawShape(normalStateHorizontalBinding, route.getOBPStateInRoute(objectInRoute, config));
-							}else if(config.getVisibleIndex()==0){
+							}else if(config.getVisibleIndex()==0 && state.isVisible()){
 								drawShape(initialStateHorizontalBinding, route.getOBPStateInRoute(objectInRoute, config));
-							}else{
+							}else if(state.isVisible()){
 								drawShape(defaultStateHorizontalBinding, route.getOBPStateInRoute(objectInRoute, config));
 							}
 						}
@@ -762,8 +655,8 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> implements Pro
 		setStateBindingDynamicPropertyValues(rejectStateVerticalBinding,CIRCLE_STATE_WIDTH,CIRCLE_STATE_HEIGHT,  false, RouteLayout.VERTICAL);
 		setStateBindingDynamicPropertyValues(cutStateVerticalBinding,CIRCLE_STATE_WIDTH,CIRCLE_STATE_HEIGHT,  false, RouteLayout.VERTICAL);
 		setStateBindingDynamicPropertyValues(normalStateVerticalBinding,CIRCLE_STATE_WIDTH,CIRCLE_STATE_HEIGHT,  false, RouteLayout.VERTICAL);
-		setInterConfigurationBindingDynamicPropertyValues(previousConfigurationVerticalBinding,PREVIOUS_CONFIGURATION_OFFSET, RouteLayout.VERTICAL);
-		setInterConfigurationBindingDynamicPropertyValues(nextConfigurationVerticalBinding,NEXT_CONFIGURATION_OFFSET, RouteLayout.VERTICAL);
+		setInterConfigurationBindingDynamicPropertyValues(previousConfigurationVerticalBinding,PREVIOUS_VERT_CONFIGURATION_OFFSET, RouteLayout.VERTICAL);
+		setInterConfigurationBindingDynamicPropertyValues(nextConfigurationVerticalBinding,NEXT_VERT_CONFIGURATION_OFFSET, RouteLayout.VERTICAL);
 		setInterConfigurationBindingDynamicPropertyValues(intermediateConfigurationVerticalBinding,INTERMEDIATE_CONFIGURATION_OFFSET, RouteLayout.VERTICAL);
 		setLifeLineBindingDynamicPropertyValues(lifeLineVerticalBinding, RouteLayout.VERTICAL);
 		setMessageBindingDynamicPropertyValues(messageStartAnchorVerticalBinding, messageEndAnchorVerticalBinding, messageVerticalBinding, RouteLayout.VERTICAL);
@@ -776,12 +669,16 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> implements Pro
 		setStateBindingDynamicPropertyValues(rejectStateHorizontalBinding,CIRCLE_STATE_WIDTH,CIRCLE_STATE_HEIGHT,  false, RouteLayout.HORIZONTAL);
 		setStateBindingDynamicPropertyValues(cutStateHorizontalBinding,CIRCLE_STATE_WIDTH,CIRCLE_STATE_HEIGHT,  false, RouteLayout.HORIZONTAL);
 		setStateBindingDynamicPropertyValues(normalStateHorizontalBinding,CIRCLE_STATE_WIDTH,CIRCLE_STATE_HEIGHT,  false, RouteLayout.HORIZONTAL);
-		setInterConfigurationBindingDynamicPropertyValues(previousConfigurationHorizontalBinding,PREVIOUS_CONFIGURATION_OFFSET, RouteLayout.HORIZONTAL);
-		setInterConfigurationBindingDynamicPropertyValues(nextConfigurationHorizontalBinding,NEXT_CONFIGURATION_OFFSET, RouteLayout.HORIZONTAL);
+		setInterConfigurationBindingDynamicPropertyValues(previousConfigurationHorizontalBinding,PREVIOUS_HORIZ_CONFIGURATION_OFFSET, RouteLayout.HORIZONTAL);
+		setInterConfigurationBindingDynamicPropertyValues(nextConfigurationHorizontalBinding,NEXT_HORIZ_CONFIGURATION_OFFSET, RouteLayout.HORIZONTAL);
 		setInterConfigurationBindingDynamicPropertyValues(intermediateConfigurationHorizontalBinding,INTERMEDIATE_CONFIGURATION_OFFSET, RouteLayout.HORIZONTAL);
 		setLifeLineBindingDynamicPropertyValues(lifeLineHorizontalBinding, RouteLayout.HORIZONTAL);
 		setMessageBindingDynamicPropertyValues(messageStartAnchorHorizontalBinding, messageEndAnchorHorizontalBinding, messageHorizontalBinding, RouteLayout.HORIZONTAL);
 
+	}
+	
+	private void setChronogramBindingDynamicPropertyValues(GraphGRBinding<Chronogram> chronogramBinding){
+		chronogramBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>("drawable.processInRoute.getVirtualIndex()*" + ROW_HEIGHT + "+" + ROW_HEIGHT + "+"+ UP_OFFSET+"+" +"drawable.getIndex()*50"), false);
 	}
 	
 	private void setConfigurationBindingDynamicPropertyValues(ShapeGRBinding<OBPConfigurationInRoute> configurationBinding, RouteLayout layout){
@@ -793,7 +690,7 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> implements Pro
 			configurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.ABSOLUTE_TEXT_Y, new DataBinding<Double>("10"), false);
 		}else if(layout==RouteLayout.HORIZONTAL){
 			configurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>(""+UP_OFFSET), false);
-			configurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>("drawable.visibleIndex*"+ LIFE_LINE_WIDTH + "+" +LEFT_OFFSET ), false);
+			configurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>("drawable.visibleIndex*"+ LIFE_LINE_WIDTH + "+" +LEFT_OFFSET +"-10" ), false);
 			configurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.ABSOLUTE_TEXT_X, new DataBinding<Double>("10"), false);
 			configurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.ABSOLUTE_TEXT_Y, new DataBinding<Double>("-10"), false);
 		}
@@ -823,7 +720,7 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> implements Pro
 			lifelineBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.ABSOLUTE_TEXT_X, new DataBinding<Double>("0"), false);
 			lifelineBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.ABSOLUTE_TEXT_Y, new DataBinding<Double>("-20"), false);
 		}else if(layout==RouteLayout.HORIZONTAL){
-			lifelineBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>("drawable.index*" + ROW_HEIGHT + "+" + ROW_HEIGHT + "+"+ UP_OFFSET), false);
+			lifelineBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>("drawable.getVirtualIndex()*" + ROW_HEIGHT + "+" + ROW_HEIGHT + "+"+ UP_OFFSET), false);
 			lifelineBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>(""+LEFT_OFFSET), false);
 			lifelineBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.WIDTH, new DataBinding<Double>("(drawable.route.size-1)*"+ LIFE_LINE_WIDTH + "+" +LEFT_OFFSET), false);
 			lifelineBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.HEIGHT, new DataBinding<Double>("0.0"), false);
@@ -833,7 +730,7 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> implements Pro
 	}
 	
 	private void setStateBindingDynamicPropertyValues(ShapeGRBinding<OBPStateInRoute> stateBinding, double stateWidth, double stateHeight,boolean insideText,RouteLayout layout){
-		stateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.TEXT, new DataBinding<String>("drawable.state.value"), false);
+		stateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.TEXT, new DataBinding<String>("drawable.value"), false);
 		if(layout==RouteLayout.VERTICAL){
 			stateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>("drawable.behaviourObjectInRoute.index*"+LIFE_LINE_WIDTH + "+"+LIFE_LINE_WIDTH + "-" + stateWidth/2), false);
 			stateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>("drawable.configurationInRoute.visibleIndex*"+ ROW_HEIGHT + "+" +UP_OFFSET), false);
@@ -845,8 +742,8 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> implements Pro
 				stateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.ABSOLUTE_TEXT_Y, new DataBinding<Double>("-"+stateHeight/2), false);
 			}
 		}else if(layout==RouteLayout.HORIZONTAL){
-			stateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>("drawable.behaviourObjectInRoute.index*"+ROW_HEIGHT + "+" +ROW_HEIGHT + "+"+ UP_OFFSET + "-" + stateHeight/2), false);
-			stateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>("drawable.configurationInRoute.visibleIndex*"+ LIFE_LINE_WIDTH + "+" + LEFT_OFFSET), false);
+			stateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>("drawable.behaviourObjectInRoute.getVirtualIndex()*"+ROW_HEIGHT + "+" +ROW_HEIGHT + "+"+ UP_OFFSET + "-" + stateHeight/2), false);
+			stateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>("drawable.configurationInRoute.visibleIndex*"+ LIFE_LINE_WIDTH + "+" + LEFT_OFFSET +"-" + stateWidth/2), false);
 			if(insideText){
 				stateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.ABSOLUTE_TEXT_X, new DataBinding<Double>(""+stateWidth/2), false);
 				stateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.ABSOLUTE_TEXT_Y, new DataBinding<Double>(""+stateHeight/2), false);
@@ -870,11 +767,11 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> implements Pro
 					"(drawable.endConfiguration.visibleIndex+1)*" + ROW_HEIGHT +"-" + RECTANGLE_STATE_HEIGHT), false);
 		}else if(layout==RouteLayout.HORIZONTAL){
 			startMessageBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>(
-					"drawable.startBehaviourObject.index*"+ ROW_HEIGHT +"+" +ROW_HEIGHT + "+"+ UP_OFFSET), false);
+					"drawable.startBehaviourObject.getVirtualIndex()*"+ ROW_HEIGHT +"+" +ROW_HEIGHT + "+"+ UP_OFFSET), false);
 			startMessageBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>(
 					"(drawable.startConfiguration.visibleIndex+1)*" + LIFE_LINE_WIDTH ), false);
 			endMessageBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>(
-					"drawable.endBehaviourObject.index*" + ROW_HEIGHT +"+" +ROW_HEIGHT + "+"+ UP_OFFSET), false);
+					"drawable.endBehaviourObject.getVirtualIndex()*" + ROW_HEIGHT +"+" +ROW_HEIGHT + "+"+ UP_OFFSET), false);
 			endMessageBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>(
 					"(drawable.endConfiguration.visibleIndex+1)*" + LIFE_LINE_WIDTH +"-" + RECTANGLE_STATE_WIDTH*2), false);
 		}

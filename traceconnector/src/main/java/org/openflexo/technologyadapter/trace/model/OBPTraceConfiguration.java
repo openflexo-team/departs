@@ -42,21 +42,20 @@ public interface OBPTraceConfiguration extends OBPTraceObject{
 
 	public static final String CONFIGURATION_KEY = "configuration";
 	
+	public static final String TRACE_KEY = "trace";
+	
 	@PropertyIdentifier(type = List.class)
 	public static final String BEHAVIOUR_OBJECT_STATES_KEY = "behaviourObjectStates";
-	
-	/*@PropertyIdentifier(type = List.class)
-	public static final String PROCESS_KEY = "process";
-	
-	@PropertyIdentifier(type = List.class)
-	public static final String PROPERTY_KEY = "properties";
-	
-	public static final String CONTEXT_KEY = "context";*/
 	
 	@Getter(value=CONFIGURATION_KEY, ignoreType=true)
 	public ConfigData getConfigData();
 	@Setter(CONFIGURATION_KEY)
 	public void setConfigData(ConfigData configData);
+	
+	@Getter(value=TRACE_KEY, inverse = OBPTrace.CONFIGURATION_KEY)
+	public OBPTrace getOBPTrace();
+	@Setter(TRACE_KEY)
+	public void setOBPTrace(OBPTrace trace);
 	
 	@Getter(value = BEHAVIOUR_OBJECT_STATES_KEY, cardinality = Cardinality.LIST, inverse=OBPTraceBehaviourObjectState.CONFIGURATION_KEY)
 	public List<OBPTraceBehaviourObjectState> getOBPTraceBehaviourObjectStates();

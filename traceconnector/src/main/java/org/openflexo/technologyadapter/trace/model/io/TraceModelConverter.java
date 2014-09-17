@@ -113,7 +113,7 @@ public class TraceModelConverter {
 				updateMessages(message, transition,flexoTraceOBP);
 			}
 		}
-		
+		flexoTraceOBP.getTransitions().get(5).getUpdatedElements();
 		return flexoTraceOBP;
 	}
 	

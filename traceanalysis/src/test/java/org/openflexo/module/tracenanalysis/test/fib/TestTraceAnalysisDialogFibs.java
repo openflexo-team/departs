@@ -14,7 +14,7 @@ public class TestTraceAnalysisDialogFibs extends GenericFIBTestCase {
 
 	@Test
 	public void testCreateConfigurationMaskDialog() {
-		validateFIB("Fib/Dialog/CreateConfigurationMaskDialog.fib");
+		validateFIB("Fib/Dialog/CreateMaskDialog.fib");
 	}
 
 	@Test

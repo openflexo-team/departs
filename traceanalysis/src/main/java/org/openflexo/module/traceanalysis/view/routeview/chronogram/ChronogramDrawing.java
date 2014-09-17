@@ -33,6 +33,7 @@ import org.openflexo.module.traceanalysis.view.routeview.BehaviourObjectInRoute;
 import org.openflexo.module.traceanalysis.view.routeview.OBPRoute;
 import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObjectInstance;
 import org.openflexo.technologyadapter.trace.model.OBPTraceData;
+import org.openflexo.technologyadapter.trace.model.OBPTraceObject;
 import org.openflexo.technologyadapter.trace.model.OBPTraceVariable;
 
 public class ChronogramDrawing extends DrawingImpl<OBPRoute> {
@@ -51,9 +52,9 @@ public class ChronogramDrawing extends DrawingImpl<OBPRoute> {
 		int y = 50;
 		for(BehaviourObjectInRoute object : getModel().getVisibleBehaviourObjects()){
 			
-			OBPTraceBehaviourObjectInstance instance = object.getBehaviourObject();
+			OBPTraceObject instance = object.getBehaviourObject();
 			
-			for(OBPTraceVariable var : instance.getVariables()){
+			/*for(OBPTraceVariable var : instance.getVariables()){
 				List<OBPTraceData> values = var.getValues();
 				FGEDiscreteFunctionGraph<OBPTraceData> dataChronogram = new FGEDiscreteFunctionGraph<OBPTraceData>();
 
@@ -73,7 +74,7 @@ public class ChronogramDrawing extends DrawingImpl<OBPRoute> {
 				chronogramGR.setX(50);
 				chronogramGR.setY(y);
 				chronogramGR.setWidth(900);
-				chronogramGR.setHeight(50);
+				chronogramGR.setHeight(40);
 				chronogramGR.setAbsoluteTextX(500);
 				chronogramGR.setAbsoluteTextY(3);
 				chronogramGR.setHorizontalTextAlignment(HorizontalTextAlignment.LEFT);
@@ -93,8 +94,8 @@ public class ChronogramDrawing extends DrawingImpl<OBPRoute> {
 						});
 				
 				chronograms.put(dataChronogram, chronogramBinding);
-				y= y +85;
-			}
+				y= y +100;
+			}*/
 			y = y+20;
 		}
 		 

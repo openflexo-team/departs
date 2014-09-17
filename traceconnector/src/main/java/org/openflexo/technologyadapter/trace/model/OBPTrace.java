@@ -51,7 +51,7 @@ public interface OBPTrace extends OBPTraceObject, ResourceData<OBPTrace> {
 	@PropertyIdentifier(type = OBPTraceBehaviourObjectInstance.class)
 	public static final String BEHAVIOUR_OBJECTS_KEY = "behaviourObjects";
 
-	@Getter(value = CONFIGURATION_KEY, cardinality = Cardinality.LIST)
+	@Getter(value = CONFIGURATION_KEY, cardinality = Cardinality.LIST, inverse = OBPTraceConfiguration.TRACE_KEY)
 	public List<OBPTraceConfiguration> getConfigurations();
 
 	@Setter(CONFIGURATION_KEY)
@@ -63,7 +63,7 @@ public interface OBPTrace extends OBPTraceObject, ResourceData<OBPTrace> {
 	@Remover(CONFIGURATION_KEY)
 	public void removeFromConfigurations(OBPTraceConfiguration configuration);
 
-	@Getter(value = TRANSITIONS_KEY, cardinality = Cardinality.LIST)
+	@Getter(value = TRANSITIONS_KEY, cardinality = Cardinality.LIST, inverse = OBPTraceTransition.TRACE_KEY)
 	public List<OBPTraceTransition> getTransitions();
 
 	@Setter(TRANSITIONS_KEY)

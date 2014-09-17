@@ -40,4 +40,5 @@ public class FIBConfigurationMask extends FIBBrowserView<TraceVirtualModelInstan
 	public void setTraceVirtualModelInstance(TraceVirtualModelInstance traceVirtualModelInstance) {
 		setDataObject(traceVirtualModelInstance);
 	}
+
 }

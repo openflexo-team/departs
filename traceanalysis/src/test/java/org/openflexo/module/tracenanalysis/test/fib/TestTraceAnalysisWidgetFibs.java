@@ -13,23 +13,18 @@ public class TestTraceAnalysisWidgetFibs extends GenericFIBTestCase {
 	}
 
 	@Test
-	public void testFIBAnalyzeConceptsBrowserWidget() {
-		validateFIB("Fib/Widget/FIBAnalyzeConceptsBrowser.fib");
-	}
-
-	@Test
-	public void testFIBConfigurationMaskModuleView() {
-		validateFIB("Fib/Widget/FIBConfigurationMaskModuleView.fib");
-	}
-
-	@Test
-	public void testFIBTraceAnalysisModuleViewWidget() {
-		validateFIB("Fib/Widget/FIBTraceVirtualModelInstanceModuleView.fib");
+	public void testFIBConfigurationMaskWidget() {
+		validateFIB("Fib/Widget/FIBConfigurationMask.fib");
 	}
 
 	@Test
 	public void testFIBTraceAnalysisProjectBrowserWidget() {
 		validateFIB("Fib/Widget/FIBTraceAnalysisProjectBrowser.fib");
+	}
+	
+	@Test
+	public void testFIBMaskableElementWidget() {
+		validateFIB("Fib/Widget/FIBMaskableElement.fib");
 	}
 
 }
