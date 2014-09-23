@@ -25,6 +25,8 @@ import java.util.regex.Pattern;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
+
+import Parser.TransitionSequenceReceiveAsynchro;
 import Parser.TransitionSequenceSynchro;
 
 @ModelEntity
@@ -63,7 +65,16 @@ public interface OBPTraceMessageSynchro extends OBPTraceMessage{
 			makeMatch.find();
 			return "{" + makeMatch.group(1) + "}" + makeMatch.group(2);
 		}
-
+		
+		@Override
+		public String getDataValue(){
+			return ((TransitionSequenceSynchro)getTransitionSequence()).port_data;
+		}
+		
+		@Override
+		public OBPTraceVariable getDataType(){
+			return getToBehaviourObject().getVariableNamed(getDataValue());
+		}
 	}
 
 }

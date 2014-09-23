@@ -21,7 +21,6 @@ import obp.cdl.PropertyReference;
 import obp.cdl.SeqActivity;
 import obp.cdl.TopActivity;
 import obp.event.CommunicationOp;
-import obp.event.Event;
 import obp.event.GammaEvent;
 import obp.event.Informal;
 import obp.event.Input;
@@ -38,7 +37,6 @@ import obp.property.PropertyObserver;
 import obp.property.PropertyPrecedence;
 import obp.property.PropertyResponse;
 
-import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.ModelContext;
 import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
@@ -48,6 +46,7 @@ import org.openflexo.technologyadapter.cdl.model.CDLActivity;
 import org.openflexo.technologyadapter.cdl.model.CDLActivityReference;
 import org.openflexo.technologyadapter.cdl.model.CDLAltActivity;
 import org.openflexo.technologyadapter.cdl.model.CDLCommunicationOPEvent;
+import org.openflexo.technologyadapter.cdl.model.CDLCommunicationOPEvent.EventKind;
 import org.openflexo.technologyadapter.cdl.model.CDLEvent;
 import org.openflexo.technologyadapter.cdl.model.CDLEventReference;
 import org.openflexo.technologyadapter.cdl.model.CDLGammaEvent;
@@ -72,7 +71,6 @@ import org.openflexo.technologyadapter.cdl.model.CDLPropertyResponse;
 import org.openflexo.technologyadapter.cdl.model.CDLSeqActivity;
 import org.openflexo.technologyadapter.cdl.model.CDLTopActivity;
 import org.openflexo.technologyadapter.cdl.model.CDLUnit;
-import org.openflexo.technologyadapter.cdl.model.CDLCommunicationOPEvent.EventKind;
 
 public class CDLModelConverter {
 

@@ -30,6 +30,9 @@ import org.openflexo.technologyadapter.trace.model.OBPTrace;
 import org.openflexo.technologyadapter.trace.model.OBPTraceComponent;
 import org.openflexo.technologyadapter.trace.model.OBPTraceConfiguration;
 import org.openflexo.technologyadapter.trace.model.OBPTraceContextInstance;
+import org.openflexo.technologyadapter.trace.model.OBPTraceMessageReceive;
+import org.openflexo.technologyadapter.trace.model.OBPTraceMessageSend;
+import org.openflexo.technologyadapter.trace.model.OBPTraceMessageSynchro;
 import org.openflexo.technologyadapter.trace.model.OBPTraceProcessInstance;
 import org.openflexo.technologyadapter.trace.model.OBPTracePropertyInstance;
 import org.openflexo.technologyadapter.trace.model.OBPTraceState;
@@ -51,6 +54,14 @@ public class TraceIconLibrary {
 	public static final ImageIcon COMPONENT_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/component16x16.png"));
 	public static final ImageIcon STATE_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/state16x16.png"));
 	public static final ImageIcon FIFO_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/fifo16x16.png"));
+	
+	public static final ImageIcon ASYNC16x16_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/async16x16.png"));
+	public static final ImageIcon ASYNC32x32_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/async32x32.png"));
+	public static final ImageIcon ASYNC64x64_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/async64x64.png"));
+	public static final ImageIcon SYNC16x16_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/sync16x16.png"));
+	public static final ImageIcon SYNC32x32_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/sync32x32.png"));
+	public static final ImageIcon SYNC64x64_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/sync64x64.png"));
+	
 	
 	public static final ImageIcon CDL_ACTIVITY_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/cdl_activity.png"));
 	public static final ImageIcon CDL_PROPERTY_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/cdl_property.png"));
@@ -82,6 +93,12 @@ public class TraceIconLibrary {
 			return CDL_ACTIVITY_ICON;
 		} else if (OBPTracePropertyInstance.class.isAssignableFrom(objectClass)) {
 			return CDL_PROPERTY_ICON;
+		} else if (OBPTraceMessageSynchro.class.isAssignableFrom(objectClass)) {
+			return SYNC16x16_ICON;
+		} else if (OBPTraceMessageReceive.class.isAssignableFrom(objectClass)) {
+			return ASYNC16x16_ICON;
+		} else if (OBPTraceMessageSend.class.isAssignableFrom(objectClass)) {
+			return ASYNC16x16_ICON;
 		} 
 		return null;
 	}

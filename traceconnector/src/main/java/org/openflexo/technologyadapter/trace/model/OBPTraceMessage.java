@@ -66,6 +66,10 @@ public interface OBPTraceMessage extends OBPTraceObject{
 	
 	public String getTargetProcName();
 	
+	public String getDataValue();
+	
+	public OBPTraceVariable getDataType();
+
 	public static abstract class OBPTraceMessageImpl extends OBPTraceObjectImpl implements OBPTraceMessage {
 
 		public OBPTraceMessageImpl() {
@@ -91,6 +95,10 @@ public interface OBPTraceMessage extends OBPTraceObject{
 			}
 		}
 		
+		@Override
+		public String getDataValue(){
+			return null;
+		}
 	}
 
 }

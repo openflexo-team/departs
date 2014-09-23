@@ -40,6 +40,9 @@ public interface OBPTraceVariable extends OBPTraceObject{
 	@PropertyIdentifier(type = OBPTraceData.class)
 	public static final String VALUES_KEY = "values";
 	
+	@PropertyIdentifier(type = OBPTraceBehaviourObjectInstance.class)
+	public static final String BEHAVIOUR_OBJECT_KEY = "behaviourObject";
+	
 	@Getter(value = VALUES_KEY, cardinality = Cardinality.LIST, inverse=OBPTraceData.VARIABLE_KEY)
 	public List<OBPTraceData> getValues();
 
@@ -51,6 +54,12 @@ public interface OBPTraceVariable extends OBPTraceObject{
 
 	@Remover(VALUES_KEY)
 	public void removeFromValues(OBPTraceData value);
+	
+	@Getter(value = BEHAVIOUR_OBJECT_KEY, inverse=OBPTraceBehaviourObjectInstance.VARIABLES_KEY)
+	public OBPTraceBehaviourObjectInstance getOBPTraceBehaviourObjectInstance();
+
+	@Setter(BEHAVIOUR_OBJECT_KEY)
+	public void setOBPTraceBehaviourObjectInstance(OBPTraceBehaviourObjectInstance instance);
 	
 	public OBPTraceData getOBPTraceDataForConfiguration(OBPTraceConfiguration configuration);
 	

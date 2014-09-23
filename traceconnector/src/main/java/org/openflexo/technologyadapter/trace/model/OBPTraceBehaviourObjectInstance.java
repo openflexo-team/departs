@@ -55,7 +55,7 @@ public interface OBPTraceBehaviourObjectInstance extends OBPTraceObject {
 	@Remover(BEHAVIOUR_OBJECT_STATES_KEY)
 	public void removeFromOBPTraceBehaviourObjectStates(OBPTraceBehaviourObjectState behaviourObjectStates);
 	
-	@Getter(value = VARIABLES_KEY, cardinality = Cardinality.LIST)
+	@Getter(value = VARIABLES_KEY, cardinality = Cardinality.LIST, inverse = OBPTraceVariable.BEHAVIOUR_OBJECT_KEY)
 	public List<OBPTraceVariable> getVariables();
 
 	@Setter(VARIABLES_KEY)

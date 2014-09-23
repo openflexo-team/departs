@@ -27,7 +27,9 @@ import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.Setter;
 import org.openflexo.model.annotations.XMLElement;
+
 import Parser.TransitionSequenceReceiveAsynchro;
+import Parser.TransitionSequenceSendAsynchro;
 
 @ModelEntity
 @ImplementationClass(OBPTraceMessageReceive.OBPTraceMessageReceiveImpl.class)
@@ -64,7 +66,16 @@ public interface OBPTraceMessageReceive extends OBPTraceMessage{
 			makeMatch.find();
 			return "{" + makeMatch.group(1) + "}" + makeMatch.group(2);
 		}
-
+		
+		@Override
+		public String getDataValue(){
+			return ((TransitionSequenceReceiveAsynchro)getTransitionSequence()).getNomData();
+		}
+		
+		@Override
+		public OBPTraceVariable getDataType(){
+			return getToBehaviourObject().getVariableNamed(getDataValue());
+		}
 	}
 
 }
