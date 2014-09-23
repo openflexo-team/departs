@@ -14,14 +14,14 @@
 			<excludes>
 				<exclude>*:zip:*</exclude>
 				<exclude>org.openflexo</exclude>
-				<exclude>org.openflexo.departpackaging</exclude>
+				<exclude>org.openflexo.packaging</exclude>
 			</excludes>
 			<outputDirectory>deps</outputDirectory>
 		</dependencySet>
 		<dependencySet>
 			<includes>
 				<include>org.openflexo</include>
-				<include>org.openflexo.departpackaging</include>
+				<include>org.openflexo.packaging</include>
 			</includes>
 			<excludes>
 				<exclude>*:zip:*</exclude>
