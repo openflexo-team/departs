@@ -1,0 +1,131 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.openflexo</groupId>
+		<artifactId>openflexo-production</artifactId>
+		<version>0.1</version>
+	</parent>
+	<groupId>org.openflexo.departpackaging</groupId>
+	<artifactId>depart-packaging</artifactId>
+	<version>1.7.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>Depart-Packaging</name>
+	<modules>
+		<module>depart-build</module>
+		<module>depart-exec</module>
+	</modules>
+	<properties>
+		<flexocore.version>1.7.0-SNAPSHOT</flexocore.version>
+		<ta.version>1.7.0-SNAPSHOT</ta.version>
+		<modules.version>1.7.0-SNAPSHOT</modules.version>	
+		<connie.version>1.1-SNAPSHOT</connie.version>
+	</properties>
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<configuration>
+						<descriptors>
+							<descriptor>packaging.xml</descriptor>
+						</descriptors>
+					</configuration>
+					<executions>
+						<execution>
+							<id>build-package</id>
+							<phase>package</phase>
+							<goals>
+								<goal>single</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+	<dependencyManagement>
+		<dependencies>
+			
+			<dependency>
+				<groupId>org.openflexo.departpackaging</groupId>
+				<artifactId>traceanalysisexec</artifactId>
+				<version>${project.version}</version>
+				<type>pom</type>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openflexo</groupId>
+				<artifactId>traceanalysis</artifactId>
+				<version>${modules.version}</version>
+				<scope>runtime</scope>
+			</dependency>
+			<!-- Now, we list here all available technology adapters -->
+
+
+			<dependency>
+				<groupId>org.openflexo</groupId>
+				<artifactId>cdlconnector</artifactId>
+				<version>1.7.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.openflexo</groupId>
+				<artifactId>cdlconnector-ui</artifactId>
+				<version>1.7.0-SNAPSHOT</version>
+			</dependency>
+  	
+			<dependency>
+				<groupId>org.openflexo</groupId>
+				<artifactId>fiacreconnector</artifactId>
+				<version>1.7.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.openflexo</groupId>
+				<artifactId>fiacreconnector-ui</artifactId>
+				<version>1.7.0-SNAPSHOT</version>
+			</dependency>
+  	
+			<dependency>
+				<groupId>org.openflexo</groupId>
+				<artifactId>traceconnector</artifactId>
+				<version>1.7.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>org.openflexo</groupId>
+				<artifactId>traceconnector-ui</artifactId>
+				<version>1.7.0-SNAPSHOT</version>
+			</dependency>
+
+			<!-- Now list test projects -->
+			<dependency>
+				<groupId>org.openflexo</groupId>
+				<artifactId>flexo-foundation</artifactId>
+				<version>${flexocore.version}</version>
+				<classifier>tests</classifier>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.openflexo</groupId>
+				<artifactId>flexo-ui</artifactId>
+				<version>${flexocore.version}</version>
+				<classifier>tests</classifier>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.10</version>
+			</dependency>
+
+
+			<dependency>
+				<groupId>org.openflexo</groupId>
+				<artifactId>flexodocresourcecenter</artifactId>
+				<scope>runtime</scope>
+				<version>${flexocore.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+</project>
