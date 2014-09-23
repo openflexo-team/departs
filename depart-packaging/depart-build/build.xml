@@ -28,7 +28,7 @@
 		<property name="build.properties" value="${flexobuild.work.dir}/build.properties" />
 		<property name="maven.group.id" value="org.openflexo.departpackaging" />
 		<property name="maven.type" value="zip" />
-		<property name="maven.classifier" value="departpackaging" />
+		<property name="maven.classifier" value="packaging" />
 	</target>
 
 	<target name="deploy" depends="defineProperties">
