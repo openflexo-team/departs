@@ -21,8 +21,8 @@
 		<connie.version>1.1-SNAPSHOT</connie.version>
 	</properties>
 	<scm>
-		<connection>scm:git:ssh://git@github.com/openflexo-team/depar.git</connection>
-		<url>https://github.com/openflexo-team/depart</url>
+		<connection>scm:git:ssh://git@github.com/openflexo-team/departs.git</connection>
+		<url>https://github.com/openflexo-team/departs</url>
 	  	<tag>1.7.0</tag>
   	</scm>
 	<build>
