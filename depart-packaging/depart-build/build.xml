@@ -14,7 +14,7 @@
 		<!-- ./target/../License -->
 		<property name="license.dir" value="${project.build.directory}/../License" />
 		<!-- ./target -->
-		<property name="flexobuild.work.dir" value="${project.build.directory}/departbuild" />
+		<property name="flexobuild.work.dir" value="${project.build.directory}/depart-build" />
 		<!-- ./target/flexobuild -->
 		<property name="artifact.dir" value="${flexobuild.work.dir}/checkedout-artifact" />
 		<!-- ./target/flexobuild/checkedout-artifact -->
@@ -28,7 +28,7 @@
 		<property name="build.properties" value="${flexobuild.work.dir}/build.properties" />
 		<property name="maven.group.id" value="org.openflexo.departpackaging" />
 		<property name="maven.type" value="zip" />
-		<property name="maven.classifier" value="packaging" />
+		<property name="maven.classifier" value="departpackaging" />
 	</target>
 
 	<target name="deploy" depends="defineProperties">
