@@ -93,10 +93,10 @@
 		</profile>
 	</profiles>
 	  <dependencies>
-		<!--  <dependency>
+		<dependency>
 			<groupId>org.openflexo.departpackaging</groupId>
 			<artifactId>traceanalysisexec</artifactId>
 			<type>pom</type>
-		</dependency>-->
+		</dependency>
 	</dependencies>
 </project>
