@@ -64,7 +64,6 @@ public class OBPConfigurationInRouteImpl extends DefaultFlexoObject implements O
 
 	@Override
 	public double getVisibleIndex() {
-		// System.out.println("Pour la config " + getConfiguration() + " l'index est " + route.getIndex(getConfiguration()));
 		return route.getIndex(getConfiguration());
 	}
 

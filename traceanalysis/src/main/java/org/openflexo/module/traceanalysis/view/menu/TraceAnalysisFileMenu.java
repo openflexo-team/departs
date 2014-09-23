@@ -43,6 +43,7 @@ import org.openflexo.view.menu.FlexoMenuItem;
 
 public class TraceAnalysisFileMenu extends FileMenu {
 
+	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(TraceAnalysisFileMenu.class.getPackage().getName());
 
 	public TraceAnalysisFileMenu(TraceAnalysisController controller) {

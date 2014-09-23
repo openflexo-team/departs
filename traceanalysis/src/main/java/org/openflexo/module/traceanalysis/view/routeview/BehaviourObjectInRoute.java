@@ -21,8 +21,6 @@
 package org.openflexo.module.traceanalysis.view.routeview;
 
 import java.beans.PropertyChangeSupport;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.openflexo.technologyadapter.trace.model.OBPTraceObject;
 import org.openflexo.toolbox.HasPropertyChangeSupport;
@@ -62,11 +60,17 @@ public class BehaviourObjectInRoute<O extends OBPTraceObject> implements HasProp
 		return behaviourObject;
 	}
 
+	// The real index from the visible list
 	public int getIndex() {
 		return route.getIndex(this);
-		//return route.getTrace().getOBPTraceBehaviourObjectInstances().indexOf(behaviourObject);
 	}
 	
+	
+	// A virtual index which is used to sort visible elements(variables behind their process etc...)
+	// For instance :
+	// Process P1 : virtualIndex = 1 , its Variable v1 : virtualIndex = 2, its Variable v2 : virtualIndex = 3
+	// Process P2 : virtualIndex = 4 ...
+	// This is currently used to place the chronograms below their respective process.
 	public int getVirtualIndex() {
 		return route.getVirtualIndex(this);
 	}

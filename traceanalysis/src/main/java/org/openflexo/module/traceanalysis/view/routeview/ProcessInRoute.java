@@ -39,18 +39,25 @@ public class ProcessInRoute extends BehaviourObjectInRoute<OBPTraceBehaviourObje
 	public ProcessInRoute(OBPTraceBehaviourObjectInstance behaviourObject,
 			OBPRoute route) {
 		super(behaviourObject, route);
-		chronograms = new ArrayList<Chronogram>();
-		for(OBPTraceVariable variable: behaviourObject.getVariables()){
+		
+		/*for(OBPTraceVariable variable: behaviourObject.getVariables()){
 			chronograms.add(new Chronogram(this, variable));
-		}
+		}*/
 	}
 
 	public List<Chronogram> getChronograms() {
+		if(chronograms==null){
+			chronograms = new ArrayList<Chronogram>();
+			for(OBPTraceVariable variable : getBehaviourObject().getVariables()){
+				VariableInRoute varInRoute = (VariableInRoute) getRoute().getBehaviourObjectInRoute(variable);
+				chronograms.add(varInRoute.getChronogram());
+			}
+		}
+		
 		return chronograms;
 	}
 
 	public int getChronogramIndex(Chronogram chronogram){
 		return getChronograms().indexOf(chronogram);
 	}
-
 }

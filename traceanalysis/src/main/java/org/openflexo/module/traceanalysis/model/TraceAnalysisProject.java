@@ -28,19 +28,29 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.InvalidArgumentException;
 import org.openflexo.foundation.nature.ProjectWrapper;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.View;
+import org.openflexo.foundation.view.ViewLibrary;
 import org.openflexo.foundation.view.VirtualModelInstance;
-import org.openflexo.foundation.view.rm.ViewResource;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 import org.openflexo.foundation.viewpoint.ViewPoint;
+import org.openflexo.foundation.viewpoint.ViewPointLibrary;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
-import org.openflexo.technologyadapter.trace.model.OBPTraceConfiguration;
 
+/**
+ * A Trace Analysis project is based on a the depart viewpoint.
+ * Such project is a view conformed to this viewpoint. This view is made of a System vitrual model instance,
+ * an observer virtual model instance, a context virtual model instance as well as a set of trace analysis virtual model instance.
+ * At the creation of the project a CDL and a System files are required to create the System, Observer and Context VMI.
+ * Then the user can create a set of Trace analysis VMI, each requiring a trace file.
+ * @author Vincent
+ *
+ */
 public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectWrapper<TraceAnalysisProjectNature> {
 
 	private static final Logger logger = Logger.getLogger(TraceAnalysisProject.class.getPackage().getName());
@@ -50,13 +60,19 @@ public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectW
 	private final TraceAnalysisProjectNature projectNature;
 	
 	private final ViewPoint traceAnalysisViewPoint;
-	private ArrayList<TraceAnalysisVirtualModelInstance> traceAnalysisVirtualModelInstances;
 	
+	// The while set of virtual model instance created for the project
+	private ArrayList<TraceAnalysisVirtualModelInstance> traceAnalysisVirtualModelInstances;
+	// The set of trace virtual model instance created in the project
 	private List<TraceVirtualModelInstance> traceVirtualModelInstances ;
+	// The unique system VMI created for the project
 	private SystemVirtualModelInstance systemVirtualModelInstance ;
+	// The unique context VMI created for the project
 	private ContextVirtualModelInstance contextVirtualModelInstance;
+	// The unique observer VMI created for the project
 	private ObserverVirtualModelInstance observerVirtualModelInstance;
 	
+	// The view instanciated for the project and conformed to the traceAnalysisViewPoint
 	private View traceAnalysisView;
 
 	protected TraceAnalysisProject(FlexoProject project, TraceAnalysisProjectNature projectNature) throws FileNotFoundException,
@@ -64,22 +80,27 @@ public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectW
 		this.project = project;
 		this.projectNature = projectNature;
 		
-		ViewPointResource traceAnalsyisViewPointResource = getProject().getServiceManager().getViewPointLibrary().getViewPointResource(TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
-		
 		try {
+			// Retrieve the viewpoint resource from its URI. The viewpoint resource must be in a resource center!
+			ViewPointResource traceAnalsyisViewPointResource = getViewPointLibrary().getViewPointResource(TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
 			traceAnalysisViewPoint = traceAnalsyisViewPointResource.getResourceData(null);
 		} catch (Exception e) {
+			logger.severe("No trace analysis viewpoint found resource centers");
 			throw new FlexoException(e);
 		}
 
 		if (traceAnalysisViewPoint == null) {
-			throw new InvalidArgumentException("Could not load traceAnalysisViewPoint");
+			throw new InvalidArgumentException("Trace Analysis ViewPoint should not be null");
 		}
 		
-		if(project.getViewLibrary().getViewsForViewPointWithURI(TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI).size()>0){
+		// Retrieve views which are conformed to this viewpoint
+		if(getViewLibrary().getViewsForViewPointWithURI(TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI).size()>0){
 			traceAnalysisView = project.getViewLibrary().getViewsForViewPointWithURI(TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI).get(0);
 		}
 		
+		if(traceAnalysisView!=null){
+			logger.info("Trace Analysis view "+ traceAnalysisView.getName() + " retrieved");
+		}
 	}
 
 	public String getName() {
@@ -100,7 +121,7 @@ public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectW
 		return traceAnalysisViewPoint;
 	}
 	
-	public void setSystemVirtualModelInstance(SystemVirtualModelInstance systemVirtualModelInstance) {
+	/*public void setSystemVirtualModelInstance(SystemVirtualModelInstance systemVirtualModelInstance) {
 		this.systemVirtualModelInstance = systemVirtualModelInstance;
 	}
 
@@ -110,7 +131,7 @@ public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectW
 
 	public void setObserverVirtualModelInstance(ObserverVirtualModelInstance observerVirtualModelInstance) {
 		this.observerVirtualModelInstance = observerVirtualModelInstance;
-	}
+	}*/
 
 	public View getTraceAnalysisView() {
 		return traceAnalysisView;
@@ -131,15 +152,6 @@ public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectW
 	}
 	public VirtualModel getSystemVirtualModel(){
 		return getTraceAnaylsisViewPoint().getVirtualModelNamed("SystemVirtualModel");
-	}
-	
-	private VirtualModelInstance getVirtualModelInstanceConformToNamedVirtualModel(String name){
-		for (VirtualModelInstance vmi : traceAnalysisView.getVirtualModelInstances()) {
-			if(vmi.getVirtualModel().getName().equals(name)){
-				return vmi;
-			}
-		}
-		return null;
 	}
 	
 	public List<FlexoConceptInstance> getInstances(FlexoConcept concept) {
@@ -204,7 +216,26 @@ public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectW
 		return traceVirtualModelInstances;
 	}
 	
-	public TraceVirtualModelInstance createTraceVirtualModelInstance(VirtualModelInstance vmi){
+	/**
+	 * Return a Trace virtual model  instance of this project from a given name, otherwise create it
+	 * @param name
+	 * @return
+	 */
+	public TraceVirtualModelInstance getTraceVirtualModelInstance(VirtualModelInstance vmi) {
+		for(TraceVirtualModelInstance traceVirtualModelInstance : getTraceVirtualModelInstances()){
+			if(traceVirtualModelInstance.getVirtualModelInstance().getURI().equals(vmi.getURI())){
+				return traceVirtualModelInstance;
+			}
+		}
+		return createTraceVirtualModelInstance(vmi);
+	}
+	
+	/**
+	 * Create a trace virtual model instance
+	 * @param vmi
+	 * @return
+	 */
+	private TraceVirtualModelInstance createTraceVirtualModelInstance(VirtualModelInstance vmi){
 		TraceVirtualModelInstance traceVirtualModelInstance;
 		try {
 			traceVirtualModelInstance = new TraceVirtualModelInstance(vmi,this);
@@ -217,12 +248,30 @@ public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectW
 		}
 	}
 	
-	public TraceVirtualModelInstance getTraceVirtualModelInstance(VirtualModelInstance vmi) {
-		for(TraceVirtualModelInstance traceVirtualModelInstance : getTraceVirtualModelInstances()){
-			if(traceVirtualModelInstance.getVirtualModelInstance().getURI().equals(vmi.getURI())){
-				return traceVirtualModelInstance;
+	/**
+	 * Return a virtual model instance of this project from a given name
+	 * @param name
+	 * @return
+	 */
+	private VirtualModelInstance getVirtualModelInstanceConformToNamedVirtualModel(String name){
+		for (VirtualModelInstance vmi : traceAnalysisView.getVirtualModelInstances()) {
+			if(vmi.getVirtualModel().getName().equals(name)){
+				return vmi;
 			}
 		}
-		return createTraceVirtualModelInstance(vmi);
+		logger.log(Level.WARNING, "No virtual model instance named "+ name+ " found in this project");
+		return null;
+	}
+	
+	private FlexoServiceManager getServiceManager(){
+		return getProject().getServiceManager();
+	}
+	
+	private ViewPointLibrary getViewPointLibrary(){
+		return getServiceManager().getViewPointLibrary();
+	}
+	
+	private ViewLibrary getViewLibrary(){
+		return getProject().getViewLibrary();
 	}
 }

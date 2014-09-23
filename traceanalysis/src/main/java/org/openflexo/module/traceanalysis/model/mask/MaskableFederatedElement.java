@@ -1,15 +1,9 @@
 package org.openflexo.module.traceanalysis.model.mask;
 
-import java.util.ArrayList;
-
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.module.traceanalysis.model.TraceVirtualModelInstance;
-import org.openflexo.module.traceanalysis.model.mask.MaskableElement.MaskMode;
-import org.openflexo.technologyadapter.trace.model.OBPTrace;
-import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObjectInstance;
 import org.openflexo.technologyadapter.trace.model.OBPTraceConfiguration;
 import org.openflexo.technologyadapter.trace.model.OBPTraceObject;
-import org.openflexo.technologyadapter.trace.model.OBPTraceVariable;
 
 public class MaskableFederatedElement extends MaskableElement{
 		
@@ -39,17 +33,25 @@ public class MaskableFederatedElement extends MaskableElement{
 			return getValue().getName();
 		}
 		
-		public boolean isRelevant(OBPTraceConfiguration current, OBPTraceConfiguration previous){
-			if(getTrace().getTraceOBP().getInitConfiguration().equals(current)){
-				return true;
-			}else if(differsFromPreviousConfiguration(current,previous) && getMaskMode().equals(MaskMode.VISIBLE_IF_RELEVANT)){
-				return true;
+		/**
+		 * Return true if the element is visible.
+		 * The element is visible if is always visible and selected
+		 * Or if it is relevant, selected and differs from the last configuration 
+		 */
+		public boolean isVisible(OBPTraceConfiguration current){
+			if(isRelevant()){
+				return isSelected() && differsFromPreviousConfiguration(current);
+			}else{
+				return isSelected();
 			}
-			return false;
 		}
 		
-		public boolean differsFromPreviousConfiguration(OBPTraceConfiguration current, OBPTraceConfiguration previous){
-			return false;
+		public boolean isSelected(){
+			return getMask().isContainedInSelection(this);
+		}
+		
+		public boolean isRelevant(){
+			return getMaskMode().equals(MaskMode.VISIBLE_IF_RELEVANT);
 		}
 		
 		public String getFullStringRepresentation(){

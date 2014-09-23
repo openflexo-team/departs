@@ -24,7 +24,6 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.InvalidArgumentException;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
@@ -33,20 +32,15 @@ import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.FreeModelSlotInstanceConfiguration;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
-import org.openflexo.foundation.view.View;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.view.action.CreateBasicVirtualModelInstance;
-import org.openflexo.foundation.view.action.CreateView;
 import org.openflexo.foundation.view.action.ModelSlotInstanceConfiguration.DefaultModelSlotInstanceConfigurationOption;
 import org.openflexo.foundation.view.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.viewpoint.VirtualModelModelSlotInstanceConfiguration;
-import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.module.traceanalysis.model.TraceAnalysisProject;
 import org.openflexo.module.traceanalysis.model.TraceVirtualModelInstance;
-import org.openflexo.technologyadapter.cdl.CDLModelSlot;
 import org.openflexo.technologyadapter.cdl.CDLTechnologyAdapter;
-import org.openflexo.technologyadapter.fiacre.FiacreProgramModelSlot;
 import org.openflexo.technologyadapter.fiacre.FiacreTechnologyAdapter;
 import org.openflexo.technologyadapter.trace.TraceModelSlot;
 import org.openflexo.technologyadapter.trace.TraceTechnologyAdapter;
@@ -142,8 +136,6 @@ public class CreateTraceVirtualModelInstance extends FlexoAction<CreateTraceVirt
 
 	public String getErrorMessage() {
 		isValid();
-		// System.out.println("valid=" + isValid());
-		// System.out.println("errorMessage=" + errorMessage);
 		return errorMessage;
 	}
 

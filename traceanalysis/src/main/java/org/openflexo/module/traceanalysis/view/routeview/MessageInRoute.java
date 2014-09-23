@@ -40,7 +40,7 @@ public class MessageInRoute {
 		return message;
 	}
 
-	public BehaviourObjectInRoute getStartBehaviourObject() {
+	public BehaviourObjectInRoute<?> getStartBehaviourObject() {
 		return route.getBehaviourObjectInRoute(message.getFromBehaviourObject());
 	}
 
@@ -48,7 +48,7 @@ public class MessageInRoute {
 		return route.getOBPConfigurationInRoute(message.getOBPTraceTransition().getSourceOBPTraceConfiguration());
 	}
 
-	public BehaviourObjectInRoute getEndBehaviourObject() {
+	public BehaviourObjectInRoute<?> getEndBehaviourObject() {
 		return route.getBehaviourObjectInRoute(message.getToBehaviourObject());
 	}
 

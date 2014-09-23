@@ -5,6 +5,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openflexo.antar.binding.TypeUtils;
 import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.view.FlexoConceptInstance;
@@ -31,6 +32,8 @@ public class Mask extends DefaultFlexoObject implements PropertyChangeListener {
 	private List<MaskableElement> selection;
 	private final TraceAnalysisProject project;
 	private final TraceVirtualModelInstance trace;
+	private List<OBPTraceConfiguration> relevantConfigs;
+	private boolean computingRequired = true;
 
 	public Mask(FlexoConceptInstance flexoConceptInstance,TraceAnalysisProject project, TraceVirtualModelInstance trace) {
 		super();
@@ -65,6 +68,16 @@ public class Mask extends DefaultFlexoObject implements PropertyChangeListener {
 		return selection;
 	}
 	
+	public List<? extends MaskableElement> getFilteredSelection(Class<? extends MaskableElement> objectKind){
+		List<MaskableElement> filteredSelection = new ArrayList<MaskableElement>();
+		for(MaskableElement object : selection){
+			if(TypeUtils.isAssignableTo(object, objectKind)){
+				filteredSelection.add(object);
+			}
+		}
+		return filteredSelection;
+	}
+	
 	public void updateSelection(MaskableElement selected){
 		if(selection.contains(selected)){
 			selection.remove(selected);
@@ -76,7 +89,8 @@ public class Mask extends DefaultFlexoObject implements PropertyChangeListener {
 		if(parent!=null && parent instanceof MaskableFederatedElement){
 			parent.setInMask(true);
 		}*/
-		getPropertyChangeSupport().firePropertyChange("selection", null, selection);
+		computingRequired = true;
+		getPropertyChangeSupport().firePropertyChange("selection", null, selected);
 	}
 	
 	public List<OBPTraceObject> getVisibleOBPTraceObjects(){
@@ -96,33 +110,54 @@ public class Mask extends DefaultFlexoObject implements PropertyChangeListener {
 		return false;
 	}
 	
+	private void computeRelevantConfiguration(){
+		relevantConfigs.clear();
+		for(MaskableConfiguration conf : getTrace().getMaskedConfigurations()){
+			if(conf.differsFromPreviousConfiguration(conf.getValue())){
+				relevantConfigs.add(conf.getValue());
+			}
+		}
+	}
+	
 	// All configurations for which a changes happenned
 	public List<OBPTraceConfiguration> getRelevantConfigurations(){
-		List<OBPTraceConfiguration> relevantConfigs = new ArrayList<OBPTraceConfiguration>();
-		for(MaskableElement maskableElement : getMaskableElements()){
-			if(maskableElement instanceof MaskableFederatedElement){
-				MaskableFederatedElement element = (MaskableFederatedElement)maskableElement;
-				if(isContainedInSelection(element)){
-					for(OBPTraceConfiguration config : getTrace().getConfigurations()){
-						if(element.isRelevant(config, getTrace().getTraceOBP().getPreviousConfiguration(config))){
-							relevantConfigs.add(config);
-						}
-					}
+		if(relevantConfigs == null ){
+			relevantConfigs = new ArrayList<OBPTraceConfiguration>();
+		}
+		/*for(MaskableFederatedElement maskableElement : (List<MaskableFederatedElement>)getFilteredSelection(MaskableFederatedElement.class)){
+			for(OBPTraceConfiguration config : getTrace().getConfigurations()){
+				if(maskableElement.isVisible(config)){
+					relevantConfigs.add(config);
 				}
-				
 			}
+		}*/
+		if(computingRequired){
+			computeRelevantConfiguration();
+			computingRequired = false;
 		}
 		return relevantConfigs;
 	}
 	
+	// All configurations for which a changes happenned
+	public List<OBPTraceConfiguration> getRelevantConfigurationsForObject(OBPTraceObject object){
+		List<OBPTraceConfiguration> configs =  new ArrayList<OBPTraceConfiguration>();
+		for(OBPTraceConfiguration config :getRelevantConfigurations()){
+			if(isRelevant(config, object)){
+				configs.add(config);
+			}
+		}
+		return configs;
+	}
+	
 	public boolean isRelevant(OBPTraceConfiguration configuration, OBPTraceObject object){
 		MaskableFederatedElement maskableElement = getTrace().getMaskableElement(object);
-		if(maskableElement.getMaskMode().equals(MaskMode.ALWAYS_VISIBLE)){
-			return true;
-		}else {
-			OBPTraceConfiguration previous = getTrace().getTraceOBP().getPreviousConfiguration(configuration);
-			return maskableElement.isRelevant(configuration, previous);
-		}
+		//if(maskableElement.getMaskMode().equals(MaskMode.ALWAYS_VISIBLE)){
+		//	return true;
+		//}else {
+		//	OBPTraceConfiguration previous = getTrace().getTraceOBP().getPreviousConfiguration(configuration);
+		//	return maskableElement.isRelevant(configuration, previous);
+		//}
+		return maskableElement.isVisible(configuration);
 	}
 	
 	public List<OBPTraceBehaviourObjectInstance> getConfigurations(){
@@ -162,8 +197,10 @@ public class Mask extends DefaultFlexoObject implements PropertyChangeListener {
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		// TODO Auto-generated method stub
-		
+		if(evt.getPropertyName().equals("maskMode")){
+			getPropertyChangeSupport().firePropertyChange("selection", null, selection);
+		}
+		computingRequired = true;
 	}
 	
 }

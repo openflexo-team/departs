@@ -27,12 +27,16 @@ import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.technologyadapter.cdl.model.CDLProperty;
 
+/**
+ * A virtual model instance conform to the observer virtual model.
+ * @author Vincent
+ *
+ */
 public class ObserverVirtualModelInstance extends TraceAnalysisVirtualModelInstance {
 
 	public ObserverVirtualModelInstance(VirtualModelInstance virtualModelInstance, TraceAnalysisProject traceAnalysisProject)
 			throws InvalidArgumentException {
 		super(virtualModelInstance, traceAnalysisProject);
-		// TODO Auto-generated constructor stub
 	}
 
 	public List<CDLProperty> getCDLProperties(){

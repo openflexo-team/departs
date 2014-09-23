@@ -4,11 +4,14 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.module.traceanalysis.model.TraceVirtualModelInstance;
+import org.openflexo.technologyadapter.trace.model.OBPTrace;
+import org.openflexo.technologyadapter.trace.model.OBPTraceConfiguration;
 import org.openflexo.technologyadapter.trace.model.OBPTraceObject;
 
 
@@ -79,6 +82,10 @@ public abstract class MaskableElement extends DefaultFlexoObject implements Prop
 		return trace;
 	}
 	
+	public OBPTrace getOBPTrace(){
+		return getTrace().getTraceOBP();
+	}
+	
 	public MaskableElement getMaskableElement(OBPTraceObject object){
 		for(MaskableElement child : getChilds()){
 			if(child.getValue().equals(object)){
@@ -87,6 +94,7 @@ public abstract class MaskableElement extends DefaultFlexoObject implements Prop
 				return child;
 			}
 		}
+		//logger.log(Level.WARNING, "No maskable element found for obp trace object named " + object.getName());
 		return null;
 	}
 
@@ -94,19 +102,15 @@ public abstract class MaskableElement extends DefaultFlexoObject implements Prop
 		return mask;
 	}
 
-	private void setMask(Mask mask) {
-		this.mask = mask;
-	}
-
 	@Override
 	public void propertyChange(PropertyChangeEvent arg0) {
 		if(arg0.getPropertyName().equals("selectedMask")){
 			if(getMask()==null){
-				trace.getSelectedMask().getPropertyChangeSupport().addPropertyChangeListener("selection", this);
+				getPropertyChangeSupport().addPropertyChangeListener("maskMode", trace.getSelectedMask());
 				setMask((Mask)arg0.getNewValue());
 			}else if(getMask() != (Mask)arg0.getNewValue()){
-				getMask().getPropertyChangeSupport().removePropertyChangeListener(this);
-				trace.getSelectedMask().getPropertyChangeSupport().addPropertyChangeListener("selection", this);
+				getPropertyChangeSupport().removePropertyChangeListener(getMask());
+				getPropertyChangeSupport().addPropertyChangeListener("maskMode", trace.getSelectedMask());
 				setMask((Mask)arg0.getNewValue());
 			}
 		}
@@ -118,7 +122,22 @@ public abstract class MaskableElement extends DefaultFlexoObject implements Prop
 
 	public void setMaskMode(MaskMode maskMode) {
 		this.maskMode = maskMode;
-		getPropertyChangeSupport().firePropertyChange("selection", null, null);
+		getPropertyChangeSupport().firePropertyChange("maskMode", null, null);
+	}
+
+	private void setMask(Mask mask) {
+		this.mask = mask;
+	}
+	
+	public boolean differsFromPreviousConfiguration(OBPTraceConfiguration current){
+		if(getOBPTrace().getInitConfiguration().equals(current)){
+			return true;
+		}
+		return differsFromPreviousConfiguration(current, getOBPTrace().getPreviousConfiguration(current));
+	}
+	
+	public boolean differsFromPreviousConfiguration(OBPTraceConfiguration current, OBPTraceConfiguration previous){
+		return false;
 	}
 
 }

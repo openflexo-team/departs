@@ -24,7 +24,6 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
-import org.openflexo.foundation.InvalidArgumentException;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
@@ -46,8 +45,6 @@ import org.openflexo.technologyadapter.cdl.CDLModelSlot;
 import org.openflexo.technologyadapter.cdl.CDLTechnologyAdapter;
 import org.openflexo.technologyadapter.fiacre.FiacreProgramModelSlot;
 import org.openflexo.technologyadapter.fiacre.FiacreTechnologyAdapter;
-import org.openflexo.technologyadapter.trace.TraceModelSlot;
-import org.openflexo.technologyadapter.trace.TraceTechnologyAdapter;
 import org.openflexo.toolbox.StringUtils;
 
 public class CreateTraceAnalysisProject extends FlexoAction<CreateTraceAnalysisProject, TraceAnalysisProject, FlexoObject> {

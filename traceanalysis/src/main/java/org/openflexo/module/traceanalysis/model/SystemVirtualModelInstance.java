@@ -28,14 +28,22 @@ import org.openflexo.technologyadapter.fiacre.model.FiacreComponent;
 import org.openflexo.technologyadapter.fiacre.model.FiacreProcess;
 import org.openflexo.technologyadapter.fiacre.model.FiacreVariable;
 
+/**
+ * A virtual model instance conform to the system virtual model.
+ * @author Vincent
+ *
+ */
 public class SystemVirtualModelInstance extends TraceAnalysisVirtualModelInstance {
 
 	public SystemVirtualModelInstance(VirtualModelInstance virtualModelInstance, TraceAnalysisProject traceAnalysisProject)
 			throws InvalidArgumentException {
 		super(virtualModelInstance,traceAnalysisProject);
-		// TODO Auto-generated constructor stub
 	}
 	
+	/**
+	 * Return fiacre processes from their respective flexo concept instance
+	 * @return
+	 */
 	public List<FiacreProcess> getFiacreProcesses(){
 		List<FiacreProcess> fiacreProcesses = new ArrayList<FiacreProcess>();
 		for(FlexoConceptInstance fciProcess : getVirtualModelInstance().getFlexoConceptInstances("Process")){
@@ -44,6 +52,10 @@ public class SystemVirtualModelInstance extends TraceAnalysisVirtualModelInstanc
 		return fiacreProcesses;
 	}
 	
+	/**
+	 * Return fiacre components from their respective flexo concept instance
+	 * @return
+	 */
 	public List<FiacreComponent> getFiacreComponents(){
 		List<FiacreComponent> fiacreComponents = new ArrayList<FiacreComponent>();
 		for(FlexoConceptInstance fciComponent : getVirtualModelInstance().getFlexoConceptInstances("Component")){
@@ -52,6 +64,10 @@ public class SystemVirtualModelInstance extends TraceAnalysisVirtualModelInstanc
 		return fiacreComponents;
 	}
 	
+	/**
+	 * Return fiacre variables for a fiacre process
+	 * @return
+	 */
 	public List<FiacreVariable> getFiacreVariable(FiacreProcess fiacreProcess){
 		return fiacreProcess.getFiacreVariables();
 	}

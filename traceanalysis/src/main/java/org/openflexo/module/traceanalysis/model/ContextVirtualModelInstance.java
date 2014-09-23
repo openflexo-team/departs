@@ -26,16 +26,23 @@ import org.openflexo.foundation.InvalidArgumentException;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.technologyadapter.cdl.model.CDLParActivity;
-import org.openflexo.technologyadapter.cdl.model.CDLUnit;
 
+/**
+ * A virtual model instance conform to the context virtual model.
+ * @author Vincent
+ *
+ */
 public class ContextVirtualModelInstance extends TraceAnalysisVirtualModelInstance {
 
 	public ContextVirtualModelInstance(VirtualModelInstance virtualModelInstance, TraceAnalysisProject traceAnalysisProject)
 			throws InvalidArgumentException {
 		super(virtualModelInstance, traceAnalysisProject);
-		// TODO Auto-generated constructor stub
 	}
 	
+	/**
+	 * Return a set of parallel activities from this context
+	 * @return
+	 */
 	public List<CDLParActivity> getCDLParActivities(){
 		List<CDLParActivity> cdlParActivities = new ArrayList<CDLParActivity>();
 		for(FlexoConceptInstance fciCDLParActivity : getVirtualModelInstance().getFlexoConceptInstances("ParActivity")){

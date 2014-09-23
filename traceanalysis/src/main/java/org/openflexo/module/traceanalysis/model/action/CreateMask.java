@@ -70,6 +70,12 @@ public class CreateMask extends FlexoAction<CreateMask, TraceVirtualModelInstanc
 
 	private Mask mask;
 	
+	private String errorMessage;
+	
+	private String maskName;
+	
+	private String maskDescription;
+	
 	@Override
 	protected void doAction(Object context) throws SaveResourceException {
 
@@ -89,12 +95,6 @@ public class CreateMask extends FlexoAction<CreateMask, TraceVirtualModelInstanc
 		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
 		getPropertyChangeSupport().firePropertyChange("errorMessage", null, getErrorMessage());
 	}
-
-	private String errorMessage;
-	
-	private String maskName;
-	
-	private String maskDescription;
 
 	public String getErrorMessage() {
 		isValid();

@@ -12,6 +12,7 @@ import org.openflexo.fge.ShapeGraphicalRepresentation;
 import org.openflexo.fge.ColorGradientBackgroundStyle.ColorGradientDirection;
 import org.openflexo.fge.Drawing.DrawingTreeNode;
 import org.openflexo.fge.ForegroundStyle.DashStyle;
+import org.openflexo.fge.GraphicalRepresentation.HorizontalTextAlignment;
 import org.openflexo.fge.connectors.ConnectorSpecification.ConnectorType;
 import org.openflexo.fge.connectors.ConnectorSymbol.EndSymbolType;
 import org.openflexo.fge.control.AbstractDianaEditor;
@@ -25,7 +26,13 @@ import org.openflexo.fge.shapes.ShapeSpecification.ShapeType;
 import org.openflexo.module.traceanalysis.view.routeview.OBPConfigurationInRoute.RelativeConfigurationArtefact;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
+import org.openflexo.technologyadapter.trace.model.OBPTraceConfiguration;
 
+/**
+ * This class is used to create the graphical representations required in the module view
+ * @author Vincent
+ *
+ */
 public class DrawingFactory {
 	
 	public static final Resource SUCCESS = ResourceLocator.locateResource("Icons/cdl_success.png");
@@ -104,12 +111,12 @@ public class DrawingFactory {
 		ShapeGraphicalRepresentation initialStateRepresentation = factory.makeShapeGraphicalRepresentation(initialStateSpecification);
 		initialStateRepresentation.setWidth(width);
 		initialStateRepresentation.setHeight(height);
-		initialStateRepresentation.setAbsoluteTextX(0);
-		initialStateRepresentation.setAbsoluteTextY(-10);
+		initialStateRepresentation.setAbsoluteTextX(width/2);
+		initialStateRepresentation.setAbsoluteTextY(height/2);
 		initialStateRepresentation.setTextStyle(factory.makeTextStyle(Color.BLACK,
 				FGEConstants.DEFAULT_TEXT_FONT.deriveFont(Font.PLAIN)));
 		initialStateRepresentation.setShadowStyle(factory.makeNoneShadowStyle());
-		initialStateRepresentation.setBackground(factory.makeColoredBackground(Color.BLACK));
+		initialStateRepresentation.setBackground(factory.makeColoredBackground(Color.gray));
 		initialStateRepresentation.setForeground(factory.makeForegroundStyle(Color.BLACK));
 		initialStateRepresentation.setLayer(1);
 		return initialStateRepresentation;
@@ -133,7 +140,8 @@ public class DrawingFactory {
 						System.out.println("toogleVisibleStateForConfiguration for " + dtn.getDrawable());
 						if (dtn.getDrawable() instanceof OBPConfigurationInRoute) {
 							OBPConfigurationInRoute configInRoute = (OBPConfigurationInRoute) dtn.getDrawable();
-							configInRoute.getRoute().hide(configInRoute.getConfiguration());
+							configInRoute.getRoute().addToForcedHidedConfiguration(configInRoute);
+
 						}
 						return true;
 					}
@@ -162,7 +170,9 @@ public class DrawingFactory {
 						System.out.println("toogleVisibleStateForIntermediateConfiguration for " + dtn.getDrawable());
 						if (dtn.getDrawable() instanceof RelativeConfigurationArtefact) {
 							RelativeConfigurationArtefact artefact = (RelativeConfigurationArtefact) dtn.getDrawable();
-							artefact.getConfigurationInRoute().getRoute().show(artefact.getConfiguration());
+							OBPRoute route = artefact.getConfigurationInRoute().getRoute();
+							OBPTraceConfiguration config = artefact.getConfiguration();
+							route.addToForcedVisibleConfiguration(route.getOBPConfigurationInRoute(config));
 						}
 						return true;
 					}
@@ -197,6 +207,24 @@ public class DrawingFactory {
 		lifeLineRepresentation.setIsFocusable(false);
 		lifeLineRepresentation.setLayer(0);
 		return lifeLineRepresentation;
+	}
+	
+	public ShapeGraphicalRepresentation createChronogramRepresentation(){
+		ShapeGraphicalRepresentation chronogramGR = factory.makeShapeGraphicalRepresentation(ShapeType.RECTANGLE);
+		//chronogramGR.setText(var.getName());
+		//chronogramGR.setX(50);
+		//chronogramGR.setY(50);
+		chronogramGR.setWidth(900);
+		chronogramGR.setHeight(25);
+		chronogramGR.setAbsoluteTextX(-15);
+		chronogramGR.setAbsoluteTextY(30);
+		chronogramGR.setHorizontalTextAlignment(HorizontalTextAlignment.LEFT);
+		chronogramGR.setTextStyle(factory.makeTextStyle(Color.blue, FGEConstants.DEFAULT_TEXT_FONT));
+		chronogramGR.setShadowStyle(factory.makeNoneShadowStyle());
+		chronogramGR.setBackground(factory.makeColoredBackground(Color.WHITE));
+		chronogramGR.setForeground(factory.makeForegroundStyle(Color.DARK_GRAY));
+		chronogramGR.setBorder(factory.makeShapeBorder(20, 20, 0, 0));
+		return chronogramGR;
 	}
 	
 	private ShapeGraphicalRepresentation createObserverStateRepresentation(double width, double height,Resource resource){

@@ -36,4 +36,20 @@ public class TraceAnalysisIconLibrary {
 	public static final ImageIcon MASK_SMALL_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/mask16x16.png"));
 	public static final ImageIcon MASK_MEDIUM_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/mask32x32.png"));
 	public static final ImageIcon MASK_LARGE_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/mask64x64.png"));
+	
+	public static final ImageIcon UNMASK_SMALL_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/unmask16x16.png"));
+	public static final ImageIcon UNMASK_MEDIUM_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/unmask32x32.png"));
+	public static final ImageIcon UNMASK_LARGE_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/unmask64x64.png"));
+	
+	public static final ImageIcon RESTART_SMALL_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/restart16x16.png"));
+	public static final ImageIcon RESTART_MEDIUM_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/restart32x32.png"));
+
+	public static final ImageIcon LAYOUT_HORIZONTAL_SMALL_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/layoutH16x16.png"));
+	public static final ImageIcon LAYOUT_HORIZONTAL_MEDIUM_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/layoutH32x32.png"));
+	public static final ImageIcon LAYOUT_HORIZONTAL_LARGE_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/layoutH64x64.png"));
+
+	public static final ImageIcon LAYOUT_VERTICAL_SMALL_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/layoutV16x16.png"));
+	public static final ImageIcon LAYOUT_VERTICAL_MEDIUM_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/layoutV32x32.png"));
+	public static final ImageIcon LAYOUT_VERTICAL_LARGE_ICON = new ImageIconResource(ResourceLocator.locateResource("Icons/layoutV64x64.png"));
+
 }

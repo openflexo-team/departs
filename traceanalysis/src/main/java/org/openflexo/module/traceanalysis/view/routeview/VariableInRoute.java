@@ -25,9 +25,22 @@ import org.openflexo.toolbox.HasPropertyChangeSupport;
 
 public class VariableInRoute extends BehaviourObjectInRoute<OBPTraceVariable> implements HasPropertyChangeSupport {
 
-	public VariableInRoute(OBPTraceVariable behaviourObject, OBPRoute route) {
+	private final Chronogram chronogram;
+	
+	private final ProcessInRoute process;
+	
+	public VariableInRoute(OBPTraceVariable behaviourObject, OBPRoute route, ProcessInRoute process) {
 		super(behaviourObject, route);
-		// TODO Auto-generated constructor stub
+		this.process = process;
+		this.chronogram = new Chronogram(this);
 	}
 
+	public Chronogram getChronogram(){
+		return chronogram;
+	}
+
+	public ProcessInRoute getProcessInRoute() {
+		return process;
+	}
+	
 }

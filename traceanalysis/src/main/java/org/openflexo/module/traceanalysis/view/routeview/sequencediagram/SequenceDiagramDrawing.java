@@ -1,22 +1,13 @@
 package org.openflexo.module.traceanalysis.view.routeview.sequencediagram;
 
-import java.awt.Color;
-import java.awt.Font;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.openflexo.antar.binding.DataBinding;
-import org.openflexo.fge.BackgroundImageBackgroundStyle;
-import org.openflexo.fge.ColorGradientBackgroundStyle.ColorGradientDirection;
 import org.openflexo.fge.ConnectorGraphicalRepresentation;
 import org.openflexo.fge.DrawingGraphicalRepresentation;
-import org.openflexo.fge.FGEConstants;
 import org.openflexo.fge.FGEModelFactory;
-import org.openflexo.fge.ForegroundStyle.DashStyle;
 import org.openflexo.fge.GRBinding.ConnectorGRBinding;
 import org.openflexo.fge.GRBinding.DrawingGRBinding;
 import org.openflexo.fge.GRBinding.GraphGRBinding;
@@ -26,23 +17,10 @@ import org.openflexo.fge.GRProvider.DrawingGRProvider;
 import org.openflexo.fge.GRProvider.ShapeGRProvider;
 import org.openflexo.fge.GRStructureVisitor;
 import org.openflexo.fge.GraphicalRepresentation;
-import org.openflexo.fge.GraphicalRepresentation.HorizontalTextAlignment;
 import org.openflexo.fge.ShapeGraphicalRepresentation;
-import org.openflexo.fge.connectors.ConnectorSpecification.ConnectorType;
-import org.openflexo.fge.connectors.ConnectorSymbol.EndSymbolType;
-import org.openflexo.fge.control.AbstractDianaEditor;
-import org.openflexo.fge.control.MouseControl.MouseButton;
-import org.openflexo.fge.control.MouseControlContext;
-import org.openflexo.fge.control.actions.MouseClickControlActionImpl;
-import org.openflexo.fge.control.actions.MouseClickControlImpl;
 import org.openflexo.fge.graph.FGEDiscreteFunctionGraph;
-import org.openflexo.fge.graph.FGEFunctionGraph.Orientation;
-import org.openflexo.fge.graph.FGEGraph.GraphType;
-import org.openflexo.fge.graph.FGENumericFunction;
 import org.openflexo.fge.impl.DrawingImpl;
-import org.openflexo.fge.shapes.Rectangle;
-import org.openflexo.fge.shapes.ShapeSpecification;
-import org.openflexo.fge.shapes.ShapeSpecification.ShapeType;
+import org.openflexo.module.traceanalysis.model.mask.MaskableElement;
 import org.openflexo.module.traceanalysis.view.routeview.BehaviourObjectInRoute;
 import org.openflexo.module.traceanalysis.view.routeview.Chronogram;
 import org.openflexo.module.traceanalysis.view.routeview.DrawingFactory;
@@ -53,9 +31,9 @@ import org.openflexo.module.traceanalysis.view.routeview.OBPRoute;
 import org.openflexo.module.traceanalysis.view.routeview.OBPRoute.AbstractTransitionArtefact;
 import org.openflexo.module.traceanalysis.view.routeview.OBPStateInRoute;
 import org.openflexo.module.traceanalysis.view.routeview.ProcessInRoute;
+import org.openflexo.module.traceanalysis.view.routeview.VariableInRoute;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
-import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObjectInstance;
 import org.openflexo.technologyadapter.trace.model.OBPTraceData;
 import org.openflexo.technologyadapter.trace.model.OBPTraceMessage;
 import org.openflexo.technologyadapter.trace.model.OBPTraceMessageReceive;
@@ -63,7 +41,6 @@ import org.openflexo.technologyadapter.trace.model.OBPTraceMessageSend;
 import org.openflexo.technologyadapter.trace.model.OBPTraceMessageSynchro;
 import org.openflexo.technologyadapter.trace.model.OBPTraceObject;
 import org.openflexo.technologyadapter.trace.model.OBPTraceTransition;
-import org.openflexo.technologyadapter.trace.model.OBPTraceVariable;
 
 public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> implements PropertyChangeListener{
 
@@ -105,24 +82,27 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> implements Pro
 	private ShapeGraphicalRepresentation messageAnchorRepresentation;
 	private ConnectorGraphicalRepresentation messageRepresentation;
 	// private ShapeGraphicalRepresentation previousConfigurationRepresentation;
+
+	private ShapeGraphicalRepresentation chronogramGR;
 	
+	private RouteLayout layout;
 	
 	private Map<FGEDiscreteFunctionGraph<OBPTraceData>,GraphGRBinding> chronograms;
 	
 	private DrawingGraphicalRepresentation drawingRepresentation;
 	
+	public boolean isMasked = false;
+	
 	public enum RouteLayout {
 			HORIZONTAL, VERTICAL
 	}
-
-	private RouteLayout layout;
 	
 	public SequenceDiagramDrawing(OBPRoute graph, FGEModelFactory factory, RouteLayout layout) {
 		super(graph, factory, PersistenceMode.SharedGraphicalRepresentations);
 		this.layout=layout;
 		graph.getTraceVirtualModelInstance().getPropertyChangeSupport().addPropertyChangeListener("selectedMask", this);
 	}
-
+	
 	public RouteLayout getLayout() {
 		return layout;
 	}
@@ -132,20 +112,45 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> implements Pro
 		update();
 	}
 	
-	@Override
-	public void propertyChange(PropertyChangeEvent arg0) {
-		if(arg0.getPropertyName().equals("selectedMask")){
-			getModel().getTraceVirtualModelInstance().getSelectedMask().getPropertyChangeSupport().addPropertyChangeListener("selection", this);
-			update();
+	public void applyMask(){
+		if(isMasked == false && getModel().getTraceVirtualModelInstance().getSelectedMask()!=null){
+			isMasked = true;
+			synchronizeAllWithMask();
+		}else if(isMasked == true && getModel().getTraceVirtualModelInstance().getSelectedMask()==null){
+			isMasked = false;
 		}
-		if(arg0.getPropertyName().equals("selection")){
+	}
+	
+	private void synchronizeAllWithMask(){
+		if(isMasked){
+			getModel().synchronizeAllWithMask();
 			update();
 		}
 	}
 	
+	public void resetMask(){
+		getModel().reset();
+		synchronizeAllWithMask();
+	}
+	
+	@Override
+	public void propertyChange(PropertyChangeEvent arg0) {
+		if(arg0.getPropertyName().equals("selectedMask")){
+			getModel().getTraceVirtualModelInstance().getSelectedMask().getPropertyChangeSupport().addPropertyChangeListener("selection", this);
+			applyMask();
+			synchronizeAllWithMask();
+		}
+		if(arg0.getPropertyName().equals("selection")){
+			synchronizeAllWithMask();
+		}
+	}
+	
 	private void update(){
-		invalidateGraphicalObjectsHierarchy(getModel());
-		updateGraphicalObjectsHierarchy(getModel());
+		invalidateGraphicalObjectsHierarchy();
+		updateGraphicalObjectsHierarchy();
+		invalidateGraphicalObjectsHierarchy();
+		updateGraphicalObjectsHierarchy();
+
 	}
 	
 	@Override
@@ -167,7 +172,7 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> implements Pro
 		lifeLineRepresentation = drawingFactory.createLifeLineRepresentation();
 		messageAnchorRepresentation = drawingFactory.createMessageAnchorRepresentation();
 		messageRepresentation = drawingFactory.createMessageRepresentation();
-		
+		chronogramGR = drawingFactory.createChronogramRepresentation();
 		
 		final DrawingGRBinding<OBPRoute> graphBinding = bindDrawing(OBPRoute.class, "route", new DrawingGRProvider<OBPRoute>() {
 			@Override
@@ -411,23 +416,6 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> implements Pro
 						return messageRepresentation;
 					}
 				});
-		
-
-		final ShapeGraphicalRepresentation chronogramGR = getFactory().makeShapeGraphicalRepresentation(ShapeType.RECTANGLE);
-		//chronogramGR.setText(var.getName());
-		chronogramGR.setX(50);
-		chronogramGR.setY(50);
-		chronogramGR.setWidth(900);
-		chronogramGR.setHeight(40);
-		chronogramGR.setAbsoluteTextX(500);
-		chronogramGR.setAbsoluteTextY(3);
-		chronogramGR.setHorizontalTextAlignment(HorizontalTextAlignment.LEFT);
-		chronogramGR.setTextStyle(getFactory().makeTextStyle(Color.BLACK, FGEConstants.DEFAULT_TEXT_FONT));
-		chronogramGR.setShadowStyle(getFactory().makeNoneShadowStyle());
-		chronogramGR.setBackground(getFactory().makeColoredBackground(Color.WHITE));
-		chronogramGR.setForeground(getFactory().makeForegroundStyle(Color.BLACK));
-		// Very important: give some place for labels, legend and other informations
-		chronogramGR.setBorder(getFactory().makeShapeBorder(20, 20, 20, 20));
 
 		final GraphGRBinding<Chronogram> chronogramBinding = bindGraph(Chronogram.class, "graph",
 				new ShapeGRProvider<Chronogram>() {
@@ -443,9 +431,6 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> implements Pro
 
 			@Override
 			public void visit(OBPRoute route) {
-				if(route.getTraceVirtualModelInstance().getSelectedMask()!=null){
-					route.synchronizeWithMask();
-				}
 				if(layout==RouteLayout.VERTICAL){
 					for (BehaviourObjectInRoute compInRoute : route.getVisibleBehaviourObjects()) {
 						drawShape(lifeLineVerticalBinding, compInRoute);
@@ -524,36 +509,34 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> implements Pro
 						// Show states for visible BehaviourObjects
 						for (BehaviourObjectInRoute objectInRoute : route.getVisibleBehaviourObjects()) {
 							OBPStateInRoute state = route.getOBPStateInRoute(objectInRoute, config);
-							if(state.isSuccess() && state.isVisible()){
-								drawShape(successStateVerticalBinding, route.getOBPStateInRoute(objectInRoute, config));
-							}else if(state.isReject() && state.isVisible()){
-								drawShape(rejectStateVerticalBinding, route.getOBPStateInRoute(objectInRoute, config));
-							}else if(state.isCut() && state.isVisible()){
-								drawShape(cutStateVerticalBinding, route.getOBPStateInRoute(objectInRoute, config));
-							}else if(state.isNormal() && state.isVisible()){
-								drawShape(normalStateVerticalBinding, route.getOBPStateInRoute(objectInRoute, config));
-							}else if(config.getVisibleIndex()==0 && state.isVisible()){
-								drawShape(initialStateVerticalBinding, route.getOBPStateInRoute(objectInRoute, config));
-							}else if(state.isVisible()){
-								drawShape(defaultStateVerticalBinding, route.getOBPStateInRoute(objectInRoute, config));
+							if((state.isVisible() && isMasked) || !isMasked){
+								if(state.isSuccess() ){
+									drawShape(successStateVerticalBinding, route.getOBPStateInRoute(objectInRoute, config));
+								}else if(state.isReject() ){
+									drawShape(rejectStateVerticalBinding, route.getOBPStateInRoute(objectInRoute, config));
+								}else if(state.isCut() ){
+									drawShape(cutStateVerticalBinding, route.getOBPStateInRoute(objectInRoute, config));
+								}else if(state.isNormal() ){
+									drawShape(normalStateVerticalBinding, route.getOBPStateInRoute(objectInRoute, config));
+								}else if(config.getVisibleIndex()==0 ){
+									drawShape(initialStateVerticalBinding, route.getOBPStateInRoute(objectInRoute, config));
+								}else {
+									drawShape(defaultStateVerticalBinding, route.getOBPStateInRoute(objectInRoute, config));
+								}
 							}
 						}
 					}
 				}
 				else if(layout==RouteLayout.HORIZONTAL){
 					for (BehaviourObjectInRoute compInRoute : route.getVisibleBehaviourObjects()) {
-						drawShape(lifeLineHorizontalBinding, compInRoute);
 						if(compInRoute instanceof ProcessInRoute){
-							for(Chronogram chronogram : ((ProcessInRoute) compInRoute).getChronograms()){
-								drawGraph(chronogramBinding,chronogram);
-							}
+							drawShape(lifeLineHorizontalBinding, compInRoute);
 						}
-						
+						if(compInRoute instanceof VariableInRoute){
+							Chronogram chronogram = ((VariableInRoute) compInRoute).getChronogram();
+							drawGraph(chronogramBinding,chronogram);
+						}
 					}
-					
-					/*for (Entry<FGEDiscreteFunctionGraph<OBPTraceData>, GraphGRBinding> entry : chronograms.entrySet()) {	
-						drawGraph(entry.getValue(),entry.getKey());
-					}*/
 					
 					for (int i = 0; i < route.getSize(); i++) {
 						OBPConfigurationInRoute config = route.getConfiguration(i);
@@ -627,19 +610,23 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> implements Pro
 						}
 						// Show states for visible BehaviourObjects
 						for (BehaviourObjectInRoute objectInRoute : route.getVisibleBehaviourObjects()) {
-							OBPStateInRoute state = route.getOBPStateInRoute(objectInRoute, config);
-							if(state.isSuccess()&& state.isVisible()){
-								drawShape(successStateHorizontalBinding, route.getOBPStateInRoute(objectInRoute, config));
-							}else if(state.isReject()&& state.isVisible()){
-								drawShape(rejectStateHorizontalBinding, route.getOBPStateInRoute(objectInRoute, config));
-							}else if(state.isCut()&& state.isVisible()){
-								drawShape(cutStateHorizontalBinding, route.getOBPStateInRoute(objectInRoute, config));
-							}else if(state.isNormal()&& state.isVisible()){
-								drawShape(normalStateHorizontalBinding, route.getOBPStateInRoute(objectInRoute, config));
-							}else if(config.getVisibleIndex()==0 && state.isVisible()){
-								drawShape(initialStateHorizontalBinding, route.getOBPStateInRoute(objectInRoute, config));
-							}else if(state.isVisible()){
-								drawShape(defaultStateHorizontalBinding, route.getOBPStateInRoute(objectInRoute, config));
+							if(objectInRoute instanceof ProcessInRoute){
+								OBPStateInRoute state = route.getOBPStateInRoute(objectInRoute, config);
+								if((state.isVisible() && isMasked) || !isMasked){
+									if(state.isSuccess()){
+										drawShape(successStateHorizontalBinding, route.getOBPStateInRoute(objectInRoute, config));
+									}else if(state.isReject()){
+										drawShape(rejectStateHorizontalBinding, route.getOBPStateInRoute(objectInRoute, config));
+									}else if(state.isCut()&& state.isVisible()){
+										drawShape(cutStateHorizontalBinding, route.getOBPStateInRoute(objectInRoute, config));
+									}else if(state.isNormal()){
+										drawShape(normalStateHorizontalBinding, route.getOBPStateInRoute(objectInRoute, config));
+									}else if(config.getVisibleIndex()==0 ){
+										drawShape(initialStateHorizontalBinding, route.getOBPStateInRoute(objectInRoute, config));
+									}else {
+										drawShape(defaultStateHorizontalBinding, route.getOBPStateInRoute(objectInRoute, config));
+									}
+								}
 							}
 						}
 					}
@@ -649,7 +636,7 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> implements Pro
 
 		// VERTICAL BINDINGS
 		setConfigurationBindingDynamicPropertyValues(configurationVerticalBinding, RouteLayout.VERTICAL);
-		setStateBindingDynamicPropertyValues(initialStateVerticalBinding,CIRCLE_STATE_WIDTH,CIRCLE_STATE_HEIGHT,  false, RouteLayout.VERTICAL);
+		setStateBindingDynamicPropertyValues(initialStateVerticalBinding,CIRCLE_STATE_WIDTH,CIRCLE_STATE_HEIGHT,  true, RouteLayout.VERTICAL);
 		setStateBindingDynamicPropertyValues(defaultStateVerticalBinding,RECTANGLE_STATE_WIDTH,RECTANGLE_STATE_HEIGHT,  true, RouteLayout.VERTICAL);
 		setStateBindingDynamicPropertyValues(successStateVerticalBinding,CIRCLE_STATE_WIDTH,CIRCLE_STATE_HEIGHT,  false, RouteLayout.VERTICAL);
 		setStateBindingDynamicPropertyValues(rejectStateVerticalBinding,CIRCLE_STATE_WIDTH,CIRCLE_STATE_HEIGHT,  false, RouteLayout.VERTICAL);
@@ -663,7 +650,7 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> implements Pro
 
 		// HORIZONTAL BINDINGS
 		setConfigurationBindingDynamicPropertyValues(configurationHorizontalBinding, RouteLayout.HORIZONTAL);
-		setStateBindingDynamicPropertyValues(initialStateHorizontalBinding,CIRCLE_STATE_WIDTH,CIRCLE_STATE_HEIGHT,  false, RouteLayout.HORIZONTAL);
+		setStateBindingDynamicPropertyValues(initialStateHorizontalBinding,CIRCLE_STATE_WIDTH,CIRCLE_STATE_HEIGHT,  true, RouteLayout.HORIZONTAL);
 		setStateBindingDynamicPropertyValues(defaultStateHorizontalBinding,RECTANGLE_STATE_WIDTH,RECTANGLE_STATE_HEIGHT,  true, RouteLayout.HORIZONTAL);
 		setStateBindingDynamicPropertyValues(successStateHorizontalBinding,CIRCLE_STATE_WIDTH,CIRCLE_STATE_HEIGHT,  false, RouteLayout.HORIZONTAL);
 		setStateBindingDynamicPropertyValues(rejectStateHorizontalBinding,CIRCLE_STATE_WIDTH,CIRCLE_STATE_HEIGHT,  false, RouteLayout.HORIZONTAL);
@@ -678,7 +665,10 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> implements Pro
 	}
 	
 	private void setChronogramBindingDynamicPropertyValues(GraphGRBinding<Chronogram> chronogramBinding){
-		chronogramBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>("drawable.processInRoute.getVirtualIndex()*" + ROW_HEIGHT + "+" + ROW_HEIGHT + "+"+ UP_OFFSET+"+" +"drawable.getIndex()*50"), false);
+		chronogramBinding.setDynamicPropertyValue(GraphicalRepresentation.TEXT, new DataBinding<String>("drawable.getName()"),false);
+		chronogramBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>("" +LEFT_OFFSET), false);
+		chronogramBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>("drawable.getVariableInRoute().virtualIndex*" + ROW_HEIGHT + "+"+ UP_OFFSET), false);
+		chronogramBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.WIDTH, new DataBinding<Double>("(drawable.processInRoute.route.size-1)*"+ LIFE_LINE_WIDTH  + "+" + LIFE_LINE_WIDTH), false);
 	}
 	
 	private void setConfigurationBindingDynamicPropertyValues(ShapeGRBinding<OBPConfigurationInRoute> configurationBinding, RouteLayout layout){
@@ -720,7 +710,7 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> implements Pro
 			lifelineBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.ABSOLUTE_TEXT_X, new DataBinding<Double>("0"), false);
 			lifelineBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.ABSOLUTE_TEXT_Y, new DataBinding<Double>("-20"), false);
 		}else if(layout==RouteLayout.HORIZONTAL){
-			lifelineBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>("drawable.getVirtualIndex()*" + ROW_HEIGHT + "+" + ROW_HEIGHT + "+"+ UP_OFFSET), false);
+			lifelineBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>("drawable.virtualIndex*" + ROW_HEIGHT + "+" + ROW_HEIGHT + "+"+ UP_OFFSET), false);
 			lifelineBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>(""+LEFT_OFFSET), false);
 			lifelineBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.WIDTH, new DataBinding<Double>("(drawable.route.size-1)*"+ LIFE_LINE_WIDTH + "+" +LEFT_OFFSET), false);
 			lifelineBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.HEIGHT, new DataBinding<Double>("0.0"), false);
@@ -742,7 +732,7 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> implements Pro
 				stateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.ABSOLUTE_TEXT_Y, new DataBinding<Double>("-"+stateHeight/2), false);
 			}
 		}else if(layout==RouteLayout.HORIZONTAL){
-			stateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>("drawable.behaviourObjectInRoute.getVirtualIndex()*"+ROW_HEIGHT + "+" +ROW_HEIGHT + "+"+ UP_OFFSET + "-" + stateHeight/2), false);
+			stateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>("drawable.behaviourObjectInRoute.virtualIndex*"+ROW_HEIGHT + "+" +ROW_HEIGHT + "+"+ UP_OFFSET + "-" + stateHeight/2), false);
 			stateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>("drawable.configurationInRoute.visibleIndex*"+ LIFE_LINE_WIDTH + "+" + LEFT_OFFSET +"-" + stateWidth/2), false);
 			if(insideText){
 				stateBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.ABSOLUTE_TEXT_X, new DataBinding<Double>(""+stateWidth/2), false);
@@ -767,11 +757,11 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> implements Pro
 					"(drawable.endConfiguration.visibleIndex+1)*" + ROW_HEIGHT +"-" + RECTANGLE_STATE_HEIGHT), false);
 		}else if(layout==RouteLayout.HORIZONTAL){
 			startMessageBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>(
-					"drawable.startBehaviourObject.getVirtualIndex()*"+ ROW_HEIGHT +"+" +ROW_HEIGHT + "+"+ UP_OFFSET), false);
+					"drawable.startBehaviourObject.virtualIndex*"+ ROW_HEIGHT +"+" +ROW_HEIGHT + "+"+ UP_OFFSET), false);
 			startMessageBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>(
 					"(drawable.startConfiguration.visibleIndex+1)*" + LIFE_LINE_WIDTH ), false);
 			endMessageBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.Y, new DataBinding<Double>(
-					"drawable.endBehaviourObject.getVirtualIndex()*" + ROW_HEIGHT +"+" +ROW_HEIGHT + "+"+ UP_OFFSET), false);
+					"drawable.endBehaviourObject.virtualIndex*" + ROW_HEIGHT +"+" +ROW_HEIGHT + "+"+ UP_OFFSET), false);
 			endMessageBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>(
 					"(drawable.endConfiguration.visibleIndex+1)*" + LIFE_LINE_WIDTH +"-" + RECTANGLE_STATE_WIDTH*2), false);
 		}

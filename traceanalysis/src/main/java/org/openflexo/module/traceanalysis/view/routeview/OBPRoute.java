@@ -26,11 +26,9 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.module.traceanalysis.model.TraceVirtualModelInstance;
 import org.openflexo.module.traceanalysis.model.mask.Mask;
 import org.openflexo.technologyadapter.trace.model.OBPTrace;
-import org.openflexo.technologyadapter.trace.model.OBPTraceBehaviourObjectInstance;
 import org.openflexo.technologyadapter.trace.model.OBPTraceConfiguration;
 import org.openflexo.technologyadapter.trace.model.OBPTraceMessage;
 import org.openflexo.technologyadapter.trace.model.OBPTraceObject;
-import org.openflexo.technologyadapter.trace.model.OBPTraceVariable;
 
 /**
  * Represents a OBP route, as a filtered {@link OBPTrace}
@@ -52,9 +50,9 @@ public interface OBPRoute extends FlexoObject {
 
 	public int getIndex(OBPConfigurationInRoute configInRoute);
 	
-	public int getIndex(BehaviourObjectInRoute behaviourInRoute);
+	public int getIndex(BehaviourObjectInRoute<?> behaviourInRoute);
 	
-	public int getVirtualIndex(BehaviourObjectInRoute behaviourInRoute);
+	public int getVirtualIndex(BehaviourObjectInRoute<?> behaviourInRoute);
 	
 	public List<OBPConfigurationInRoute> getVisibleConfigurations();
 
@@ -65,6 +63,8 @@ public interface OBPRoute extends FlexoObject {
 	public OBPConfigurationInRoute getNextVisibleConfiguration(OBPTraceConfiguration config);
 
 	public int getSize();
+	
+	public void reset();
 
 	public OBPConfigurationInRoute getConfiguration(int index);
 
@@ -82,21 +82,23 @@ public interface OBPRoute extends FlexoObject {
 
 	}
 
-	public List<BehaviourObjectInRoute> getVisibleBehaviourObjects();
+	public List<BehaviourObjectInRoute<?>> getVisibleBehaviourObjects();
 
-	public BehaviourObjectInRoute getBehaviourObjectInRoute(OBPTraceObject behaviourObject);
+	public BehaviourObjectInRoute<?> getBehaviourObjectInRoute(OBPTraceObject behaviourObject);
 	
-	public OBPStateInRoute getOBPStateInRoute(BehaviourObjectInRoute behaviourObject, OBPConfigurationInRoute configuration);
+	public OBPStateInRoute getOBPStateInRoute(BehaviourObjectInRoute<?> behaviourObject, OBPConfigurationInRoute configuration);
 
 	public MessageInRoute getMessageInRoute(OBPTraceMessage message);
 	
-	public void synchronizeWithMask();
+	public void synchronizeAllWithMask();
 	
 	public List<OBPConfigurationInRoute> getAsyncMessageConfigurations(OBPTraceMessage sendMessage, OBPTraceMessage receiveMessage);
 	
 	public Mask getSelectedMask();
 	
-	/*public MaskableConfiguration getMaskedElement(OBPTraceConfiguration object);
+	public void addToForcedVisibleConfiguration(OBPConfigurationInRoute object);
+	public void removeFromForcedVisibleConfiguration(OBPConfigurationInRoute object);
+	public void addToForcedHidedConfiguration(OBPConfigurationInRoute object);
+	public void removeFromForcedHidedConfiguration(OBPConfigurationInRoute object);
 	
-	public MaskableTransition getMaskedElement(OBPTraceTransition object);*/
 }

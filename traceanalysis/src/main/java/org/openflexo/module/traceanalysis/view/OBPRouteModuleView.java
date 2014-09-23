@@ -19,7 +19,6 @@
  */
 package org.openflexo.module.traceanalysis.view;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -32,19 +31,19 @@ import java.beans.PropertyChangeListener;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
 
 import org.openflexo.fge.FGEModelFactory;
 import org.openflexo.fge.FGEModelFactoryImpl;
 import org.openflexo.fge.swing.control.SwingToolFactory;
 import org.openflexo.model.exceptions.ModelDefinitionException;
+import org.openflexo.module.traceanalysis.TraceAnalysisIconLibrary;
 import org.openflexo.module.traceanalysis.model.TraceVirtualModelInstance;
 import org.openflexo.module.traceanalysis.view.routeview.OBPRoute;
 import org.openflexo.module.traceanalysis.view.routeview.OBPRouteEditor;
 import org.openflexo.module.traceanalysis.view.routeview.OBPRouteImpl;
-import org.openflexo.module.traceanalysis.view.routeview.chronogram.ChronogramDrawing;
 import org.openflexo.module.traceanalysis.view.routeview.sequencediagram.SequenceDiagramDrawing;
 import org.openflexo.module.traceanalysis.view.routeview.sequencediagram.SequenceDiagramDrawing.RouteLayout;
+import org.openflexo.technologyadapter.trace.gui.TraceIconLibrary;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.FlexoPerspective;
@@ -53,59 +52,62 @@ import org.openflexo.view.controller.model.FlexoPerspective;
 public class OBPRouteModuleView extends JPanel implements ModuleView<TraceVirtualModelInstance>, PropertyChangeListener {
 
 	private final FlexoPerspective perspective;
-    private TraceVirtualModelInstance traceVirtualModelInstance;
+    private final TraceVirtualModelInstance traceVirtualModelInstance;
     private final FlexoController controller;
-	
-	public OBPRouteModuleView(TraceVirtualModelInstance traceVirtualModelInstance, FlexoController controller, FlexoPerspective perspective) {
+    private final JButton switchLayout;
+   // private final JButton applyMask;
+    private final JButton resetMask;
+    private final JPanel boutonsPanel;
+    private final SequenceDiagramDrawing sequenceDiagram;
+    final JScrollPane scrollPan;
+    final FGEModelFactory factory;
+    
+	public OBPRouteModuleView(final TraceVirtualModelInstance traceVirtualModelInstance, FlexoController controller, FlexoPerspective perspective) {
 		super(new GridBagLayout());
 		
 		this.perspective = perspective;
 		this.controller = controller;
 		this.traceVirtualModelInstance = traceVirtualModelInstance;
 		
-		FGEModelFactory factory = null;
-		try {
-			factory = new FGEModelFactoryImpl();
-		} catch (ModelDefinitionException e) {
-			e.printStackTrace();
-		}
+		factory = createFGEModelFactory();
 		
 		OBPRoute route = new OBPRouteImpl(traceVirtualModelInstance);
-		final SequenceDiagramDrawing sequenceDiagram = new SequenceDiagramDrawing(route, factory, RouteLayout.VERTICAL);
+		sequenceDiagram = new SequenceDiagramDrawing(route, factory, RouteLayout.VERTICAL);
 		OBPRouteEditor sequence = new OBPRouteEditor(sequenceDiagram,controller.getSelectionManager(),factory, SwingToolFactory.DEFAULT);
-		// Layout
-		JButton switchLayout = new JButton("Change Layout");
-		switchLayout.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				if(sequenceDiagram.getLayout()==RouteLayout.VERTICAL){
-					sequenceDiagram.setLayout(RouteLayout.HORIZONTAL);
-				}
-				else{
-					sequenceDiagram.setLayout(RouteLayout.VERTICAL);
-				}
-			}
-		});
-		
+
+		boutonsPanel = new JPanel();
+		FlowLayout flow = new FlowLayout(FlowLayout.CENTER);
+		boutonsPanel.setLayout(flow);
 		
 		GridBagConstraints c1 = new GridBagConstraints();
 		c1.fill = GridBagConstraints.HORIZONTAL;
 		c1.gridx = 0;
 		c1.gridy = 1;
 		c1.weighty = 1;
+		c1.gridwidth = 2;
 		
-		GridBagConstraints c3 = new GridBagConstraints();
-		c3.weighty = 0.01;
-		c3.gridx = 0;
-		c3.gridy = 0;
+		GridBagConstraints c2 = new GridBagConstraints();
+		c2.weighty = 0.01;
+		c2.gridx = 0;
+		c2.gridy = 0;
+		c2.fill =GridBagConstraints.HORIZONTAL;
 		
 		sequenceDiagram.printGraphicalObjectHierarchy();
-		JScrollPane scrollPan = new JScrollPane(sequence.getDrawingView());
-		Dimension dimension = new Dimension(traceVirtualModelInstance.getFederatedElements().size()*100,traceVirtualModelInstance.getConfigurations().size() * 100);
-		scrollPan.setPreferredSize(dimension);
+		scrollPan = new JScrollPane(sequence.getDrawingView());
+		scrollPan.setPreferredSize(computeMaxDimension());
+		
+		// Layout
+		switchLayout = createLayoutButton();
+		
+		// Reset currrent mask
+		resetMask = createResetMaskButton();
+		
+		boutonsPanel.add(switchLayout);
+		//boutonsPanel.add(applyMask);
+		boutonsPanel.add(resetMask);
+		
 		add(scrollPan, c1);
-		add(switchLayout, c3);
+		add(boutonsPanel, c2);
 	}
 
 	@Override
@@ -156,4 +158,61 @@ public class OBPRouteModuleView extends JPanel implements ModuleView<TraceVirtua
 		return false;
 	}
 
+	
+	private JButton createLayoutButton(){
+		JButton button = new JButton();
+		button.setIcon(TraceAnalysisIconLibrary.LAYOUT_HORIZONTAL_MEDIUM_ICON);
+		button.setPreferredSize(new Dimension(40,40));
+		button.addActionListener(new ActionListener() {
+					
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				if(sequenceDiagram.getLayout()==RouteLayout.VERTICAL){
+					sequenceDiagram.setLayout(RouteLayout.HORIZONTAL);
+					switchLayout.setIcon(TraceAnalysisIconLibrary.LAYOUT_HORIZONTAL_MEDIUM_ICON);
+				}
+				else{
+					sequenceDiagram.setLayout(RouteLayout.VERTICAL);
+					switchLayout.setIcon(TraceAnalysisIconLibrary.LAYOUT_HORIZONTAL_MEDIUM_ICON);
+				}
+			}
+		});
+		return button;
+	}
+	
+	private JButton createResetMaskButton(){
+		JButton button = new JButton();
+		button.setPreferredSize(new Dimension(40,40));
+		button.setIcon(TraceAnalysisIconLibrary.RESTART_MEDIUM_ICON);
+		button.addActionListener(new ActionListener() {
+							
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				sequenceDiagram.resetMask();
+			}
+		});
+		return button;
+	}
+	
+	private Dimension computeMaxDimension(){
+		int numberOfElements = traceVirtualModelInstance.getFederatedElements().size();
+		int numberOfConfigurations = traceVirtualModelInstance.getConfigurations().size();
+		int maxSize = (int) SequenceDiagramDrawing.LIFE_LINE_WIDTH;
+		if(numberOfElements > numberOfConfigurations){
+			return new Dimension(numberOfElements*maxSize, numberOfElements*maxSize);
+		}
+		else{
+			return new Dimension(numberOfConfigurations*maxSize, numberOfConfigurations*maxSize);
+		}
+	}
+	
+	private FGEModelFactory createFGEModelFactory(){
+		FGEModelFactory factory = null;
+		try {
+			factory = new FGEModelFactoryImpl();
+		} catch (ModelDefinitionException e) {
+			e.printStackTrace();
+		}
+		return factory;
+	}
 }
