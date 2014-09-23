@@ -10,7 +10,7 @@
     <packaging>pom</packaging>
     <name>Executables</name>
     <modules>
-        <module>traceanalysis</module>
+        <module>traceanalysisexec</module>
     </modules>
     <properties>
         <main.class>org.openflexo.Flexo</main.class>
