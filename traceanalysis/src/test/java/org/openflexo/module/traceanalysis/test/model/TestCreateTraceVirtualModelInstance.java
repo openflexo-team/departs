@@ -41,7 +41,7 @@ public class TestCreateTraceVirtualModelInstance extends OpenflexoProjectAtRunTi
 	static String FIACRE_FILE = "/examples/calcul1_asynchro.fcr";
 	static String TRACE_FILE = "/examples/calcul1_asynchro.trace";
 
-	@Test
+	/*@Test
 	@TestOrder(1)
 	public void testCreateTraceAnalysisProject() {
 
@@ -66,7 +66,7 @@ public class TestCreateTraceVirtualModelInstance extends OpenflexoProjectAtRunTi
 		assertTrue(project.hasNature(TRACE_ANALYSIS_NATURE));
 		taProject = TRACE_ANALYSIS_NATURE.getTraceAnalysisProject(project);
 		assertNotNull(taProject);
-	}
+	}*/
 
 	/*@Test
 	@TestOrder(2)

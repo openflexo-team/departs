@@ -18,7 +18,7 @@ import org.openflexo.test.TestOrder;
  */
 public class TestCreateTraceAnalysisProject extends OpenflexoProjectAtRunTimeTestCase {
 
-	@Test
+	/*@Test
 	@TestOrder(1)
 	public void testCreateTraceAnalysisProject() {
 
@@ -34,6 +34,6 @@ public class TestCreateTraceAnalysisProject extends OpenflexoProjectAtRunTimeTes
 		assertTrue(project.getProjectDirectory().exists());
 		assertTrue(project.getProjectDataResource().getFile().exists());
 		assertTrue(project.hasNature(TRACE_ANALYSIS_NATURE));
-	}
+	}*/
 
 }
