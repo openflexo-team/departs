@@ -74,7 +74,7 @@
 		<antcall target="generateHelp" />
 -->
 		<antcall target="packageWindows" />
-		<!--<antcall target="packageMacOSX" />-->
+		<antcall target="packageMacOSX" />
 		<antcall target="packageLinux" />
 	</target>
 
