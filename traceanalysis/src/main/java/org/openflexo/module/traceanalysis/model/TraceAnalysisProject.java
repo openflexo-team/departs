@@ -287,6 +287,7 @@ public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectW
 			ViewPointResource traceAnalsyisViewPointResource = getViewPointLibrary().getViewPointResource(TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
 			if(traceAnalsyisViewPointResource==null){
 				FileResourceImpl viewpointFolder = (FileResourceImpl) ResourceLocator.locateResource(VIEWPOINT_REPOSITORY);
+				logger.log(Level.WARNING, "@@@ "+ viewpointFolder+ " found in this project");
 				DirectoryResourceCenter newRC = new DirectoryResourceCenter(viewpointFolder.getFile());
 				getServiceManager().getResourceCenterService().addToResourceCenters(newRC);
 				traceAnalsyisViewPointResource = getViewPointLibrary().getViewPointResource(TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
