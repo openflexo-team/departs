@@ -359,6 +359,7 @@ public class OBPRouteImpl extends DefaultFlexoObject implements OBPRoute {
 
 		private final OBPConfigurationInRoute startConfigInRoute;
 		private final OBPConfigurationInRoute endConfigInRoute;
+		private String name;
 
 		public AbstractTransitionArtefactImpl(OBPConfigurationInRoute startConfigInRoute, OBPConfigurationInRoute endConfigInRoute) {
 			super();
@@ -374,6 +375,29 @@ public class OBPRouteImpl extends DefaultFlexoObject implements OBPRoute {
 		@Override
 		public OBPConfigurationInRoute getEndConfiguration() {
 			return endConfigInRoute;
+		}
+
+		@Override
+		public String getName() {
+			int previousIndex = getTrace().getIndex(getStartConfiguration().getConfiguration());
+			int nextIndex = getTrace().getIndex(getEndConfiguration().getConfiguration());
+			return Integer.toString(nextIndex-previousIndex);
+		}
+		
+		@Override
+		public void setName(String name){
+			this.name = name;
+		}
+
+		@Override
+		public void unfold() {
+			int previousIndex = getTrace().getIndex(getStartConfiguration().getConfiguration());
+			int nextIndex = getTrace().getIndex(getEndConfiguration().getConfiguration());
+			for(OBPTraceConfiguration conf : getTrace().getConfigurations()){
+				if(getTrace().getIndex(conf)>previousIndex && getTrace().getIndex(conf)<nextIndex){
+					showConfiguration(conf);
+				}
+			}
 		}
 
 	}

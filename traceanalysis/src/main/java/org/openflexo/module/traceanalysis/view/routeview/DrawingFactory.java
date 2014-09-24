@@ -24,6 +24,7 @@ import org.openflexo.fge.shapes.Rectangle;
 import org.openflexo.fge.shapes.ShapeSpecification;
 import org.openflexo.fge.shapes.ShapeSpecification.ShapeType;
 import org.openflexo.module.traceanalysis.view.routeview.OBPConfigurationInRoute.RelativeConfigurationArtefact;
+import org.openflexo.module.traceanalysis.view.routeview.OBPRoute.AbstractTransitionArtefact;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.technologyadapter.trace.model.OBPTraceConfiguration;
@@ -95,6 +96,22 @@ public class DrawingFactory {
 	public ConnectorGraphicalRepresentation createAbstractTransitionRepresentation(){
 		ConnectorGraphicalRepresentation abstractTransitionRepresentation = factory.makeConnectorGraphicalRepresentation(ConnectorType.LINE);
 		abstractTransitionRepresentation.setForeground(factory.makeForegroundStyle(Color.DARK_GRAY, 0.5f, DashStyle.DOTS_DASHES));
+		abstractTransitionRepresentation.setTextStyle(factory.makeTextStyle(Color.green,
+				FGEConstants.DEFAULT_TEXT_FONT.deriveFont(Font.ITALIC)));
+		abstractTransitionRepresentation.addToMouseClickControls(new MouseClickControlImpl<AbstractDianaEditor<?, ?, ?>>(
+				"toogleVisibleStateForConfiguration", MouseButton.LEFT, 2, new MouseClickControlActionImpl<AbstractDianaEditor<?, ?, ?>>() {
+					@Override
+					public boolean handleClick(DrawingTreeNode<?, ?> dtn, AbstractDianaEditor<?, ?, ?> controller,
+							MouseControlContext context) {
+						System.out.println("toogleVisibleStateForConfiguration for " + dtn.getDrawable());
+						if (dtn.getDrawable() instanceof AbstractTransitionArtefact) {
+							AbstractTransitionArtefact transition = (AbstractTransitionArtefact) dtn.getDrawable();
+							transition.unfold();
+
+						}
+						return true;
+					}
+				}, false, false, false, false, null));
 		return abstractTransitionRepresentation;
 	}
 	

@@ -647,6 +647,7 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> implements Pro
 		setInterConfigurationBindingDynamicPropertyValues(intermediateConfigurationVerticalBinding,INTERMEDIATE_CONFIGURATION_OFFSET, RouteLayout.VERTICAL);
 		setLifeLineBindingDynamicPropertyValues(lifeLineVerticalBinding, RouteLayout.VERTICAL);
 		setMessageBindingDynamicPropertyValues(messageStartAnchorVerticalBinding, messageEndAnchorVerticalBinding, messageVerticalBinding, RouteLayout.VERTICAL);
+		setAbstractTransitionBindingDynamicPropertyValues(abstractTransitionVerticalBinding, RouteLayout.VERTICAL);
 
 		// HORIZONTAL BINDINGS
 		setConfigurationBindingDynamicPropertyValues(configurationHorizontalBinding, RouteLayout.HORIZONTAL);
@@ -661,7 +662,7 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> implements Pro
 		setInterConfigurationBindingDynamicPropertyValues(intermediateConfigurationHorizontalBinding,INTERMEDIATE_CONFIGURATION_OFFSET, RouteLayout.HORIZONTAL);
 		setLifeLineBindingDynamicPropertyValues(lifeLineHorizontalBinding, RouteLayout.HORIZONTAL);
 		setMessageBindingDynamicPropertyValues(messageStartAnchorHorizontalBinding, messageEndAnchorHorizontalBinding, messageHorizontalBinding, RouteLayout.HORIZONTAL);
-
+		setAbstractTransitionBindingDynamicPropertyValues(abstractTransitionHorizontalBinding, RouteLayout.HORIZONTAL);
 	}
 	
 	private void setChronogramBindingDynamicPropertyValues(GraphGRBinding<Chronogram> chronogramBinding){
@@ -698,6 +699,17 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> implements Pro
 			configurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.X, new DataBinding<Double>("drawable.configurationInRoute.visibleIndex*"+ LIFE_LINE_WIDTH + "+20" +"+"+ offset), false);
 			configurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.ABSOLUTE_TEXT_X, new DataBinding<Double>("5"), false);
 			configurationBinding.setDynamicPropertyValue(ShapeGraphicalRepresentation.ABSOLUTE_TEXT_Y, new DataBinding<Double>("-5"), false);
+		}
+	}
+	
+	private void setAbstractTransitionBindingDynamicPropertyValues(ConnectorGRBinding<AbstractTransitionArtefact> artefactBinding, RouteLayout layout){
+		artefactBinding.setDynamicPropertyValue(GraphicalRepresentation.TEXT, new DataBinding<String>("drawable.name"),false);
+		if(layout==RouteLayout.VERTICAL){
+			artefactBinding.setDynamicPropertyValue(ConnectorGraphicalRepresentation.ABSOLUTE_TEXT_X, new DataBinding<Double>("20"), false);
+			artefactBinding.setDynamicPropertyValue(ConnectorGraphicalRepresentation.ABSOLUTE_TEXT_Y, new DataBinding<Double>("0"), false);
+		}else if(layout==RouteLayout.HORIZONTAL){
+			artefactBinding.setDynamicPropertyValue(ConnectorGraphicalRepresentation.ABSOLUTE_TEXT_X, new DataBinding<Double>("0"), false);
+			artefactBinding.setDynamicPropertyValue(ConnectorGraphicalRepresentation.ABSOLUTE_TEXT_Y, new DataBinding<Double>("20"), false);
 		}
 	}
 	

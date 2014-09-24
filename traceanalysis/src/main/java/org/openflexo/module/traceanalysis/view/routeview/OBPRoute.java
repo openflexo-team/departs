@@ -79,6 +79,12 @@ public interface OBPRoute extends FlexoObject {
 		public OBPConfigurationInRoute getStartConfiguration();
 
 		public OBPConfigurationInRoute getEndConfiguration();
+		
+		public String getName();
+		
+		public void setName(String name);
+		
+		public void unfold();
 
 	}
 
