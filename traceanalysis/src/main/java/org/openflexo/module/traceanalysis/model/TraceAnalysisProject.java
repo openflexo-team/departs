@@ -19,6 +19,7 @@
  */
 package org.openflexo.module.traceanalysis.model;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,7 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.InvalidArgumentException;
 import org.openflexo.foundation.nature.ProjectWrapper;
+import org.openflexo.foundation.resource.DirectoryResourceCenter;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.View;
@@ -42,6 +44,9 @@ import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.ViewPointLibrary;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
+import org.openflexo.rm.FileResourceImpl;
+import org.openflexo.rm.Resource;
+import org.openflexo.rm.ResourceLocator;
 
 /**
  * A Trace Analysis project is based on a the depart viewpoint.
@@ -55,6 +60,8 @@ import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectWrapper<TraceAnalysisProjectNature> {
 
 	private static final Logger logger = Logger.getLogger(TraceAnalysisProject.class.getPackage().getName());
+	
+	public static String VIEWPOINT_REPOSITORY = "Viewpoint";
 	
 	private final FlexoProject project;
 
@@ -81,14 +88,7 @@ public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectW
 		this.project = project;
 		this.projectNature = projectNature;
 		
-		try {
-			// Retrieve the viewpoint resource from its URI. The viewpoint resource must be in a resource center!
-			ViewPointResource traceAnalsyisViewPointResource = getViewPointLibrary().getViewPointResource(TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
-			traceAnalysisViewPoint = traceAnalsyisViewPointResource.getResourceData(null);
-		} catch (Exception e) {
-			logger.severe("No trace analysis viewpoint found resource centers");
-			throw new FlexoException(e);
-		}
+		traceAnalysisViewPoint = retrieveViewpoint();
 
 		if (traceAnalysisViewPoint == null) {
 			throw new InvalidArgumentException("Trace Analysis ViewPoint should not be null");
@@ -279,5 +279,22 @@ public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectW
 	
 	private ViewLibrary getViewLibrary(){
 		return getProject().getViewLibrary();
+	}
+	
+	private ViewPoint retrieveViewpoint() throws FlexoException{
+		try {
+			// Retrieve the viewpoint resource from its URI. The viewpoint resource must be in a resource center!
+			ViewPointResource traceAnalsyisViewPointResource = getViewPointLibrary().getViewPointResource(TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
+			if(traceAnalsyisViewPointResource==null){
+				FileResourceImpl viewpointFolder = (FileResourceImpl) ResourceLocator.locateResource(VIEWPOINT_REPOSITORY);
+				DirectoryResourceCenter newRC = new DirectoryResourceCenter(viewpointFolder.getFile());
+				getServiceManager().getResourceCenterService().addToResourceCenters(newRC);
+				traceAnalsyisViewPointResource = getViewPointLibrary().getViewPointResource(TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
+			}
+			return traceAnalsyisViewPointResource.getResourceData(null);
+		} catch (Exception e) {
+			logger.severe("No trace analysis viewpoint found resource centers");
+			throw new FlexoException(e);
+		}
 	}
 }
