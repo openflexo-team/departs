@@ -11,7 +11,7 @@
   <url>http://www.openflexo.com/technologyadapter/traceconnector</url>
   <properties>
     <technology.prefix>trace</technology.prefix>
-    <traceVersion>1.0</traceVersion>
+    <traceVersion>1.1</traceVersion>
   </properties>
   <dependencies>
    <dependency>
