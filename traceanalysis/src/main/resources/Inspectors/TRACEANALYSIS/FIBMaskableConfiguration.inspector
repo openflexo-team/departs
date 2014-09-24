@@ -19,4 +19,10 @@
       </Browser>
     </Tab>
   </TabPanel> 
+  
+  	<LocalizedDictionary>
+  		<Localized key="inspected_configuration" lang="English" value="Inspected configuration" />
+  		<Localized key="inspected_configuration" lang="French" value="Configuration inspectée" />
+  	</LocalizedDictionary>
+  	
 </Panel>

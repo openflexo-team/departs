@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.DefaultFlexoObject;
+import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
@@ -207,6 +208,11 @@ public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectW
 	public List<TraceVirtualModelInstance> getTraceVirtualModelInstances() {
 		if(traceVirtualModelInstances==null){
 			traceVirtualModelInstances=new ArrayList<TraceVirtualModelInstance>();
+			if(traceAnalysisView==null){
+				logger.log(Level.SEVERE, "No view is declared for this project");
+				//getServiceManager().getProjectNatureService().getProjectNature(TraceAnalysisProjectNature.class).givesNature(getProject(), getServiceManager());
+				return null;
+			}
 			for (VirtualModelInstance vmi : traceAnalysisView.getVirtualModelInstances()) {
 				if(vmi.getVirtualModel().getName().equals("TraceVirtualModel")){
 					createTraceVirtualModelInstance(vmi);

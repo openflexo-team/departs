@@ -2,7 +2,7 @@
 <Panel className="org.openflexo.inspector.FIBInspector" layout="border" titleFont="SansSerif,0,12" darkLevel="0" dataClassName="org.openflexo.module.traceanalysis.model.mask.MaskableTransition" controllerClassName="org.openflexo.inspector.FIBInspectorController" font="SansSerif,0,12" name="Inspector">
   <TabPanel name="Tab" constraints="border(location=center)">
     <Tab title="Mask" layout="twocols" titleFont="SansSerif,0,11" darkLevel="0" index="0" font="SansSerif,0,11" useScrollBar="true" horizontalScrollbarPolicy="HORIZONTAL_SCROLLBAR_AS_NEEDED" verticalScrollbarPolicy="VERTICAL_SCROLLBAR_AS_NEEDED" name="BasicTab">
-   	  <Label id="5" manageDynamicModel="false" useScrollBar="false" name="Inspected Configuration" localize="true" align="center" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=left)" label="inspected_configuration" readOnly="false" />
+   	  <Label id="5" manageDynamicModel="false" useScrollBar="false" name="Inspected Configuration" localize="true" align="center" constraints="twocols(expandHorizontally=true;expandVertically=false;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=left)" label="inspected_transition" readOnly="false" />
          <Browser root="data" iteratorClassName="java.lang.Object" visibleRowCount="5" constraints="twocols(expandHorizontally=true;expandVertically=true;insetsBottom=0;insetsLeft=0;insetsRight=20;insetsTop=0;location=center)" rowHeight="18" boundToSelectionManager="true" selectionMode="DiscontiguousTreeSelection" selected="" showFooter="false" rootVisible="true" showRootsHandle="true" localize="true" manageDynamicModel="true" clickAction="" doubleClickAction="" rightClickAction="" name="MaskableTransitionBrowser" index="0" visible="">
       	 <BrowserElement dataClassName="org.openflexo.module.traceanalysis.model.mask.MaskableTransition" label="maskableTransition.getFullStringRepresentation()" icon="controller.iconForObject(maskableTransition.value)" isEditable="false" filtered="false" defaultVisible="false" name="maskableTransition">
         	<Children data="maskableTransition.getChilds()" name="childs" />
@@ -25,4 +25,8 @@
       </Browser>
     </Tab>
   </TabPanel> 
+    <LocalizedDictionary>
+  		<Localized key="inspected_transition" lang="English" value="Inspected transition" />
+  		<Localized key="inspected_transition" lang="French" value="Transition inspectée" />
+  	</LocalizedDictionary>
 </Panel>

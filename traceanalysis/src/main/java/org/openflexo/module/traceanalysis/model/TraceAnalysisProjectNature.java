@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.components.ProgressWindow;
 import org.openflexo.fib.FIBLibrary;
+import org.openflexo.fib.controller.FIBController.Status;
 import org.openflexo.fib.controller.FIBDialog;
 import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.foundation.FlexoEditor;
@@ -113,7 +114,8 @@ public class TraceAnalysisProjectNature implements ProjectNature<TraceAnalysisPr
 		ViewPointResource traceAnalysisViewPointResource = editor.getServiceManager().getViewPointLibrary().getViewPointResource(TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
 		
 		if (traceAnalysisViewPointResource == null) {
-			logger.log(Level.SEVERE, "No trace analysis viewpoint found in resource centers");
+			logger.log(Level.SEVERE, "No trace analysis viewpoint found in resource centers, not able to apply a trace analysis nature to this projects");
+			return;
 		}
 		TraceAnalysisProject traceAnalysisProject = getProjectWrapper(project);
 		CreateTraceAnalysisProject action = CreateTraceAnalysisProject.actionType.makeNewAction(traceAnalysisProject, null, editor);
@@ -121,9 +123,13 @@ public class TraceAnalysisProjectNature implements ProjectNature<TraceAnalysisPr
 			FIBComponent fibComponent = FIBLibrary.instance().retrieveFIBComponent(TraceAnalysisCst.CREATE_TRACE_ANALYSIS_PROJECT_DIALOG_FIB);
 			FIBDialog dialog = FIBDialog.instanciateAndShowDialog(fibComponent, action, ProgressWindow.instance(), true,
 					new FlexoFIBController(fibComponent));
+			if(dialog.getStatus().equals(Status.VALIDATED)){
+				action.doAction();
+			}
+		}else{
+			action.doAction();
 		}
 		
-		action.doAction();
 
 	}
 

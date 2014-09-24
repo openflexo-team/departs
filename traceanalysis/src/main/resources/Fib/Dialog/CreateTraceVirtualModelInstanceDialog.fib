@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Panel layout="gridbag" titleFont="Lucida Grande,0,11" darkLevel="0" dataClassName="org.openflexo.module.traceanalysis.model.action.CreateTraceVirtualModelInstance" controllerClassName="org.openflexo.view.controller.FlexoFIBController" width="500" height="300" name="main">
-    <Label id="1" manageDynamicModel="false" useScrollBar="false" index="0" localize="true" font="Lucida Grande,1,15" align="center" constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=0;gridY=0;index=0;insetsBottom=20;insetsLeft=0;insetsRight=0;insetsTop=20;padX=0;padY=0;weightX=1.0;weightY=0.0)" label="creates_new_trace_analysis" readOnly="false" />
+    <Label id="1" manageDynamicModel="false" useScrollBar="false" index="0" localize="true" font="Lucida Grande,1,15" align="center" constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=0;gridY=0;index=0;insetsBottom=20;insetsLeft=0;insetsRight=0;insetsTop=20;padX=0;padY=0;weightX=1.0;weightY=0.0)" label="creates_new_trace_analysis" readOnly="false"/>
     <Label id="2" manageDynamicModel="false" useScrollBar="false" index="1" localize="true" align="right" constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=1;gridX=0;gridY=1;index=1;insetsBottom=0;insetsLeft=20;insetsRight=0;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" label="trace_analysis_name" readOnly="false" />
     <TextField id="3" passwd="false" manageDynamicModel="false" useScrollBar="false" data="data.traceAnalysisName" columns="40" name="TraceAnalysisNameTF" text="TextField" index="2" localize="true" constraints="gridbag(anchor=center;fill=horizontal;gridHeight=1;gridWidth=0;gridX=1;gridY=1;index=2;insetsBottom=0;insetsLeft=0;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=1.0;weightY=0.0)" readOnly="false" validateOnReturn="false" />
-    <Label label="trace file" constraints="gridbag(anchor=west;fill=none;gridHeight=1;gridWidth=1;gridX=0;gridY=4;index=1;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" localize="true" />
+    <Label label="trace_file" constraints="gridbag(anchor=west;fill=none;gridHeight=1;gridWidth=1;gridX=0;gridY=4;index=1;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" localize="true" />
     <Custom componentClassName="org.openflexo.components.widget.FIBResourceSelector" localize="true" manageDynamicModel="true" name="TraceResourceSelector" data="data.trace" constraints="gridbag(anchor=west;fill=horizontal;gridHeight=1;gridWidth=1;gridX=1;gridY=4;index=1;insetsBottom=0;insetsLeft=0;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)">
       <Assignment variable="component.technologyAdapter" value="data.traceTechnologyAdapter" />
       <Assignment variable="component.informationSpace" value="data.serviceManager.informationSpace" />
         <!--<Assignment variable="component.project" value="data.editor.project" />-->
       <Assignment variable="component.selectableCondition" />
-      <Assignment variable="component.resourceDataClass" value="data.trace" />
+      <Assignment variable="component.resourceDataClass" value="org.openflexo.technologyadapter.trace.rm.OBPTraceResource" />
     </Custom>
   <Label id="4" visible="(!(data.isValid))" manageDynamicModel="false" useScrollBar="false" data="data.errorMessage" foregroundColor="255,0,0" index="5" localize="true" font="Dialog,2,10" align="left" constraints="gridbag(anchor=east;fill=none;gridHeight=1;gridWidth=0;gridX=0;gridY=5;index=5;insetsBottom=0;insetsLeft=0;insetsRight=24;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" label="label" readOnly="false" />
   <Label id="5" manageDynamicModel="false" useScrollBar="false" index="12" localize="true" align="right" constraints="gridbag(anchor=north_east;fill=none;gridHeight=1;gridWidth=1;gridX=0;gridY=6;index=12;insetsBottom=0;insetsLeft=20;insetsRight=10;insetsTop=0;padX=0;padY=0;weightX=0.0;weightY=0.0)" label="description" readOnly="false" />
@@ -19,6 +19,11 @@
     <Button id="9" manageDynamicModel="false" useScrollBar="false" buttonType="Trigger" action="controller.cancelAndDispose()" index="1" localize="true" constraints="flow(index=1)" label="cancel" readOnly="false" />
   </Panel>
   <LocalizedDictionary>
-  	<Localized key="creates_new_trace_analysis" lang="English">Create new trace analysis</Localized>
+  	<Localized key="creates_new_trace_analysis" lang="English" value="Create new trace analysis" />
+  	<Localized key="creates_new_trace_analysis" lang="French" value="Créer une nouvelle analyse de trace" />
+  	<Localized key="trace_analysis_name" lang="English" value="Trace analysis name" />
+  	<Localized key="trace_analysis_name" lang="French" value="Nom de l'analyse de trace" />
+  	<Localized key="trace_file" lang="English" value="Trace file" />
+  	<Localized key="trace_file" lang="French" value="Fichier de trace" />
   </LocalizedDictionary>
 </Panel>

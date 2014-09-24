@@ -86,7 +86,7 @@ public class CreateTraceAnalysisProject extends FlexoAction<CreateTraceAnalysisP
 	private TechnologyAdapterResource fiacre;
 	private TechnologyAdapterResource cdl;
 	private String errorMessage;
-	private String traceAnalysisName;
+	private String projectName;
 	private String traceAnalysisDescription;
 	
 
@@ -94,10 +94,11 @@ public class CreateTraceAnalysisProject extends FlexoAction<CreateTraceAnalysisP
 	protected void doAction(Object context) throws SaveResourceException {
 
 		logger.info("Create trace analysis");
+		setProjectName(getFocusedObject().getName());
 		// Create the view
 		CreateView createView = CreateView.actionType.makeNewAction(getEditor().getProject().getViewLibrary().getRootFolder(), null, getEditor());
-		createView.setNewViewName(getTraceAnalysisName());
-		createView.setNewViewTitle(getTraceAnalysisName());
+		createView.setNewViewName(getProjectName()+"_view");
+		createView.setNewViewTitle("View for "+getProjectName());
 		createView.setViewpointResource((ViewPointResource) ((TraceAnalysisProject)getFocusedObject()).getTraceAnaylsisViewPoint().getResource());
 		createView.doAction();
 		
@@ -126,7 +127,11 @@ public class CreateTraceAnalysisProject extends FlexoAction<CreateTraceAnalysisP
 	}
 
 	public void setFiacre(TechnologyAdapterResource fiacre) {
+		boolean wasValid = isValid();
 		this.fiacre = fiacre;
+		getPropertyChangeSupport().firePropertyChange("fiacre", null, fiacre);
+		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
+		getPropertyChangeSupport().firePropertyChange("errorMessage", null, getErrorMessage());
 	}
 	
 	public TechnologyAdapterResource getCdl() {
@@ -134,19 +139,19 @@ public class CreateTraceAnalysisProject extends FlexoAction<CreateTraceAnalysisP
 	}
 
 	public void setCdl(TechnologyAdapterResource cdl) {
-		this.cdl = cdl;
-	}
-	
-	public String getTraceAnalysisName() {
-		return traceAnalysisName;
-	}
-
-	public void setTraceAnalysisName(String traceAnalysisName) {
 		boolean wasValid = isValid();
-		this.traceAnalysisName = traceAnalysisName;
-		getPropertyChangeSupport().firePropertyChange("traceAnalysisName", null, traceAnalysisName);
+		this.cdl = cdl;
+		getPropertyChangeSupport().firePropertyChange("cdl", null, cdl);
 		getPropertyChangeSupport().firePropertyChange("isValid", wasValid, isValid());
 		getPropertyChangeSupport().firePropertyChange("errorMessage", null, getErrorMessage());
+	}
+	
+	public String getProjectName(){
+		return projectName;
+	}
+
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
 	}
 
 	public String getErrorMessage() {
@@ -159,8 +164,16 @@ public class CreateTraceAnalysisProject extends FlexoAction<CreateTraceAnalysisP
 	@Override
 	public boolean isValid() {
 
-		if (StringUtils.isEmpty(traceAnalysisName)) {
+		/*if (StringUtils.isEmpty(traceAnalysisName)) {
 			errorMessage = FlexoLocalization.localizedForKey("no_trace_analysis_name_defined");
+			return false;
+		}*/
+		if(cdl==null){
+			errorMessage = FlexoLocalization.localizedForKey("no_cdl_file");
+			return false;
+		}
+		if(fiacre==null){
+			errorMessage = FlexoLocalization.localizedForKey("no_fiacre_file");
 			return false;
 		}
 
@@ -181,8 +194,8 @@ public class CreateTraceAnalysisProject extends FlexoAction<CreateTraceAnalysisP
 	
 	private VirtualModelInstance createSystemVirtualModelInstance(CreateView createView){
 		CreateBasicVirtualModelInstance createSystem = CreateBasicVirtualModelInstance.actionType.makeNewEmbeddedAction(createView.getNewView(), null, this);
-		createSystem.setNewVirtualModelInstanceName(getTraceAnalysisName());
-		createSystem.setNewVirtualModelInstanceTitle(getTraceAnalysisName());
+		createSystem.setNewVirtualModelInstanceName(projectName);
+		createSystem.setNewVirtualModelInstanceTitle(projectName);
 		createSystem.setVirtualModel(getFocusedObject().getSystemVirtualModel());
 		FreeModelSlotInstanceConfiguration<?, ?> systemConf = (FreeModelSlotInstanceConfiguration<?, ?>) createSystem.getModelSlotInstanceConfiguration(getFocusedObject().getSystemVirtualModel().getModelSlots(FiacreProgramModelSlot.class).get(0));
 		systemConf.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);
@@ -193,8 +206,8 @@ public class CreateTraceAnalysisProject extends FlexoAction<CreateTraceAnalysisP
 	
 	private VirtualModelInstance createContextVirtualModelInstance(CreateView createView, VirtualModelInstance systemVM){
 		CreateBasicVirtualModelInstance createContext = CreateBasicVirtualModelInstance.actionType.makeNewEmbeddedAction(createView.getNewView(), null, this);
-		createContext.setNewVirtualModelInstanceName(getTraceAnalysisName());
-		createContext.setNewVirtualModelInstanceTitle(getTraceAnalysisName());
+		createContext.setNewVirtualModelInstanceName(projectName);
+		createContext.setNewVirtualModelInstanceTitle(projectName);
 		createContext.setVirtualModel(getFocusedObject().getContextVirtualModel());
 		FreeModelSlotInstanceConfiguration<?, ?> contextsystemConf = (FreeModelSlotInstanceConfiguration<?, ?>) createContext.getModelSlotInstanceConfiguration(getFocusedObject().getContextVirtualModel().getModelSlots(CDLModelSlot.class).get(0));
 		contextsystemConf.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);
@@ -208,8 +221,8 @@ public class CreateTraceAnalysisProject extends FlexoAction<CreateTraceAnalysisP
 	
 	private VirtualModelInstance createObserverVirtualModelInstance(CreateView createView, VirtualModelInstance contextVM, VirtualModelInstance systemVM){
 		CreateBasicVirtualModelInstance createObserver = CreateBasicVirtualModelInstance.actionType.makeNewEmbeddedAction(createView.getNewView(), null, this);
-		createObserver.setNewVirtualModelInstanceName(getTraceAnalysisName());
-		createObserver.setNewVirtualModelInstanceTitle(getTraceAnalysisName());
+		createObserver.setNewVirtualModelInstanceName(projectName);
+		createObserver.setNewVirtualModelInstanceTitle(projectName);
 		createObserver.setVirtualModel(getFocusedObject().getObserverVirtualModel());
 		FreeModelSlotInstanceConfiguration<?, ?> observerConf1 = (FreeModelSlotInstanceConfiguration<?, ?>) createObserver.getModelSlotInstanceConfiguration(getFocusedObject().getObserverVirtualModel().getModelSlots(CDLModelSlot.class).get(0));
 		observerConf1.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);

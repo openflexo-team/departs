@@ -25,11 +25,13 @@ package org.openflexo.module.traceanalysis;
 import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
+import org.openflexo.FlexoMainLocalizer;
 import org.openflexo.components.ProgressWindow;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.module.FlexoModule;
 import org.openflexo.module.Module;
 import org.openflexo.module.traceanalysis.controller.TraceAnalysisController;
+import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.controller.FlexoController;
 
 /**
@@ -48,6 +50,7 @@ public class TAModule extends FlexoModule<TAModule> {
 		super(applicationContext);
 		// TODO Auto-generated constructor stub
 		ProgressWindow.setProgressInstance(FlexoLocalization.localizedForKey("build_editor"));
+		FlexoLocalization.initWith(ResourceLocator.locateResource("TraceAnalysisLocalized"));
 	}
 
 	@Override

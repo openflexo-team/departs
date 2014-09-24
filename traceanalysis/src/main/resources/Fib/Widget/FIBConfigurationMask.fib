@@ -24,4 +24,9 @@
        		<ReferenceAssignment mandatory="true" variable="controller.flexoController" value="controller.flexoController"  />
     	</FIBReferencedComponent>
     </Panel>
+    
+    <LocalizedDictionary>
+  		<Localized key="selected_mask" lang="English" value="Selected mask" />
+  		<Localized key="selected_mask" lang="French" value="Masque sélectionné" />
+  	</LocalizedDictionary>
 </Panel>

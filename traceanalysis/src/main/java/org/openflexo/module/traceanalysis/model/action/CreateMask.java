@@ -38,7 +38,7 @@ public class CreateMask extends FlexoAction<CreateMask, TraceVirtualModelInstanc
 	private static final Logger logger = Logger.getLogger(CreateMask.class.getPackage().getName());
 
 	public static FlexoActionType<CreateMask, TraceVirtualModelInstance, FlexoObject> actionType = new FlexoActionType<CreateMask, TraceVirtualModelInstance, FlexoObject>(
-			"create_configuration_mask", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
+			"create_mask", FlexoActionType.newMenu, FlexoActionType.defaultGroup, FlexoActionType.ADD_ACTION_TYPE) {
 
 		/**
 		 * Factory method

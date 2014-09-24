@@ -1,0 +1,8 @@
+no_cdl_file=Pas de fichier CDL
+no_fiacre_file=Pas de fichier Fiacre
+trace_analysis_project = Project d'analyse de trace
+create_mask = Créer un masque
+no_mask_name_defined = Pas de nom donné pour le masque
+create_trace_analysis = Créer une analyse de trace
+no_trace_analysis_name_defined = Pas de nom donné à l'analyse de trace
+create_new_trace_analysis = Créer une nouvelle analyse de trace
