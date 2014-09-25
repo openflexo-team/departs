@@ -281,13 +281,6 @@ public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectW
 		try {
 			// Retrieve the viewpoint resource from its URI. The viewpoint resource must be in a resource center!
 			ViewPointResource traceAnalsyisViewPointResource = getViewPointLibrary().getViewPointResource(TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
-			
-			if(traceAnalsyisViewPointResource==null){
-				File jarFile = ZipResourceCenter.getClassPathFile("departs-1.0.jar");
-				ZipResourceCenter newRC = ZipResourceCenter.instanciateNewZipResourceCenter(jarFile);
-				getServiceManager().getResourceCenterService().addToResourceCenters(newRC);
-				traceAnalsyisViewPointResource = getViewPointLibrary().getViewPointResource(TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
-			}
 			return traceAnalsyisViewPointResource.getResourceData(null);
 		} catch (Exception e) {
 			logger.severe("No trace analysis viewpoint found resource centers");

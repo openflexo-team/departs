@@ -111,12 +111,12 @@ public class TraceAnalysisProjectNature implements ProjectNature<TraceAnalysisPr
 	@Override
 	public void givesNature(FlexoProject project, FlexoEditor editor) {
 		
-		/*ViewPointResource traceAnalysisViewPointResource = editor.getServiceManager().getViewPointLibrary().getViewPointResource(TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
+		ViewPointResource traceAnalysisViewPointResource = editor.getServiceManager().getViewPointLibrary().getViewPointResource(TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
 		
 		if (traceAnalysisViewPointResource == null) {
 			logger.log(Level.SEVERE, "No trace analysis viewpoint found in resource centers, not able to apply a trace analysis nature to this projects");
 			return;
-		}*/
+		}
 		TraceAnalysisProject traceAnalysisProject = getProjectWrapper(project);
 		CreateTraceAnalysisProject action = CreateTraceAnalysisProject.actionType.makeNewAction(traceAnalysisProject, null, editor);
 		if(askForProjectResources){
