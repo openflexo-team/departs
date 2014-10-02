@@ -28,12 +28,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.openflexo.foundation.resource.DirectoryResourceCenter;
+import org.openflexo.foundation.resource.FlexoFileResource;
+import org.openflexo.toolbox.IProgress;
+import org.openflexo.toolbox.ToolBox;
 
 /**
  * Temporary utilities to add automatically the depart viewpoint.
@@ -118,7 +122,13 @@ public class ZipResourceCenter extends DirectoryResourceCenter {
 	public static List<File> getClassPathFiles(){
 		List<File> files = null;
     	files = new ArrayList<File>();
-		StringTokenizer string = new StringTokenizer(System.getProperty("java.class.path"), ";");
+    	String delim = ":";
+    	if(ToolBox.isWindows()){
+    		delim = ";";
+    	}else if(ToolBox.isLinux()){
+    		delim = ":";
+    	}
+		StringTokenizer string = new StringTokenizer(System.getProperty("java.class.path"), delim);
 		while(string.hasMoreTokens())
 		{
 			files.add(new File(string.nextToken()));
@@ -134,4 +144,11 @@ public class ZipResourceCenter extends DirectoryResourceCenter {
 		}
 		return null;
 	}
+	
+	@Override
+	public Collection<FlexoFileResource<?>> getAllResources(IProgress progress) {
+		return getAllResources();
+	}
+	
+	
 }

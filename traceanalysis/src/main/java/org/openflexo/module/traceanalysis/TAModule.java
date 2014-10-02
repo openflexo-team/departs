@@ -54,18 +54,16 @@ public class TAModule extends FlexoModule<TAModule> {
 	public TAModule(ApplicationContext applicationContext) {
 		super(applicationContext);
 		// TODO Auto-generated constructor stub
-		logger.log(Level.WARNING, "@@@ Load Trace analysis module");
+		logger.log(Level.FINE, "Load Trace analysis module");
 		ProgressWindow.setProgressInstance(FlexoLocalization.localizedForKey("build_editor"));
-		logger.log(Level.WARNING, "@@@ Load Trace analysis module");
-		Logger.getGlobal().log(Level.WARNING, "@@@ Load Trace analysis module");
-		logger.log(Level.WARNING, "@@@ Init Localizations");
+		logger.log(Level.FINE, "Init Localizations");
 		FlexoLocalization.initWith(ResourceLocator.locateResource("TraceAnalysisLocalized"));
-		logger.log(Level.WARNING, "@@@ Find Viewpoint Resource");
+		logger.log(Level.FINE, "Find Viewpoint Resource");
 		ViewPointResource traceAnalsyisViewPointResource = getApplicationContext().getViewPointLibrary().getViewPointResource(TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
 		if(traceAnalsyisViewPointResource==null){
-			logger.log(Level.WARNING, "@@@ No Viewpoint Resource Found, retrieve from Jar file");
+			logger.log(Level.WARNING, "No Viewpoint Resource Found, retrieve from Jar file");
 			File jarFile = ZipResourceCenter.getClassPathFile("departs-1.0.jar");
-			logger.info("@@@ Instanciate new resource center for the viewpoint resource");
+			logger.info("Instanciate new resource center for the viewpoint resource");
 			ZipResourceCenter newRC = ZipResourceCenter.instanciateNewZipResourceCenter(jarFile);
 			getApplicationContext().getResourceCenterService().addToResourceCenters(newRC);
 			traceAnalsyisViewPointResource = getApplicationContext().getViewPointLibrary().getViewPointResource(TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
