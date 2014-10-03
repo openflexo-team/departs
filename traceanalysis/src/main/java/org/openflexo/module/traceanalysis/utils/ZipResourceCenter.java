@@ -122,13 +122,13 @@ public class ZipResourceCenter extends DirectoryResourceCenter {
 	public static List<File> getClassPathFiles(){
 		List<File> files = null;
     	files = new ArrayList<File>();
-    	String delim = ":";
+    	/*String delim = ":";
     	if(ToolBox.isWindows()){
     		delim = ";";
     	}else if(ToolBox.isLinux()){
     		delim = ":";
-    	}
-		StringTokenizer string = new StringTokenizer(System.getProperty("java.class.path"), delim);
+    	}*/
+		StringTokenizer string = new StringTokenizer(System.getProperty("java.class.path"), Character.toString(File.pathSeparatorChar));
 		while(string.hasMoreTokens())
 		{
 			files.add(new File(string.nextToken()));
