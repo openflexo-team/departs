@@ -75,7 +75,7 @@
         </FetchRequest_SelectFiacreProcess>
         <MatchFlexoConceptInstance id="42" variableName="processFC" useSpecificDescriptions="false" userID="FLX" virtualModelInstance="virtualModelInstance" flexoID="56" creationSchemeURI="http://depart.v1/SystemVirtualModel#Process.federate_process" assignation="processFC">
           <MatchingCriteria id="43" flexoID="65" useSpecificDescriptions="false" userID="FLX" patternRoleName="process" />
-          <CreateFlexoConceptInstanceParameter id="44" flexoID="66" useSpecificDescriptions="false" userID="FLX" paramName="process" />
+          <CreateFlexoConceptInstanceParameter id="44" flexoID="66" useSpecificDescriptions="false" value="process" userID="FLX" paramName="process" />
         </MatchFlexoConceptInstance>
         <ExecutionAction id="45" flexoID="67" useSpecificDescriptions="false" userID="FLX" execution="processFC.synchronize()" />
       </FetchRequestIterationAction>

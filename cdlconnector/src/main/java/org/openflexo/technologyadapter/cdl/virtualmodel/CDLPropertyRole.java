@@ -27,6 +27,7 @@ import org.openflexo.foundation.view.FlexoConceptInstance;
 import org.openflexo.foundation.view.ModelObjectActorReference;
 import org.openflexo.foundation.view.VirtualModelInstanceModelFactory;
 import org.openflexo.foundation.viewpoint.FlexoRole;
+import org.openflexo.foundation.viewpoint.FlexoRole.RoleCloningStrategy;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -45,6 +46,16 @@ public interface CDLPropertyRole extends FlexoRole<CDLProperty> {
 			return CDLProperty.class;
 		}
 
+		/**
+		 * Encodes the default cloning strategy
+		 * 
+		 * @return
+		 */
+		@Override
+		public RoleCloningStrategy defaultCloningStrategy() {
+			return RoleCloningStrategy.Clone;
+		}
+		
 		@Override
 		public String getPreciseType() {
 			return CDLProperty.class.getSimpleName();
