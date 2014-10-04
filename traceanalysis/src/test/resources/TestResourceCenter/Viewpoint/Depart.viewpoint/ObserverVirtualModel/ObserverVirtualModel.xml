@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VirtualModel id="0" userID="FLX" useSpecificDescriptions="false" flexoID="-1" name="ObserverVirtualModel">
+  <FlexoConcept id="1" userID="FLX" useSpecificDescriptions="false" flexoID="6" name="Property">
+    <Inspector id="2" flexoID="5" userID="FLX" useSpecificDescriptions="false" inspectorTitle="Property" />
+    <CDLPropertyRole id="3" cloningStratgey="Clone" flexoID="11" name="property" useSpecificDescriptions="false" userID="FLX">
+      <CDLModelSlot idref="4" />
+    </CDLPropertyRole>
+    <CreationScheme id="5" useSpecificDescriptions="false" width="800" userID="FLX" label="federate_property" definePopupDefaultSize="false" height="600" flexoID="7" skipConfirmationPanel="false" name="federate_property">
+      <TechnologyObjectParameter id="6" useSpecificDescriptions="false" userID="FLX" label="property" flexoID="8" isRequired="false" name="property">
+        <CDLModelSlot idref="4" />
+      </TechnologyObjectParameter>
+      <DeclareFlexoRole id="7" userID="FLX" useSpecificDescriptions="false" object="parameters.property" flexoID="12" assignation="property" />
+    </CreationScheme>
+  </FlexoConcept>
+  <Inspector id="8" flexoID="-1" userID="FLX" useSpecificDescriptions="false" inspectorTitle="ObserverVirtualModel" />
+  <ModelSlot_CDLModelSlot id="4" cloningStratgey="Reference" flexoID="2" isRequired="true" name="cdlModelSlot" useSpecificDescriptions="false" userID="FLX" isReadOnly="false" />
+  <ModelSlot_VirtualModelModelSlot id="9" cloningStratgey="Reference" flexoID="3" isRequired="true" userID="FLX" useSpecificDescriptions="false" name="systemModelSlot" isReadOnly="false" virtualModelURI="http://depart.v1/SystemVirtualModel" />
+  <SynchronizationScheme id="10" useSpecificDescriptions="false" width="800" userID="FLX" label="synchronization" definePopupDefaultSize="false" height="600" flexoID="4" skipConfirmationPanel="false" name="synchronization">
+    <FetchRequestIterationAction id="11" flexoID="13" iteratorName="property" useSpecificDescriptions="false" userID="FLX">
+      <CDLModelSlot idref="4" />
+      <FetchRequest_SelectCDLProperties id="12" flexoID="14" userID="FLX" useSpecificDescriptions="false">
+        <CDLModelSlot idref="4" />
+      </FetchRequest_SelectCDLProperties>
+      <MatchFlexoConceptInstance id="13" useSpecificDescriptions="false" userID="FLX" virtualModelInstance="virtualModelInstance" flexoID="15" creationSchemeURI="http://depart.v1/ObserverVirtualModel#Property.federate_property">
+        <MatchingCriteria id="14" flexoID="9" useSpecificDescriptions="false" userID="FLX" value="property" patternRoleName="property" />
+        <CreateFlexoConceptInstanceParameter id="15" flexoID="10" useSpecificDescriptions="false" userID="FLX" value="property" paramName="property" />
+      </MatchFlexoConceptInstance>
+    </FetchRequestIterationAction>
+  </SynchronizationScheme>
+</VirtualModel>
