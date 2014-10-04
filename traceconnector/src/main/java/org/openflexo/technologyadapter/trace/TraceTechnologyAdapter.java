@@ -92,6 +92,9 @@ public class TraceTechnologyAdapter extends TechnologyAdapter {
 				tryToLookupTraceOBPs(resourceCenter, candidateFile);
 			}
 		}
+		
+		// Call it to update the current repositories
+		getPropertyChangeSupport().firePropertyChange("getAllRepositories()", null, resourceCenter);
 	}
 
 	protected TraceOBPResource tryToLookupTraceOBPs(FlexoResourceCenter<?> resourceCenter, File candidateFile) {

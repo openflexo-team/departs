@@ -92,6 +92,8 @@ public class CDLTechnologyAdapter extends TechnologyAdapter {
 				tryToLookupCDLUnits(resourceCenter, candidateFile);
 			}
 		}
+		// Call it to update the current repositories
+		getPropertyChangeSupport().firePropertyChange("getAllRepositories()", null, resourceCenter);
 	}
 
 	protected CDLUnitResource tryToLookupCDLUnits(FlexoResourceCenter<?> resourceCenter, File candidateFile) {

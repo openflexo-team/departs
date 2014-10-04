@@ -92,6 +92,8 @@ public class FiacreTechnologyAdapter extends TechnologyAdapter {
 				tryToLookupFiacrePrograms(resourceCenter, candidateFile);
 			}
 		}
+		// Call it to update the current repositories
+		getPropertyChangeSupport().firePropertyChange("getAllRepositories()", null, resourceCenter);
 	}
 
 	protected FiacreProgramResource tryToLookupFiacrePrograms(FlexoResourceCenter<?> resourceCenter, File candidateFile) {
