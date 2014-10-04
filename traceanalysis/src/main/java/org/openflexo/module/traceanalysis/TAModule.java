@@ -62,7 +62,7 @@ public class TAModule extends FlexoModule<TAModule> {
 		ViewPointResource traceAnalsyisViewPointResource = getApplicationContext().getViewPointLibrary().getViewPointResource(TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
 		if(traceAnalsyisViewPointResource==null){
 			logger.log(Level.WARNING, "No Viewpoint Resource Found, retrieve from Jar file");
-			File jarFile = ZipResourceCenter.getClassPathFile("departs-1.0.jar");
+			File jarFile = ZipResourceCenter.getClassPathFile("departs-1.1.jar");
 			logger.info("Instanciate new resource center for the viewpoint resource");
 			ZipResourceCenter newRC = ZipResourceCenter.instanciateNewZipResourceCenter(jarFile);
 			getApplicationContext().getResourceCenterService().addToResourceCenters(newRC);
