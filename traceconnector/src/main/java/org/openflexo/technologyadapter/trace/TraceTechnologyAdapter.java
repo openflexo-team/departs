@@ -92,7 +92,6 @@ public class TraceTechnologyAdapter extends TechnologyAdapter {
 				tryToLookupTraceOBPs(resourceCenter, candidateFile);
 			}
 		}
-		
 		// Call it to update the current repositories
 		getPropertyChangeSupport().firePropertyChange("getAllRepositories()", null, resourceCenter);
 	}
@@ -159,8 +158,12 @@ public class TraceTechnologyAdapter extends TechnologyAdapter {
 
 	@Override
 	public <I> void contentsAdded(FlexoResourceCenter<I> resourceCenter, I contents) {
-		// TODO Auto-generated method stub
-
+		if (contents instanceof File) {
+			File candidateFile = (File) contents;
+			tryToLookupTraceOBPs(resourceCenter, candidateFile);
+		}
+		// Call it to update the current repositories
+		getPropertyChangeSupport().firePropertyChange("getAllRepositories()", null, resourceCenter);
 	}
 
 	@Override
@@ -174,5 +177,4 @@ public class TraceTechnologyAdapter extends TechnologyAdapter {
 		// TODO Auto-generated method stub
 		return (TraceTechnologyContextManager) super.getTechnologyContextManager();
 	}
-
 }

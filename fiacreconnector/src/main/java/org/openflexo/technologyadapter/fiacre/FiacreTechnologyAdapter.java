@@ -158,8 +158,12 @@ public class FiacreTechnologyAdapter extends TechnologyAdapter {
 
 	@Override
 	public <I> void contentsAdded(FlexoResourceCenter<I> resourceCenter, I contents) {
-		// TODO Auto-generated method stub
-
+		if (contents instanceof File) {
+			File candidateFile = (File) contents;
+			tryToLookupFiacrePrograms(resourceCenter, candidateFile);
+		}
+		// Call it to update the current repositories
+		getPropertyChangeSupport().firePropertyChange("getAllRepositories()", null, resourceCenter);
 	}
 
 	@Override
