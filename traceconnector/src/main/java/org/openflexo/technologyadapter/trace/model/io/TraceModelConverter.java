@@ -122,23 +122,28 @@ public class TraceModelConverter {
 			OBPTraceConfiguration config = transition.getTargetOBPTraceConfiguration();
 			OBPTraceConfiguration nextConfig = flexoTraceOBP.getNextConfiguration(config);
 			OBPTraceTransition nextTransition = flexoTraceOBP.getTransition(config, nextConfig);
-			for(OBPTraceMessage nextMessage : nextTransition.getOBPTraceMessages()){
-				if(nextMessage instanceof OBPTraceMessageReceive){
-					message.setToBehaviourObject(flexoTraceOBP.getBehaviourObjectInstanceFromValue(nextMessage.getTargetProcName()));
-					((OBPTraceMessageSend) message).setOBPTraceMessageReceive((OBPTraceMessageReceive) nextMessage);
-				}
+			if(nextTransition!=null){
+				for(OBPTraceMessage nextMessage : nextTransition.getOBPTraceMessages()){
+					if(nextMessage instanceof OBPTraceMessageReceive){
+						message.setToBehaviourObject(flexoTraceOBP.getBehaviourObjectInstanceFromValue(nextMessage.getTargetProcName()));
+						((OBPTraceMessageSend) message).setOBPTraceMessageReceive((OBPTraceMessageReceive) nextMessage);
+					}
+				}	
 			}
+			
 		}
 		if(message instanceof OBPTraceMessageReceive){
 			OBPTraceConfiguration config = transition.getSourceOBPTraceConfiguration();
 			OBPTraceConfiguration previousConfig = flexoTraceOBP.getPreviousConfiguration(config);
 			OBPTraceTransition previousTransition = flexoTraceOBP.getTransition(previousConfig, config);
-			for(OBPTraceMessage previousMessage : previousTransition.getOBPTraceMessages()){
-				if(previousMessage instanceof OBPTraceMessageSend){
-					message.setFromBehaviourObject(flexoTraceOBP.getBehaviourObjectInstanceFromValue(previousMessage.getSourceProcName()));
-					((OBPTraceMessageReceive) message).setOBPTraceMessageSend((OBPTraceMessageSend) previousMessage);
+			if(previousTransition!=null){
+				for(OBPTraceMessage previousMessage : previousTransition.getOBPTraceMessages()){
+					if(previousMessage instanceof OBPTraceMessageSend){
+						message.setFromBehaviourObject(flexoTraceOBP.getBehaviourObjectInstanceFromValue(previousMessage.getSourceProcName()));
+						((OBPTraceMessageReceive) message).setOBPTraceMessageSend((OBPTraceMessageSend) previousMessage);
+					}
 				}
-			}
+			}		
 		}
 	}
 	
