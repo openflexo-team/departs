@@ -21,6 +21,7 @@
 package org.openflexo.module.traceanalysis;
 
 import java.io.File;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
@@ -52,13 +53,17 @@ public class TAModule extends FlexoModule<TAModule> {
 	public TAModule(ApplicationContext applicationContext) {
 		super(applicationContext);
 		// TODO Auto-generated constructor stub
+		logger.log(Level.FINE, "Load Trace analysis module");
 		ProgressWindow.setProgressInstance(FlexoLocalization.localizedForKey("build_editor"));
+		logger.log(Level.FINE, "Init Localizations");
 		FlexoLocalization.initWith(ResourceLocator.locateResource("TraceAnalysisLocalized"), FlexoMainLocalizer.getInstance(), Flexo.isDev,
 				Flexo.isDev);
 		ViewPointResource traceAnalsyisViewPointResource = getApplicationContext().getViewPointLibrary().getViewPointResource(
 				TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
 		if (traceAnalsyisViewPointResource == null) {
-			File jarFile = ZipResourceCenter.getClassPathFile("departs-1.0.jar");
+			logger.log(Level.WARNING, "No Viewpoint Resource Found, retrieve from Jar file");
+			File jarFile = ZipResourceCenter.getClassPathFile("departs-1.1.jar");
+			logger.info("Instanciate new resource center for the viewpoint resource");
 			ZipResourceCenter newRC = ZipResourceCenter.instanciateNewZipResourceCenter(jarFile);
 			getApplicationContext().getResourceCenterService().addToResourceCenters(newRC);
 			traceAnalsyisViewPointResource = getApplicationContext().getViewPointLibrary().getViewPointResource(

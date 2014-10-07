@@ -109,8 +109,11 @@ public class CreateTraceAnalysisProject extends FlexoAction<CreateTraceAnalysisP
 		VirtualModelInstance contextVM = createContextVirtualModelInstance(createView, systemVM);
 		
 		// Create Virtual Model instance for observer
-		createObserverVirtualModelInstance(createView, contextVM, systemVM);
+		VirtualModelInstance observerVM = createObserverVirtualModelInstance(createView, contextVM, systemVM);
 		
+		/*createView.getNewView().addToVirtualModelInstances(systemVM);
+		createView.getNewView().addToVirtualModelInstances(contextVM);
+		createView.getNewView().addToVirtualModelInstances(observerVM);*/
 		getFocusedObject().setTraceAnalysisView(createView.getNewView());
 	}
 	

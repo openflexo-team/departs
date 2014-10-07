@@ -92,6 +92,8 @@ public class CDLTechnologyAdapter extends TechnologyAdapter {
 				tryToLookupCDLUnits(resourceCenter, candidateFile);
 			}
 		}
+		// Call it to update the current repositories
+		getPropertyChangeSupport().firePropertyChange("getAllRepositories()", null, resourceCenter);
 	}
 
 	protected CDLUnitResource tryToLookupCDLUnits(FlexoResourceCenter<?> resourceCenter, File candidateFile) {
@@ -156,8 +158,12 @@ public class CDLTechnologyAdapter extends TechnologyAdapter {
 
 	@Override
 	public <I> void contentsAdded(FlexoResourceCenter<I> resourceCenter, I contents) {
-		// TODO Auto-generated method stub
-
+		if (contents instanceof File) {
+			File candidateFile = (File) contents;
+			tryToLookupCDLUnits(resourceCenter, candidateFile);
+		}
+		// Call it to update the current repositories
+		getPropertyChangeSupport().firePropertyChange("getAllRepositories()", null, resourceCenter);
 	}
 
 	@Override

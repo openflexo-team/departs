@@ -3,14 +3,14 @@
   <FlexoConcept id="1" userID="FLX" useSpecificDescriptions="false" flexoID="5" name="CDLUnit">
     <Inspector id="2" flexoID="4" userID="FLX" useSpecificDescriptions="false" inspectorTitle="CDLUnit" />
     <FlexoConceptInstanceRole id="3" cloningStratgey="Reference" flexoID="147" name="main" useSpecificDescriptions="false" userID="FLX" flexoConceptTypeURI="http://depart.v1/ContextVirtualModel#ParActivity">
-      <VirtualModelModelSlot idref="4" />
+      <VirtualModelModelSlot id="4" cloningStratgey="Reference" flexoID="1" isRequired="false" userID="FLX" useSpecificDescriptions="false" isReadOnly="false" />
     </FlexoConceptInstanceRole>
     <CreationScheme id="5" useSpecificDescriptions="false" width="800" userID="FLX" label="create_unit" definePopupDefaultSize="false" height="600" flexoID="146" skipConfirmationPanel="false" name="create_unit" />
   </FlexoConcept>
   <FlexoConcept id="6" userID="FLX" useSpecificDescriptions="false" flexoID="98" name="AltActivity">
     <Inspector id="7" flexoID="97" userID="FLX" useSpecificDescriptions="false" inspectorTitle="AltActivity" />
     <ParentFlexoConcept idref="1" />
-    <CDLAltActivityRole id="8" flexoID="114" name="activity" useSpecificDescriptions="false" userID="FLX">
+    <CDLAltActivityRole id="8" cloningStratgey="Clone" flexoID="114" name="activity" useSpecificDescriptions="false" userID="FLX">
       <CDLModelSlot idref="9" />
     </CDLAltActivityRole>
     <CreationScheme id="10" useSpecificDescriptions="false" width="800" userID="FLX" label="federate_activity" definePopupDefaultSize="false" height="600" flexoID="137" skipConfirmationPanel="false" name="federate_activity">
@@ -23,7 +23,7 @@
   <FlexoConcept id="13" userID="FLX" useSpecificDescriptions="false" flexoID="109" name="ParActivity">
     <Inspector id="14" flexoID="101" userID="FLX" useSpecificDescriptions="false" inspectorTitle="ParActivity" />
     <ParentFlexoConcept idref="1" />
-    <CDLParActivityRole id="15" flexoID="115" name="activity" useSpecificDescriptions="false" userID="FLX">
+    <CDLParActivityRole id="15" cloningStratgey="Clone" flexoID="115" name="activity" useSpecificDescriptions="false" userID="FLX">
       <CDLModelSlot idref="9" />
     </CDLParActivityRole>
     <CreationScheme id="16" useSpecificDescriptions="false" width="800" userID="FLX" label="federate_activity" definePopupDefaultSize="false" height="600" flexoID="141" skipConfirmationPanel="false" name="federate_activity">
@@ -34,7 +34,7 @@
   <FlexoConcept id="19" userID="FLX" useSpecificDescriptions="false" flexoID="110" name="SeqEventActivity">
     <Inspector id="20" flexoID="102" userID="FLX" useSpecificDescriptions="false" inspectorTitle="SeqActivity" />
     <ParentFlexoConcept idref="1" />
-    <CDLSeqActivityRole id="21" flexoID="111" name="activity" useSpecificDescriptions="false" userID="FLX">
+    <CDLSeqActivityRole id="21" cloningStratgey="Clone" flexoID="111" name="activity" useSpecificDescriptions="false" userID="FLX">
       <CDLModelSlot idref="9" />
     </CDLSeqActivityRole>
     <FlexoConceptInstanceRole id="22" cloningStratgey="Reference" flexoID="113" name="flexoConceptInstance" useSpecificDescriptions="false" userID="FLX" flexoConceptTypeURI="http://depart.v1/ContextVirtualModel#CommunicationEvent">
@@ -45,28 +45,28 @@
   <FlexoConcept id="24" userID="FLX" useSpecificDescriptions="false" flexoID="117" name="CommunicationEvent">
     <Inspector id="25" flexoID="116" userID="FLX" useSpecificDescriptions="false" inspectorTitle="CommunicationEvent" />
     <ParentFlexoConcept idref="1" />
-    <CDLCommunicationOpEventRole id="26" flexoID="128" name="event" useSpecificDescriptions="false" userID="FLX">
+    <CDLCommunicationOpEventRole id="26" cloningStratgey="Clone" flexoID="128" name="event" useSpecificDescriptions="false" userID="FLX">
       <CDLModelSlot idref="9" />
     </CDLCommunicationOpEventRole>
   </FlexoConcept>
   <FlexoConcept id="27" userID="FLX" useSpecificDescriptions="false" flexoID="119" name="GammaEvent">
     <Inspector id="28" flexoID="118" userID="FLX" useSpecificDescriptions="false" inspectorTitle="GammaEvent" />
     <ParentFlexoConcept idref="1" />
-    <CDLGammaEventRole id="29" flexoID="129" name="event" useSpecificDescriptions="false" userID="FLX">
+    <CDLGammaEventRole id="29" cloningStratgey="Clone" flexoID="129" name="event" useSpecificDescriptions="false" userID="FLX">
       <CDLModelSlot idref="9" />
     </CDLGammaEventRole>
   </FlexoConcept>
   <FlexoConcept id="30" userID="FLX" useSpecificDescriptions="false" flexoID="121" name="InfomalEvent">
     <Inspector id="31" flexoID="120" userID="FLX" useSpecificDescriptions="false" inspectorTitle="InfomalEvent" />
     <ParentFlexoConcept idref="1" />
-    <CDLInformalEventRole id="32" flexoID="130" name="event" useSpecificDescriptions="false" userID="FLX">
+    <CDLInformalEventRole id="32" cloningStratgey="Clone" flexoID="130" name="event" useSpecificDescriptions="false" userID="FLX">
       <CDLModelSlot idref="9" />
     </CDLInformalEventRole>
   </FlexoConcept>
   <FlexoConcept id="33" userID="FLX" useSpecificDescriptions="false" flexoID="123" name="SeqGammaActivity">
     <Inspector id="34" flexoID="122" userID="FLX" useSpecificDescriptions="false" inspectorTitle="SeqGammaActivity" />
     <ParentFlexoConcept idref="1" />
-    <CDLSeqActivityRole id="35" flexoID="131" name="activity" useSpecificDescriptions="false" userID="FLX">
+    <CDLSeqActivityRole id="35" cloningStratgey="Clone" flexoID="131" name="activity" useSpecificDescriptions="false" userID="FLX">
       <CDLModelSlot idref="9" />
     </CDLSeqActivityRole>
     <FlexoConceptInstanceRole id="36" cloningStratgey="Reference" flexoID="132" name="flexoConceptInstance" useSpecificDescriptions="false" userID="FLX" flexoConceptTypeURI="http://depart.v1/ContextVirtualModel#SeqGammaActivity">
@@ -76,7 +76,7 @@
   <FlexoConcept id="37" userID="FLX" useSpecificDescriptions="false" flexoID="125" name="SeqInfomalActivity">
     <Inspector id="38" flexoID="124" userID="FLX" useSpecificDescriptions="false" inspectorTitle="SeqInfomalActivity" />
     <ParentFlexoConcept idref="1" />
-    <CDLSeqActivityRole id="39" flexoID="133" name="activity" useSpecificDescriptions="false" userID="FLX">
+    <CDLSeqActivityRole id="39" cloningStratgey="Clone" flexoID="133" name="activity" useSpecificDescriptions="false" userID="FLX">
       <CDLModelSlot idref="9" />
     </CDLSeqActivityRole>
     <FlexoConceptInstanceRole id="40" cloningStratgey="Reference" flexoID="134" name="flexoConceptInstance" useSpecificDescriptions="false" userID="FLX" flexoConceptTypeURI="http://depart.v1/ContextVirtualModel#InfomalEvent">
@@ -84,7 +84,6 @@
     </FlexoConceptInstanceRole>
   </FlexoConcept>
   <Inspector id="41" flexoID="-1" userID="FLX" useSpecificDescriptions="false" inspectorTitle="ContextVirtualModel" />
-  <ModelSlot_VirtualModelModelSlot id="4" cloningStratgey="Reference" flexoID="1" isRequired="false" userID="FLX" useSpecificDescriptions="false" name="virtualModelInstance" isReadOnly="false" virtualModelURI="http://depart.v1/ContextVirtualModel" />
   <ModelSlot_CDLModelSlot id="9" cloningStratgey="Reference" flexoID="3" isRequired="true" name="cdlModelSlot" useSpecificDescriptions="false" userID="FLX" isReadOnly="false" />
   <ModelSlot_VirtualModelModelSlot id="42" cloningStratgey="Reference" flexoID="2" isRequired="true" userID="FLX" useSpecificDescriptions="false" name="systemModelSlot" isReadOnly="false" virtualModelURI="http://depart.v1/SystemVirtualModel" />
   <SynchronizationScheme id="43" useSpecificDescriptions="false" width="800" userID="FLX" label="synchronization" definePopupDefaultSize="false" height="600" flexoID="88" skipConfirmationPanel="false" name="synchronization">

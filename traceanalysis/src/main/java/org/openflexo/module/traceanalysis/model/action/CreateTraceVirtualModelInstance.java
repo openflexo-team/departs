@@ -98,7 +98,7 @@ public class CreateTraceVirtualModelInstance extends FlexoAction<CreateTraceVirt
 		
 		// Create virtual model for trace
 		VirtualModelInstance traceVM = createTraceVirtualModelInstance();
-		
+		getFocusedObject().getTraceAnalysisView().addToVirtualModelInstances(traceVM);
 		traceVirtualModelInstance = getFocusedObject().getTraceVirtualModelInstance(traceVM);
 	}
 	

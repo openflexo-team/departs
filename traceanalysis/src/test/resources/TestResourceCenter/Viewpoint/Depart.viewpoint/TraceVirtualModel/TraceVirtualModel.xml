@@ -7,7 +7,7 @@
     <Inspector id="4" flexoID="17" userID="FLX" useSpecificDescriptions="false" inspectorTitle="ConfigurationMask" />
     <ParentFlexoConcept idref="1" />
     <PrimitiveRole id="5" cloningStratgey="Clone" flexoID="43" primitiveType="String" name="name" useSpecificDescriptions="false" userID="FLX">
-      <VirtualModelModelSlot idref="6" />
+      <VirtualModelModelSlot id="6" cloningStratgey="Reference" flexoID="1" isRequired="false" userID="FLX" useSpecificDescriptions="false" isReadOnly="false" />
     </PrimitiveRole>
   </FlexoConcept>
   <FlexoConcept id="7" userID="FLX" useSpecificDescriptions="false" flexoID="34" name="TransitionMask">
@@ -43,7 +43,6 @@
     </FlexoConceptInstanceRole>
   </FlexoConcept>
   <Inspector id="22" flexoID="-1" userID="FLX" useSpecificDescriptions="false" inspectorTitle="TracesVirtualModel" />
-  <ModelSlot_VirtualModelModelSlot id="6" cloningStratgey="Reference" flexoID="1" isRequired="false" userID="FLX" useSpecificDescriptions="false" name="virtualModelInstance" isReadOnly="false" virtualModelURI="http://depart.v1/TraceVirtualModel" />
   <ModelSlot_TraceModelSlot id="23" cloningStratgey="Reference" flexoID="10" isRequired="true" name="traceModelSlot" useSpecificDescriptions="false" userID="FLX" isReadOnly="false" />
   <ModelSlot_VirtualModelModelSlot id="13" cloningStratgey="Reference" flexoID="11" isRequired="true" userID="FLX" useSpecificDescriptions="false" name="contextVirtualModel" isReadOnly="false" virtualModelURI="http://depart.v1/ContextVirtualModel" />
   <ModelSlot_VirtualModelModelSlot id="17" cloningStratgey="Reference" flexoID="12" isRequired="true" userID="FLX" useSpecificDescriptions="false" name="systemVirtualModel" isReadOnly="false" virtualModelURI="http://depart.v1/SystemVirtualModel" />
