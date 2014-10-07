@@ -18,14 +18,13 @@
  *
  */
 
-
 package org.openflexo.module.traceanalysis;
-
 
 import java.io.File;
 import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
+import org.openflexo.Flexo;
 import org.openflexo.FlexoMainLocalizer;
 import org.openflexo.components.ProgressWindow;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
@@ -54,13 +53,16 @@ public class TAModule extends FlexoModule<TAModule> {
 		super(applicationContext);
 		// TODO Auto-generated constructor stub
 		ProgressWindow.setProgressInstance(FlexoLocalization.localizedForKey("build_editor"));
-		FlexoLocalization.initWith(ResourceLocator.locateResource("TraceAnalysisLocalized"));
-		ViewPointResource traceAnalsyisViewPointResource = getApplicationContext().getViewPointLibrary().getViewPointResource(TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
-		if(traceAnalsyisViewPointResource==null){
+		FlexoLocalization.initWith(ResourceLocator.locateResource("TraceAnalysisLocalized"), FlexoMainLocalizer.getInstance(), Flexo.isDev,
+				Flexo.isDev);
+		ViewPointResource traceAnalsyisViewPointResource = getApplicationContext().getViewPointLibrary().getViewPointResource(
+				TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
+		if (traceAnalsyisViewPointResource == null) {
 			File jarFile = ZipResourceCenter.getClassPathFile("departs-1.0.jar");
 			ZipResourceCenter newRC = ZipResourceCenter.instanciateNewZipResourceCenter(jarFile);
 			getApplicationContext().getResourceCenterService().addToResourceCenters(newRC);
-			traceAnalsyisViewPointResource = getApplicationContext().getViewPointLibrary().getViewPointResource(TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
+			traceAnalsyisViewPointResource = getApplicationContext().getViewPointLibrary().getViewPointResource(
+					TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
 		}
 	}
 
