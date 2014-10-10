@@ -43,7 +43,6 @@ import org.openflexo.module.traceanalysis.view.routeview.OBPRouteEditor;
 import org.openflexo.module.traceanalysis.view.routeview.OBPRouteImpl;
 import org.openflexo.module.traceanalysis.view.routeview.sequencediagram.SequenceDiagramDrawing;
 import org.openflexo.module.traceanalysis.view.routeview.sequencediagram.SequenceDiagramDrawing.RouteLayout;
-import org.openflexo.technologyadapter.trace.gui.TraceIconLibrary;
 import org.openflexo.view.ModuleView;
 import org.openflexo.view.controller.FlexoController;
 import org.openflexo.view.controller.model.FlexoPerspective;
