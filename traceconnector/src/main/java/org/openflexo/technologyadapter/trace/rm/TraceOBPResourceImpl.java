@@ -22,21 +22,19 @@ package org.openflexo.technologyadapter.trace.rm;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-
-import org.apache.commons.io.IOUtils;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.resource.FlexoFileResourceImpl;
+import org.openflexo.foundation.resource.FileFlexoIODelegate;
+import org.openflexo.foundation.resource.FileFlexoIODelegate.FileFlexoIODelegateImpl;
+import org.openflexo.foundation.resource.FileWritingLock;
+import org.openflexo.foundation.resource.FlexoResourceImpl;
+import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.resource.SaveResourcePermissionDeniedException;
+import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.technologyadapter.trace.TraceTechnologyContextManager;
@@ -47,10 +45,12 @@ import org.openflexo.toolbox.IProgress;
 import Parser.TraceExploObpParser;
 import Parser.TraceOBP;
 
-public abstract class TraceOBPResourceImpl extends FlexoFileResourceImpl<OBPTrace> implements TraceOBPResource {
+public abstract class TraceOBPResourceImpl extends FlexoResourceImpl<OBPTrace> implements TraceOBPResource {
 	private static final Logger logger = Logger.getLogger(TraceOBPResourceImpl.class.getPackage().getName());
 
 	private TraceModelConverter converter;
+	
+	private ResourceData resourceData;
 
 	public TraceModelConverter getConverter() {
 		return converter;
@@ -62,10 +62,13 @@ public abstract class TraceOBPResourceImpl extends FlexoFileResourceImpl<OBPTrac
 
 	public static TraceOBPResource makeTraceOBPResource(String modelURI, File modelFile, TraceTechnologyContextManager technologyContextManager) {
 		try {
-			ModelFactory factory = new ModelFactory(TraceOBPResource.class);
+			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext( 
+					FileFlexoIODelegate.class,TraceOBPResource.class));
 			TraceOBPResourceImpl returned = (TraceOBPResourceImpl) factory.newInstance(TraceOBPResource.class);
 			returned.setName(modelFile.getName());
-			returned.setFile(modelFile);
+			FileFlexoIODelegate fileIODelegate = factory.newInstance(FileFlexoIODelegate.class) ;
+			returned.setFlexoIODelegate(fileIODelegate);
+			fileIODelegate.setFile(modelFile);
 			returned.setURI(modelURI);
 			returned.setServiceManager(technologyContextManager.getTechnologyAdapter().getTechnologyAdapterService().getServiceManager());
 			returned.setTechnologyAdapter(technologyContextManager.getTechnologyAdapter());
@@ -79,13 +82,16 @@ public abstract class TraceOBPResourceImpl extends FlexoFileResourceImpl<OBPTrac
 		return null;
 	}
 
-	public static TraceOBPResource retrieveTraceOBPResource(File TraceFile, TraceTechnologyContextManager technologyContextManager) {
+	public static TraceOBPResource retrieveTraceOBPResource(File traceFile, TraceTechnologyContextManager technologyContextManager) {
 		try {
-			ModelFactory factory = new ModelFactory(TraceOBPResource.class);
+			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext( 
+					FileFlexoIODelegate.class,TraceOBPResource.class));
 			TraceOBPResourceImpl returned = (TraceOBPResourceImpl) factory.newInstance(TraceOBPResource.class);
-			returned.setName(TraceFile.getName());
-			returned.setFile(TraceFile);
-			returned.setURI(TraceFile.toURI().toString());
+			returned.setName(traceFile.getName());
+			FileFlexoIODelegate fileIODelegate = factory.newInstance(FileFlexoIODelegate.class) ;
+			returned.setFlexoIODelegate(fileIODelegate);
+			fileIODelegate.setFile(traceFile);
+			returned.setURI(traceFile.toURI().toString());
 			returned.setServiceManager(technologyContextManager.getTechnologyAdapter().getTechnologyAdapterService().getServiceManager());
 			returned.setTechnologyAdapter(technologyContextManager.getTechnologyAdapter());
 			returned.setTechnologyContextManager(technologyContextManager);
@@ -129,26 +135,26 @@ public abstract class TraceOBPResourceImpl extends FlexoFileResourceImpl<OBPTrac
 		} catch (FileNotFoundException e) {
 			OBPTrace resourceData;
 			e.printStackTrace();
-			throw new SaveResourceException(this);
+			throw new SaveResourceException(getFileFlexoIODelegate());
 		} catch (ResourceLoadingCancelledException e) {
 			e.printStackTrace();
-			throw new SaveResourceException(this);
+			throw new SaveResourceException(getFileFlexoIODelegate());
 		} catch (FlexoException e) {
 			e.printStackTrace();
-			throw new SaveResourceException(this);
+			throw new SaveResourceException(getFileFlexoIODelegate());
 		}
 		OBPTrace resourceData = null;
 
-		if (!hasWritePermission()) {
+		if (!getFileFlexoIODelegate().hasWritePermission()) {
 			if (logger.isLoggable(Level.WARNING)) {
 				logger.warning("Permission denied : " + getFile().getAbsolutePath());
 			}
-			throw new SaveResourcePermissionDeniedException(this);
+			throw new SaveResourcePermissionDeniedException(getFileFlexoIODelegate());
 		}
 		if (resourceData != null) {
-			FlexoFileResourceImpl.FileWritingLock lock = willWriteOnDisk();
+			FileWritingLock lock = ((FileFlexoIODelegateImpl)getFlexoIODelegate()).willWriteOnDisk();
 			writeToFile();
-			hasWrittenOnDisk(lock);
+			((FileFlexoIODelegateImpl)getFlexoIODelegate()).hasWrittenOnDisk(lock);
 			notifyResourceStatusChanged();
 			resourceData.clearIsModified(false);
 			if (logger.isLoggable(Level.INFO)) {
@@ -164,5 +170,12 @@ public abstract class TraceOBPResourceImpl extends FlexoFileResourceImpl<OBPTrac
 	@Override
 	public Class<OBPTrace> getResourceDataClass() {
 		return OBPTrace.class;
+	}
+	
+	private File getFile(){
+		return getFileFlexoIODelegate().getFile();
+	}
+	private FileFlexoIODelegate getFileFlexoIODelegate(){
+		return (FileFlexoIODelegate) getFlexoIODelegate();
 	}
 }

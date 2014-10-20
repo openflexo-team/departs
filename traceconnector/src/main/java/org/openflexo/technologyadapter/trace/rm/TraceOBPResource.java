@@ -20,7 +20,6 @@
 
 package org.openflexo.technologyadapter.trace.rm;
 
-import org.openflexo.foundation.resource.FlexoFileResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -33,7 +32,7 @@ import org.openflexo.technologyadapter.trace.model.io.TraceModelConverter;
 
 @ModelEntity
 @ImplementationClass(TraceOBPResourceImpl.class)
-public abstract interface TraceOBPResource extends FlexoFileResource<OBPTrace>, TechnologyAdapterResource<OBPTrace, TraceTechnologyAdapter> {
+public abstract interface TraceOBPResource extends TechnologyAdapterResource<OBPTrace, TraceTechnologyAdapter> {
 	public static final String TECHNOLOGY_CONTEXT_MANAGER = "technologyContextManager";
 
 	@Getter(value = "technologyContextManager", ignoreType = true)
