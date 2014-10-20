@@ -20,7 +20,6 @@
 
 package org.openflexo.technologyadapter.cdl.rm;
 
-import org.openflexo.foundation.resource.FlexoFileResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -33,7 +32,7 @@ import org.openflexo.technologyadapter.cdl.model.io.CDLModelConverter;
 
 @ModelEntity
 @ImplementationClass(CDLUnitResourceImpl.class)
-public abstract interface CDLUnitResource extends FlexoFileResource<CDLUnit>, TechnologyAdapterResource<CDLUnit, CDLTechnologyAdapter> {
+public abstract interface CDLUnitResource extends TechnologyAdapterResource<CDLUnit, CDLTechnologyAdapter> {
 	public static final String TECHNOLOGY_CONTEXT_MANAGER = "technologyContextManager";
 
 	@Getter(value = "technologyContextManager", ignoreType = true)
@@ -43,4 +42,5 @@ public abstract interface CDLUnitResource extends FlexoFileResource<CDLUnit>, Te
 	public abstract void setTechnologyContextManager(CDLTechnologyContextManager paramCDLTechnologyContextManager);
 
 	public abstract CDLModelConverter getConverter();
+
 }
