@@ -35,10 +35,15 @@ import obp.fiacre.util.FiacreUtil;
 
 import org.apache.commons.io.IOUtils;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.resource.FlexoFileResourceImpl;
+import org.openflexo.foundation.resource.FileFlexoIODelegate;
+import org.openflexo.foundation.resource.FileFlexoIODelegate.FileFlexoIODelegateImpl;
+import org.openflexo.foundation.resource.FileWritingLock;
+import org.openflexo.foundation.resource.FlexoResourceImpl;
+import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.resource.SaveResourcePermissionDeniedException;
+import org.openflexo.model.ModelContextLibrary;
 import org.openflexo.model.exceptions.ModelDefinitionException;
 import org.openflexo.model.factory.ModelFactory;
 import org.openflexo.technologyadapter.fiacre.FiacreTechnologyContextManager;
@@ -46,10 +51,12 @@ import org.openflexo.technologyadapter.fiacre.model.FiacreProgram;
 import org.openflexo.technologyadapter.fiacre.model.io.FiacreProgramConverter;
 import org.openflexo.toolbox.IProgress;
 
-public abstract class FiacreProgramResourceImpl extends FlexoFileResourceImpl<FiacreProgram> implements FiacreProgramResource {
+public abstract class FiacreProgramResourceImpl extends FlexoResourceImpl<FiacreProgram> implements FiacreProgramResource {
 	private static final Logger logger = Logger.getLogger(FiacreProgramResourceImpl.class.getPackage().getName());
 
 	private FiacreProgramConverter converter;
+	
+	private ResourceData resourceData;
 
 	@Override
 	public FiacreProgramConverter getConverter() {
@@ -63,10 +70,13 @@ public abstract class FiacreProgramResourceImpl extends FlexoFileResourceImpl<Fi
 	public static FiacreProgramResource makeFiacreProgramResource(String modelURI, File modelFile,
 			FiacreTechnologyContextManager technologyContextManager) {
 		try {
-			ModelFactory factory = new ModelFactory(FiacreProgramResource.class);
+			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext( 
+					FileFlexoIODelegate.class,FiacreProgramResource.class));
 			FiacreProgramResourceImpl returned = (FiacreProgramResourceImpl) factory.newInstance(FiacreProgramResource.class);
 			returned.setName(modelFile.getName());
-			returned.setFile(modelFile);
+			FileFlexoIODelegate fileIODelegate = factory.newInstance(FileFlexoIODelegate.class) ;
+			returned.setFlexoIODelegate(fileIODelegate);
+			fileIODelegate.setFile(modelFile);
 			returned.setURI(modelURI);
 			returned.setServiceManager(technologyContextManager.getTechnologyAdapter().getTechnologyAdapterService().getServiceManager());
 			returned.setTechnologyAdapter(technologyContextManager.getTechnologyAdapter());
@@ -83,10 +93,13 @@ public abstract class FiacreProgramResourceImpl extends FlexoFileResourceImpl<Fi
 	public static FiacreProgramResource retrieveFiacreProgramResource(File FiacreFile,
 			FiacreTechnologyContextManager technologyContextManager) {
 		try {
-			ModelFactory factory = new ModelFactory(FiacreProgramResource.class);
+			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext( 
+					FileFlexoIODelegate.class,FiacreProgramResource.class));
 			FiacreProgramResourceImpl returned = (FiacreProgramResourceImpl) factory.newInstance(FiacreProgramResource.class);
 			returned.setName(FiacreFile.getName());
-			returned.setFile(FiacreFile);
+			FileFlexoIODelegate fileIODelegate = factory.newInstance(FileFlexoIODelegate.class) ;
+			returned.setFlexoIODelegate(fileIODelegate);
+			fileIODelegate.setFile(FiacreFile);
 			returned.setURI(FiacreFile.toURI().toString());
 			returned.setServiceManager(technologyContextManager.getTechnologyAdapter().getTechnologyAdapterService().getServiceManager());
 			returned.setTechnologyAdapter(technologyContextManager.getTechnologyAdapter());
@@ -131,26 +144,26 @@ public abstract class FiacreProgramResourceImpl extends FlexoFileResourceImpl<Fi
 		} catch (FileNotFoundException e) {
 			FiacreProgram resourceData;
 			e.printStackTrace();
-			throw new SaveResourceException(this);
+			throw new SaveResourceException(getFileFlexoIODelegate());
 		} catch (ResourceLoadingCancelledException e) {
 			e.printStackTrace();
-			throw new SaveResourceException(this);
+			throw new SaveResourceException(getFileFlexoIODelegate());
 		} catch (FlexoException e) {
 			e.printStackTrace();
-			throw new SaveResourceException(this);
+			throw new SaveResourceException(getFileFlexoIODelegate());
 		}
 		FiacreProgram resourceData = null;
 
-		if (!hasWritePermission()) {
+		if (!getFileFlexoIODelegate().hasWritePermission()) {
 			if (logger.isLoggable(Level.WARNING)) {
 				logger.warning("Permission denied : " + getFile().getAbsolutePath());
 			}
-			throw new SaveResourcePermissionDeniedException(this);
+			throw new SaveResourcePermissionDeniedException(getFileFlexoIODelegate());
 		}
 		if (resourceData != null) {
-			FlexoFileResourceImpl.FileWritingLock lock = willWriteOnDisk();
+			FileWritingLock lock = ((FileFlexoIODelegateImpl)getFlexoIODelegate()).willWriteOnDisk();
 			writeToFile();
-			hasWrittenOnDisk(lock);
+			((FileFlexoIODelegateImpl)getFlexoIODelegate()).hasWrittenOnDisk(lock);
 			notifyResourceStatusChanged();
 			resourceData.clearIsModified(false);
 			if (logger.isLoggable(Level.INFO)) {
@@ -171,10 +184,10 @@ public abstract class FiacreProgramResourceImpl extends FlexoFileResourceImpl<Fi
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-			throw new SaveResourceException(this);
+			throw new SaveResourceException(getFileFlexoIODelegate());
 		} catch (TransformerConfigurationException e) {
 			e.printStackTrace();
-			throw new SaveResourceException(this);
+			throw new SaveResourceException(getFileFlexoIODelegate());
 		} finally {
 			IOUtils.closeQuietly(out);
 		}
@@ -185,5 +198,12 @@ public abstract class FiacreProgramResourceImpl extends FlexoFileResourceImpl<Fi
 	@Override
 	public Class<FiacreProgram> getResourceDataClass() {
 		return FiacreProgram.class;
+	}
+	
+	private File getFile(){
+		return getFileFlexoIODelegate().getFile();
+	}
+	private FileFlexoIODelegate getFileFlexoIODelegate(){
+		return (FileFlexoIODelegate) getFlexoIODelegate();
 	}
 }

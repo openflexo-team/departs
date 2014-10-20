@@ -20,7 +20,6 @@
 
 package org.openflexo.technologyadapter.fiacre.rm;
 
-import org.openflexo.foundation.resource.FlexoFileResource;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
@@ -33,7 +32,7 @@ import org.openflexo.technologyadapter.fiacre.model.io.FiacreProgramConverter;
 
 @ModelEntity
 @ImplementationClass(FiacreProgramResourceImpl.class)
-public abstract interface FiacreProgramResource extends FlexoFileResource<FiacreProgram>, TechnologyAdapterResource<FiacreProgram, FiacreTechnologyAdapter> {
+public abstract interface FiacreProgramResource extends TechnologyAdapterResource<FiacreProgram, FiacreTechnologyAdapter> {
 	public static final String TECHNOLOGY_CONTEXT_MANAGER = "technologyContextManager";
 
 	@Getter(value = "technologyContextManager", ignoreType = true)
