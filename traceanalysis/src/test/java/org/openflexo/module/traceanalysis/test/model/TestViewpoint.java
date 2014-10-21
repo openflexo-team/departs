@@ -79,7 +79,7 @@ public class TestViewpoint extends OpenflexoTestCase {
 
 		ViewPoint viewpoint = testLoadViewPoint("http://depart.v1");
 		assertNotNull(viewpoint);
-		System.out.println("Read resource " + ((ViewPointResource) viewpoint.getResource()).getFile().getAbsolutePath());
+		System.out.println("Read resource " + ((ViewPointResource) viewpoint.getResource()).getFlexoIODelegate().toString());
 
 		assertViewPointIsValid(viewpoint);
 

@@ -20,7 +20,6 @@
 
 package org.openflexo.module.traceanalysis;
 
-import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,13 +27,13 @@ import org.openflexo.ApplicationContext;
 import org.openflexo.Flexo;
 import org.openflexo.FlexoMainLocalizer;
 import org.openflexo.components.ProgressWindow;
+import org.openflexo.foundation.resource.JarResourceCenter;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.module.FlexoModule;
 import org.openflexo.module.Module;
 import org.openflexo.module.traceanalysis.controller.TraceAnalysisController;
 import org.openflexo.module.traceanalysis.model.TraceAnalysisProjectNature;
-import org.openflexo.module.traceanalysis.utils.ZipResourceCenter;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.controller.FlexoController;
 
@@ -60,12 +59,12 @@ public class TAModule extends FlexoModule<TAModule> {
 				Flexo.isDev);
 		ViewPointResource traceAnalsyisViewPointResource = getApplicationContext().getViewPointLibrary().getViewPointResource(
 				TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
+		
+		//JarResourceCenter.addAllJarFromClassPathResourceCenters(getApplicationContext().getResourceCenterService());
+		
 		if (traceAnalsyisViewPointResource == null) {
 			logger.log(Level.WARNING, "No Viewpoint Resource Found, retrieve from Jar file");
-			File jarFile = ZipResourceCenter.getClassPathFile("departs-1.1.jar");
-			logger.info("Instanciate new resource center for the viewpoint resource");
-			ZipResourceCenter newRC = ZipResourceCenter.instanciateNewZipResourceCenter(jarFile);
-			getApplicationContext().getResourceCenterService().addToResourceCenters(newRC);
+			JarResourceCenter.addNamedJarFromClassPathResourceCenters(getApplicationContext().getResourceCenterService(), "fr\\ensta\\departs\\1.1\\departs-1.1");
 			traceAnalsyisViewPointResource = getApplicationContext().getViewPointLibrary().getViewPointResource(
 					TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
 		}

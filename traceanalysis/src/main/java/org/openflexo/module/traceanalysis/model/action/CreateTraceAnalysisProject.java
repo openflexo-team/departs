@@ -45,7 +45,6 @@ import org.openflexo.technologyadapter.cdl.CDLModelSlot;
 import org.openflexo.technologyadapter.cdl.CDLTechnologyAdapter;
 import org.openflexo.technologyadapter.fiacre.FiacreProgramModelSlot;
 import org.openflexo.technologyadapter.fiacre.FiacreTechnologyAdapter;
-import org.openflexo.toolbox.StringUtils;
 
 public class CreateTraceAnalysisProject extends FlexoAction<CreateTraceAnalysisProject, TraceAnalysisProject, FlexoObject> {
 

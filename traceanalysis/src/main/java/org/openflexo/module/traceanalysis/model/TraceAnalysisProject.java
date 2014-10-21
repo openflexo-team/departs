@@ -19,7 +19,6 @@
  */
 package org.openflexo.module.traceanalysis.model;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +41,6 @@ import org.openflexo.foundation.viewpoint.ViewPoint;
 import org.openflexo.foundation.viewpoint.ViewPointLibrary;
 import org.openflexo.foundation.viewpoint.VirtualModel;
 import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
-import org.openflexo.module.traceanalysis.utils.ZipResourceCenter;
 
 /**
  * A Trace Analysis project is based on a the depart viewpoint.
