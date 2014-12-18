@@ -11,18 +11,19 @@ import org.openflexo.foundation.view.VirtualModelInstance;
 import org.openflexo.foundation.viewpoint.FlexoConcept;
 
 public abstract class TraceAnalysisVirtualModelInstance extends DefaultFlexoObject implements PropertyChangeListener {
-	
+
 	private final VirtualModelInstance virtualModelInstance;
-	
+
 	private final TraceAnalysisProject traceAnalysisProject;
-	
-	public TraceAnalysisVirtualModelInstance(VirtualModelInstance virtualModelInstance, TraceAnalysisProject traceAnalysisProject) throws InvalidArgumentException {
+
+	public TraceAnalysisVirtualModelInstance(VirtualModelInstance virtualModelInstance, TraceAnalysisProject traceAnalysisProject)
+			throws InvalidArgumentException {
 		super();
 		this.virtualModelInstance = virtualModelInstance;
 		this.traceAnalysisProject = traceAnalysisProject;
 		virtualModelInstance.getPropertyChangeSupport().addPropertyChangeListener(this);
 	}
-	
+
 	public VirtualModelInstance getVirtualModelInstance() {
 		return virtualModelInstance;
 	}
@@ -30,33 +31,27 @@ public abstract class TraceAnalysisVirtualModelInstance extends DefaultFlexoObje
 	public String getName() {
 		return virtualModelInstance.getName();
 	}
-	
-	public List<FlexoConcept> getFlexoConcepts(){
+
+	public List<FlexoConcept> getFlexoConcepts() {
 		return virtualModelInstance.getVirtualModel().getFlexoConcepts();
 	}
-	
-	public List<FlexoConceptInstance> getFlexoConceptInstances(FlexoConcept flexoConcept){
+
+	public List<FlexoConceptInstance> getFlexoConceptInstances(FlexoConcept flexoConcept) {
 		return virtualModelInstance.getFlexoConceptInstances(flexoConcept);
 	}
-	
-	public List<FlexoConceptInstance> getFlexoConceptInstances(String name){
+
+	public List<FlexoConceptInstance> getFlexoConceptInstances(String name) {
 		return virtualModelInstance.getFlexoConceptInstances(name);
 	}
-	
-	public TraceAnalysisProject getTraceAnalysisProject(){
+
+	public TraceAnalysisProject getTraceAnalysisProject() {
 		return traceAnalysisProject;
-	}
-	
-	@Override
-	public boolean delete() {
-		super.delete();
-		return true;
 	}
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
