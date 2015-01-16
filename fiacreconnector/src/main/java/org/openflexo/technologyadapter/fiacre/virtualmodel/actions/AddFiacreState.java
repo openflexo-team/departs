@@ -3,24 +3,25 @@ package org.openflexo.technologyadapter.fiacre.virtualmodel.actions;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.view.FreeModelSlotInstance;
-import org.openflexo.foundation.view.action.FlexoBehaviourAction;
-import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
-import org.openflexo.foundation.viewpoint.editionaction.AssignableAction;
+import org.openflexo.foundation.fml.annotations.FIBPanel;
+import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
+import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.technologyadapter.fiacre.FiacreProgramModelSlot;
-import org.openflexo.technologyadapter.fiacre.model.FiacreState;
 import org.openflexo.technologyadapter.fiacre.model.FiacreProgram;
+import org.openflexo.technologyadapter.fiacre.model.FiacreState;
 
 @FIBPanel("Fib/AddFiacreStatePanel.fib")
 @ModelEntity
 @ImplementationClass(AddFiacreState.AddFiacreStateImpl.class)
 @XMLElement
-public interface AddFiacreState extends AssignableAction<FiacreProgramModelSlot, FiacreState> {
+public interface AddFiacreState extends TechnologySpecificAction<FiacreProgramModelSlot, FiacreState> {
 
-	public static abstract class AddFiacreStateImpl extends AssignableActionImpl<FiacreProgramModelSlot, FiacreState> implements AddFiacreState {
+	public static abstract class AddFiacreStateImpl extends TechnologySpecificActionImpl<FiacreProgramModelSlot, FiacreState> implements
+			AddFiacreState {
 
 		private static final Logger logger = Logger.getLogger(AddFiacreState.class.getPackage().getName());
 
@@ -34,7 +35,7 @@ public interface AddFiacreState extends AssignableAction<FiacreProgramModelSlot,
 		}
 
 		@Override
-		public FiacreState performAction(FlexoBehaviourAction action) {
+		public FiacreState execute(FlexoBehaviourAction action) {
 
 			FiacreState fiacreState = null;
 

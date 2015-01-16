@@ -27,9 +27,9 @@ import java.util.logging.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openflexo.foundation.OpenflexoTestCase;
+import org.openflexo.foundation.fml.FMLTechnologyAdapter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterService;
-import org.openflexo.foundation.viewpoint.VirtualModelTechnologyAdapter;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.technologyadapter.cdl.CDLTechnologyAdapter;
 import org.openflexo.technologyadapter.fiacre.FiacreTechnologyAdapter;
@@ -76,7 +76,7 @@ public class TestLoadAllTechnologyAdapters extends OpenflexoTestCase {
 	public void checkVirtualModelTechnologyAdapter() {
 		log("checkVirtualModelTechnologyAdapter()");
 
-		assertNotNull(taService.getTechnologyAdapter(VirtualModelTechnologyAdapter.class));
+		assertNotNull(taService.getTechnologyAdapter(FMLTechnologyAdapter.class));
 	}
 
 	@Test
@@ -94,7 +94,7 @@ public class TestLoadAllTechnologyAdapters extends OpenflexoTestCase {
 
 		assertNotNull(taService.getTechnologyAdapter(FiacreTechnologyAdapter.class));
 	}
-	
+
 	@Test
 	@TestOrder(5)
 	public void checkTraceTechnologyAdapter() {

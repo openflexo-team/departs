@@ -24,9 +24,9 @@ import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
+import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.foundation.viewpoint.FlexoRole;
-import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.rm.ResourceLocator;
 import org.openflexo.technologyadapter.trace.TraceTechnologyAdapter;
 import org.openflexo.technologyadapter.trace.gui.TraceIconLibrary;
@@ -74,7 +74,7 @@ public class TraceAdapterController extends TechnologyAdapterController<TraceTec
 	}
 
 	@Override
-	public ImageIcon getIconForTechnologyObject(Class<? extends TechnologyObject<TraceTechnologyAdapter>> objectClass) {
+	public ImageIcon getIconForTechnologyObject(Class<? extends TechnologyObject<?>> objectClass) {
 		return TraceIconLibrary.iconForObject(objectClass);
 	}
 
@@ -85,12 +85,13 @@ public class TraceAdapterController extends TechnologyAdapterController<TraceTec
 	 * @return
 	 */
 	@Override
-	public ImageIcon getIconForEditionAction(Class<? extends EditionAction<?, ?>> editionActionClass) {
+	public ImageIcon getIconForEditionAction(Class<? extends EditionAction> editionActionClass) {
 		return super.getIconForEditionAction(editionActionClass);
 	}
 
 	@Override
-	public ModuleView<?> createModuleViewForObject(TechnologyObject<TraceTechnologyAdapter> arg0, FlexoController arg1, FlexoPerspective arg2) {
+	public ModuleView<?> createModuleViewForObject(TechnologyObject<TraceTechnologyAdapter> arg0, FlexoController arg1,
+			FlexoPerspective arg2) {
 		if (arg0 instanceof OBPTrace) {
 			return new FIBTraceView((OBPTrace) arg0, arg1);
 		}

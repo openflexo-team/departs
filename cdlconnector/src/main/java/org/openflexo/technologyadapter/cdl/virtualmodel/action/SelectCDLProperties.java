@@ -1,20 +1,16 @@
 package org.openflexo.technologyadapter.cdl.virtualmodel.action;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.view.action.FlexoBehaviourAction;
-import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
-import org.openflexo.foundation.viewpoint.editionaction.FetchRequest;
+import org.openflexo.foundation.fml.annotations.FIBPanel;
+import org.openflexo.foundation.fml.editionaction.FetchRequest;
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.technologyadapter.cdl.CDLModelSlot;
-import org.openflexo.technologyadapter.cdl.model.CDLActivity;
-import org.openflexo.technologyadapter.cdl.model.CDLObserver;
-import org.openflexo.technologyadapter.cdl.model.CDLParActivity;
 import org.openflexo.technologyadapter.cdl.model.CDLProperty;
 import org.openflexo.technologyadapter.cdl.model.CDLUnit;
 
@@ -39,7 +35,7 @@ public interface SelectCDLProperties extends FetchRequest<CDLModelSlot, CDLPrope
 		}
 
 		@Override
-		public List<CDLProperty> performAction(FlexoBehaviourAction action) {
+		public List<CDLProperty> execute(FlexoBehaviourAction action) {
 
 			if (getModelSlotInstance(action) == null) {
 				logger.warning("Could not access model slot instance. Abort.");

@@ -23,17 +23,17 @@ package org.openflexo.technologyadapter.cdl;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.annotations.DeclareEditionAction;
+import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
+import org.openflexo.foundation.fml.annotations.DeclareFetchRequest;
+import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
+import org.openflexo.foundation.fml.annotations.DeclareFlexoRole;
+import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
+import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
+import org.openflexo.foundation.fml.rt.action.CreateVirtualModelInstance;
 import org.openflexo.foundation.ontology.IFlexoOntologyObject;
-import org.openflexo.foundation.technologyadapter.DeclareEditionAction;
-import org.openflexo.foundation.technologyadapter.DeclareEditionActions;
-import org.openflexo.foundation.technologyadapter.DeclareFetchRequest;
-import org.openflexo.foundation.technologyadapter.DeclareFetchRequests;
-import org.openflexo.foundation.technologyadapter.DeclarePatternRole;
-import org.openflexo.foundation.technologyadapter.DeclarePatternRoles;
 import org.openflexo.foundation.technologyadapter.FreeModelSlot;
-import org.openflexo.foundation.view.FreeModelSlotInstance;
-import org.openflexo.foundation.view.action.CreateVirtualModelInstance;
-import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -51,8 +51,8 @@ import org.openflexo.technologyadapter.cdl.virtualmodel.CDLSeqActivityRole;
 import org.openflexo.technologyadapter.cdl.virtualmodel.action.AddCDLProcessID;
 import org.openflexo.technologyadapter.cdl.virtualmodel.action.AddCDLProperty;
 import org.openflexo.technologyadapter.cdl.virtualmodel.action.SelectCDLAltActivity;
-import org.openflexo.technologyadapter.cdl.virtualmodel.action.SelectCDLParActivity;
 import org.openflexo.technologyadapter.cdl.virtualmodel.action.SelectCDLEventReference;
+import org.openflexo.technologyadapter.cdl.virtualmodel.action.SelectCDLParActivity;
 import org.openflexo.technologyadapter.cdl.virtualmodel.action.SelectCDLProperties;
 
 /**
@@ -64,32 +64,29 @@ import org.openflexo.technologyadapter.cdl.virtualmodel.action.SelectCDLProperti
 @ModelEntity
 @ImplementationClass(CDLModelSlot.CDLModelSlotImpl.class)
 @XMLElement
-@DeclarePatternRoles({ // All pattern roles available through this model slot
-		@DeclarePatternRole(FML = "CDLCommunicationOPEvent", flexoRoleClass = CDLCommunicationOpEventRole.class),
-		@DeclarePatternRole(FML = "CDLGammaEvent", flexoRoleClass = CDLGammaEventRole.class),
-		@DeclarePatternRole(FML = "CDLInformalEvent", flexoRoleClass = CDLInformalEventRole.class),
-		@DeclarePatternRole(FML = "CDLPredicateEvent", flexoRoleClass = CDLPredicateEventRole.class),
-		@DeclarePatternRole(FML = "CDLAltActivity", flexoRoleClass = CDLAltActivityRole.class),
-		@DeclarePatternRole(FML = "CDLParActivity", flexoRoleClass = CDLParActivityRole.class),
-		@DeclarePatternRole(FML = "CDLSeqActivity", flexoRoleClass = CDLSeqActivityRole.class),
-		@DeclarePatternRole(FML = "CDLEventActivity", flexoRoleClass = CDLEventActivityRole.class),
-		@DeclarePatternRole(FML = "CDLProcessID", flexoRoleClass = CDLProcessIDRole.class),
-		@DeclarePatternRole(FML = "CDLProperty", flexoRoleClass = CDLPropertyRole.class)
-})
+@DeclareFlexoRoles({ // All pattern roles available through this model slot
+@DeclareFlexoRole(FML = "CDLCommunicationOPEvent", flexoRoleClass = CDLCommunicationOpEventRole.class),
+		@DeclareFlexoRole(FML = "CDLGammaEvent", flexoRoleClass = CDLGammaEventRole.class),
+		@DeclareFlexoRole(FML = "CDLInformalEvent", flexoRoleClass = CDLInformalEventRole.class),
+		@DeclareFlexoRole(FML = "CDLPredicateEvent", flexoRoleClass = CDLPredicateEventRole.class),
+		@DeclareFlexoRole(FML = "CDLAltActivity", flexoRoleClass = CDLAltActivityRole.class),
+		@DeclareFlexoRole(FML = "CDLParActivity", flexoRoleClass = CDLParActivityRole.class),
+		@DeclareFlexoRole(FML = "CDLSeqActivity", flexoRoleClass = CDLSeqActivityRole.class),
+		@DeclareFlexoRole(FML = "CDLEventActivity", flexoRoleClass = CDLEventActivityRole.class),
+		@DeclareFlexoRole(FML = "CDLProcessID", flexoRoleClass = CDLProcessIDRole.class),
+		@DeclareFlexoRole(FML = "CDLProperty", flexoRoleClass = CDLPropertyRole.class) })
 @DeclareEditionActions({ // All edition actions available through this modelslot
-		@DeclareEditionAction(FML = "AddCDLProcessID", editionActionClass = AddCDLProcessID.class), 
-		@DeclareEditionAction(FML = "AddCDLProperty", editionActionClass = AddCDLProperty.class) 
-})
+@DeclareEditionAction(FML = "AddCDLProcessID", editionActionClass = AddCDLProcessID.class),
+		@DeclareEditionAction(FML = "AddCDLProperty", editionActionClass = AddCDLProperty.class) })
 @DeclareFetchRequests({ // All requests available through this model slot
-	@DeclareFetchRequest(FML = "SelectCDLAltActivity", fetchRequestClass = SelectCDLAltActivity.class),																	// Sheet
-	@DeclareFetchRequest(FML = "SelectCDLParActivity", fetchRequestClass = SelectCDLParActivity.class),
-	@DeclareFetchRequest(FML = "SelectCDLSeqActivity", fetchRequestClass = SelectCDLEventReference.class),
-	@DeclareFetchRequest(FML = "SelectCDLProperties", fetchRequestClass = SelectCDLProperties.class)
-})
+		@DeclareFetchRequest(FML = "SelectCDLAltActivity", fetchRequestClass = SelectCDLAltActivity.class), // Sheet
+		@DeclareFetchRequest(FML = "SelectCDLParActivity", fetchRequestClass = SelectCDLParActivity.class),
+		@DeclareFetchRequest(FML = "SelectCDLSeqActivity", fetchRequestClass = SelectCDLEventReference.class),
+		@DeclareFetchRequest(FML = "SelectCDLProperties", fetchRequestClass = SelectCDLProperties.class) })
 public interface CDLModelSlot extends FreeModelSlot<CDLUnit> {
 
 	@Override
-	public CDLTechnologyAdapter getTechnologyAdapter();
+	public CDLTechnologyAdapter getModelSlotTechnologyAdapter();
 
 	public static abstract class CDLModelSlotImpl extends FreeModelSlotImpl<CDLUnit> implements CDLModelSlot {
 
@@ -135,8 +132,8 @@ public interface CDLModelSlot extends FreeModelSlot<CDLUnit> {
 		}
 
 		@Override
-		public CDLTechnologyAdapter getTechnologyAdapter() {
-			return (CDLTechnologyAdapter) super.getTechnologyAdapter();
+		public CDLTechnologyAdapter getModelSlotTechnologyAdapter() {
+			return (CDLTechnologyAdapter) super.getModelSlotTechnologyAdapter();
 		}
 
 	}

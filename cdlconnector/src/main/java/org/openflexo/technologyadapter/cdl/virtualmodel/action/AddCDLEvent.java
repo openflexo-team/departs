@@ -2,17 +2,15 @@ package org.openflexo.technologyadapter.cdl.virtualmodel.action;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
-import java.util.List;
-import java.util.Vector;
 import java.util.logging.Logger;
 
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
-import org.openflexo.foundation.view.FreeModelSlotInstance;
-import org.openflexo.foundation.view.action.FlexoBehaviourAction;
-import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
-import org.openflexo.foundation.viewpoint.editionaction.AssignableAction;
+import org.openflexo.foundation.fml.annotations.FIBPanel;
+import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
+import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -29,7 +27,7 @@ import org.openflexo.technologyadapter.cdl.model.CDLUnit;
 @ModelEntity
 @ImplementationClass(AddCDLEvent.AddCDLEventImpl.class)
 @XMLElement
-public interface AddCDLEvent extends AssignableAction<CDLModelSlot, CDLEvent> {
+public interface AddCDLEvent extends TechnologySpecificAction<CDLModelSlot, CDLEvent> {
 
 	@PropertyIdentifier(type = DataBinding.class)
 	public static final String EVENT_NAME_KEY = "eventName";
@@ -68,7 +66,7 @@ public interface AddCDLEvent extends AssignableAction<CDLModelSlot, CDLEvent> {
 	@Setter(TO_PROCESS_ID__KEY)
 	public void setToProcessID(DataBinding<CDLProcessID> toProcessID);
 
-	public static abstract class AddCDLEventImpl extends AssignableActionImpl<CDLModelSlot, CDLEvent> implements AddCDLEvent {
+	public static abstract class AddCDLEventImpl extends TechnologySpecificActionImpl<CDLModelSlot, CDLEvent> implements AddCDLEvent {
 
 		private static final Logger logger = Logger.getLogger(AddCDLEvent.class.getPackage().getName());
 
@@ -90,7 +88,7 @@ public interface AddCDLEvent extends AssignableAction<CDLModelSlot, CDLEvent> {
 		}
 
 		@Override
-		public CDLEvent performAction(FlexoBehaviourAction action) {
+		public CDLEvent execute(FlexoBehaviourAction action) {
 
 			CDLEvent cdlEvent = null;
 

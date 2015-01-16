@@ -30,50 +30,50 @@ import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.FlexoServiceManager;
 import org.openflexo.foundation.InvalidArgumentException;
+import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.ViewPoint;
+import org.openflexo.foundation.fml.ViewPointLibrary;
+import org.openflexo.foundation.fml.VirtualModel;
+import org.openflexo.foundation.fml.rm.ViewPointResource;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.View;
+import org.openflexo.foundation.fml.rt.ViewLibrary;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.nature.ProjectWrapper;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
-import org.openflexo.foundation.view.FlexoConceptInstance;
-import org.openflexo.foundation.view.View;
-import org.openflexo.foundation.view.ViewLibrary;
-import org.openflexo.foundation.view.VirtualModelInstance;
-import org.openflexo.foundation.viewpoint.FlexoConcept;
-import org.openflexo.foundation.viewpoint.ViewPoint;
-import org.openflexo.foundation.viewpoint.ViewPointLibrary;
-import org.openflexo.foundation.viewpoint.VirtualModel;
-import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 
 /**
- * A Trace Analysis project is based on a the depart viewpoint.
- * Such project is a view conformed to this viewpoint. This view is made of a System vitrual model instance,
- * an observer virtual model instance, a context virtual model instance as well as a set of trace analysis virtual model instance.
- * At the creation of the project a CDL and a System files are required to create the System, Observer and Context VMI.
- * Then the user can create a set of Trace analysis VMI, each requiring a trace file.
+ * A Trace Analysis project is based on a the depart viewpoint. Such project is a view conformed to this viewpoint. This view is made of a
+ * System vitrual model instance, an observer virtual model instance, a context virtual model instance as well as a set of trace analysis
+ * virtual model instance. At the creation of the project a CDL and a System files are required to create the System, Observer and Context
+ * VMI. Then the user can create a set of Trace analysis VMI, each requiring a trace file.
+ * 
  * @author Vincent
  *
  */
 public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectWrapper<TraceAnalysisProjectNature> {
 
 	private static final Logger logger = Logger.getLogger(TraceAnalysisProject.class.getPackage().getName());
-	
+
 	public static String VIEWPOINT_REPOSITORY = "Viewpoint";
-	
+
 	private final FlexoProject project;
 
 	private final TraceAnalysisProjectNature projectNature;
-	
+
 	private final ViewPoint traceAnalysisViewPoint;
-	
+
 	// The while set of virtual model instance created for the project
 	private ArrayList<TraceAnalysisVirtualModelInstance> traceAnalysisVirtualModelInstances;
 	// The set of trace virtual model instance created in the project
-	private List<TraceVirtualModelInstance> traceVirtualModelInstances ;
+	private List<TraceVirtualModelInstance> traceVirtualModelInstances;
 	// The unique system VMI created for the project
-	private SystemVirtualModelInstance systemVirtualModelInstance ;
+	private SystemVirtualModelInstance systemVirtualModelInstance;
 	// The unique context VMI created for the project
 	private ContextVirtualModelInstance contextVirtualModelInstance;
 	// The unique observer VMI created for the project
 	private ObserverVirtualModelInstance observerVirtualModelInstance;
-	
+
 	// The view instanciated for the project and conformed to the traceAnalysisViewPoint
 	private View traceAnalysisView;
 
@@ -81,20 +81,21 @@ public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectW
 			ResourceLoadingCancelledException, InvalidArgumentException, FlexoException {
 		this.project = project;
 		this.projectNature = projectNature;
-		
+
 		traceAnalysisViewPoint = retrieveViewpoint();
 
 		if (traceAnalysisViewPoint == null) {
 			throw new InvalidArgumentException("Trace Analysis ViewPoint should not be null");
 		}
-		
+
 		// Retrieve views which are conformed to this viewpoint
-		if(getViewLibrary().getViewsForViewPointWithURI(TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI).size()>0){
-			traceAnalysisView = project.getViewLibrary().getViewsForViewPointWithURI(TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI).get(0);
+		if (getViewLibrary().getViewsForViewPointWithURI(TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI).size() > 0) {
+			traceAnalysisView = project.getViewLibrary()
+					.getViewsForViewPointWithURI(TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI).get(0);
 		}
-		
-		if(traceAnalysisView!=null){
-			logger.info("Trace Analysis view "+ traceAnalysisView.getName() + " retrieved");
+
+		if (traceAnalysisView != null) {
+			logger.info("Trace Analysis view " + traceAnalysisView.getName() + " retrieved");
 		}
 	}
 
@@ -111,11 +112,11 @@ public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectW
 	public TraceAnalysisProjectNature getProjectNature() {
 		return projectNature;
 	}
-	
+
 	public ViewPoint getTraceAnaylsisViewPoint() {
 		return traceAnalysisViewPoint;
 	}
-	
+
 	/*public void setSystemVirtualModelInstance(SystemVirtualModelInstance systemVirtualModelInstance) {
 		this.systemVirtualModelInstance = systemVirtualModelInstance;
 	}
@@ -135,110 +136,119 @@ public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectW
 	public void setTraceAnalysisView(View traceAnalysisView) {
 		this.traceAnalysisView = traceAnalysisView;
 	}
-	
-	public VirtualModel getTraceVirtualModel(){
+
+	public VirtualModel getTraceVirtualModel() {
 		return getTraceAnaylsisViewPoint().getVirtualModelNamed("TraceVirtualModel");
 	}
-	public VirtualModel getContextVirtualModel(){
+
+	public VirtualModel getContextVirtualModel() {
 		return getTraceAnaylsisViewPoint().getVirtualModelNamed("ContextVirtualModel");
 	}
-	public VirtualModel getObserverVirtualModel(){
+
+	public VirtualModel getObserverVirtualModel() {
 		return getTraceAnaylsisViewPoint().getVirtualModelNamed("ObserverVirtualModel");
 	}
-	public VirtualModel getSystemVirtualModel(){
+
+	public VirtualModel getSystemVirtualModel() {
 		return getTraceAnaylsisViewPoint().getVirtualModelNamed("SystemVirtualModel");
 	}
-	
+
 	public List<FlexoConceptInstance> getInstances(FlexoConcept concept) {
 		return getVirtualModelInstanceConformToNamedVirtualModel(concept.getVirtualModel().getName()).getFlexoConceptInstances(concept);
 	}
-	
-	public List<TraceAnalysisVirtualModelInstance> getTraceAnalysisVirtualModelInstances(){
-		
-		if(traceAnalysisVirtualModelInstances==null){
+
+	public List<TraceAnalysisVirtualModelInstance> getTraceAnalysisVirtualModelInstances() {
+
+		if (traceAnalysisVirtualModelInstances == null) {
 			traceAnalysisVirtualModelInstances = new ArrayList<TraceAnalysisVirtualModelInstance>();
 			traceAnalysisVirtualModelInstances.addAll(getTraceVirtualModelInstances());
 			traceAnalysisVirtualModelInstances.add(getContextVirtualModelInstance());
 			traceAnalysisVirtualModelInstances.add(getSystemVirtualModelInstance());
 			traceAnalysisVirtualModelInstances.add(getObserverVirtualModelInstance());
 		}
-		
+
 		return traceAnalysisVirtualModelInstances;
 	}
-	
+
 	public SystemVirtualModelInstance getSystemVirtualModelInstance() {
-		if(systemVirtualModelInstance==null){
+		if (systemVirtualModelInstance == null) {
 			try {
-				systemVirtualModelInstance=new SystemVirtualModelInstance(getVirtualModelInstanceConformToNamedVirtualModel("SystemVirtualModel"), this);
+				systemVirtualModelInstance = new SystemVirtualModelInstance(
+						getVirtualModelInstanceConformToNamedVirtualModel("SystemVirtualModel"), this);
 			} catch (InvalidArgumentException e) {
 				logger.log(Level.SEVERE, "No System found");
 			}
 		}
 		return systemVirtualModelInstance;
 	}
-	
+
 	public ContextVirtualModelInstance getContextVirtualModelInstance() {
-		if(contextVirtualModelInstance==null){
+		if (contextVirtualModelInstance == null) {
 			try {
-				contextVirtualModelInstance=new ContextVirtualModelInstance(getVirtualModelInstanceConformToNamedVirtualModel("ContextVirtualModel"), this);
+				contextVirtualModelInstance = new ContextVirtualModelInstance(
+						getVirtualModelInstanceConformToNamedVirtualModel("ContextVirtualModel"), this);
 			} catch (InvalidArgumentException e) {
 				logger.log(Level.SEVERE, "No Context found");
 			}
 		}
 		return contextVirtualModelInstance;
 	}
-	
+
 	public ObserverVirtualModelInstance getObserverVirtualModelInstance() {
-		if(observerVirtualModelInstance==null){
+		if (observerVirtualModelInstance == null) {
 			try {
-				observerVirtualModelInstance=new ObserverVirtualModelInstance(getVirtualModelInstanceConformToNamedVirtualModel("ObserverVirtualModel"), this);
+				observerVirtualModelInstance = new ObserverVirtualModelInstance(
+						getVirtualModelInstanceConformToNamedVirtualModel("ObserverVirtualModel"), this);
 			} catch (InvalidArgumentException e) {
 				logger.log(Level.SEVERE, "No Observer found");
 			}
 		}
 		return observerVirtualModelInstance;
 	}
-	
+
 	public List<TraceVirtualModelInstance> getTraceVirtualModelInstances() {
-		if(traceVirtualModelInstances==null){
-			traceVirtualModelInstances=new ArrayList<TraceVirtualModelInstance>();
-			if(traceAnalysisView==null){
+		if (traceVirtualModelInstances == null) {
+			traceVirtualModelInstances = new ArrayList<TraceVirtualModelInstance>();
+			if (traceAnalysisView == null) {
 				logger.log(Level.SEVERE, "No view is declared for this project");
-				//getServiceManager().getProjectNatureService().getProjectNature(TraceAnalysisProjectNature.class).givesNature(getProject(), getServiceManager());
+				// getServiceManager().getProjectNatureService().getProjectNature(TraceAnalysisProjectNature.class).givesNature(getProject(),
+				// getServiceManager());
 				return null;
 			}
 			for (VirtualModelInstance vmi : traceAnalysisView.getVirtualModelInstances()) {
-				if(vmi.getVirtualModel().getName().equals("TraceVirtualModel")){
+				if (vmi.getVirtualModel().getName().equals("TraceVirtualModel")) {
 					createTraceVirtualModelInstance(vmi);
 				}
 			}
 		}
 		return traceVirtualModelInstances;
 	}
-	
+
 	/**
-	 * Return a Trace virtual model  instance of this project from a given name, otherwise create it
+	 * Return a Trace virtual model instance of this project from a given name, otherwise create it
+	 * 
 	 * @param name
 	 * @return
 	 */
 	public TraceVirtualModelInstance getTraceVirtualModelInstance(VirtualModelInstance vmi) {
-		for(TraceVirtualModelInstance traceVirtualModelInstance : getTraceVirtualModelInstances()){
-			if(traceVirtualModelInstance.getVirtualModelInstance().getURI().equals(vmi.getURI())){
+		for (TraceVirtualModelInstance traceVirtualModelInstance : getTraceVirtualModelInstances()) {
+			if (traceVirtualModelInstance.getVirtualModelInstance().getURI().equals(vmi.getURI())) {
 				return traceVirtualModelInstance;
 			}
 		}
 		return createTraceVirtualModelInstance(vmi);
 	}
-	
+
 	/**
 	 * Create a trace virtual model instance
+	 * 
 	 * @param vmi
 	 * @return
 	 */
-	private TraceVirtualModelInstance createTraceVirtualModelInstance(VirtualModelInstance vmi){
+	private TraceVirtualModelInstance createTraceVirtualModelInstance(VirtualModelInstance vmi) {
 		TraceVirtualModelInstance traceVirtualModelInstance;
 		try {
-			traceVirtualModelInstance = new TraceVirtualModelInstance(vmi,this);
+			traceVirtualModelInstance = new TraceVirtualModelInstance(vmi, this);
 			getTraceVirtualModelInstances().add(traceVirtualModelInstance);
 			getPropertyChangeSupport().firePropertyChange("traceVirtualModelInstances", null, getTraceVirtualModelInstances());
 			return traceVirtualModelInstance;
@@ -247,38 +257,40 @@ public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectW
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Return a virtual model instance of this project from a given name
+	 * 
 	 * @param name
 	 * @return
 	 */
-	private VirtualModelInstance getVirtualModelInstanceConformToNamedVirtualModel(String name){
+	private VirtualModelInstance getVirtualModelInstanceConformToNamedVirtualModel(String name) {
 		for (VirtualModelInstance vmi : traceAnalysisView.getVirtualModelInstances()) {
-			if(vmi.getVirtualModel().getName().equals(name)){
+			if (vmi.getVirtualModel().getName().equals(name)) {
 				return vmi;
 			}
 		}
-		logger.log(Level.WARNING, "No virtual model instance named "+ name+ " found in this project");
+		logger.log(Level.WARNING, "No virtual model instance named " + name + " found in this project");
 		return null;
 	}
-	
-	private FlexoServiceManager getServiceManager(){
+
+	private FlexoServiceManager getServiceManager() {
 		return getProject().getServiceManager();
 	}
-	
-	private ViewPointLibrary getViewPointLibrary(){
+
+	private ViewPointLibrary getViewPointLibrary() {
 		return getServiceManager().getViewPointLibrary();
 	}
-	
-	private ViewLibrary getViewLibrary(){
+
+	private ViewLibrary getViewLibrary() {
 		return getProject().getViewLibrary();
 	}
-	
-	private ViewPoint retrieveViewpoint() throws FlexoException{
+
+	private ViewPoint retrieveViewpoint() throws FlexoException {
 		try {
 			// Retrieve the viewpoint resource from its URI. The viewpoint resource must be in a resource center!
-			ViewPointResource traceAnalsyisViewPointResource = getViewPointLibrary().getViewPointResource(TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
+			ViewPointResource traceAnalsyisViewPointResource = getViewPointLibrary().getViewPointResource(
+					TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
 			return traceAnalsyisViewPointResource.getResourceData(null);
 		} catch (Exception e) {
 			logger.severe("No trace analysis viewpoint found resource centers");

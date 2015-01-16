@@ -24,11 +24,9 @@ import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
-import obp.cdl.AltActivity;
-
+import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.foundation.viewpoint.FlexoRole;
-import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.rm.ResourceLocator;
@@ -39,11 +37,9 @@ import org.openflexo.technologyadapter.cdl.model.CDLActivity;
 import org.openflexo.technologyadapter.cdl.model.CDLAltActivity;
 import org.openflexo.technologyadapter.cdl.model.CDLEvent;
 import org.openflexo.technologyadapter.cdl.model.CDLEventReference;
-import org.openflexo.technologyadapter.cdl.model.CDLObserverState;
 import org.openflexo.technologyadapter.cdl.model.CDLParActivity;
 import org.openflexo.technologyadapter.cdl.model.CDLProcessID;
 import org.openflexo.technologyadapter.cdl.model.CDLProperty;
-import org.openflexo.technologyadapter.cdl.model.CDLSeqActivity;
 import org.openflexo.technologyadapter.cdl.model.CDLUnit;
 import org.openflexo.technologyadapter.cdl.virtualmodel.CDLAltActivityRole;
 import org.openflexo.technologyadapter.cdl.virtualmodel.CDLCommunicationOpEventRole;
@@ -54,13 +50,11 @@ import org.openflexo.technologyadapter.cdl.virtualmodel.CDLPredicateEventRole;
 import org.openflexo.technologyadapter.cdl.virtualmodel.CDLProcessIDRole;
 import org.openflexo.technologyadapter.cdl.virtualmodel.CDLPropertyRole;
 import org.openflexo.technologyadapter.cdl.virtualmodel.CDLSeqActivityRole;
-import org.openflexo.technologyadapter.cdl.virtualmodel.action.AddCDLActivity;
-import org.openflexo.technologyadapter.cdl.virtualmodel.action.AddCDLEvent;
 import org.openflexo.technologyadapter.cdl.virtualmodel.action.AddCDLProcessID;
 import org.openflexo.technologyadapter.cdl.virtualmodel.action.AddCDLProperty;
 import org.openflexo.technologyadapter.cdl.virtualmodel.action.SelectCDLAltActivity;
-import org.openflexo.technologyadapter.cdl.virtualmodel.action.SelectCDLParActivity;
 import org.openflexo.technologyadapter.cdl.virtualmodel.action.SelectCDLEventReference;
+import org.openflexo.technologyadapter.cdl.virtualmodel.action.SelectCDLParActivity;
 import org.openflexo.technologyadapter.cdl.virtualmodel.action.SelectCDLProperties;
 import org.openflexo.view.EmptyPanel;
 import org.openflexo.view.ModuleView;
@@ -104,7 +98,7 @@ public class CDLAdapterController extends TechnologyAdapterController<CDLTechnol
 	}
 
 	@Override
-	public ImageIcon getIconForTechnologyObject(Class<? extends TechnologyObject<CDLTechnologyAdapter>> objectClass) {
+	public ImageIcon getIconForTechnologyObject(Class<? extends TechnologyObject<?>> objectClass) {
 		return CDLIconLibrary.iconForObject(objectClass);
 	}
 
@@ -115,16 +109,16 @@ public class CDLAdapterController extends TechnologyAdapterController<CDLTechnol
 	 * @return
 	 */
 	@Override
-	public ImageIcon getIconForEditionAction(Class<? extends EditionAction<?, ?>> editionActionClass) {
+	public ImageIcon getIconForEditionAction(Class<? extends EditionAction> editionActionClass) {
 		if (AddCDLProcessID.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(getIconForTechnologyObject(CDLProcessID.class), IconLibrary.DUPLICATE);
 		} else if (AddCDLProperty.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(getIconForTechnologyObject(CDLProperty.class), IconLibrary.DUPLICATE);
-		}  else if (SelectCDLAltActivity.class.isAssignableFrom(editionActionClass)) {
+		} else if (SelectCDLAltActivity.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(getIconForTechnologyObject(CDLAltActivity.class), IconLibrary.IMPORT);
-		}  else if (SelectCDLEventReference.class.isAssignableFrom(editionActionClass)) {
+		} else if (SelectCDLEventReference.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(getIconForTechnologyObject(CDLEventReference.class), IconLibrary.IMPORT);
-		}  else if (SelectCDLParActivity.class.isAssignableFrom(editionActionClass)) {
+		} else if (SelectCDLParActivity.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(getIconForTechnologyObject(CDLParActivity.class), IconLibrary.IMPORT);
 		} else if (SelectCDLProperties.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(getIconForTechnologyObject(CDLProperty.class), IconLibrary.IMPORT);

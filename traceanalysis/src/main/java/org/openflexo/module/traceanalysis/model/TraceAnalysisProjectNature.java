@@ -31,9 +31,9 @@ import org.openflexo.fib.controller.FIBDialog;
 import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.nature.ProjectNatureService;
-import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.module.traceanalysis.TraceAnalysisCst;
 import org.openflexo.module.traceanalysis.model.action.CreateTraceAnalysisProject;
@@ -110,29 +110,30 @@ public class TraceAnalysisProjectNature implements ProjectNature<TraceAnalysisPr
 	 */
 	@Override
 	public void givesNature(FlexoProject project, FlexoEditor editor) {
-		
-		ViewPointResource traceAnalysisViewPointResource = editor.getServiceManager().getViewPointLibrary().getViewPointResource(TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
-		
+
+		ViewPointResource traceAnalysisViewPointResource = editor.getServiceManager().getViewPointLibrary()
+				.getViewPointResource(TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
+
 		if (traceAnalysisViewPointResource == null) {
-			logger.log(Level.SEVERE, "No trace analysis viewpoint found in resource centers, not able to apply a trace analysis nature to this projects");
+			logger.log(Level.SEVERE,
+					"No trace analysis viewpoint found in resource centers, not able to apply a trace analysis nature to this projects");
 			return;
 		}
 		TraceAnalysisProject traceAnalysisProject = getProjectWrapper(project);
 		CreateTraceAnalysisProject action = CreateTraceAnalysisProject.actionType.makeNewAction(traceAnalysisProject, null, editor);
-		if(askForProjectResources){
-			FIBComponent fibComponent = FIBLibrary.instance().retrieveFIBComponent(TraceAnalysisCst.CREATE_TRACE_ANALYSIS_PROJECT_DIALOG_FIB);
+		if (askForProjectResources) {
+			FIBComponent fibComponent = FIBLibrary.instance().retrieveFIBComponent(
+					TraceAnalysisCst.CREATE_TRACE_ANALYSIS_PROJECT_DIALOG_FIB);
 			FIBDialog dialog = FIBDialog.instanciateAndShowDialog(fibComponent, action, ProgressWindow.instance(), true,
 					new FlexoFIBController(fibComponent));
-			if(dialog.getStatus().equals(Status.VALIDATED)){
+			if (dialog.getStatus().equals(Status.VALIDATED)) {
 				action.doAction();
 			}
-		}else{
+		} else {
 			action.doAction();
 		}
-		
 
 	}
-
 
 	public TraceAnalysisProject getTraceAnalysisProject(FlexoProject project) {
 		TraceAnalysisProject returned = traceAnalysisProjects.get(project);

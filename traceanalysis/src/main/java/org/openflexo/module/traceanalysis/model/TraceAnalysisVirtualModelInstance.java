@@ -6,9 +6,9 @@ import java.util.List;
 
 import org.openflexo.foundation.DefaultFlexoObject;
 import org.openflexo.foundation.InvalidArgumentException;
-import org.openflexo.foundation.view.FlexoConceptInstance;
-import org.openflexo.foundation.view.VirtualModelInstance;
-import org.openflexo.foundation.viewpoint.FlexoConcept;
+import org.openflexo.foundation.fml.FlexoConcept;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 
 public abstract class TraceAnalysisVirtualModelInstance extends DefaultFlexoObject implements PropertyChangeListener {
 

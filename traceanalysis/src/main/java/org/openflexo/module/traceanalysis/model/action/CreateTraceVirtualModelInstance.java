@@ -27,16 +27,16 @@ import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
+import org.openflexo.foundation.fml.rt.FMLRTModelSlotInstanceConfiguration;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration.DefaultModelSlotInstanceConfigurationOption;
+import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.FreeModelSlotInstanceConfiguration;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
-import org.openflexo.foundation.view.VirtualModelInstance;
-import org.openflexo.foundation.view.action.CreateBasicVirtualModelInstance;
-import org.openflexo.foundation.view.action.ModelSlotInstanceConfiguration.DefaultModelSlotInstanceConfigurationOption;
-import org.openflexo.foundation.view.rm.VirtualModelInstanceResource;
-import org.openflexo.foundation.viewpoint.VirtualModelModelSlotInstanceConfiguration;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.module.traceanalysis.model.TraceAnalysisProject;
 import org.openflexo.module.traceanalysis.model.TraceVirtualModelInstance;
@@ -57,7 +57,8 @@ public class CreateTraceVirtualModelInstance extends FlexoAction<CreateTraceVirt
 		 * Factory method
 		 */
 		@Override
-		public CreateTraceVirtualModelInstance makeNewAction(TraceAnalysisProject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
+		public CreateTraceVirtualModelInstance makeNewAction(TraceAnalysisProject focusedObject, Vector<FlexoObject> globalSelection,
+				FlexoEditor editor) {
 			return new CreateTraceVirtualModelInstance(focusedObject, globalSelection, editor);
 		}
 
@@ -80,40 +81,37 @@ public class CreateTraceVirtualModelInstance extends FlexoAction<CreateTraceVirt
 	CreateTraceVirtualModelInstance(TraceAnalysisProject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
 	}
-	
+
 	protected FlexoResourceCenter<?> resourceCenter;
 	private TechnologyAdapterResource trace;
 	private String errorMessage;
 	private String traceAnalysisName;
 	private String traceAnalysisDescription;
 	private TraceVirtualModelInstance traceVirtualModelInstance;
-	
 
 	@Override
 	protected void doAction(Object context) throws SaveResourceException {
 
 		logger.info("Create trace virtual model instance");
-		
-		
-		
+
 		// Create virtual model for trace
 		VirtualModelInstance traceVM = createTraceVirtualModelInstance();
 		getFocusedObject().getTraceAnalysisView().addToVirtualModelInstances(traceVM);
 		traceVirtualModelInstance = getFocusedObject().getTraceVirtualModelInstance(traceVM);
 	}
-	
-	public TechnologyAdapter getFiacreTechnologyAdapter(){
-		return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FiacreTechnologyAdapter.class);	
+
+	public TechnologyAdapter getFiacreTechnologyAdapter() {
+		return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(FiacreTechnologyAdapter.class);
 	}
-	
-	public TechnologyAdapter getCdlTechnologyAdapter(){
-		return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(CDLTechnologyAdapter.class);	
+
+	public TechnologyAdapter getCdlTechnologyAdapter() {
+		return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(CDLTechnologyAdapter.class);
 	}
-	
-	public TechnologyAdapter getTraceTechnologyAdapter(){
-		return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(TraceTechnologyAdapter.class);	
+
+	public TechnologyAdapter getTraceTechnologyAdapter() {
+		return getServiceManager().getTechnologyAdapterService().getTechnologyAdapter(TraceTechnologyAdapter.class);
 	}
-	
+
 	public TechnologyAdapterResource getTrace() {
 		return trace;
 	}
@@ -121,7 +119,7 @@ public class CreateTraceVirtualModelInstance extends FlexoAction<CreateTraceVirt
 	public void setTrace(TechnologyAdapterResource trace) {
 		this.trace = trace;
 	}
-	
+
 	public String getTraceAnalysisName() {
 		return traceAnalysisName;
 	}
@@ -170,26 +168,34 @@ public class CreateTraceVirtualModelInstance extends FlexoAction<CreateTraceVirt
 		this.traceVirtualModelInstance = traceVirtualModelInstance;
 	}
 
-	private VirtualModelInstance createTraceVirtualModelInstance(){
-		CreateBasicVirtualModelInstance createTrace = CreateBasicVirtualModelInstance.actionType.makeNewEmbeddedAction(getFocusedObject().getTraceAnalysisView(), null, this);
+	private VirtualModelInstance createTraceVirtualModelInstance() {
+		CreateBasicVirtualModelInstance createTrace = CreateBasicVirtualModelInstance.actionType.makeNewEmbeddedAction(getFocusedObject()
+				.getTraceAnalysisView(), null, this);
 		createTrace.setNewVirtualModelInstanceName(getTraceAnalysisName());
 		createTrace.setNewVirtualModelInstanceTitle(getTraceAnalysisName());
 		createTrace.setVirtualModel(getFocusedObject().getTraceVirtualModel());
-		
-		VirtualModelModelSlotInstanceConfiguration contConf = (VirtualModelModelSlotInstanceConfiguration) createTrace.getModelSlotInstanceConfiguration(getFocusedObject().getTraceVirtualModel().getModelSlot("contextVirtualModel"));
+
+		FMLRTModelSlotInstanceConfiguration contConf = (FMLRTModelSlotInstanceConfiguration) createTrace
+				.getModelSlotInstanceConfiguration(getFocusedObject().getTraceVirtualModel().getModelSlot("contextVirtualModel"));
 		contConf.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingVirtualModel);
-		contConf.setAddressedVirtualModelInstanceResource((VirtualModelInstanceResource)getFocusedObject().getContextVirtualModelInstance().getVirtualModelInstance().getResource());
-		VirtualModelModelSlotInstanceConfiguration sysConf = (VirtualModelModelSlotInstanceConfiguration) createTrace.getModelSlotInstanceConfiguration(getFocusedObject().getTraceVirtualModel().getModelSlot("systemVirtualModel"));
+		contConf.setAddressedVirtualModelInstanceResource((VirtualModelInstanceResource) getFocusedObject()
+				.getContextVirtualModelInstance().getVirtualModelInstance().getResource());
+		FMLRTModelSlotInstanceConfiguration sysConf = (FMLRTModelSlotInstanceConfiguration) createTrace
+				.getModelSlotInstanceConfiguration(getFocusedObject().getTraceVirtualModel().getModelSlot("systemVirtualModel"));
 		sysConf.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingVirtualModel);
-		sysConf.setAddressedVirtualModelInstanceResource((VirtualModelInstanceResource)getFocusedObject().getSystemVirtualModelInstance().getVirtualModelInstance().getResource());
-		VirtualModelModelSlotInstanceConfiguration obsConf = (VirtualModelModelSlotInstanceConfiguration) createTrace.getModelSlotInstanceConfiguration(getFocusedObject().getTraceVirtualModel().getModelSlot("observerVirtualModel"));
+		sysConf.setAddressedVirtualModelInstanceResource((VirtualModelInstanceResource) getFocusedObject().getSystemVirtualModelInstance()
+				.getVirtualModelInstance().getResource());
+		FMLRTModelSlotInstanceConfiguration obsConf = (FMLRTModelSlotInstanceConfiguration) createTrace
+				.getModelSlotInstanceConfiguration(getFocusedObject().getTraceVirtualModel().getModelSlot("observerVirtualModel"));
 		obsConf.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingVirtualModel);
-		obsConf.setAddressedVirtualModelInstanceResource((VirtualModelInstanceResource)getFocusedObject().getObserverVirtualModelInstance().getVirtualModelInstance().getResource());
-		FreeModelSlotInstanceConfiguration<?, ?> traceConf = (FreeModelSlotInstanceConfiguration<?, ?>) createTrace.getModelSlotInstanceConfiguration(getFocusedObject().getTraceVirtualModel().getModelSlots(TraceModelSlot.class).get(0));
+		obsConf.setAddressedVirtualModelInstanceResource((VirtualModelInstanceResource) getFocusedObject()
+				.getObserverVirtualModelInstance().getVirtualModelInstance().getResource());
+		FreeModelSlotInstanceConfiguration<?, ?> traceConf = (FreeModelSlotInstanceConfiguration<?, ?>) createTrace
+				.getModelSlotInstanceConfiguration(getFocusedObject().getTraceVirtualModel().getModelSlots(TraceModelSlot.class).get(0));
 		traceConf.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);
 		traceConf.setResource(getTrace());
 		createTrace.doAction();
 		return createTrace.getNewVirtualModelInstance();
 	}
-	
+
 }

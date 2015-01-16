@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.view.action.FlexoBehaviourAction;
-import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
-import org.openflexo.foundation.viewpoint.editionaction.FetchRequest;
+import org.openflexo.foundation.fml.annotations.FIBPanel;
+import org.openflexo.foundation.fml.editionaction.FetchRequest;
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -22,7 +22,8 @@ import org.openflexo.technologyadapter.cdl.model.CDLUnit;
 @XMLElement
 public interface SelectCDLParActivity extends FetchRequest<CDLModelSlot, CDLParActivity> {
 
-	public static abstract class SelectCDLParActivityImpl extends FetchRequestImpl<CDLModelSlot, CDLParActivity> implements SelectCDLParActivity {
+	public static abstract class SelectCDLParActivityImpl extends FetchRequestImpl<CDLModelSlot, CDLParActivity> implements
+			SelectCDLParActivity {
 
 		private static final Logger logger = Logger.getLogger(SelectCDLParActivity.class.getPackage().getName());
 
@@ -37,7 +38,7 @@ public interface SelectCDLParActivity extends FetchRequest<CDLModelSlot, CDLParA
 		}
 
 		@Override
-		public List<CDLParActivity> performAction(FlexoBehaviourAction action) {
+		public List<CDLParActivity> execute(FlexoBehaviourAction action) {
 
 			if (getModelSlotInstance(action) == null) {
 				logger.warning("Could not access model slot instance. Abort.");
@@ -51,12 +52,12 @@ public interface SelectCDLParActivity extends FetchRequest<CDLModelSlot, CDLParA
 			CDLUnit cdlUnit = (CDLUnit) getModelSlotInstance(action).getAccessedResourceData();
 
 			List<CDLParActivity> selectedCDLParActivities = new ArrayList<CDLParActivity>();
-			for(CDLActivity activity :cdlUnit.getCDLActivities()){
-				if(activity instanceof CDLParActivity){
+			for (CDLActivity activity : cdlUnit.getCDLActivities()) {
+				if (activity instanceof CDLParActivity) {
 					selectedCDLParActivities.add((CDLParActivity) activity);
 				}
 			}
-			
+
 			List<CDLParActivity> returned = filterWithConditions(selectedCDLParActivities, action);
 
 			return returned;

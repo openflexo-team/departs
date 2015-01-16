@@ -24,9 +24,9 @@ import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
+import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.foundation.viewpoint.FlexoRole;
-import org.openflexo.foundation.viewpoint.editionaction.EditionAction;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.rm.ResourceLocator;
@@ -91,7 +91,7 @@ public class FiacreAdapterController extends TechnologyAdapterController<FiacreT
 	}
 
 	@Override
-	public ImageIcon getIconForTechnologyObject(Class<? extends TechnologyObject<FiacreTechnologyAdapter>> objectClass) {
+	public ImageIcon getIconForTechnologyObject(Class<? extends TechnologyObject<?>> objectClass) {
 		return FiacreIconLibrary.iconForObject(objectClass);
 	}
 
@@ -111,7 +111,7 @@ public class FiacreAdapterController extends TechnologyAdapterController<FiacreT
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Return icon representing supplied edition action
 	 * 
@@ -119,7 +119,7 @@ public class FiacreAdapterController extends TechnologyAdapterController<FiacreT
 	 * @return
 	 */
 	@Override
-	public ImageIcon getIconForEditionAction(Class<? extends EditionAction<?, ?>> editionActionClass) {
+	public ImageIcon getIconForEditionAction(Class<? extends EditionAction> editionActionClass) {
 		if (AddFiacreProcess.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(getIconForTechnologyObject(FiacreProcess.class), IconLibrary.DUPLICATE);
 		} else if (AddFiacreComponent.class.isAssignableFrom(editionActionClass)) {

@@ -9,8 +9,8 @@ import org.openflexo.antar.binding.BindingFactory;
 import org.openflexo.antar.binding.BindingPathElement;
 import org.openflexo.antar.binding.FunctionPathElement;
 import org.openflexo.antar.binding.SimplePathElement;
+import org.openflexo.foundation.fml.TechnologySpecificCustomType;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterBindingFactory;
-import org.openflexo.foundation.viewpoint.TechnologySpecificCustomType;
 import org.openflexo.technologyadapter.trace.model.OBPTrace;
 
 /**

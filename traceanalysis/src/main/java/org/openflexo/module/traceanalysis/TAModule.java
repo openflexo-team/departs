@@ -27,8 +27,8 @@ import org.openflexo.ApplicationContext;
 import org.openflexo.Flexo;
 import org.openflexo.FlexoMainLocalizer;
 import org.openflexo.components.ProgressWindow;
+import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.resource.JarResourceCenter;
-import org.openflexo.foundation.viewpoint.rm.ViewPointResource;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.module.FlexoModule;
 import org.openflexo.module.Module;
@@ -59,12 +59,13 @@ public class TAModule extends FlexoModule<TAModule> {
 				Flexo.isDev);
 		ViewPointResource traceAnalsyisViewPointResource = getApplicationContext().getViewPointLibrary().getViewPointResource(
 				TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
-		
-		//JarResourceCenter.addAllJarFromClassPathResourceCenters(getApplicationContext().getResourceCenterService());
-		
+
+		// JarResourceCenter.addAllJarFromClassPathResourceCenters(getApplicationContext().getResourceCenterService());
+
 		if (traceAnalsyisViewPointResource == null) {
 			logger.log(Level.WARNING, "No Viewpoint Resource Found, retrieve from Jar file");
-			JarResourceCenter.addNamedJarFromClassPathResourceCenters(getApplicationContext().getResourceCenterService(), "fr\\ensta\\departs\\1.1\\departs-1.1");
+			JarResourceCenter.addNamedJarFromClassPathResourceCenters(getApplicationContext().getResourceCenterService(),
+					"fr\\ensta\\departs\\1.1\\departs-1.1");
 			traceAnalsyisViewPointResource = getApplicationContext().getViewPointLibrary().getViewPointResource(
 					TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
 		}

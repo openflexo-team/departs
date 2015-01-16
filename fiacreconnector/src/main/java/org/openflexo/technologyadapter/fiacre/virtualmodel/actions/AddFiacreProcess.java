@@ -3,10 +3,10 @@ package org.openflexo.technologyadapter.fiacre.virtualmodel.actions;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.view.FreeModelSlotInstance;
-import org.openflexo.foundation.view.action.FlexoBehaviourAction;
-import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
-import org.openflexo.foundation.viewpoint.editionaction.AssignableAction;
+import org.openflexo.foundation.fml.annotations.FIBPanel;
+import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
+import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -18,9 +18,10 @@ import org.openflexo.technologyadapter.fiacre.model.FiacreProgram;
 @ModelEntity
 @ImplementationClass(AddFiacreProcess.AddFiacreProcessImpl.class)
 @XMLElement
-public interface AddFiacreProcess extends AssignableAction<FiacreProgramModelSlot, FiacreProcess> {
+public interface AddFiacreProcess extends TechnologySpecificAction<FiacreProgramModelSlot, FiacreProcess> {
 
-	public static abstract class AddFiacreProcessImpl extends AssignableActionImpl<FiacreProgramModelSlot, FiacreProcess> implements AddFiacreProcess {
+	public static abstract class AddFiacreProcessImpl extends TechnologySpecificActionImpl<FiacreProgramModelSlot, FiacreProcess> implements
+			AddFiacreProcess {
 
 		private static final Logger logger = Logger.getLogger(AddFiacreProcess.class.getPackage().getName());
 
@@ -34,7 +35,7 @@ public interface AddFiacreProcess extends AssignableAction<FiacreProgramModelSlo
 		}
 
 		@Override
-		public FiacreProcess performAction(FlexoBehaviourAction action) {
+		public FiacreProcess execute(FlexoBehaviourAction action) {
 
 			FiacreProcess fiacreProcess = null;
 

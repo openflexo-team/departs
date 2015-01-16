@@ -3,10 +3,10 @@ package org.openflexo.technologyadapter.cdl.virtualmodel.action;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.view.FreeModelSlotInstance;
-import org.openflexo.foundation.view.action.FlexoBehaviourAction;
-import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
-import org.openflexo.foundation.viewpoint.editionaction.AssignableAction;
+import org.openflexo.foundation.fml.annotations.FIBPanel;
+import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
+import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -18,9 +18,10 @@ import org.openflexo.technologyadapter.cdl.model.CDLUnit;
 @ModelEntity
 @ImplementationClass(AddCDLActivity.AddCDLActivityImpl.class)
 @XMLElement
-public interface AddCDLActivity extends AssignableAction<CDLModelSlot, CDLActivity> {
+public interface AddCDLActivity extends TechnologySpecificAction<CDLModelSlot, CDLActivity> {
 
-	public static abstract class AddCDLActivityImpl extends AssignableActionImpl<CDLModelSlot, CDLActivity> implements AddCDLActivity {
+	public static abstract class AddCDLActivityImpl extends TechnologySpecificActionImpl<CDLModelSlot, CDLActivity> implements
+			AddCDLActivity {
 
 		private static final Logger logger = Logger.getLogger(AddCDLActivity.class.getPackage().getName());
 
@@ -34,7 +35,7 @@ public interface AddCDLActivity extends AssignableAction<CDLModelSlot, CDLActivi
 		}
 
 		@Override
-		public CDLActivity performAction(FlexoBehaviourAction action) {
+		public CDLActivity execute(FlexoBehaviourAction action) {
 
 			CDLActivity cdlActivity = null;
 

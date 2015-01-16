@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.view.action.FlexoBehaviourAction;
-import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
-import org.openflexo.foundation.viewpoint.editionaction.FetchRequest;
+import org.openflexo.foundation.fml.annotations.FIBPanel;
+import org.openflexo.foundation.fml.editionaction.FetchRequest;
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -21,7 +21,8 @@ import org.openflexo.technologyadapter.fiacre.model.FiacreProgram;
 @XMLElement
 public interface SelectFiacreProcess extends FetchRequest<FiacreProgramModelSlot, FiacreProcess> {
 
-	public static abstract class SelectFiacreProcessImpl extends FetchRequestImpl<FiacreProgramModelSlot, FiacreProcess> implements SelectFiacreProcess {
+	public static abstract class SelectFiacreProcessImpl extends FetchRequestImpl<FiacreProgramModelSlot, FiacreProcess> implements
+			SelectFiacreProcess {
 
 		private static final Logger logger = Logger.getLogger(SelectFiacreProcess.class.getPackage().getName());
 
@@ -36,7 +37,7 @@ public interface SelectFiacreProcess extends FetchRequest<FiacreProgramModelSlot
 		}
 
 		@Override
-		public List<FiacreProcess> performAction(FlexoBehaviourAction action) {
+		public List<FiacreProcess> execute(FlexoBehaviourAction action) {
 
 			if (getModelSlotInstance(action) == null) {
 				logger.warning("Could not access model slot instance. Abort.");

@@ -20,8 +20,9 @@
 
 package org.openflexo.technologyadapter.cdl;
 
+import org.openflexo.foundation.fml.rt.action.CreateVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.technologyadapter.FreeModelSlotInstanceConfiguration;
-import org.openflexo.foundation.view.action.CreateVirtualModelInstance;
 import org.openflexo.technologyadapter.cdl.model.CDLUnit;
 
 public class CDLModelSlotInstanceConfiguration extends FreeModelSlotInstanceConfiguration<CDLUnit, CDLModelSlot> {
@@ -31,7 +32,7 @@ public class CDLModelSlotInstanceConfiguration extends FreeModelSlotInstanceConf
 	}
 
 	@Override
-	public void setOption(org.openflexo.foundation.view.action.ModelSlotInstanceConfiguration.ModelSlotInstanceConfigurationOption option) {
+	public void setOption(ModelSlotInstanceConfiguration.ModelSlotInstanceConfigurationOption option) {
 		super.setOption(option);
 		// TODO : add specific options here
 	}

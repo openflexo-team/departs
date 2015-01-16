@@ -9,9 +9,9 @@ import java.util.logging.Logger;
 import org.openflexo.antar.binding.DataBinding;
 import org.openflexo.antar.expr.NullReferenceException;
 import org.openflexo.antar.expr.TypeMismatchException;
-import org.openflexo.foundation.view.action.FlexoBehaviourAction;
-import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
-import org.openflexo.foundation.viewpoint.editionaction.FetchRequest;
+import org.openflexo.foundation.fml.annotations.FIBPanel;
+import org.openflexo.foundation.fml.editionaction.FetchRequest;
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -38,13 +38,14 @@ public interface SelectFiacreStates extends FetchRequest<FiacreProgramModelSlot,
 
 	@Setter(FIACRE_PROCESS_KEY)
 	public void setFiacreProcess(DataBinding<FiacreProcess> fiacreProcess);
-	
-	public static abstract class SelectFiacreStateImpl extends FetchRequestImpl<FiacreProgramModelSlot, FiacreState> implements SelectFiacreStates {
+
+	public static abstract class SelectFiacreStateImpl extends FetchRequestImpl<FiacreProgramModelSlot, FiacreState> implements
+			SelectFiacreStates {
 
 		private static final Logger logger = Logger.getLogger(SelectFiacreStates.class.getPackage().getName());
 
 		private DataBinding<FiacreProcess> fiacreProcess;
-		
+
 		public SelectFiacreStateImpl() {
 			super();
 			// TODO Auto-generated constructor stub
@@ -56,7 +57,7 @@ public interface SelectFiacreStates extends FetchRequest<FiacreProgramModelSlot,
 		}
 
 		@Override
-		public List<FiacreState> performAction(FlexoBehaviourAction action) {
+		public List<FiacreState> execute(FlexoBehaviourAction action) {
 
 			if (getModelSlotInstance(action) == null) {
 				logger.warning("Could not access model slot instance. Abort.");
@@ -86,7 +87,7 @@ public interface SelectFiacreStates extends FetchRequest<FiacreProgramModelSlot,
 
 			return returned;
 		}
-		
+
 		@Override
 		public DataBinding<FiacreProcess> getFiacreProcess() {
 			if (fiacreProcess == null) {

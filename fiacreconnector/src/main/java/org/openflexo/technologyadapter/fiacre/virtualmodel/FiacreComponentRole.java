@@ -22,12 +22,11 @@ package org.openflexo.technologyadapter.fiacre.virtualmodel;
 
 import java.lang.reflect.Type;
 
-import org.openflexo.foundation.view.ActorReference;
-import org.openflexo.foundation.view.FlexoConceptInstance;
-import org.openflexo.foundation.view.ModelObjectActorReference;
-import org.openflexo.foundation.view.VirtualModelInstanceModelFactory;
-import org.openflexo.foundation.viewpoint.FlexoRole;
-import org.openflexo.foundation.viewpoint.FlexoRole.RoleCloningStrategy;
+import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.rt.ActorReference;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.ModelObjectActorReference;
+import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -55,7 +54,7 @@ public interface FiacreComponentRole extends FlexoRole<FiacreComponent> {
 		public RoleCloningStrategy defaultCloningStrategy() {
 			return RoleCloningStrategy.Clone;
 		}
-		
+
 		@Override
 		public String getPreciseType() {
 			return FiacreProcess.class.getSimpleName();
@@ -70,6 +69,6 @@ public interface FiacreComponentRole extends FlexoRole<FiacreComponent> {
 			returned.setModellingElement(object);
 			return returned;
 		}
-		
+
 	}
 }

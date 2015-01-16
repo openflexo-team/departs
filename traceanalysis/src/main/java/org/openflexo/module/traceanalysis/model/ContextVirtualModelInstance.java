@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openflexo.foundation.InvalidArgumentException;
-import org.openflexo.foundation.view.FlexoConceptInstance;
-import org.openflexo.foundation.view.VirtualModelInstance;
+import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
+import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.technologyadapter.cdl.model.CDLParActivity;
 
 /**

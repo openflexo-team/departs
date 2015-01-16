@@ -23,11 +23,11 @@ package org.openflexo.technologyadapter.trace;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
+import org.openflexo.foundation.fml.rt.action.CreateVirtualModelInstance;
 import org.openflexo.foundation.ontology.IFlexoOntologyObject;
 import org.openflexo.foundation.technologyadapter.FreeModelSlot;
-import org.openflexo.foundation.view.FreeModelSlotInstance;
-import org.openflexo.foundation.view.action.CreateVirtualModelInstance;
-import org.openflexo.foundation.viewpoint.FlexoRole;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -45,7 +45,7 @@ import org.openflexo.technologyadapter.trace.model.OBPTrace;
 public interface TraceModelSlot extends FreeModelSlot<OBPTrace> {
 
 	@Override
-	public TraceTechnologyAdapter getTechnologyAdapter();
+	public TraceTechnologyAdapter getModelSlotTechnologyAdapter();
 
 	public static abstract class TraceModelSlotImpl extends FreeModelSlotImpl<OBPTrace> implements TraceModelSlot {
 
@@ -88,8 +88,8 @@ public interface TraceModelSlot extends FreeModelSlot<OBPTrace> {
 		}
 
 		@Override
-		public TraceTechnologyAdapter getTechnologyAdapter() {
-			return (TraceTechnologyAdapter) super.getTechnologyAdapter();
+		public TraceTechnologyAdapter getModelSlotTechnologyAdapter() {
+			return (TraceTechnologyAdapter) super.getModelSlotTechnologyAdapter();
 		}
 
 	}

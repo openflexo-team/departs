@@ -20,8 +20,9 @@
 
 package org.openflexo.technologyadapter.fiacre;
 
+import org.openflexo.foundation.fml.rt.action.CreateVirtualModelInstance;
+import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.technologyadapter.FreeModelSlotInstanceConfiguration;
-import org.openflexo.foundation.view.action.CreateVirtualModelInstance;
 import org.openflexo.technologyadapter.fiacre.model.FiacreProgram;
 
 public class FiacreProgramSlotInstanceConfiguration extends FreeModelSlotInstanceConfiguration<FiacreProgram, FiacreProgramModelSlot> {
@@ -31,7 +32,7 @@ public class FiacreProgramSlotInstanceConfiguration extends FreeModelSlotInstanc
 	}
 
 	@Override
-	public void setOption(org.openflexo.foundation.view.action.ModelSlotInstanceConfiguration.ModelSlotInstanceConfigurationOption option) {
+	public void setOption(ModelSlotInstanceConfiguration.ModelSlotInstanceConfigurationOption option) {
 		super.setOption(option);
 		// TODO : add specific options here
 	}

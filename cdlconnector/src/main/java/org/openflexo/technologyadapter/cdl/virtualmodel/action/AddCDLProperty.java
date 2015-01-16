@@ -3,10 +3,11 @@ package org.openflexo.technologyadapter.cdl.virtualmodel.action;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.view.FreeModelSlotInstance;
-import org.openflexo.foundation.view.action.FlexoBehaviourAction;
-import org.openflexo.foundation.viewpoint.annotations.FIBPanel;
-import org.openflexo.foundation.viewpoint.editionaction.AssignableAction;
+import org.openflexo.foundation.fml.annotations.FIBPanel;
+import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
+import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction.TechnologySpecificActionImpl;
+import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
+import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -18,9 +19,10 @@ import org.openflexo.technologyadapter.cdl.model.CDLUnit;
 @ModelEntity
 @ImplementationClass(AddCDLProperty.AddCDLPropertyImpl.class)
 @XMLElement
-public interface AddCDLProperty extends AssignableAction<CDLModelSlot, CDLProperty> {
+public interface AddCDLProperty extends TechnologySpecificAction<CDLModelSlot, CDLProperty> {
 
-	public static abstract class AddCDLPropertyImpl extends AssignableActionImpl<CDLModelSlot, CDLProperty> implements AddCDLProperty {
+	public static abstract class AddCDLPropertyImpl extends TechnologySpecificActionImpl<CDLModelSlot, CDLProperty> implements
+			AddCDLProperty {
 
 		private static final Logger logger = Logger.getLogger(AddCDLProperty.class.getPackage().getName());
 
@@ -34,7 +36,7 @@ public interface AddCDLProperty extends AssignableAction<CDLModelSlot, CDLProper
 		}
 
 		@Override
-		public CDLProperty performAction(FlexoBehaviourAction action) {
+		public CDLProperty execute(FlexoBehaviourAction action) {
 
 			CDLProperty cdlProperty = null;
 

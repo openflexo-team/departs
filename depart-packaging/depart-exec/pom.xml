@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.openflexo.departpackaging</groupId>
         <artifactId>depart-packaging</artifactId>
-        <version>1.7.0-SNAPSHOT</version>
+        <version>1.7.1-SNAPSHOT</version>
     </parent>
     <artifactId>depart-exec</artifactId>
     <packaging>pom</packaging>
