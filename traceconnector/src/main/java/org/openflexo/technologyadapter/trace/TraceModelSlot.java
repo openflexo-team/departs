@@ -24,6 +24,7 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FlexoRole;
+import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
 import org.openflexo.foundation.fml.rt.action.CreateVirtualModelInstance;
 import org.openflexo.foundation.ontology.IFlexoOntologyObject;
@@ -42,6 +43,7 @@ import org.openflexo.technologyadapter.trace.model.OBPTrace;
 @ModelEntity
 @ImplementationClass(TraceModelSlot.TraceModelSlotImpl.class)
 @XMLElement
+@FML("TraceModelSlot")
 public interface TraceModelSlot extends FreeModelSlot<OBPTrace> {
 
 	@Override

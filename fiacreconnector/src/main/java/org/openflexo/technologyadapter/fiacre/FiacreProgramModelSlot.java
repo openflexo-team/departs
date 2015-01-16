@@ -24,11 +24,8 @@ import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.FlexoRole;
-import org.openflexo.foundation.fml.annotations.DeclareEditionAction;
 import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
-import org.openflexo.foundation.fml.annotations.DeclareFetchRequest;
 import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
-import org.openflexo.foundation.fml.annotations.DeclareFlexoRole;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
 import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
 import org.openflexo.foundation.fml.rt.action.CreateVirtualModelInstance;
@@ -37,18 +34,18 @@ import org.openflexo.foundation.technologyadapter.FreeModelSlot;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.technologyadapter.fiacre.fml.FiacreComponentRole;
+import org.openflexo.technologyadapter.fiacre.fml.FiacreFifoRole;
+import org.openflexo.technologyadapter.fiacre.fml.FiacreProcessRole;
+import org.openflexo.technologyadapter.fiacre.fml.FiacreStateRole;
+import org.openflexo.technologyadapter.fiacre.fml.actions.AddFiacreComponent;
+import org.openflexo.technologyadapter.fiacre.fml.actions.AddFiacreFifo;
+import org.openflexo.technologyadapter.fiacre.fml.actions.AddFiacreProcess;
+import org.openflexo.technologyadapter.fiacre.fml.actions.AddFiacreState;
+import org.openflexo.technologyadapter.fiacre.fml.actions.SelectFiacreComponents;
+import org.openflexo.technologyadapter.fiacre.fml.actions.SelectFiacreProcess;
+import org.openflexo.technologyadapter.fiacre.fml.actions.SelectFiacreStates;
 import org.openflexo.technologyadapter.fiacre.model.FiacreProgram;
-import org.openflexo.technologyadapter.fiacre.virtualmodel.FiacreComponentRole;
-import org.openflexo.technologyadapter.fiacre.virtualmodel.FiacreFifoRole;
-import org.openflexo.technologyadapter.fiacre.virtualmodel.FiacreProcessRole;
-import org.openflexo.technologyadapter.fiacre.virtualmodel.FiacreStateRole;
-import org.openflexo.technologyadapter.fiacre.virtualmodel.actions.AddFiacreComponent;
-import org.openflexo.technologyadapter.fiacre.virtualmodel.actions.AddFiacreFifo;
-import org.openflexo.technologyadapter.fiacre.virtualmodel.actions.AddFiacreProcess;
-import org.openflexo.technologyadapter.fiacre.virtualmodel.actions.AddFiacreState;
-import org.openflexo.technologyadapter.fiacre.virtualmodel.actions.SelectFiacreComponents;
-import org.openflexo.technologyadapter.fiacre.virtualmodel.actions.SelectFiacreProcess;
-import org.openflexo.technologyadapter.fiacre.virtualmodel.actions.SelectFiacreStates;
 
 /**
  * Implementation of the ModelSlot class for the Fiacre technology adapter<br>
@@ -59,20 +56,9 @@ import org.openflexo.technologyadapter.fiacre.virtualmodel.actions.SelectFiacreS
 @ModelEntity
 @ImplementationClass(FiacreProgramModelSlot.FiacreProgramSlotImpl.class)
 @XMLElement
-@DeclareFlexoRoles({ // All pattern roles available through this model slot
-@DeclareFlexoRole(FML = "FiacreProcess", flexoRoleClass = FiacreProcessRole.class),
-		@DeclareFlexoRole(FML = "FiacreComponent", flexoRoleClass = FiacreComponentRole.class),
-		@DeclareFlexoRole(FML = "FiacreState", flexoRoleClass = FiacreStateRole.class),
-		@DeclareFlexoRole(FML = "FiacreFifo", flexoRoleClass = FiacreFifoRole.class) })
-@DeclareEditionActions({ // All edition actions available through this modelslot
-@DeclareEditionAction(FML = "AddFiacreProcess", editionActionClass = AddFiacreProcess.class),
-		@DeclareEditionAction(FML = "AddFiacreComponent", editionActionClass = AddFiacreComponent.class),
-		@DeclareEditionAction(FML = "AddFiacreState", editionActionClass = AddFiacreState.class),
-		@DeclareEditionAction(FML = "AddFiacreFifo", editionActionClass = AddFiacreFifo.class) })
-@DeclareFetchRequests({ // All requests available through this model slot
-		@DeclareFetchRequest(FML = "SelectFiacreProcess", fetchRequestClass = SelectFiacreProcess.class), // Sheet
-		@DeclareFetchRequest(FML = "SelectFiacreComponents", fetchRequestClass = SelectFiacreComponents.class),
-		@DeclareFetchRequest(FML = "SelectFiacreStates", fetchRequestClass = SelectFiacreStates.class) })
+@DeclareFlexoRoles({ FiacreProcessRole.class, FiacreComponentRole.class, FiacreStateRole.class, FiacreFifoRole.class })
+@DeclareEditionActions({ AddFiacreProcess.class, AddFiacreComponent.class, AddFiacreState.class, AddFiacreFifo.class })
+@DeclareFetchRequests({ SelectFiacreProcess.class, SelectFiacreComponents.class, SelectFiacreStates.class })
 public interface FiacreProgramModelSlot extends FreeModelSlot<FiacreProgram> {
 
 	@Override

@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.annotations.DeclareModelSlot;
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
 import org.openflexo.foundation.fml.annotations.DeclareRepositoryType;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -35,10 +34,10 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterBindingFactory;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterInitializationException;
 import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
+import org.openflexo.technologyadapter.cdl.fml.bindings.CDLBindingFactory;
 import org.openflexo.technologyadapter.cdl.rm.CDLUnitRepository;
 import org.openflexo.technologyadapter.cdl.rm.CDLUnitResource;
 import org.openflexo.technologyadapter.cdl.rm.CDLUnitResourceImpl;
-import org.openflexo.technologyadapter.cdl.virtualmodel.bindings.CDLBindingFactory;
 
 /**
  * This class defines and implements the CDL technology adapter
@@ -47,8 +46,7 @@ import org.openflexo.technologyadapter.cdl.virtualmodel.bindings.CDLBindingFacto
  * 
  */
 
-@DeclareModelSlots({ // ModelSlot(s) declaration
-@DeclareModelSlot(FML = "CDLTypeAwareModelSlot", modelSlotClass = CDLModelSlot.class), })
+@DeclareModelSlots({ CDLModelSlot.class })
 @DeclareRepositoryType({ CDLUnitRepository.class })
 public class CDLTechnologyAdapter extends TechnologyAdapter {
 	private static String CDL_FILE_EXTENSION = ".cdl";

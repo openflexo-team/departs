@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.annotations.DeclareModelSlot;
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
 import org.openflexo.foundation.fml.annotations.DeclareRepositoryType;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -35,10 +34,10 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterBindingFactory;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterInitializationException;
 import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
+import org.openflexo.technologyadapter.fiacre.fml.bindings.FiacreBindingFactory;
 import org.openflexo.technologyadapter.fiacre.rm.FiacreProgramRepository;
 import org.openflexo.technologyadapter.fiacre.rm.FiacreProgramResource;
 import org.openflexo.technologyadapter.fiacre.rm.FiacreProgramResourceImpl;
-import org.openflexo.technologyadapter.fiacre.virtualmodel.bindings.FiacreBindingFactory;
 
 /**
  * This class defines and implements the Fiacre technology adapter
@@ -47,8 +46,7 @@ import org.openflexo.technologyadapter.fiacre.virtualmodel.bindings.FiacreBindin
  * 
  */
 
-@DeclareModelSlots({ // ModelSlot(s) declaration
-@DeclareModelSlot(FML = "FiacreTypeAwareModelSlot", modelSlotClass = FiacreProgramModelSlot.class), })
+@DeclareModelSlots({ FiacreProgramModelSlot.class })
 @DeclareRepositoryType({ FiacreProgramRepository.class })
 public class FiacreTechnologyAdapter extends TechnologyAdapter {
 	private static String FIACRE_FILE_EXTENSION = ".fcr";

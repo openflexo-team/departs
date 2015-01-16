@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.fml.annotations.DeclareModelSlot;
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
 import org.openflexo.foundation.fml.annotations.DeclareRepositoryType;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -47,8 +46,7 @@ import org.openflexo.technologyadapter.trace.virtualmodel.bindings.TraceBindingF
  * 
  */
 
-@DeclareModelSlots({ // ModelSlot(s) declaration
-@DeclareModelSlot(FML = "TraceModelSlot", modelSlotClass = TraceModelSlot.class), })
+@DeclareModelSlots({ TraceModelSlot.class })
 @DeclareRepositoryType({ TraceOBPRepository.class })
 public class TraceTechnologyAdapter extends TechnologyAdapter {
 	private static String TRACE_FILE_EXTENSION = ".trace";
