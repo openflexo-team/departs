@@ -57,7 +57,7 @@ public interface CDLGammaEventRole extends FlexoRole<CDLGammaEvent> {
 		}
 
 		@Override
-		public String getPreciseType() {
+		public String getTypeDescription() {
 			return CDLGammaEvent.class.getSimpleName();
 		}
 

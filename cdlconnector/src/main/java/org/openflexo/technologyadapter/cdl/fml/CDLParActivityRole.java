@@ -57,7 +57,7 @@ public interface CDLParActivityRole extends FlexoRole<CDLParActivity> {
 		}
 
 		@Override
-		public String getPreciseType() {
+		public String getTypeDescription() {
 			return CDLParActivity.class.getSimpleName();
 		}
 

@@ -57,7 +57,7 @@ public interface CDLPropertyRole extends FlexoRole<CDLProperty> {
 		}
 
 		@Override
-		public String getPreciseType() {
+		public String getTypeDescription() {
 			return CDLProperty.class.getSimpleName();
 		}
 

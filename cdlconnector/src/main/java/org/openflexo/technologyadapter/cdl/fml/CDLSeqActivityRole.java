@@ -47,7 +47,7 @@ public interface CDLSeqActivityRole extends FlexoRole<CDLSeqActivity> {
 		}
 
 		@Override
-		public String getPreciseType() {
+		public String getTypeDescription() {
 			return CDLSeqActivity.class.getSimpleName();
 		}
 

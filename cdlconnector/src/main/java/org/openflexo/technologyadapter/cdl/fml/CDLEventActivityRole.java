@@ -57,7 +57,7 @@ public interface CDLEventActivityRole extends FlexoRole<CDLEventReference> {
 		}
 
 		@Override
-		public String getPreciseType() {
+		public String getTypeDescription() {
 			return CDLEventReference.class.getSimpleName();
 		}
 

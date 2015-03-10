@@ -57,7 +57,7 @@ public interface CDLProcessIDRole extends FlexoRole<CDLProcessID> {
 		}
 
 		@Override
-		public String getPreciseType() {
+		public String getTypeDescription() {
 			return CDLProcessID.class.getSimpleName();
 		}
 

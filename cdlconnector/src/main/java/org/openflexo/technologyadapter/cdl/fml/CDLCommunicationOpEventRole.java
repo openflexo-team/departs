@@ -58,7 +58,7 @@ public interface CDLCommunicationOpEventRole extends FlexoRole<CDLCommunicationO
 		}
 
 		@Override
-		public String getPreciseType() {
+		public String getTypeDescription() {
 			return CDLCommunicationOPEvent.class.getSimpleName();
 		}
 

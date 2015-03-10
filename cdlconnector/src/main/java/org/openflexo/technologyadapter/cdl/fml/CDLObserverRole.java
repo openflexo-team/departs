@@ -57,7 +57,7 @@ public interface CDLObserverRole extends FlexoRole<CDLObserver> {
 		}
 
 		@Override
-		public String getPreciseType() {
+		public String getTypeDescription() {
 			return CDLObserver.class.getSimpleName();
 		}
 

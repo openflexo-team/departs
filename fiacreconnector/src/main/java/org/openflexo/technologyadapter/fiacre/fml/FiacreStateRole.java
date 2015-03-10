@@ -57,7 +57,7 @@ public interface FiacreStateRole extends FlexoRole<FiacreState> {
 		}
 
 		@Override
-		public String getPreciseType() {
+		public String getTypeDescription() {
 			return FiacreState.class.getSimpleName();
 		}
 
