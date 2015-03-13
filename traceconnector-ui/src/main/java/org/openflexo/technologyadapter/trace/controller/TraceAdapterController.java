@@ -48,7 +48,7 @@ public class TraceAdapterController extends TechnologyAdapterController<TraceTec
 	}
 
 	@Override
-	public void initializeActions(ControllerActionInitializer actionInitializer) {
+	protected void initializeActions(ControllerActionInitializer actionInitializer) {
 		actionInitializer.getController().getModuleInspectorController()
 				.loadDirectory(ResourceLocator.locateResource("src/main/resources/Inspectors/Trace"));
 	}

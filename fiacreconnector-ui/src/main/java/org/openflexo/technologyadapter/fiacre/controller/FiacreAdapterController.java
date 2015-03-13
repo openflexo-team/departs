@@ -65,7 +65,7 @@ public class FiacreAdapterController extends TechnologyAdapterController<FiacreT
 	}
 
 	@Override
-	public void initializeActions(ControllerActionInitializer actionInitializer) {
+	protected void initializeActions(ControllerActionInitializer actionInitializer) {
 		actionInitializer.getController().getModuleInspectorController()
 				.loadDirectory(ResourceLocator.locateResource("src/main/resources/Inspectors/Fiacre"));
 	}

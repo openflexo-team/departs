@@ -72,7 +72,7 @@ public class CDLAdapterController extends TechnologyAdapterController<CDLTechnol
 	}
 
 	@Override
-	public void initializeActions(ControllerActionInitializer actionInitializer) {
+	protected void initializeActions(ControllerActionInitializer actionInitializer) {
 		actionInitializer.getController().getModuleInspectorController()
 				.loadDirectory(ResourceLocator.locateResource("src/main/resources/Inspectors/CDL"));
 	}
