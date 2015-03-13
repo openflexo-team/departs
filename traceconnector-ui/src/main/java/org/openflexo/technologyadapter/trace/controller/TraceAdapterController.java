@@ -24,10 +24,10 @@ import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
+import org.openflexo.fib.utils.InspectorGroup;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
-import org.openflexo.rm.ResourceLocator;
 import org.openflexo.technologyadapter.trace.TraceTechnologyAdapter;
 import org.openflexo.technologyadapter.trace.gui.TraceIconLibrary;
 import org.openflexo.technologyadapter.trace.gui.view.FIBTraceView;
@@ -47,10 +47,33 @@ public class TraceAdapterController extends TechnologyAdapterController<TraceTec
 		return TraceTechnologyAdapter.class;
 	}
 
+	/**
+	 * Initialize inspectors for supplied module using supplied {@link FlexoController}
+	 * 
+	 * @param controller
+	 */
+	@Override
+	protected void initializeInspectors(FlexoController controller) {
+
+		traceInspectorGroup = controller.loadInspectorGroup("Trace", getFMLTechnologyAdapterInspectorGroup());
+		// actionInitializer.getController().getModuleInspectorController()
+		// .loadDirectory(ResourceLocator.locateResource("src/main/resources/Inspectors/Trace"));
+	}
+
+	private InspectorGroup traceInspectorGroup;
+
+	/**
+	 * Return inspector group for this technology
+	 * 
+	 * @return
+	 */
+	@Override
+	public InspectorGroup getTechnologyAdapterInspectorGroup() {
+		return traceInspectorGroup;
+	}
+
 	@Override
 	protected void initializeActions(ControllerActionInitializer actionInitializer) {
-		actionInitializer.getController().getModuleInspectorController()
-				.loadDirectory(ResourceLocator.locateResource("src/main/resources/Inspectors/Trace"));
 	}
 
 	@Override

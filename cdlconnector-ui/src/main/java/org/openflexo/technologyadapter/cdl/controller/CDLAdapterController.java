@@ -24,12 +24,12 @@ import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
+import org.openflexo.fib.utils.InspectorGroup;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
-import org.openflexo.rm.ResourceLocator;
 import org.openflexo.technologyadapter.cdl.CDLTechnologyAdapter;
 import org.openflexo.technologyadapter.cdl.fml.CDLAltActivityRole;
 import org.openflexo.technologyadapter.cdl.fml.CDLCommunicationOpEventRole;
@@ -71,10 +71,33 @@ public class CDLAdapterController extends TechnologyAdapterController<CDLTechnol
 		return CDLTechnologyAdapter.class;
 	}
 
+	/**
+	 * Initialize inspectors for supplied module using supplied {@link FlexoController}
+	 * 
+	 * @param controller
+	 */
+	@Override
+	protected void initializeInspectors(FlexoController controller) {
+
+		cdlInspectorGroup = controller.loadInspectorGroup("CDL", getFMLTechnologyAdapterInspectorGroup());
+		// actionInitializer.getController().getModuleInspectorController()
+		// .loadDirectory(ResourceLocator.locateResource("src/main/resources/Inspectors/CDL"));
+	}
+
+	private InspectorGroup cdlInspectorGroup;
+
+	/**
+	 * Return inspector group for this technology
+	 * 
+	 * @return
+	 */
+	@Override
+	public InspectorGroup getTechnologyAdapterInspectorGroup() {
+		return cdlInspectorGroup;
+	}
+
 	@Override
 	protected void initializeActions(ControllerActionInitializer actionInitializer) {
-		actionInitializer.getController().getModuleInspectorController()
-				.loadDirectory(ResourceLocator.locateResource("src/main/resources/Inspectors/CDL"));
 	}
 
 	@Override
