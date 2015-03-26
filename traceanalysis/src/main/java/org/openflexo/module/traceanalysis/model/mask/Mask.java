@@ -56,7 +56,7 @@ public class Mask extends DefaultFlexoObject implements PropertyChangeListener {
 	}
 
 	public void setName(String name) {
-		flexoConceptInstance.setFlexoActor(name, (PrimitiveRole) flexoConceptInstance.getFlexoConcept().getFlexoProperty(NAME));
+		flexoConceptInstance.setFlexoActor(name, (PrimitiveRole) flexoConceptInstance.getFlexoConcept().getAccessibleProperty(NAME));
 	}
 
 	public FlexoConceptInstance getFlexoConceptInstance() {

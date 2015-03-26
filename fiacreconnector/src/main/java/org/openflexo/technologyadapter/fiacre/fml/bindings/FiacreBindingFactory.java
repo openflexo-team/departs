@@ -9,8 +9,8 @@ import org.openflexo.connie.BindingFactory;
 import org.openflexo.connie.binding.BindingPathElement;
 import org.openflexo.connie.binding.FunctionPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
+import org.openflexo.foundation.fml.TechnologySpecificType;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterBindingFactory;
-import org.openflexo.foundation.fml.TechnologySpecificCustomType;
 import org.openflexo.technologyadapter.fiacre.model.FiacreProgram;
 
 /**
@@ -33,7 +33,7 @@ public final class FiacreBindingFactory extends TechnologyAdapterBindingFactory 
 	}
 
 	@Override
-	public boolean handleType(TechnologySpecificCustomType technologySpecificType) {
+	public boolean handleType(TechnologySpecificType<?> technologySpecificType) {
 		if (technologySpecificType instanceof FiacreProgram) {
 			return true;
 		}
