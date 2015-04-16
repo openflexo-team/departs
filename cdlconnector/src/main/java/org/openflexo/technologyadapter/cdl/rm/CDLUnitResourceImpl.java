@@ -31,15 +31,12 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 
-import obp.util.CDLUtil;
-
 import org.apache.commons.io.IOUtils;
 import org.openflexo.foundation.FlexoException;
 import org.openflexo.foundation.resource.FileFlexoIODelegate;
 import org.openflexo.foundation.resource.FileFlexoIODelegate.FileFlexoIODelegateImpl;
 import org.openflexo.foundation.resource.FileWritingLock;
 import org.openflexo.foundation.resource.FlexoResourceImpl;
-import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.resource.SaveResourcePermissionDeniedException;
@@ -51,11 +48,14 @@ import org.openflexo.technologyadapter.cdl.model.CDLUnit;
 import org.openflexo.technologyadapter.cdl.model.io.CDLModelConverter;
 import org.openflexo.toolbox.IProgress;
 
-public abstract class CDLUnitResourceImpl extends FlexoResourceImpl<CDLUnit> implements CDLUnitResource {
+import obp.util.CDLUtil;
+
+public abstract class CDLUnitResourceImpl extends FlexoResourceImpl<CDLUnit>implements CDLUnitResource {
 	private static final Logger logger = Logger.getLogger(CDLUnitResourceImpl.class.getPackage().getName());
 
 	private CDLModelConverter converter;
 
+	@Override
 	public CDLModelConverter getConverter() {
 		return converter;
 	}
@@ -64,15 +64,16 @@ public abstract class CDLUnitResourceImpl extends FlexoResourceImpl<CDLUnit> imp
 		this.converter = converter;
 	}
 
-	public static CDLUnitResource makeCDLUnitResource(String modelURI, File modelFile, CDLTechnologyContextManager technologyContextManager) {
+	public static CDLUnitResource makeCDLUnitResource(String modelURI, File modelFile,
+			CDLTechnologyContextManager technologyContextManager) {
 		try {
-			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext( 
-					FileFlexoIODelegate.class,CDLUnitResource.class));
+			ModelFactory factory = new ModelFactory(
+					ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class, CDLUnitResource.class));
 			CDLUnitResourceImpl returned = (CDLUnitResourceImpl) factory.newInstance(CDLUnitResource.class);
-			FileFlexoIODelegate fileIODelegate = factory.newInstance(FileFlexoIODelegate.class) ;
+			FileFlexoIODelegate fileIODelegate = factory.newInstance(FileFlexoIODelegate.class);
 			returned.setFlexoIODelegate(fileIODelegate);
 			fileIODelegate.setFile(modelFile);
-			returned.setName(modelFile.getName());
+			returned.initName(modelFile.getName());
 			returned.setURI(modelURI);
 			returned.setServiceManager(technologyContextManager.getTechnologyAdapter().getTechnologyAdapterService().getServiceManager());
 			returned.setTechnologyAdapter(technologyContextManager.getTechnologyAdapter());
@@ -88,13 +89,13 @@ public abstract class CDLUnitResourceImpl extends FlexoResourceImpl<CDLUnit> imp
 
 	public static CDLUnitResource retrieveCDLUnitResource(File cdlFile, CDLTechnologyContextManager technologyContextManager) {
 		try {
-			ModelFactory factory = new ModelFactory(ModelContextLibrary.getCompoundModelContext( 
-					FileFlexoIODelegate.class,CDLUnitResource.class));
+			ModelFactory factory = new ModelFactory(
+					ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class, CDLUnitResource.class));
 			CDLUnitResourceImpl returned = (CDLUnitResourceImpl) factory.newInstance(CDLUnitResource.class);
-			FileFlexoIODelegate fileIODelegate = factory.newInstance(FileFlexoIODelegate.class) ;
+			FileFlexoIODelegate fileIODelegate = factory.newInstance(FileFlexoIODelegate.class);
 			returned.setFlexoIODelegate(fileIODelegate);
 			fileIODelegate.setFile(cdlFile);
-			returned.setName(cdlFile.getName());
+			returned.initName(cdlFile.getName());
 			returned.setURI(cdlFile.toURI().toString());
 			returned.setServiceManager(technologyContextManager.getTechnologyAdapter().getTechnologyAdapterService().getServiceManager());
 			returned.setTechnologyAdapter(technologyContextManager.getTechnologyAdapter());
@@ -114,7 +115,7 @@ public abstract class CDLUnitResourceImpl extends FlexoResourceImpl<CDLUnit> imp
 
 		if (getFlexoIODelegate().exists()) {
 			try {
-				unit = CDLUtil.readCDLAndResolveReferences(((File)getFlexoIODelegate().getSerializationArtefact()));
+				unit = CDLUtil.readCDLAndResolveReferences(((File) getFlexoIODelegate().getSerializationArtefact()));
 				if (converter == null) {
 					converter = new CDLModelConverter();
 					converter.setTechnologyAdapter(getTechnologyAdapter());
@@ -138,30 +139,31 @@ public abstract class CDLUnitResourceImpl extends FlexoResourceImpl<CDLUnit> imp
 		} catch (FileNotFoundException e) {
 			CDLUnit resourceData;
 			e.printStackTrace();
-			throw new SaveResourceException((FileFlexoIODelegate) getFlexoIODelegate());
+			throw new SaveResourceException(getFlexoIODelegate());
 		} catch (ResourceLoadingCancelledException e) {
 			e.printStackTrace();
-			throw new SaveResourceException((FileFlexoIODelegate) getFlexoIODelegate());
+			throw new SaveResourceException(getFlexoIODelegate());
 		} catch (FlexoException e) {
 			e.printStackTrace();
-			throw new SaveResourceException((FileFlexoIODelegate) getFlexoIODelegate());
+			throw new SaveResourceException(getFlexoIODelegate());
 		}
 		CDLUnit resourceData = null;
 
 		if (!getFlexoIODelegate().hasWritePermission()) {
 			if (logger.isLoggable(Level.WARNING)) {
-				logger.warning("Permission denied : " + ((File)getFlexoIODelegate().getSerializationArtefact()).getAbsolutePath());
+				logger.warning("Permission denied : " + ((File) getFlexoIODelegate().getSerializationArtefact()).getAbsolutePath());
 			}
-			throw new SaveResourcePermissionDeniedException((FileFlexoIODelegate) getFlexoIODelegate());
+			throw new SaveResourcePermissionDeniedException(getFlexoIODelegate());
 		}
 		if (resourceData != null) {
-			FileWritingLock lock = ((FileFlexoIODelegateImpl)getFlexoIODelegate()).willWriteOnDisk();
+			FileWritingLock lock = ((FileFlexoIODelegateImpl) getFlexoIODelegate()).willWriteOnDisk();
 			writeToFile();
-			((FileFlexoIODelegateImpl)getFlexoIODelegate()).hasWrittenOnDisk(lock);
+			((FileFlexoIODelegateImpl) getFlexoIODelegate()).hasWrittenOnDisk(lock);
 			notifyResourceStatusChanged();
 			resourceData.clearIsModified(false);
 			if (logger.isLoggable(Level.INFO)) {
-				logger.info("Succeeding to save Resource " + getURI() + " : " + ((File)getFlexoIODelegate().getSerializationArtefact()).getName());
+				logger.info("Succeeding to save Resource " + getURI() + " : "
+						+ ((File) getFlexoIODelegate().getSerializationArtefact()).getName());
 			}
 		}
 	}
@@ -169,24 +171,24 @@ public abstract class CDLUnitResourceImpl extends FlexoResourceImpl<CDLUnit> imp
 	private void writeToFile() throws SaveResourceException {
 		FileOutputStream out = null;
 		try {
-			out = new FileOutputStream(((File)getFlexoIODelegate().getSerializationArtefact()));
+			out = new FileOutputStream(((File) getFlexoIODelegate().getSerializationArtefact()));
 			StreamResult result = new StreamResult(out);
-			TransformerFactory factory = TransformerFactory.newInstance(
-					"com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl", null);
+			TransformerFactory factory = TransformerFactory
+					.newInstance("com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl", null);
 
 			Transformer transformer = factory.newTransformer();
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-			throw new SaveResourceException((FileFlexoIODelegate) getFlexoIODelegate());
+			throw new SaveResourceException(getFlexoIODelegate());
 		} catch (TransformerConfigurationException e) {
 			e.printStackTrace();
-			throw new SaveResourceException((FileFlexoIODelegate) getFlexoIODelegate());
+			throw new SaveResourceException(getFlexoIODelegate());
 		} finally {
 			IOUtils.closeQuietly(out);
 		}
 
-		logger.info("Wrote " + ((File)getFlexoIODelegate().getSerializationArtefact()));
+		logger.info("Wrote " + (getFlexoIODelegate().getSerializationArtefact()));
 	}
 
 	@Override
