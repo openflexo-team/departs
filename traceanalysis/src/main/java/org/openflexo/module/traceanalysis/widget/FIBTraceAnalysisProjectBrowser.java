@@ -44,7 +44,7 @@ public class FIBTraceAnalysisProjectBrowser extends FIBBrowserView<FlexoProject>
 	}
 
 	@Override
-	protected void initializeFIBComponent() {
+	public void initializeFIBComponent() {
 
 		FIBBrowser projectBrowser = retrieveFIBBrowserNamed((FIBContainer) getFIBComponent(), "ProjectBrowser");
 
