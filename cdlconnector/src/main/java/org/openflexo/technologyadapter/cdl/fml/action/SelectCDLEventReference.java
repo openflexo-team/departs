@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -23,8 +23,8 @@ import org.openflexo.technologyadapter.cdl.model.CDLUnit;
 @XMLElement
 public interface SelectCDLEventReference extends FetchRequest<CDLModelSlot, CDLEventReference> {
 
-	public static abstract class SelectCDLEventReferenceImpl extends FetchRequestImpl<CDLModelSlot, CDLEventReference> implements
-			SelectCDLEventReference {
+	public static abstract class SelectCDLEventReferenceImpl extends FetchRequestImpl<CDLModelSlot, CDLEventReference>
+			implements SelectCDLEventReference {
 
 		private static final Logger logger = Logger.getLogger(SelectCDLEventReference.class.getPackage().getName());
 
@@ -39,18 +39,18 @@ public interface SelectCDLEventReference extends FetchRequest<CDLModelSlot, CDLE
 		}
 
 		@Override
-		public List<CDLEventReference> execute(FlexoBehaviourAction action) {
+		public List<CDLEventReference> execute(RunTimeEvaluationContext context) {
 
-			if (getModelSlotInstance(action) == null) {
+			if (getModelSlotInstance(context) == null) {
 				logger.warning("Could not access model slot instance. Abort.");
 				return null;
 			}
-			if (getModelSlotInstance(action).getResourceData() == null) {
+			if (getModelSlotInstance(context).getResourceData() == null) {
 				logger.warning("Could not access model adressed by model slot instance. Abort.");
 				return null;
 			}
 
-			CDLUnit cdlUnit = (CDLUnit) getModelSlotInstance(action).getAccessedResourceData();
+			CDLUnit cdlUnit = (CDLUnit) getModelSlotInstance(context).getAccessedResourceData();
 
 			List<CDLEventReference> selectedCDLSeqActivities = new ArrayList<CDLEventReference>();
 			for (CDLActivity activity : cdlUnit.getCDLActivities()) {
@@ -59,7 +59,7 @@ public interface SelectCDLEventReference extends FetchRequest<CDLModelSlot, CDLE
 				}
 			}
 
-			List<CDLEventReference> returned = filterWithConditions(selectedCDLSeqActivities, action);
+			List<CDLEventReference> returned = filterWithConditions(selectedCDLSeqActivities, context);
 
 			return returned;
 		}

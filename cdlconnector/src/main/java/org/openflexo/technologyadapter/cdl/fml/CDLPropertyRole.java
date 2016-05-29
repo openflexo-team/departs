@@ -24,10 +24,10 @@ import java.lang.reflect.Type;
 
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.annotations.FML;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelObjectActorReference;
-import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -39,7 +39,7 @@ import org.openflexo.technologyadapter.cdl.model.CDLProperty;
 @FML("CDLPropertyRole")
 public interface CDLPropertyRole extends FlexoRole<CDLProperty> {
 
-	public static abstract class CDLPropertyRoleImpl extends FlexoRoleImpl<CDLProperty> implements CDLPropertyRole {
+	public static abstract class CDLPropertyRoleImpl extends FlexoRoleImpl<CDLProperty>implements CDLPropertyRole {
 
 		@Override
 		public Type getType() {
@@ -63,7 +63,7 @@ public interface CDLPropertyRole extends FlexoRole<CDLProperty> {
 
 		@Override
 		public ActorReference<CDLProperty> makeActorReference(CDLProperty object, FlexoConceptInstance epi) {
-			VirtualModelInstanceModelFactory factory = epi.getFactory();
+			AbstractVirtualModelInstanceModelFactory<?> factory = epi.getFactory();
 			ModelObjectActorReference<CDLProperty> returned = factory.newInstance(ModelObjectActorReference.class);
 			returned.setFlexoRole(this);
 			returned.setFlexoConceptInstance(epi);

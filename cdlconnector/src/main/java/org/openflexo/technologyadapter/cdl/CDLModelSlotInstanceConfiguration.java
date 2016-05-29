@@ -20,15 +20,17 @@
 
 package org.openflexo.technologyadapter.cdl;
 
-import org.openflexo.foundation.fml.rt.action.CreateVirtualModelInstance;
+import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.technologyadapter.FreeModelSlotInstanceConfiguration;
 import org.openflexo.technologyadapter.cdl.model.CDLUnit;
 
 public class CDLModelSlotInstanceConfiguration extends FreeModelSlotInstanceConfiguration<CDLUnit, CDLModelSlot> {
 
-	protected CDLModelSlotInstanceConfiguration(CDLModelSlot ms, CreateVirtualModelInstance action) {
-		super(ms, action);
+	protected CDLModelSlotInstanceConfiguration(CDLModelSlot ms, AbstractVirtualModelInstance<?, ?> virtualModelInstance,
+			FlexoProject project) {
+		super(ms, virtualModelInstance, project);
 	}
 
 	@Override

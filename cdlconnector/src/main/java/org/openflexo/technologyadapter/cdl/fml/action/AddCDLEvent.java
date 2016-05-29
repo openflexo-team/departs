@@ -7,10 +7,10 @@ import java.util.logging.Logger;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -66,7 +66,7 @@ public interface AddCDLEvent extends TechnologySpecificAction<CDLModelSlot, CDLE
 	@Setter(TO_PROCESS_ID__KEY)
 	public void setToProcessID(DataBinding<CDLProcessID> toProcessID);
 
-	public static abstract class AddCDLEventImpl extends TechnologySpecificActionImpl<CDLModelSlot, CDLEvent> implements AddCDLEvent {
+	public static abstract class AddCDLEventImpl extends TechnologySpecificActionImpl<CDLModelSlot, CDLEvent>implements AddCDLEvent {
 
 		private static final Logger logger = Logger.getLogger(AddCDLEvent.class.getPackage().getName());
 
@@ -88,19 +88,19 @@ public interface AddCDLEvent extends TechnologySpecificAction<CDLModelSlot, CDLE
 		}
 
 		@Override
-		public CDLEvent execute(FlexoBehaviourAction action) {
+		public CDLEvent execute(RunTimeEvaluationContext context) {
 
 			CDLEvent cdlEvent = null;
 
-			FreeModelSlotInstance<CDLUnit, CDLModelSlot> modelSlotInstance = getModelSlotInstance(action);
+			FreeModelSlotInstance<CDLUnit, CDLModelSlot> modelSlotInstance = getModelSlotInstance(context);
 			if (modelSlotInstance.getResourceData() != null) {
 				CDLUnit cdlUnit = modelSlotInstance.getAccessedResourceData();
 
 				try {
-					CDLProcessID fromPID = getFromProcessID().getBindingValue(action);
-					CDLProcessID toPID = getToProcessID().getBindingValue(action);
-					String eventName = getEventName().getBindingValue(action);
-					String eventValue = getEventValue().getBindingValue(action);
+					CDLProcessID fromPID = getFromProcessID().getBindingValue(context);
+					CDLProcessID toPID = getToProcessID().getBindingValue(context);
+					String eventName = getEventName().getBindingValue(context);
+					String eventValue = getEventValue().getBindingValue(context);
 
 					cdlEvent = cdlUnit.createCDLEvent(fromPID, toPID, eventValue, eventName);
 					modelSlotInstance.getResourceData().setIsModified();
@@ -116,7 +116,8 @@ public interface AddCDLEvent extends TechnologySpecificAction<CDLModelSlot, CDLE
 					e.printStackTrace();
 				}
 
-			} else {
+			}
+			else {
 				logger.warning("Model slot not correctly initialised : model is null");
 				return null;
 			}
@@ -125,7 +126,7 @@ public interface AddCDLEvent extends TechnologySpecificAction<CDLModelSlot, CDLE
 		}
 
 		@Override
-		public FreeModelSlotInstance<CDLUnit, CDLModelSlot> getModelSlotInstance(FlexoBehaviourAction action) {
+		public FreeModelSlotInstance<CDLUnit, CDLModelSlot> getModelSlotInstance(RunTimeEvaluationContext action) {
 			return (FreeModelSlotInstance<CDLUnit, CDLModelSlot>) super.getModelSlotInstance(action);
 		}
 

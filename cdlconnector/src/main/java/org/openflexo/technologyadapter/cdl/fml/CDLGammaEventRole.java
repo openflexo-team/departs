@@ -24,10 +24,10 @@ import java.lang.reflect.Type;
 
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.annotations.FML;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelObjectActorReference;
-import org.openflexo.foundation.fml.rt.VirtualModelInstanceModelFactory;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -39,7 +39,7 @@ import org.openflexo.technologyadapter.cdl.model.CDLGammaEvent;
 @FML("CDLGammaEventRole")
 public interface CDLGammaEventRole extends FlexoRole<CDLGammaEvent> {
 
-	public static abstract class CDLGammaEventRoleImpl extends FlexoRoleImpl<CDLGammaEvent> implements CDLGammaEventRole {
+	public static abstract class CDLGammaEventRoleImpl extends FlexoRoleImpl<CDLGammaEvent>implements CDLGammaEventRole {
 
 		@Override
 		public Type getType() {
@@ -63,7 +63,7 @@ public interface CDLGammaEventRole extends FlexoRole<CDLGammaEvent> {
 
 		@Override
 		public ActorReference<CDLGammaEvent> makeActorReference(CDLGammaEvent object, FlexoConceptInstance epi) {
-			VirtualModelInstanceModelFactory factory = epi.getFactory();
+			AbstractVirtualModelInstanceModelFactory<?> factory = epi.getFactory();
 			ModelObjectActorReference<CDLGammaEvent> returned = factory.newInstance(ModelObjectActorReference.class);
 			returned.setFlexoRole(this);
 			returned.setFlexoConceptInstance(epi);

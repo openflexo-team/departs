@@ -24,10 +24,10 @@ import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
-import org.openflexo.fib.utils.InspectorGroup;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
+import org.openflexo.gina.utils.InspectorGroup;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.technologyadapter.cdl.CDLTechnologyAdapter;
@@ -135,22 +135,28 @@ public class CDLAdapterController extends TechnologyAdapterController<CDLTechnol
 	public ImageIcon getIconForEditionAction(Class<? extends EditionAction> editionActionClass) {
 		if (AddCDLProcessID.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(getIconForTechnologyObject(CDLProcessID.class), IconLibrary.DUPLICATE);
-		} else if (AddCDLProperty.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (AddCDLProperty.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(getIconForTechnologyObject(CDLProperty.class), IconLibrary.DUPLICATE);
-		} else if (SelectCDLAltActivity.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (SelectCDLAltActivity.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(getIconForTechnologyObject(CDLAltActivity.class), IconLibrary.IMPORT);
-		} else if (SelectCDLEventReference.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (SelectCDLEventReference.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(getIconForTechnologyObject(CDLEventReference.class), IconLibrary.IMPORT);
-		} else if (SelectCDLParActivity.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (SelectCDLParActivity.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(getIconForTechnologyObject(CDLParActivity.class), IconLibrary.IMPORT);
-		} else if (SelectCDLProperties.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (SelectCDLProperties.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(getIconForTechnologyObject(CDLProperty.class), IconLibrary.IMPORT);
 		}
 		return super.getIconForEditionAction(editionActionClass);
 	}
 
 	@Override
-	public ModuleView<?> createModuleViewForObject(TechnologyObject<CDLTechnologyAdapter> arg0, FlexoController arg1, FlexoPerspective arg2) {
+	public ModuleView<?> createModuleViewForObject(TechnologyObject<CDLTechnologyAdapter> arg0, FlexoController arg1,
+			FlexoPerspective arg2) {
 		if (arg0 instanceof CDLUnit) {
 			return new FIBCDLView((CDLUnit) arg0, arg1);
 		}
@@ -158,7 +164,7 @@ public class CDLAdapterController extends TechnologyAdapterController<CDLTechnol
 	}
 
 	@Override
-	public ImageIcon getIconForPatternRole(Class<? extends FlexoRole<?>> arg0) {
+	public ImageIcon getIconForFlexoRole(Class<? extends FlexoRole<?>> arg0) {
 		if (CDLAltActivityRole.class.isAssignableFrom(arg0)) {
 			return getIconForTechnologyObject(CDLActivity.class);
 		}

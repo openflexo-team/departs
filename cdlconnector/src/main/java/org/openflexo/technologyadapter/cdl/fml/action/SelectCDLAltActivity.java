@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -22,8 +22,8 @@ import org.openflexo.technologyadapter.cdl.model.CDLUnit;
 @XMLElement
 public interface SelectCDLAltActivity extends FetchRequest<CDLModelSlot, CDLAltActivity> {
 
-	public static abstract class SelectCDLAltActivityImpl extends FetchRequestImpl<CDLModelSlot, CDLAltActivity> implements
-			SelectCDLAltActivity {
+	public static abstract class SelectCDLAltActivityImpl extends FetchRequestImpl<CDLModelSlot, CDLAltActivity>
+			implements SelectCDLAltActivity {
 
 		private static final Logger logger = Logger.getLogger(SelectCDLAltActivity.class.getPackage().getName());
 
@@ -38,18 +38,18 @@ public interface SelectCDLAltActivity extends FetchRequest<CDLModelSlot, CDLAltA
 		}
 
 		@Override
-		public List<CDLAltActivity> execute(FlexoBehaviourAction action) {
+		public List<CDLAltActivity> execute(RunTimeEvaluationContext context) {
 
-			if (getModelSlotInstance(action) == null) {
+			if (getModelSlotInstance(context) == null) {
 				logger.warning("Could not access model slot instance. Abort.");
 				return null;
 			}
-			if (getModelSlotInstance(action).getResourceData() == null) {
+			if (getModelSlotInstance(context).getResourceData() == null) {
 				logger.warning("Could not access model adressed by model slot instance. Abort.");
 				return null;
 			}
 
-			CDLUnit cdlUnit = (CDLUnit) getModelSlotInstance(action).getAccessedResourceData();
+			CDLUnit cdlUnit = (CDLUnit) getModelSlotInstance(context).getAccessedResourceData();
 
 			List<CDLAltActivity> selectedCDLAltActivities = new ArrayList<CDLAltActivity>();
 			for (CDLActivity activity : cdlUnit.getCDLActivities()) {
@@ -58,7 +58,7 @@ public interface SelectCDLAltActivity extends FetchRequest<CDLModelSlot, CDLAltA
 				}
 			}
 
-			List<CDLAltActivity> returned = filterWithConditions(selectedCDLAltActivities, action);
+			List<CDLAltActivity> returned = filterWithConditions(selectedCDLAltActivities, context);
 
 			return returned;
 		}

@@ -3,10 +3,10 @@ package org.openflexo.technologyadapter.cdl.fml.action;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -20,8 +20,8 @@ import org.openflexo.technologyadapter.cdl.model.CDLUnit;
 @XMLElement
 public interface AddCDLProcessID extends TechnologySpecificAction<CDLModelSlot, CDLProcessID> {
 
-	public static abstract class AddCDLProcessIDImpl extends TechnologySpecificActionImpl<CDLModelSlot, CDLProcessID> implements
-			AddCDLProcessID {
+	public static abstract class AddCDLProcessIDImpl extends TechnologySpecificActionImpl<CDLModelSlot, CDLProcessID>
+			implements AddCDLProcessID {
 
 		private static final Logger logger = Logger.getLogger(AddCDLProcessID.class.getPackage().getName());
 
@@ -35,14 +35,15 @@ public interface AddCDLProcessID extends TechnologySpecificAction<CDLModelSlot, 
 		}
 
 		@Override
-		public CDLProcessID execute(FlexoBehaviourAction action) {
+		public CDLProcessID execute(RunTimeEvaluationContext context) {
 
 			CDLProcessID cdlProcessID = null;
 
-			FreeModelSlotInstance<CDLUnit, CDLModelSlot> modelSlotInstance = getModelSlotInstance(action);
+			FreeModelSlotInstance<CDLUnit, CDLModelSlot> modelSlotInstance = getModelSlotInstance(context);
 			if (modelSlotInstance.getResourceData() != null) {
 
-			} else {
+			}
+			else {
 				logger.warning("Model slot not correctly initialised : model is null");
 				return null;
 			}
@@ -51,7 +52,7 @@ public interface AddCDLProcessID extends TechnologySpecificAction<CDLModelSlot, 
 		}
 
 		@Override
-		public FreeModelSlotInstance<CDLUnit, CDLModelSlot> getModelSlotInstance(FlexoBehaviourAction action) {
+		public FreeModelSlotInstance<CDLUnit, CDLModelSlot> getModelSlotInstance(RunTimeEvaluationContext action) {
 			return (FreeModelSlotInstance<CDLUnit, CDLModelSlot>) super.getModelSlotInstance(action);
 		}
 

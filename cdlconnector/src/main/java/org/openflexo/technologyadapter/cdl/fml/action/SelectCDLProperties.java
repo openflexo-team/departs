@@ -4,9 +4,9 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -20,7 +20,7 @@ import org.openflexo.technologyadapter.cdl.model.CDLUnit;
 @XMLElement
 public interface SelectCDLProperties extends FetchRequest<CDLModelSlot, CDLProperty> {
 
-	public static abstract class SelectCDLPropertiesImpl extends FetchRequestImpl<CDLModelSlot, CDLProperty> implements SelectCDLProperties {
+	public static abstract class SelectCDLPropertiesImpl extends FetchRequestImpl<CDLModelSlot, CDLProperty>implements SelectCDLProperties {
 
 		private static final Logger logger = Logger.getLogger(SelectCDLProperties.class.getPackage().getName());
 
@@ -35,20 +35,20 @@ public interface SelectCDLProperties extends FetchRequest<CDLModelSlot, CDLPrope
 		}
 
 		@Override
-		public List<CDLProperty> execute(FlexoBehaviourAction action) {
+		public List<CDLProperty> execute(RunTimeEvaluationContext context) {
 
-			if (getModelSlotInstance(action) == null) {
+			if (getModelSlotInstance(context) == null) {
 				logger.warning("Could not access model slot instance. Abort.");
 				return null;
 			}
-			if (getModelSlotInstance(action).getResourceData() == null) {
+			if (getModelSlotInstance(context).getResourceData() == null) {
 				logger.warning("Could not access model adressed by model slot instance. Abort.");
 				return null;
 			}
 
-			CDLUnit cdlUnit = (CDLUnit) getModelSlotInstance(action).getAccessedResourceData();
+			CDLUnit cdlUnit = (CDLUnit) getModelSlotInstance(context).getAccessedResourceData();
 
-			return filterWithConditions(cdlUnit.getCDLProperties(), action);
+			return filterWithConditions(cdlUnit.getCDLProperties(), context);
 		}
 	}
 }
