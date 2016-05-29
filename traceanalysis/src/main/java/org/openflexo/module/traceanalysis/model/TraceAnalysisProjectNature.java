@@ -25,19 +25,18 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.components.ProgressWindow;
-import org.openflexo.fib.FIBLibrary;
-import org.openflexo.fib.controller.FIBController.Status;
-import org.openflexo.fib.controller.FIBDialog;
-import org.openflexo.fib.model.FIBComponent;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.nature.ProjectNature;
 import org.openflexo.foundation.nature.ProjectNatureService;
+import org.openflexo.gina.ApplicationFIBLibrary.ApplicationFIBLibraryImpl;
+import org.openflexo.gina.controller.FIBController.Status;
+import org.openflexo.gina.model.FIBComponent;
+import org.openflexo.gina.swing.utils.JFIBDialog;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.module.traceanalysis.TraceAnalysisCst;
 import org.openflexo.module.traceanalysis.model.action.CreateTraceAnalysisProject;
-import org.openflexo.view.controller.FlexoFIBController;
 
 public class TraceAnalysisProjectNature implements ProjectNature<TraceAnalysisProjectNature, TraceAnalysisProject> {
 
@@ -122,14 +121,16 @@ public class TraceAnalysisProjectNature implements ProjectNature<TraceAnalysisPr
 		TraceAnalysisProject traceAnalysisProject = getProjectWrapper(project);
 		CreateTraceAnalysisProject action = CreateTraceAnalysisProject.actionType.makeNewAction(traceAnalysisProject, null, editor);
 		if (askForProjectResources) {
-			FIBComponent fibComponent = FIBLibrary.instance().retrieveFIBComponent(
-					TraceAnalysisCst.CREATE_TRACE_ANALYSIS_PROJECT_DIALOG_FIB);
-			FIBDialog dialog = FIBDialog.instanciateAndShowDialog(fibComponent, action, ProgressWindow.instance(), true,
-					new FlexoFIBController(fibComponent));
+			FIBComponent fibComponent = ApplicationFIBLibraryImpl.instance()
+					.retrieveFIBComponent(TraceAnalysisCst.CREATE_TRACE_ANALYSIS_PROJECT_DIALOG_FIB);
+			JFIBDialog dialog = JFIBDialog.instanciateAndShowDialog(fibComponent, action, ProgressWindow.instance(),
+					true/*,
+						new FlexoFIBController(fibComponent)*/);
 			if (dialog.getStatus().equals(Status.VALIDATED)) {
 				action.doAction();
 			}
-		} else {
+		}
+		else {
 			action.doAction();
 		}
 

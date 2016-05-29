@@ -20,15 +20,17 @@
 
 package org.openflexo.technologyadapter.fiacre;
 
-import org.openflexo.foundation.fml.rt.action.CreateVirtualModelInstance;
+import org.openflexo.foundation.FlexoProject;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
 import org.openflexo.foundation.technologyadapter.FreeModelSlotInstanceConfiguration;
 import org.openflexo.technologyadapter.fiacre.model.FiacreProgram;
 
 public class FiacreProgramSlotInstanceConfiguration extends FreeModelSlotInstanceConfiguration<FiacreProgram, FiacreProgramModelSlot> {
 
-	protected FiacreProgramSlotInstanceConfiguration(FiacreProgramModelSlot ms, CreateVirtualModelInstance action) {
-		super(ms, action);
+	protected FiacreProgramSlotInstanceConfiguration(FiacreProgramModelSlot ms, AbstractVirtualModelInstance<?, ?> virtualModelInstance,
+			FlexoProject project) {
+		super(ms, virtualModelInstance, project);
 	}
 
 	@Override

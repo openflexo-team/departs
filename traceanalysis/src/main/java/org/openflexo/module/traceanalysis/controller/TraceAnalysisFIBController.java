@@ -21,7 +21,8 @@ package org.openflexo.module.traceanalysis.controller;
 
 import java.util.logging.Logger;
 
-import org.openflexo.fib.model.FIBComponent;
+import org.openflexo.gina.model.FIBComponent;
+import org.openflexo.gina.view.GinaViewFactory;
 import org.openflexo.localization.FlexoLocalization;
 import org.openflexo.view.controller.FlexoFIBController;
 
@@ -29,8 +30,8 @@ public class TraceAnalysisFIBController extends FlexoFIBController {
 
 	private static final Logger logger = Logger.getLogger(TraceAnalysisFIBController.class.getPackage().getName());
 
-	public TraceAnalysisFIBController(FIBComponent component) {
-		super(component);
+	public TraceAnalysisFIBController(FIBComponent component, GinaViewFactory<?> viewFactory) {
+		super(component, viewFactory);
 		// Default parent localizer is the main localizer
 		setParentLocalizer(FlexoLocalization.getMainLocalizer());
 	}

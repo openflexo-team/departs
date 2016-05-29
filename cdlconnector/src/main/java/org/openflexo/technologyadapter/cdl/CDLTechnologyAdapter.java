@@ -168,13 +168,14 @@ public class CDLTechnologyAdapter extends TechnologyAdapter {
 
 	@Override
 	public <I> boolean contentsAdded(FlexoResourceCenter<I> resourceCenter, I contents) {
+		CDLUnitResource newResource = null;
 		if (contents instanceof File) {
 			File candidateFile = (File) contents;
-			return (tryToLookupCDLUnits(resourceCenter, candidateFile) != null);
+			newResource = tryToLookupCDLUnits(resourceCenter, candidateFile);
 		}
 		// Call it to update the current repositories
 		getPropertyChangeSupport().firePropertyChange("getAllRepositories()", null, resourceCenter);
-		return false;
+		return newResource != null;
 	}
 
 	@Override

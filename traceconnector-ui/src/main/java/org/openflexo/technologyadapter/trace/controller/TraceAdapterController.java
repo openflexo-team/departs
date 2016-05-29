@@ -24,10 +24,10 @@ import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
-import org.openflexo.fib.utils.InspectorGroup;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
+import org.openflexo.gina.utils.InspectorGroup;
 import org.openflexo.technologyadapter.trace.TraceTechnologyAdapter;
 import org.openflexo.technologyadapter.trace.gui.TraceIconLibrary;
 import org.openflexo.technologyadapter.trace.gui.view.FIBTraceView;
@@ -122,7 +122,7 @@ public class TraceAdapterController extends TechnologyAdapterController<TraceTec
 	}
 
 	@Override
-	public ImageIcon getIconForPatternRole(Class<? extends FlexoRole<?>> arg0) {
+	public ImageIcon getIconForFlexoRole(Class<? extends FlexoRole<?>> arg0) {
 		return null;
 	}
 

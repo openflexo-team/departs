@@ -44,7 +44,8 @@ import org.openflexo.fge.swing.JDianaInteractiveViewer;
 import org.openflexo.fge.swing.SwingViewFactory;
 import org.openflexo.fge.swing.control.SwingToolFactory;
 import org.openflexo.fge.swing.control.tools.JDianaScaleSelector;
-import org.openflexo.fib.swing.logging.FlexoLoggingViewer;
+import org.openflexo.gina.ApplicationFIBLibrary.ApplicationFIBLibraryImpl;
+import org.openflexo.gina.swing.utils.logging.FlexoLoggingViewer;
 import org.openflexo.logging.FlexoLogger;
 import org.openflexo.logging.FlexoLoggingManager;
 import org.openflexo.model.exceptions.ModelDefinitionException;
@@ -91,7 +92,7 @@ public class LaunchRouteDrawing {
 				notifyObservers(new MultipleSelection());
 			}
 		}
-
+		
 		@Override
 		public void removeFromSelectedObjects(DrawingTreeNode<?,?> anObject) {
 			super.removeFromSelectedObjects(anObject);
@@ -103,13 +104,13 @@ public class LaunchRouteDrawing {
 				notifyObservers(new MultipleSelection());
 			}
 		}
-
+		
 		@Override
 		public void clearSelection() {
 			super.clearSelection();
 			notifyObservers(new EmptySelection());
 		}
-
+		
 		@Override
 		public void selectDrawing() {
 			super.selectDrawing();
@@ -169,7 +170,7 @@ public class LaunchRouteDrawing {
 		logButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				FlexoLoggingViewer.showLoggingViewer(FlexoLoggingManager.instance(), dialog);
+				FlexoLoggingViewer.showLoggingViewer(FlexoLoggingManager.instance(), ApplicationFIBLibraryImpl.instance(), dialog);
 			}
 		});
 
@@ -249,12 +250,12 @@ public class LaunchRouteDrawing {
 		Component c1 = new Component("Component1");
 		Component c2 = new Component("Component2");
 		Component c3 = new Component("Component3");
-
+	
 		OBPTraceImpl trace = new OBPTraceImpl();
 		trace.addToComponents(c1);
 		trace.addToComponents(c2);
 		trace.addToComponents(c3);
-
+	
 		trace.addConfiguration(0);
 		OBPTransitionImpl t1 = (OBPTransitionImpl) trace.addConfiguration(7);
 		OBPTransitionImpl t2 = (OBPTransitionImpl) trace.addConfiguration(12);
@@ -263,7 +264,7 @@ public class LaunchRouteDrawing {
 		OBPTransitionImpl t5 = (OBPTransitionImpl) trace.addConfiguration(432);
 		OBPTransitionImpl t6 = (OBPTransitionImpl) trace.addConfiguration(1027);
 		OBPTransitionImpl t7 = (OBPTransitionImpl) trace.addConfiguration(1029);
-
+	
 		t1.addToMessages(new Message("m1", c1, c2, t1));
 		t2.addToMessages(new Message("m2", c2, c1, t2));
 		t2.addToMessages(new Message("m3", c2, c3, t2));
@@ -274,7 +275,7 @@ public class LaunchRouteDrawing {
 		t6.addToMessages(new Message("m8", c1, c2, t6));
 		t6.addToMessages(new Message("m9", c2, c3, t6));
 		t7.addToMessages(new Message("m10", c3, c2, t7));
-
+	
 		return trace;
 	}*/
 }

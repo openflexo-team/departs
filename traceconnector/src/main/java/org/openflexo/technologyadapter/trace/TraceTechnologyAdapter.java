@@ -64,6 +64,11 @@ public class TraceTechnologyAdapter extends TechnologyAdapter {
 	}
 
 	@Override
+	public String getIdentifier() {
+		return "OBP-TRACE";
+	}
+
+	@Override
 	public TechnologyContextManager createTechnologyContextManager(FlexoResourceCenterService service) {
 		return new TraceTechnologyContextManager(this, service);
 	}
@@ -73,8 +78,14 @@ public class TraceTechnologyAdapter extends TechnologyAdapter {
 		return BINDING_FACTORY;
 	}
 
+	/**
+	 * Initialize the supplied resource center with the technology<br>
+	 * ResourceCenter is scanned, ResourceRepositories are created and new technology-specific resources are build and registered.
+	 * 
+	 * @param resourceCenter
+	 */
 	@Override
-	public <I> void initializeResourceCenter(FlexoResourceCenter<I> resourceCenter) {
+	public <I> void performInitializeResourceCenter(FlexoResourceCenter<I> resourceCenter) {
 		TraceOBPRepository TraceOBPRepository = resourceCenter.getRepository(TraceOBPRepository.class, this);
 		if (TraceOBPRepository == null) {
 			TraceOBPRepository = createTraceOBPRepository(resourceCenter);
@@ -155,19 +166,30 @@ public class TraceTechnologyAdapter extends TechnologyAdapter {
 	}
 
 	@Override
-	public <I> void contentsAdded(FlexoResourceCenter<I> resourceCenter, I contents) {
+	public <I> boolean contentsAdded(FlexoResourceCenter<I> resourceCenter, I contents) {
+		TraceOBPResource newResource = null;
 		if (contents instanceof File) {
 			File candidateFile = (File) contents;
-			tryToLookupTraceOBPs(resourceCenter, candidateFile);
+			newResource = tryToLookupTraceOBPs(resourceCenter, candidateFile);
 		}
 		// Call it to update the current repositories
 		getPropertyChangeSupport().firePropertyChange("getAllRepositories()", null, resourceCenter);
+		return newResource != null;
 	}
 
 	@Override
-	public <I> void contentsDeleted(FlexoResourceCenter<I> resourceCenter, I contents) {
-		// TODO Auto-generated method stub
+	public <I> boolean contentsModified(FlexoResourceCenter<I> resourceCenter, I contents) {
+		return false;
+	}
 
+	@Override
+	public <I> boolean contentsDeleted(FlexoResourceCenter<I> resourceCenter, I contents) {
+		return false;
+	}
+
+	@Override
+	public <I> boolean contentsRenamed(FlexoResourceCenter<I> resourceCenter, I contents, String oldName, String newName) {
+		return false;
 	}
 
 	@Override

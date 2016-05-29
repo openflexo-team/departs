@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -23,8 +23,8 @@ import org.openflexo.technologyadapter.fiacre.model.FiacreProgram;
 @FML("SelectFiacreComponents")
 public interface SelectFiacreComponents extends FetchRequest<FiacreProgramModelSlot, FiacreComponent> {
 
-	public static abstract class SelectFiacreComponentImpl extends FetchRequestImpl<FiacreProgramModelSlot, FiacreComponent> implements
-			SelectFiacreComponents {
+	public static abstract class SelectFiacreComponentImpl extends FetchRequestImpl<FiacreProgramModelSlot, FiacreComponent>
+			implements SelectFiacreComponents {
 
 		private static final Logger logger = Logger.getLogger(SelectFiacreComponents.class.getPackage().getName());
 
@@ -39,24 +39,24 @@ public interface SelectFiacreComponents extends FetchRequest<FiacreProgramModelS
 		}
 
 		@Override
-		public List<FiacreComponent> execute(FlexoBehaviourAction action) {
+		public List<FiacreComponent> execute(RunTimeEvaluationContext context) {
 
-			if (getModelSlotInstance(action) == null) {
+			if (getModelSlotInstance(context) == null) {
 				logger.warning("Could not access model slot instance. Abort.");
 				return null;
 			}
-			if (getModelSlotInstance(action).getResourceData() == null) {
+			if (getModelSlotInstance(context).getResourceData() == null) {
 				logger.warning("Could not access model adressed by model slot instance. Abort.");
 				return null;
 			}
 
-			FiacreProgram fiacreProgram = (FiacreProgram) getModelSlotInstance(action).getAccessedResourceData();
+			FiacreProgram fiacreProgram = (FiacreProgram) getModelSlotInstance(context).getAccessedResourceData();
 
 			List<FiacreComponent> selectedFiacreComponents = new ArrayList<FiacreComponent>(0);
 
 			selectedFiacreComponents.addAll(fiacreProgram.getFiacreComponents());
 
-			List<FiacreComponent> returned = filterWithConditions(selectedFiacreComponents, action);
+			List<FiacreComponent> returned = filterWithConditions(selectedFiacreComponents, context);
 
 			return returned;
 		}

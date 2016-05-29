@@ -23,13 +23,13 @@ package org.openflexo.technologyadapter.fiacre;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
 import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
-import org.openflexo.foundation.fml.rt.action.CreateVirtualModelInstance;
-import org.openflexo.foundation.ontology.IFlexoOntologyObject;
 import org.openflexo.foundation.technologyadapter.FreeModelSlot;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -64,7 +64,7 @@ public interface FiacreProgramModelSlot extends FreeModelSlot<FiacreProgram> {
 	@Override
 	public FiacreTechnologyAdapter getModelSlotTechnologyAdapter();
 
-	public static abstract class FiacreProgramSlotImpl extends FreeModelSlotImpl<FiacreProgram> implements FiacreProgramModelSlot {
+	public static abstract class FiacreProgramSlotImpl extends FreeModelSlotImpl<FiacreProgram>implements FiacreProgramModelSlot {
 
 		private static final Logger logger = Logger.getLogger(FiacreProgramModelSlot.class.getPackage().getName());
 
@@ -77,8 +77,9 @@ public interface FiacreProgramModelSlot extends FreeModelSlot<FiacreProgram> {
 		 * Instanciate a new model slot instance configuration for this model slot
 		 */
 		@Override
-		public FiacreProgramSlotInstanceConfiguration createConfiguration(CreateVirtualModelInstance action) {
-			return new FiacreProgramSlotInstanceConfiguration(this, action);
+		public FiacreProgramSlotInstanceConfiguration createConfiguration(AbstractVirtualModelInstance<?, ?> virtualModelInstance,
+				FlexoProject project) {
+			return new FiacreProgramSlotInstanceConfiguration(this, virtualModelInstance, project);
 		}
 
 		@Override
@@ -88,9 +89,9 @@ public interface FiacreProgramModelSlot extends FreeModelSlot<FiacreProgram> {
 
 		@Override
 		public String getURIForObject(FreeModelSlotInstance<FiacreProgram, ? extends FreeModelSlot<FiacreProgram>> msInstance, Object o) {
-			if (o instanceof IFlexoOntologyObject) {
+			/*if (o instanceof IFlexoOntologyObject) {
 				return ((IFlexoOntologyObject) o).getURI();
-			}
+			}*/
 			return null;
 		}
 

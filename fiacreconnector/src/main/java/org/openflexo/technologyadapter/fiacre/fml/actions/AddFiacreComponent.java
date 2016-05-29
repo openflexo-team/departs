@@ -3,11 +3,11 @@ package org.openflexo.technologyadapter.fiacre.fml.actions;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.TechnologySpecificAction;
 import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
@@ -37,14 +37,15 @@ public interface AddFiacreComponent extends TechnologySpecificAction<FiacreProgr
 		}
 
 		@Override
-		public FiacreComponent execute(FlexoBehaviourAction action) {
+		public FiacreComponent execute(RunTimeEvaluationContext context) {
 
 			FiacreComponent fiacreComponent = null;
 
-			FreeModelSlotInstance<FiacreProgram, FiacreProgramModelSlot> modelSlotInstance = getModelSlotInstance(action);
+			FreeModelSlotInstance<FiacreProgram, FiacreProgramModelSlot> modelSlotInstance = getModelSlotInstance(context);
 			if (modelSlotInstance.getResourceData() != null) {
 
-			} else {
+			}
+			else {
 				logger.warning("Model slot not correctly initialised : model is null");
 				return null;
 			}
@@ -53,8 +54,8 @@ public interface AddFiacreComponent extends TechnologySpecificAction<FiacreProgr
 		}
 
 		@Override
-		public FreeModelSlotInstance<FiacreProgram, FiacreProgramModelSlot> getModelSlotInstance(FlexoBehaviourAction action) {
-			return (FreeModelSlotInstance<FiacreProgram, FiacreProgramModelSlot>) super.getModelSlotInstance(action);
+		public FreeModelSlotInstance<FiacreProgram, FiacreProgramModelSlot> getModelSlotInstance(RunTimeEvaluationContext context) {
+			return (FreeModelSlotInstance<FiacreProgram, FiacreProgramModelSlot>) super.getModelSlotInstance(context);
 		}
 
 	}

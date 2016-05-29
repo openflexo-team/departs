@@ -23,11 +23,11 @@ package org.openflexo.technologyadapter.trace;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
+import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.annotations.FML;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
-import org.openflexo.foundation.fml.rt.action.CreateVirtualModelInstance;
-import org.openflexo.foundation.ontology.IFlexoOntologyObject;
 import org.openflexo.foundation.technologyadapter.FreeModelSlot;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -49,7 +49,7 @@ public interface TraceModelSlot extends FreeModelSlot<OBPTrace> {
 	@Override
 	public TraceTechnologyAdapter getModelSlotTechnologyAdapter();
 
-	public static abstract class TraceModelSlotImpl extends FreeModelSlotImpl<OBPTrace> implements TraceModelSlot {
+	public static abstract class TraceModelSlotImpl extends FreeModelSlotImpl<OBPTrace>implements TraceModelSlot {
 
 		private static final Logger logger = Logger.getLogger(TraceModelSlot.class.getPackage().getName());
 
@@ -62,8 +62,9 @@ public interface TraceModelSlot extends FreeModelSlot<OBPTrace> {
 		 * Instanciate a new model slot instance configuration for this model slot
 		 */
 		@Override
-		public TraceModelSlotInstanceConfiguration createConfiguration(CreateVirtualModelInstance action) {
-			return new TraceModelSlotInstanceConfiguration(this, action);
+		public TraceModelSlotInstanceConfiguration createConfiguration(AbstractVirtualModelInstance<?, ?> virtualModelInstance,
+				FlexoProject project) {
+			return new TraceModelSlotInstanceConfiguration(this, virtualModelInstance, project);
 		}
 
 		@Override
@@ -73,14 +74,15 @@ public interface TraceModelSlot extends FreeModelSlot<OBPTrace> {
 
 		@Override
 		public String getURIForObject(FreeModelSlotInstance<OBPTrace, ? extends FreeModelSlot<OBPTrace>> msInstance, Object o) {
-			if (o instanceof IFlexoOntologyObject) {
+			/*if (o instanceof IFlexoOntologyObject) {
 				return ((IFlexoOntologyObject) o).getURI();
-			}
+			}*/
 			return null;
 		}
 
 		@Override
-		public Object retrieveObjectWithURI(FreeModelSlotInstance<OBPTrace, ? extends FreeModelSlot<OBPTrace>> msInstance, String objectURI) {
+		public Object retrieveObjectWithURI(FreeModelSlotInstance<OBPTrace, ? extends FreeModelSlot<OBPTrace>> msInstance,
+				String objectURI) {
 			return msInstance.getResourceData().getObject(objectURI);
 		}
 

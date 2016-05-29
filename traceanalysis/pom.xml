@@ -5,7 +5,7 @@
   <parent>
   	<groupId>org.openflexo</groupId>
   	<artifactId>openflexo-modules</artifactId>
-  	<version>1.7.1-SNAPSHOT</version>
+  	<version>1.8.0-SNAPSHOT</version>
   </parent>
   
   <!-- OPENFLEXO CORE DEPENDENCIES -->
@@ -23,47 +23,47 @@
   	<dependency>
   		<groupId>org.openflexo</groupId>
   		<artifactId>cdlconnector</artifactId>
-  		<version>1.7.1-SNAPSHOT</version>
+  		<version>1.8.0-SNAPSHOT</version>
   	</dependency>
   	<dependency>
   		<groupId>org.openflexo</groupId>
   		<artifactId>cdlconnector-ui</artifactId>
-  		<version>1.7.1-SNAPSHOT</version>
+  		<version>1.8.0-SNAPSHOT</version>
   	</dependency>
   	
   	<dependency>
   		<groupId>org.openflexo</groupId>
   		<artifactId>fiacreconnector</artifactId>
-  		<version>1.7.1-SNAPSHOT</version>
+  		<version>1.8.0-SNAPSHOT</version>
   	</dependency>
   	<dependency>
   		<groupId>org.openflexo</groupId>
   		<artifactId>fiacreconnector-ui</artifactId>
-  		<version>1.7.1-SNAPSHOT</version>
+  		<version>1.8.0-SNAPSHOT</version>
   	</dependency>
   	
   	<dependency>
   		<groupId>org.openflexo</groupId>
   		<artifactId>traceconnector</artifactId>
-  		<version>1.7.1-SNAPSHOT</version>
+  		<version>1.8.0-SNAPSHOT</version>
   	</dependency>
   	<dependency>
   		<groupId>org.openflexo</groupId>
   		<artifactId>traceconnector-ui</artifactId>
-  		<version>1.7.1-SNAPSHOT</version>
+  		<version>1.8.0-SNAPSHOT</version>
   	</dependency>
   	
   	<dependency>
 		<groupId>org.openflexo</groupId>
 		<artifactId>flexoviewpointmodeler</artifactId>
 		<scope>runtime</scope>
-		<version>1.7.1-SNAPSHOT</version>
+		<version>1.8.0-SNAPSHOT</version>
 	</dependency>
 	
   	<dependency>
   		<groupId>org.openflexo</groupId>
   		<artifactId>traceconnector-ui</artifactId>
-  		<version>1.7.1-SNAPSHOT</version>
+  		<version>1.8.0-SNAPSHOT</version>
   	</dependency>
   	
   	<dependency>

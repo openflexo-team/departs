@@ -9,10 +9,10 @@ import java.util.logging.Logger;
 import org.openflexo.connie.DataBinding;
 import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
-import org.openflexo.fib.annotation.FIBPanel;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.editionaction.FetchRequest;
-import org.openflexo.foundation.fml.rt.action.FlexoBehaviourAction;
+import org.openflexo.foundation.fml.rt.RunTimeEvaluationContext;
+import org.openflexo.gina.annotation.FIBPanel;
 import org.openflexo.model.annotations.Getter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -41,8 +41,8 @@ public interface SelectFiacreStates extends FetchRequest<FiacreProgramModelSlot,
 	@Setter(FIACRE_PROCESS_KEY)
 	public void setFiacreProcess(DataBinding<FiacreProcess> fiacreProcess);
 
-	public static abstract class SelectFiacreStateImpl extends FetchRequestImpl<FiacreProgramModelSlot, FiacreState> implements
-			SelectFiacreStates {
+	public static abstract class SelectFiacreStateImpl extends FetchRequestImpl<FiacreProgramModelSlot, FiacreState>
+			implements SelectFiacreStates {
 
 		private static final Logger logger = Logger.getLogger(SelectFiacreStates.class.getPackage().getName());
 
@@ -59,13 +59,13 @@ public interface SelectFiacreStates extends FetchRequest<FiacreProgramModelSlot,
 		}
 
 		@Override
-		public List<FiacreState> execute(FlexoBehaviourAction action) {
+		public List<FiacreState> execute(RunTimeEvaluationContext context) {
 
-			if (getModelSlotInstance(action) == null) {
+			if (getModelSlotInstance(context) == null) {
 				logger.warning("Could not access model slot instance. Abort.");
 				return null;
 			}
-			if (getModelSlotInstance(action).getResourceData() == null) {
+			if (getModelSlotInstance(context).getResourceData() == null) {
 				logger.warning("Could not access model adressed by model slot instance. Abort.");
 				return null;
 			}
@@ -73,7 +73,7 @@ public interface SelectFiacreStates extends FetchRequest<FiacreProgramModelSlot,
 			List<FiacreState> selectedFiacreStates = new ArrayList<FiacreState>(0);
 
 			try {
-				selectedFiacreStates.addAll(getFiacreProcess().getBindingValue(action).getFiacreStates());
+				selectedFiacreStates.addAll(getFiacreProcess().getBindingValue(context).getFiacreStates());
 			} catch (TypeMismatchException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -85,7 +85,7 @@ public interface SelectFiacreStates extends FetchRequest<FiacreProgramModelSlot,
 				e.printStackTrace();
 			}
 
-			List<FiacreState> returned = filterWithConditions(selectedFiacreStates, action);
+			List<FiacreState> returned = filterWithConditions(selectedFiacreStates, context);
 
 			return returned;
 		}

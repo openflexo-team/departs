@@ -32,6 +32,7 @@ import org.openflexo.foundation.fml.rt.FMLRTModelSlotInstanceConfiguration;
 import org.openflexo.foundation.fml.rt.VirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreateBasicVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.CreateView;
+import org.openflexo.foundation.fml.rt.action.CreateViewInFolder;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration.DefaultModelSlotInstanceConfigurationOption;
 import org.openflexo.foundation.fml.rt.rm.VirtualModelInstanceResource;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
@@ -95,8 +96,8 @@ public class CreateTraceAnalysisProject extends FlexoAction<CreateTraceAnalysisP
 		logger.info("Create trace analysis");
 		setProjectName(getFocusedObject().getName());
 		// Create the view
-		CreateView createView = CreateView.actionType.makeNewAction(getEditor().getProject().getViewLibrary().getRootFolder(), null,
-				getEditor());
+		CreateViewInFolder createView = CreateViewInFolder.actionType
+				.makeNewAction(getEditor().getProject().getViewLibrary().getRootFolder(), null, getEditor());
 		createView.setNewViewName(getProjectName() + "_view");
 		createView.setNewViewTitle("View for " + getProjectName());
 		createView.setViewpointResource((ViewPointResource) getFocusedObject().getTraceAnaylsisViewPoint().getResource());
@@ -196,14 +197,14 @@ public class CreateTraceAnalysisProject extends FlexoAction<CreateTraceAnalysisP
 	}
 
 	private VirtualModelInstance createSystemVirtualModelInstance(CreateView createView) {
-		CreateBasicVirtualModelInstance createSystem = CreateBasicVirtualModelInstance.actionType.makeNewEmbeddedAction(
-				createView.getNewView(), null, this);
+		CreateBasicVirtualModelInstance createSystem = CreateBasicVirtualModelInstance.actionType
+				.makeNewEmbeddedAction(createView.getNewView(), null, this);
 		createSystem.setNewVirtualModelInstanceName(projectName);
 		createSystem.setNewVirtualModelInstanceTitle(projectName);
 		createSystem.setVirtualModel(getFocusedObject().getSystemVirtualModel());
 		FreeModelSlotInstanceConfiguration<?, ?> systemConf = (FreeModelSlotInstanceConfiguration<?, ?>) createSystem
-				.getModelSlotInstanceConfiguration(getFocusedObject().getSystemVirtualModel().getModelSlots(FiacreProgramModelSlot.class)
-						.get(0));
+				.getModelSlotInstanceConfiguration(
+						getFocusedObject().getSystemVirtualModel().getModelSlots(FiacreProgramModelSlot.class).get(0));
 		systemConf.setOption(DefaultModelSlotInstanceConfigurationOption.SelectExistingResource);
 		systemConf.setResource(getFiacre());
 		createSystem.doAction();
@@ -211,8 +212,8 @@ public class CreateTraceAnalysisProject extends FlexoAction<CreateTraceAnalysisP
 	}
 
 	private VirtualModelInstance createContextVirtualModelInstance(CreateView createView, VirtualModelInstance systemVM) {
-		CreateBasicVirtualModelInstance createContext = CreateBasicVirtualModelInstance.actionType.makeNewEmbeddedAction(
-				createView.getNewView(), null, this);
+		CreateBasicVirtualModelInstance createContext = CreateBasicVirtualModelInstance.actionType
+				.makeNewEmbeddedAction(createView.getNewView(), null, this);
 		createContext.setNewVirtualModelInstanceName(projectName);
 		createContext.setNewVirtualModelInstanceTitle(projectName);
 		createContext.setVirtualModel(getFocusedObject().getContextVirtualModel());
@@ -230,8 +231,8 @@ public class CreateTraceAnalysisProject extends FlexoAction<CreateTraceAnalysisP
 
 	private VirtualModelInstance createObserverVirtualModelInstance(CreateView createView, VirtualModelInstance contextVM,
 			VirtualModelInstance systemVM) {
-		CreateBasicVirtualModelInstance createObserver = CreateBasicVirtualModelInstance.actionType.makeNewEmbeddedAction(
-				createView.getNewView(), null, this);
+		CreateBasicVirtualModelInstance createObserver = CreateBasicVirtualModelInstance.actionType
+				.makeNewEmbeddedAction(createView.getNewView(), null, this);
 		createObserver.setNewVirtualModelInstanceName(projectName);
 		createObserver.setNewVirtualModelInstanceTitle(projectName);
 		createObserver.setVirtualModel(getFocusedObject().getObserverVirtualModel());

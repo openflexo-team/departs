@@ -21,9 +21,9 @@ package org.openflexo.module.traceanalysis.widget;
 
 import java.util.logging.Logger;
 
-import org.openflexo.fib.model.FIBBrowser;
-import org.openflexo.fib.model.FIBContainer;
 import org.openflexo.foundation.FlexoProject;
+import org.openflexo.gina.model.FIBContainer;
+import org.openflexo.gina.model.widget.FIBBrowser;
 import org.openflexo.module.traceanalysis.controller.TraceAnalysisController;
 import org.openflexo.rm.Resource;
 import org.openflexo.rm.ResourceLocator;

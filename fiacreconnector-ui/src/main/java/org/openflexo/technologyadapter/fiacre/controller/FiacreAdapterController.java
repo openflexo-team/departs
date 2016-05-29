@@ -24,10 +24,10 @@ import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
-import org.openflexo.fib.utils.InspectorGroup;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.editionaction.EditionAction;
 import org.openflexo.foundation.technologyadapter.TechnologyObject;
+import org.openflexo.gina.utils.InspectorGroup;
 import org.openflexo.icon.IconFactory;
 import org.openflexo.icon.IconLibrary;
 import org.openflexo.technologyadapter.fiacre.FiacreTechnologyAdapter;
@@ -119,7 +119,7 @@ public class FiacreAdapterController extends TechnologyAdapterController<FiacreT
 	}
 
 	@Override
-	public ImageIcon getIconForPatternRole(Class<? extends FlexoRole<?>> arg0) {
+	public ImageIcon getIconForFlexoRole(Class<? extends FlexoRole<?>> arg0) {
 		if (FiacreProcessRole.class.isAssignableFrom(arg0)) {
 			return getIconForTechnologyObject(FiacreProcess.class);
 		}
@@ -145,17 +145,23 @@ public class FiacreAdapterController extends TechnologyAdapterController<FiacreT
 	public ImageIcon getIconForEditionAction(Class<? extends EditionAction> editionActionClass) {
 		if (AddFiacreProcess.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(getIconForTechnologyObject(FiacreProcess.class), IconLibrary.DUPLICATE);
-		} else if (AddFiacreComponent.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (AddFiacreComponent.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(getIconForTechnologyObject(FiacreComponent.class), IconLibrary.DUPLICATE);
-		} else if (AddFiacreState.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (AddFiacreState.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(getIconForTechnologyObject(FiacreState.class), IconLibrary.DUPLICATE);
-		} else if (AddFiacreFifo.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (AddFiacreFifo.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(getIconForTechnologyObject(FiacreFifo.class), IconLibrary.DUPLICATE);
-		} else if (SelectFiacreProcess.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (SelectFiacreProcess.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(getIconForTechnologyObject(FiacreProcess.class), IconLibrary.IMPORT);
-		} else if (SelectFiacreComponents.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (SelectFiacreComponents.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(getIconForTechnologyObject(FiacreComponent.class), IconLibrary.IMPORT);
-		} else if (SelectFiacreStates.class.isAssignableFrom(editionActionClass)) {
+		}
+		else if (SelectFiacreStates.class.isAssignableFrom(editionActionClass)) {
 			return IconFactory.getImageIcon(getIconForTechnologyObject(FiacreState.class), IconLibrary.IMPORT);
 		}
 		return super.getIconForEditionAction(editionActionClass);

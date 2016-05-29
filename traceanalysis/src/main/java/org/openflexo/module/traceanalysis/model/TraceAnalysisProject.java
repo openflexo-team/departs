@@ -35,6 +35,7 @@ import org.openflexo.foundation.fml.ViewPoint;
 import org.openflexo.foundation.fml.ViewPointLibrary;
 import org.openflexo.foundation.fml.VirtualModel;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
+import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.View;
 import org.openflexo.foundation.fml.rt.ViewLibrary;
@@ -77,8 +78,8 @@ public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectW
 	// The view instanciated for the project and conformed to the traceAnalysisViewPoint
 	private View traceAnalysisView;
 
-	protected TraceAnalysisProject(FlexoProject project, TraceAnalysisProjectNature projectNature) throws FileNotFoundException,
-			ResourceLoadingCancelledException, InvalidArgumentException, FlexoException {
+	protected TraceAnalysisProject(FlexoProject project, TraceAnalysisProjectNature projectNature)
+			throws FileNotFoundException, ResourceLoadingCancelledException, InvalidArgumentException, FlexoException {
 		this.project = project;
 		this.projectNature = projectNature;
 
@@ -120,11 +121,11 @@ public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectW
 	/*public void setSystemVirtualModelInstance(SystemVirtualModelInstance systemVirtualModelInstance) {
 		this.systemVirtualModelInstance = systemVirtualModelInstance;
 	}
-
+	
 	public void setContextVirtualModelInstance(ContextVirtualModelInstance contextVirtualModelInstance) {
 		this.contextVirtualModelInstance = contextVirtualModelInstance;
 	}
-
+	
 	public void setObserverVirtualModelInstance(ObserverVirtualModelInstance observerVirtualModelInstance) {
 		this.observerVirtualModelInstance = observerVirtualModelInstance;
 	}*/
@@ -215,9 +216,9 @@ public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectW
 				// getServiceManager());
 				return null;
 			}
-			for (VirtualModelInstance vmi : traceAnalysisView.getVirtualModelInstances()) {
+			for (AbstractVirtualModelInstance<?, ?> vmi : traceAnalysisView.getVirtualModelInstances()) {
 				if (vmi.getVirtualModel().getName().equals("TraceVirtualModel")) {
-					createTraceVirtualModelInstance(vmi);
+					createTraceVirtualModelInstance((VirtualModelInstance) vmi);
 				}
 			}
 		}
@@ -265,17 +266,22 @@ public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectW
 	 * @return
 	 */
 	private VirtualModelInstance getVirtualModelInstanceConformToNamedVirtualModel(String name) {
-		for (VirtualModelInstance vmi : traceAnalysisView.getVirtualModelInstances()) {
+		for (AbstractVirtualModelInstance<?, ?> vmi : traceAnalysisView.getVirtualModelInstances()) {
 			if (vmi.getVirtualModel().getName().equals(name)) {
-				return vmi;
+				return (VirtualModelInstance) vmi;
 			}
 		}
 		logger.log(Level.WARNING, "No virtual model instance named " + name + " found in this project");
 		return null;
 	}
 
-	private FlexoServiceManager getServiceManager() {
-		return getProject().getServiceManager();
+	@Override
+	public FlexoServiceManager getServiceManager() {
+		FlexoServiceManager returned = super.getServiceManager();
+		if (returned == null) {
+			return getProject().getServiceManager();
+		}
+		return returned;
 	}
 
 	private ViewPointLibrary getViewPointLibrary() {
@@ -289,8 +295,8 @@ public class TraceAnalysisProject extends DefaultFlexoObject implements ProjectW
 	private ViewPoint retrieveViewpoint() throws FlexoException {
 		try {
 			// Retrieve the viewpoint resource from its URI. The viewpoint resource must be in a resource center!
-			ViewPointResource traceAnalsyisViewPointResource = getViewPointLibrary().getViewPointResource(
-					TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
+			ViewPointResource traceAnalsyisViewPointResource = getViewPointLibrary()
+					.getViewPointResource(TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
 			return traceAnalsyisViewPointResource.getResourceData(null);
 		} catch (Exception e) {
 			logger.severe("No trace analysis viewpoint found resource centers");
