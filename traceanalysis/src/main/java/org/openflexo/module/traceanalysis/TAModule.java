@@ -24,8 +24,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.openflexo.ApplicationContext;
-import org.openflexo.Flexo;
-import org.openflexo.FlexoMainLocalizer;
 import org.openflexo.components.ProgressWindow;
 import org.openflexo.foundation.fml.rm.ViewPointResource;
 import org.openflexo.foundation.resource.JarResourceCenter;
@@ -34,7 +32,6 @@ import org.openflexo.module.FlexoModule;
 import org.openflexo.module.Module;
 import org.openflexo.module.traceanalysis.controller.TraceAnalysisController;
 import org.openflexo.module.traceanalysis.model.TraceAnalysisProjectNature;
-import org.openflexo.rm.ResourceLocator;
 import org.openflexo.view.controller.FlexoController;
 
 /**
@@ -55,10 +52,11 @@ public class TAModule extends FlexoModule<TAModule> {
 		logger.log(Level.FINE, "Load Trace analysis module");
 		ProgressWindow.setProgressInstance(FlexoLocalization.localizedForKey("build_editor"));
 		logger.log(Level.FINE, "Init Localizations");
-		FlexoLocalization.initWith(ResourceLocator.locateResource("TraceAnalysisLocalized"), FlexoMainLocalizer.getInstance(), Flexo.isDev,
-				Flexo.isDev);
-		ViewPointResource traceAnalsyisViewPointResource = getApplicationContext().getViewPointLibrary().getViewPointResource(
-				TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
+		// FlexoLocalization.initWith(ResourceLocator.locateResource("TraceAnalysisLocalized"), FlexoMainLocalizer.getInstance(),
+		// Flexo.isDev,
+		// Flexo.isDev);
+		ViewPointResource traceAnalsyisViewPointResource = getApplicationContext().getViewPointLibrary()
+				.getViewPointResource(TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
 
 		// JarResourceCenter.addAllJarFromClassPathResourceCenters(getApplicationContext().getResourceCenterService());
 
@@ -66,8 +64,8 @@ public class TAModule extends FlexoModule<TAModule> {
 			logger.log(Level.WARNING, "No Viewpoint Resource Found, retrieve from Jar file");
 			JarResourceCenter.addNamedJarFromClassPathResourceCenters(getApplicationContext().getResourceCenterService(),
 					"fr\\ensta\\departs\\1.1\\departs-1.1");
-			traceAnalsyisViewPointResource = getApplicationContext().getViewPointLibrary().getViewPointResource(
-					TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
+			traceAnalsyisViewPointResource = getApplicationContext().getViewPointLibrary()
+					.getViewPointResource(TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
 		}
 	}
 
