@@ -64,6 +64,11 @@ public class TraceTechnologyAdapter extends TechnologyAdapter {
 	}
 
 	@Override
+	public String getLocalizationDirectory() {
+		return "FlexoLocalization/TraceTechnologyAdapter";
+	}
+
+	@Override
 	public String getIdentifier() {
 		return "OBP-TRACE";
 	}

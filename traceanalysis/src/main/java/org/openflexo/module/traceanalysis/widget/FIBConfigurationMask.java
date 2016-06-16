@@ -34,7 +34,7 @@ public class FIBConfigurationMask extends FIBBrowserView<TraceVirtualModelInstan
 	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/Widget/FIBConfigurationMask.fib");
 
 	public FIBConfigurationMask(TraceVirtualModelInstance traceVirtualModelInstance, TraceAnalysisController controller) {
-		super(traceVirtualModelInstance, controller, FIB_FILE);
+		super(traceVirtualModelInstance, controller, FIB_FILE, controller.getModuleLocales());
 	}
 
 	public void setTraceVirtualModelInstance(TraceVirtualModelInstance traceVirtualModelInstance) {

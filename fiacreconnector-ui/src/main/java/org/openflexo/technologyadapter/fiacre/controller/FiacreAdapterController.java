@@ -72,7 +72,8 @@ public class FiacreAdapterController extends TechnologyAdapterController<FiacreT
 	@Override
 	protected void initializeInspectors(FlexoController controller) {
 
-		fiacreInspectorGroup = controller.loadInspectorGroup("Fiacre", getFMLTechnologyAdapterInspectorGroup());
+		fiacreInspectorGroup = controller.loadInspectorGroup("Fiacre", getTechnologyAdapter().getLocales(),
+				getFMLTechnologyAdapterInspectorGroup());
 		// actionInitializer.getController().getModuleInspectorController()
 		// .loadDirectory(ResourceLocator.locateResource("src/main/resources/Inspectors/Fiacre"));
 	}

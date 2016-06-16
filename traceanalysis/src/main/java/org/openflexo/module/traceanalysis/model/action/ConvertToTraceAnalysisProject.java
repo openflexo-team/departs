@@ -22,6 +22,7 @@ package org.openflexo.module.traceanalysis.model.action;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import org.openflexo.ApplicationContext;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
@@ -29,6 +30,8 @@ import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.resource.SaveResourceException;
+import org.openflexo.localization.LocalizedDelegate;
+import org.openflexo.module.traceanalysis.TraceAnalysisModule;
 import org.openflexo.module.traceanalysis.model.TraceAnalysisProjectNature;
 
 /**
@@ -74,6 +77,15 @@ public class ConvertToTraceAnalysisProject extends FlexoAction<ConvertToTraceAna
 
 	ConvertToTraceAnalysisProject(FlexoProject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
+	}
+
+	@Override
+	public LocalizedDelegate getLocales() {
+		if (getServiceManager() instanceof ApplicationContext) {
+			return ((ApplicationContext) getServiceManager()).getModuleLoader().getModule(TraceAnalysisModule.class)
+					.getLoadedModuleInstance().getLocales();
+		}
+		return super.getLocales();
 	}
 
 	@Override

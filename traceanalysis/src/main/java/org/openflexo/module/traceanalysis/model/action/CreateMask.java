@@ -22,13 +22,15 @@ package org.openflexo.module.traceanalysis.model.action;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import org.openflexo.ApplicationContext;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
 import org.openflexo.foundation.action.FlexoAction;
 import org.openflexo.foundation.action.FlexoActionType;
 import org.openflexo.foundation.resource.SaveResourceException;
-import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.localization.LocalizedDelegate;
+import org.openflexo.module.traceanalysis.TraceAnalysisModule;
 import org.openflexo.module.traceanalysis.model.TraceVirtualModelInstance;
 import org.openflexo.module.traceanalysis.model.mask.Mask;
 import org.openflexo.toolbox.StringUtils;
@@ -68,14 +70,23 @@ public class CreateMask extends FlexoAction<CreateMask, TraceVirtualModelInstanc
 		super(actionType, focusedObject, globalSelection, editor);
 	}
 
+	@Override
+	public LocalizedDelegate getLocales() {
+		if (getServiceManager() instanceof ApplicationContext) {
+			return ((ApplicationContext) getServiceManager()).getModuleLoader().getModule(TraceAnalysisModule.class)
+					.getLoadedModuleInstance().getLocales();
+		}
+		return super.getLocales();
+	}
+
 	private Mask mask;
-	
+
 	private String errorMessage;
-	
+
 	private String maskName;
-	
+
 	private String maskDescription;
-	
+
 	@Override
 	protected void doAction(Object context) throws SaveResourceException {
 
@@ -83,7 +94,7 @@ public class CreateMask extends FlexoAction<CreateMask, TraceVirtualModelInstanc
 		mask = getFocusedObject().getNewMask();
 		mask.setName(getMaskName());
 	}
-	
+
 	public String getMaskName() {
 		return maskName;
 	}
@@ -107,7 +118,7 @@ public class CreateMask extends FlexoAction<CreateMask, TraceVirtualModelInstanc
 	public boolean isValid() {
 
 		if (StringUtils.isEmpty(maskName)) {
-			errorMessage = FlexoLocalization.localizedForKey("no_mask_name_defined");
+			errorMessage = getLocales().localizedForKey("no_mask_name_defined");
 			return false;
 		}
 

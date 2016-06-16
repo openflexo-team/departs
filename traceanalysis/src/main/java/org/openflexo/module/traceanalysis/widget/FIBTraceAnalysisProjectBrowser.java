@@ -40,7 +40,7 @@ public class FIBTraceAnalysisProjectBrowser extends FIBBrowserView<FlexoProject>
 	public static final Resource FIB_FILE = ResourceLocator.locateResource("Fib/Widget/FIBTraceAnalysisProjectBrowser.fib");
 
 	public FIBTraceAnalysisProjectBrowser(FlexoProject project, TraceAnalysisController controller) {
-		super(project, controller, FIB_FILE);
+		super(project, controller, FIB_FILE, controller.getModuleLocales());
 	}
 
 	@Override

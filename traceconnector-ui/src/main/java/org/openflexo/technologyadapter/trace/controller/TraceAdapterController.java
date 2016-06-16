@@ -55,9 +55,8 @@ public class TraceAdapterController extends TechnologyAdapterController<TraceTec
 	@Override
 	protected void initializeInspectors(FlexoController controller) {
 
-		traceInspectorGroup = controller.loadInspectorGroup("Trace", getFMLTechnologyAdapterInspectorGroup());
-		// actionInitializer.getController().getModuleInspectorController()
-		// .loadDirectory(ResourceLocator.locateResource("src/main/resources/Inspectors/Trace"));
+		traceInspectorGroup = controller.loadInspectorGroup("Trace", getTechnologyAdapter().getLocales(),
+				getFMLTechnologyAdapterInspectorGroup());
 	}
 
 	private InspectorGroup traceInspectorGroup;

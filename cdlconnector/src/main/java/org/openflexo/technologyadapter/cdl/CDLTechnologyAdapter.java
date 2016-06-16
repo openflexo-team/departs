@@ -64,6 +64,11 @@ public class CDLTechnologyAdapter extends TechnologyAdapter {
 	}
 
 	@Override
+	public String getLocalizationDirectory() {
+		return "FlexoLocalization/CDLTechnologyAdapter";
+	}
+
+	@Override
 	public String getIdentifier() {
 		return "CDL";
 	}

@@ -19,6 +19,7 @@
  */
 package org.openflexo.technologyadapter.trace.gui.view;
 
+import org.openflexo.technologyadapter.trace.TraceTechnologyAdapter;
 import org.openflexo.technologyadapter.trace.controller.TraceCst;
 import org.openflexo.technologyadapter.trace.model.OBPTrace;
 import org.openflexo.view.FIBModuleView;
@@ -35,7 +36,8 @@ import org.openflexo.view.controller.model.FlexoPerspective;
 public class FIBTraceView extends FIBModuleView<OBPTrace> {
 
 	public FIBTraceView(OBPTrace traceOBP, FlexoController controller) {
-		super(traceOBP, controller, TraceCst.TRACE_OBP_VIEW_FIB);
+		super(traceOBP, controller, TraceCst.TRACE_OBP_VIEW_FIB,
+				controller.getTechnologyAdapter(TraceTechnologyAdapter.class).getLocales());
 	}
 
 	@Override

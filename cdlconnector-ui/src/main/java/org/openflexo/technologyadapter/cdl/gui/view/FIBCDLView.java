@@ -19,6 +19,7 @@
  */
 package org.openflexo.technologyadapter.cdl.gui.view;
 
+import org.openflexo.technologyadapter.cdl.CDLTechnologyAdapter;
 import org.openflexo.technologyadapter.cdl.controller.CDLCst;
 import org.openflexo.technologyadapter.cdl.model.CDLUnit;
 import org.openflexo.view.FIBModuleView;
@@ -35,7 +36,7 @@ import org.openflexo.view.controller.model.FlexoPerspective;
 public class FIBCDLView extends FIBModuleView<CDLUnit> {
 
 	public FIBCDLView(CDLUnit cdlUnit, FlexoController controller) {
-		super(cdlUnit, controller, CDLCst.CDL_UNIT_VIEW_FIB);
+		super(cdlUnit, controller, CDLCst.CDL_UNIT_VIEW_FIB, controller.getTechnologyAdapter(CDLTechnologyAdapter.class).getLocales());
 	}
 
 	@Override

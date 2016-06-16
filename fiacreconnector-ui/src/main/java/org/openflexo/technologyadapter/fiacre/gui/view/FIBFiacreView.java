@@ -19,6 +19,7 @@
  */
 package org.openflexo.technologyadapter.fiacre.gui.view;
 
+import org.openflexo.technologyadapter.fiacre.FiacreTechnologyAdapter;
 import org.openflexo.technologyadapter.fiacre.controller.FiacreCst;
 import org.openflexo.technologyadapter.fiacre.model.FiacreProgram;
 import org.openflexo.view.FIBModuleView;
@@ -35,7 +36,8 @@ import org.openflexo.view.controller.model.FlexoPerspective;
 public class FIBFiacreView extends FIBModuleView<FiacreProgram> {
 
 	public FIBFiacreView(FiacreProgram cdlUnit, FlexoController controller) {
-		super(cdlUnit, controller, FiacreCst.FIACRE_PROGRAM_VIEW_FIB);
+		super(cdlUnit, controller, FiacreCst.FIACRE_PROGRAM_VIEW_FIB,
+				controller.getTechnologyAdapter(FiacreTechnologyAdapter.class).getLocales());
 	}
 
 	@Override

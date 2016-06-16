@@ -64,6 +64,11 @@ public class FiacreTechnologyAdapter extends TechnologyAdapter {
 	}
 
 	@Override
+	public String getLocalizationDirectory() {
+		return "FlexoLocalization/FiacreTechnologyAdapter";
+	}
+
+	@Override
 	public String getIdentifier() {
 		return "FIACRE";
 	}

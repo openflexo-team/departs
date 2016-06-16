@@ -22,6 +22,7 @@ package org.openflexo.module.traceanalysis.model.action;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import org.openflexo.ApplicationContext;
 import org.openflexo.foundation.FlexoEditor;
 import org.openflexo.foundation.FlexoObject;
 import org.openflexo.foundation.FlexoObject.FlexoObjectImpl;
@@ -40,7 +41,8 @@ import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.technologyadapter.FreeModelSlotInstanceConfiguration;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterResource;
-import org.openflexo.localization.FlexoLocalization;
+import org.openflexo.localization.LocalizedDelegate;
+import org.openflexo.module.traceanalysis.TraceAnalysisModule;
 import org.openflexo.module.traceanalysis.model.TraceAnalysisProject;
 import org.openflexo.technologyadapter.cdl.CDLModelSlot;
 import org.openflexo.technologyadapter.cdl.CDLTechnologyAdapter;
@@ -81,6 +83,15 @@ public class CreateTraceAnalysisProject extends FlexoAction<CreateTraceAnalysisP
 
 	CreateTraceAnalysisProject(TraceAnalysisProject focusedObject, Vector<FlexoObject> globalSelection, FlexoEditor editor) {
 		super(actionType, focusedObject, globalSelection, editor);
+	}
+
+	@Override
+	public LocalizedDelegate getLocales() {
+		if (getServiceManager() instanceof ApplicationContext) {
+			return ((ApplicationContext) getServiceManager()).getModuleLoader().getModule(TraceAnalysisModule.class)
+					.getLoadedModuleInstance().getLocales();
+		}
+		return super.getLocales();
 	}
 
 	protected FlexoResourceCenter<?> resourceCenter;
@@ -173,11 +184,11 @@ public class CreateTraceAnalysisProject extends FlexoAction<CreateTraceAnalysisP
 			return false;
 		}*/
 		if (cdl == null) {
-			errorMessage = FlexoLocalization.localizedForKey("no_cdl_file");
+			errorMessage = getLocales().localizedForKey("no_cdl_file");
 			return false;
 		}
 		if (fiacre == null) {
-			errorMessage = FlexoLocalization.localizedForKey("no_fiacre_file");
+			errorMessage = getLocales().localizedForKey("no_fiacre_file");
 			return false;
 		}
 

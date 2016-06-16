@@ -79,9 +79,8 @@ public class CDLAdapterController extends TechnologyAdapterController<CDLTechnol
 	@Override
 	protected void initializeInspectors(FlexoController controller) {
 
-		cdlInspectorGroup = controller.loadInspectorGroup("CDL", getFMLTechnologyAdapterInspectorGroup());
-		// actionInitializer.getController().getModuleInspectorController()
-		// .loadDirectory(ResourceLocator.locateResource("src/main/resources/Inspectors/CDL"));
+		cdlInspectorGroup = controller.loadInspectorGroup("CDL", getTechnologyAdapter().getLocales(),
+				getFMLTechnologyAdapterInspectorGroup());
 	}
 
 	private InspectorGroup cdlInspectorGroup;

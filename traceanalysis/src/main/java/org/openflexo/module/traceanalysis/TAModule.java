@@ -50,11 +50,8 @@ public class TAModule extends FlexoModule<TAModule> {
 		super(applicationContext);
 		// TODO Auto-generated constructor stub
 		logger.log(Level.FINE, "Load Trace analysis module");
-		ProgressWindow.setProgressInstance(FlexoLocalization.localizedForKey("build_editor"));
+		ProgressWindow.setProgressInstance(FlexoLocalization.getMainLocalizer().localizedForKey("build_editor"));
 		logger.log(Level.FINE, "Init Localizations");
-		// FlexoLocalization.initWith(ResourceLocator.locateResource("TraceAnalysisLocalized"), FlexoMainLocalizer.getInstance(),
-		// Flexo.isDev,
-		// Flexo.isDev);
 		ViewPointResource traceAnalsyisViewPointResource = getApplicationContext().getViewPointLibrary()
 				.getViewPointResource(TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
 
@@ -67,6 +64,11 @@ public class TAModule extends FlexoModule<TAModule> {
 			traceAnalsyisViewPointResource = getApplicationContext().getViewPointLibrary()
 					.getViewPointResource(TraceAnalysisProjectNature.TRACE_ANALYSIS_VIEWPOINT_RELATIVE_URI);
 		}
+	}
+
+	@Override
+	public String getLocalizationDirectory() {
+		return "FlexoLocalization/TraceAnalysis";
 	}
 
 	@Override
