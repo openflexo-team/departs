@@ -108,7 +108,7 @@ public class CDLTechnologyAdapter extends TechnologyAdapter {
 			}
 		}
 		// Call it to update the current repositories
-		getPropertyChangeSupport().firePropertyChange("getAllRepositories()", null, resourceCenter);
+		notifyRepositoryStructureChanged();
 	}
 
 	protected CDLUnitResource tryToLookupCDLUnits(FlexoResourceCenter<?> resourceCenter, File candidateFile) {
@@ -179,7 +179,7 @@ public class CDLTechnologyAdapter extends TechnologyAdapter {
 			newResource = tryToLookupCDLUnits(resourceCenter, candidateFile);
 		}
 		// Call it to update the current repositories
-		getPropertyChangeSupport().firePropertyChange("getAllRepositories()", null, resourceCenter);
+		notifyRepositoryStructureChanged();
 		return newResource != null;
 	}
 

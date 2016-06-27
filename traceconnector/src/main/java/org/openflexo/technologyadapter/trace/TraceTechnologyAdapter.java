@@ -107,7 +107,7 @@ public class TraceTechnologyAdapter extends TechnologyAdapter {
 			}
 		}
 		// Call it to update the current repositories
-		getPropertyChangeSupport().firePropertyChange("getAllRepositories()", null, resourceCenter);
+		notifyRepositoryStructureChanged();
 	}
 
 	protected TraceOBPResource tryToLookupTraceOBPs(FlexoResourceCenter<?> resourceCenter, File candidateFile) {
@@ -178,7 +178,7 @@ public class TraceTechnologyAdapter extends TechnologyAdapter {
 			newResource = tryToLookupTraceOBPs(resourceCenter, candidateFile);
 		}
 		// Call it to update the current repositories
-		getPropertyChangeSupport().firePropertyChange("getAllRepositories()", null, resourceCenter);
+		notifyRepositoryStructureChanged();
 		return newResource != null;
 	}
 

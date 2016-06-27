@@ -107,7 +107,7 @@ public class FiacreTechnologyAdapter extends TechnologyAdapter {
 			}
 		}
 		// Call it to update the current repositories
-		getPropertyChangeSupport().firePropertyChange("getAllRepositories()", null, resourceCenter);
+		notifyRepositoryStructureChanged();
 	}
 
 	protected FiacreProgramResource tryToLookupFiacrePrograms(FlexoResourceCenter<?> resourceCenter, File candidateFile) {
@@ -178,7 +178,7 @@ public class FiacreTechnologyAdapter extends TechnologyAdapter {
 			newResource = tryToLookupFiacrePrograms(resourceCenter, candidateFile);
 		}
 		// Call it to update the current repositories
-		getPropertyChangeSupport().firePropertyChange("getAllRepositories()", null, resourceCenter);
+		notifyRepositoryStructureChanged();
 		return newResource != null;
 	}
 
