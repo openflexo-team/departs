@@ -18,7 +18,7 @@ import org.openflexo.fge.GRProvider.ShapeGRProvider;
 import org.openflexo.fge.GRStructureVisitor;
 import org.openflexo.fge.GraphicalRepresentation;
 import org.openflexo.fge.ShapeGraphicalRepresentation;
-import org.openflexo.fge.graph.FGEDiscreteFunctionGraph;
+import org.openflexo.fge.graph.FGEDiscreteSimpleFunctionGraph;
 import org.openflexo.fge.impl.DrawingImpl;
 import org.openflexo.module.traceanalysis.model.mask.MaskableElement;
 import org.openflexo.module.traceanalysis.view.routeview.BehaviourObjectInRoute;
@@ -87,7 +87,7 @@ public class SequenceDiagramDrawing extends DrawingImpl<OBPRoute> implements Pro
 	
 	private RouteLayout layout;
 	
-	private Map<FGEDiscreteFunctionGraph<OBPTraceData>,GraphGRBinding> chronograms;
+	private Map<FGEDiscreteSimpleFunctionGraph<OBPTraceData>,GraphGRBinding> chronograms;
 	
 	private DrawingGraphicalRepresentation drawingRepresentation;
 	
