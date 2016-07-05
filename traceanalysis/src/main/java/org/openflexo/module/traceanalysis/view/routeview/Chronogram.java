@@ -11,7 +11,7 @@ import org.openflexo.fge.ColorGradientBackgroundStyle.ColorGradientDirection;
 import org.openflexo.fge.FGEModelFactory;
 import org.openflexo.fge.FGEModelFactoryImpl;
 import org.openflexo.fge.graph.FGEDiscreteSimpleFunctionGraph;
-import org.openflexo.fge.graph.FGEFunction.GraphType;
+import org.openflexo.fge.graph.FGEFunction.FGEGraphType;
 import org.openflexo.fge.graph.FGENumericFunction;
 import org.openflexo.model.annotations.PropertyIdentifier;
 import org.openflexo.model.exceptions.ModelDefinitionException;
@@ -49,7 +49,7 @@ public class Chronogram extends FGEDiscreteSimpleFunctionGraph implements Proper
 		setDiscreteValuesLabel(new DataBinding<String>("data.behaviourObjectState.oBPTraceConfiguration.name"));
 		setParameterOrientation(Orientation.HORIZONTAL);
 		FGENumericFunction<Integer> functionChronogram = addNumericFunction("values", Integer.class,
-				new DataBinding<Integer>("data.getIntegerValue()"), GraphType.RECT_POLYLIN);
+				new DataBinding<Integer>("data.getIntegerValue()"), FGEGraphType.RECT_POLYLIN);
 		functionChronogram.setForegroundStyle(getFactory().makeForegroundStyle(Color.BLUE, 1.0f));
 		functionChronogram
 				.setBackgroundStyle(getFactory().makeColorGradientBackground(Color.BLUE, Color.WHITE, ColorGradientDirection.NORTH_SOUTH));
