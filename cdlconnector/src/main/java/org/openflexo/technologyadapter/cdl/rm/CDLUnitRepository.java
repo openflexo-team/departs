@@ -21,11 +21,11 @@
 package org.openflexo.technologyadapter.cdl.rm;
 
 import org.openflexo.foundation.resource.FlexoResourceCenter;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapterFileResourceRepository;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterResourceRepository;
 import org.openflexo.technologyadapter.cdl.CDLTechnologyAdapter;
 import org.openflexo.technologyadapter.cdl.model.CDLUnit;
 
-public class CDLUnitRepository extends TechnologyAdapterFileResourceRepository<CDLUnitResource, CDLTechnologyAdapter, CDLUnit> {
+public class CDLUnitRepository extends TechnologyAdapterResourceRepository<CDLUnitResource, CDLTechnologyAdapter, CDLUnit> {
 
 	public CDLUnitRepository(CDLTechnologyAdapter adapter, FlexoResourceCenter<?> resourceCenter) {
 		super(adapter, resourceCenter);

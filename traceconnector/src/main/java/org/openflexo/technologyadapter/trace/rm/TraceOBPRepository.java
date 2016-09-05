@@ -21,11 +21,11 @@
 package org.openflexo.technologyadapter.trace.rm;
 
 import org.openflexo.foundation.resource.FlexoResourceCenter;
-import org.openflexo.foundation.technologyadapter.TechnologyAdapterFileResourceRepository;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapterResourceRepository;
 import org.openflexo.technologyadapter.trace.TraceTechnologyAdapter;
 import org.openflexo.technologyadapter.trace.model.OBPTrace;
 
-public class TraceOBPRepository extends TechnologyAdapterFileResourceRepository<TraceOBPResource, TraceTechnologyAdapter, OBPTrace> {
+public class TraceOBPRepository extends TechnologyAdapterResourceRepository<TraceOBPResource, TraceTechnologyAdapter, OBPTrace> {
 
 	public TraceOBPRepository(TraceTechnologyAdapter adapter, FlexoResourceCenter<?> resourceCenter) {
 		super(adapter, resourceCenter);
