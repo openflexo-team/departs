@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
 import org.openflexo.foundation.fml.annotations.DeclareRepositoryType;
+import org.openflexo.foundation.fml.annotations.DeclareResourceTypes;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -31,6 +32,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterBindingFactor
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterInitializationException;
 import org.openflexo.technologyadapter.cdl.fml.bindings.CDLBindingFactory;
 import org.openflexo.technologyadapter.cdl.rm.CDLUnitRepository;
+import org.openflexo.technologyadapter.cdl.rm.CDLUnitResourceFactory;
 
 /**
  * This class defines and implements the CDL technology adapter
@@ -41,6 +43,7 @@ import org.openflexo.technologyadapter.cdl.rm.CDLUnitRepository;
 
 @DeclareModelSlots({ CDLModelSlot.class })
 @DeclareRepositoryType({ CDLUnitRepository.class })
+@DeclareResourceTypes({ CDLUnitResourceFactory.class })
 public class CDLTechnologyAdapter extends TechnologyAdapter {
 
 	protected static final Logger logger = Logger.getLogger(CDLTechnologyAdapter.class.getPackage().getName());

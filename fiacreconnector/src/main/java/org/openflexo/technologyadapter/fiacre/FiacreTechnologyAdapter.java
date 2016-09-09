@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
 import org.openflexo.foundation.fml.annotations.DeclareRepositoryType;
+import org.openflexo.foundation.fml.annotations.DeclareResourceTypes;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
@@ -31,6 +32,7 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterBindingFactor
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterInitializationException;
 import org.openflexo.technologyadapter.fiacre.fml.bindings.FiacreBindingFactory;
 import org.openflexo.technologyadapter.fiacre.rm.FiacreProgramRepository;
+import org.openflexo.technologyadapter.fiacre.rm.FiacreProgramResourceFactory;
 
 /**
  * This class defines and implements the Fiacre technology adapter
@@ -41,6 +43,7 @@ import org.openflexo.technologyadapter.fiacre.rm.FiacreProgramRepository;
 
 @DeclareModelSlots({ FiacreProgramModelSlot.class })
 @DeclareRepositoryType({ FiacreProgramRepository.class })
+@DeclareResourceTypes({ FiacreProgramResourceFactory.class })
 public class FiacreTechnologyAdapter extends TechnologyAdapter {
 
 	protected static final Logger logger = Logger.getLogger(FiacreTechnologyAdapter.class.getPackage().getName());
