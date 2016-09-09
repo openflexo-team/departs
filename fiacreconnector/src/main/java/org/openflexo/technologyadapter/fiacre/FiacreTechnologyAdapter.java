@@ -20,24 +20,17 @@
 
 package org.openflexo.technologyadapter.fiacre;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Iterator;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
 import org.openflexo.foundation.fml.annotations.DeclareRepositoryType;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
-import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterBindingFactory;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterInitializationException;
-import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
 import org.openflexo.technologyadapter.fiacre.fml.bindings.FiacreBindingFactory;
 import org.openflexo.technologyadapter.fiacre.rm.FiacreProgramRepository;
-import org.openflexo.technologyadapter.fiacre.rm.FiacreProgramResource;
-import org.openflexo.technologyadapter.fiacre.rm.FiacreProgramResourceImpl;
 
 /**
  * This class defines and implements the Fiacre technology adapter
@@ -49,7 +42,6 @@ import org.openflexo.technologyadapter.fiacre.rm.FiacreProgramResourceImpl;
 @DeclareModelSlots({ FiacreProgramModelSlot.class })
 @DeclareRepositoryType({ FiacreProgramRepository.class })
 public class FiacreTechnologyAdapter extends TechnologyAdapter {
-	private static String FIACRE_FILE_EXTENSION = ".fcr";
 
 	protected static final Logger logger = Logger.getLogger(FiacreTechnologyAdapter.class.getPackage().getName());
 
@@ -74,7 +66,7 @@ public class FiacreTechnologyAdapter extends TechnologyAdapter {
 	}
 
 	@Override
-	public TechnologyContextManager createTechnologyContextManager(FlexoResourceCenterService service) {
+	public FiacreTechnologyContextManager createTechnologyContextManager(FlexoResourceCenterService service) {
 		return new FiacreTechnologyContextManager(this, service);
 	}
 
@@ -89,15 +81,15 @@ public class FiacreTechnologyAdapter extends TechnologyAdapter {
 	 * 
 	 * @param resourceCenter
 	 */
-	@Override
+	/*@Override
 	public <I> void performInitializeResourceCenter(FlexoResourceCenter<I> resourceCenter) {
 		FiacreProgramRepository FiacreProgramRepository = resourceCenter.getRepository(FiacreProgramRepository.class, this);
 		if (FiacreProgramRepository == null) {
 			FiacreProgramRepository = createFiacreProgramRepository(resourceCenter);
 		}
-
+	
 		Iterator<I> it = resourceCenter.iterator();
-
+	
 		while (it.hasNext()) {
 			I item = it.next();
 			if (item instanceof File) {
@@ -108,9 +100,9 @@ public class FiacreTechnologyAdapter extends TechnologyAdapter {
 		}
 		// Call it to update the current repositories
 		notifyRepositoryStructureChanged();
-	}
+	}*/
 
-	protected FiacreProgramResource tryToLookupFiacrePrograms(FlexoResourceCenter<?> resourceCenter, File candidateFile) {
+	/*protected FiacreProgramResource tryToLookupFiacrePrograms(FlexoResourceCenter<?> resourceCenter, File candidateFile) {
 		if (isValidFiacreFile(candidateFile)) {
 			FiacreProgramResource FiacreProgramRes = retrieveFiacreProgramResource(candidateFile);
 			FiacreProgramRepository FiacreProgramRepository = resourceCenter.getRepository(FiacreProgramRepository.class, this);
@@ -127,29 +119,38 @@ public class FiacreTechnologyAdapter extends TechnologyAdapter {
 			}
 		}
 		return null;
-	}
+	}*/
 
 	/**
 	 * Instantiate new workbook resource stored in supplied model file<br>
 	 * *
 	 */
-	public FiacreProgramResource retrieveFiacreProgramResource(File FiacreFile) {
+	/*public FiacreProgramResource retrieveFiacreProgramResource(File FiacreFile) {
 		FiacreProgramResource FiacreProgramResource = null;
-
+	
 		// TODO: try to look-up already found file
 		FiacreProgramResource = FiacreProgramResourceImpl.retrieveFiacreProgramResource(FiacreFile, getTechnologyContextManager());
-
+	
 		return FiacreProgramResource;
-	}
+	}*/
 
 	/**
 	 * 
 	 * Create a Fiacre unit repository for current {@link TechnologyAdapter} and supplied {@link FlexoResourceCenter}
 	 * 
 	 */
-	public FiacreProgramRepository createFiacreProgramRepository(FlexoResourceCenter<?> resourceCenter) {
+	/*public FiacreProgramRepository createFiacreProgramRepository(FlexoResourceCenter<?> resourceCenter) {
 		FiacreProgramRepository returned = new FiacreProgramRepository(this, resourceCenter);
 		resourceCenter.registerRepository(returned, FiacreProgramRepository.class, this);
+		return returned;
+	}*/
+
+	public <I> FiacreProgramRepository<I> getFiacreProgramRepository(FlexoResourceCenter<I> resourceCenter) {
+		FiacreProgramRepository<I> returned = resourceCenter.getRepository(FiacreProgramRepository.class, this);
+		if (returned == null) {
+			returned = new FiacreProgramRepository<I>(this, resourceCenter);
+			resourceCenter.registerRepository(returned, FiacreProgramRepository.class, this);
+		}
 		return returned;
 	}
 
@@ -160,9 +161,9 @@ public class FiacreTechnologyAdapter extends TechnologyAdapter {
 	 * 
 	 * @return
 	 */
-	public boolean isValidFiacreFile(File candidateFile) {
+	/*public boolean isValidFiacreFile(File candidateFile) {
 		return candidateFile.getName().endsWith(FIACRE_FILE_EXTENSION);
-	}
+	}*/
 
 	@Override
 	public <I> boolean isIgnorable(FlexoResourceCenter<I> resourceCenter, I contents) {
@@ -170,7 +171,7 @@ public class FiacreTechnologyAdapter extends TechnologyAdapter {
 		return false;
 	}
 
-	@Override
+	/*@Override
 	public <I> boolean contentsAdded(FlexoResourceCenter<I> resourceCenter, I contents) {
 		FiacreProgramResource newResource = null;
 		if (contents instanceof File) {
@@ -181,25 +182,24 @@ public class FiacreTechnologyAdapter extends TechnologyAdapter {
 		notifyRepositoryStructureChanged();
 		return newResource != null;
 	}
-
+	
 	@Override
 	public <I> boolean contentsModified(FlexoResourceCenter<I> resourceCenter, I contents) {
 		return false;
 	}
-
+	
 	@Override
 	public <I> boolean contentsDeleted(FlexoResourceCenter<I> resourceCenter, I contents) {
 		return false;
 	}
-
+	
 	@Override
 	public <I> boolean contentsRenamed(FlexoResourceCenter<I> resourceCenter, I contents, String oldName, String newName) {
 		return false;
-	}
+	}*/
 
 	@Override
 	public FiacreTechnologyContextManager getTechnologyContextManager() {
-		// TODO Auto-generated method stub
 		return (FiacreTechnologyContextManager) super.getTechnologyContextManager();
 	}
 

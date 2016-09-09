@@ -25,9 +25,9 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterResourceRepos
 import org.openflexo.technologyadapter.trace.TraceTechnologyAdapter;
 import org.openflexo.technologyadapter.trace.model.OBPTrace;
 
-public class TraceOBPRepository extends TechnologyAdapterResourceRepository<TraceOBPResource, TraceTechnologyAdapter, OBPTrace> {
+public class TraceOBPRepository<I> extends TechnologyAdapterResourceRepository<TraceOBPResource, TraceTechnologyAdapter, OBPTrace, I> {
 
-	public TraceOBPRepository(TraceTechnologyAdapter adapter, FlexoResourceCenter<?> resourceCenter) {
+	public TraceOBPRepository(TraceTechnologyAdapter adapter, FlexoResourceCenter<I> resourceCenter) {
 		super(adapter, resourceCenter);
 	}
 

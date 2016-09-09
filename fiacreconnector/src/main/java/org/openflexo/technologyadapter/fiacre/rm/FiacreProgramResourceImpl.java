@@ -41,10 +41,6 @@ import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.resource.SaveResourcePermissionDeniedException;
-import org.openflexo.model.ModelContextLibrary;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.factory.ModelFactory;
-import org.openflexo.technologyadapter.fiacre.FiacreTechnologyContextManager;
 import org.openflexo.technologyadapter.fiacre.model.FiacreProgram;
 import org.openflexo.technologyadapter.fiacre.model.io.FiacreProgramConverter;
 import org.openflexo.toolbox.IProgress;
@@ -65,51 +61,6 @@ public abstract class FiacreProgramResourceImpl extends FlexoResourceImpl<Fiacre
 
 	public void setConverter(FiacreProgramConverter converter) {
 		this.converter = converter;
-	}
-
-	public static FiacreProgramResource makeFiacreProgramResource(String modelURI, File modelFile,
-			FiacreTechnologyContextManager technologyContextManager) {
-		try {
-			ModelFactory factory = new ModelFactory(
-					ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class, FiacreProgramResource.class));
-			FiacreProgramResourceImpl returned = (FiacreProgramResourceImpl) factory.newInstance(FiacreProgramResource.class);
-			returned.initName(modelFile.getName());
-			FileFlexoIODelegate fileIODelegate = factory.newInstance(FileFlexoIODelegate.class);
-			returned.setFlexoIODelegate(fileIODelegate);
-			fileIODelegate.setFile(modelFile);
-			returned.setURI(modelURI);
-			returned.setServiceManager(technologyContextManager.getTechnologyAdapter().getTechnologyAdapterService().getServiceManager());
-			returned.setTechnologyAdapter(technologyContextManager.getTechnologyAdapter());
-			returned.setTechnologyContextManager(technologyContextManager);
-			technologyContextManager.registerResource(returned);
-
-			return returned;
-		} catch (ModelDefinitionException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	public static FiacreProgramResource retrieveFiacreProgramResource(File FiacreFile,
-			FiacreTechnologyContextManager technologyContextManager) {
-		try {
-			ModelFactory factory = new ModelFactory(
-					ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class, FiacreProgramResource.class));
-			FiacreProgramResourceImpl returned = (FiacreProgramResourceImpl) factory.newInstance(FiacreProgramResource.class);
-			returned.initName(FiacreFile.getName());
-			FileFlexoIODelegate fileIODelegate = factory.newInstance(FileFlexoIODelegate.class);
-			returned.setFlexoIODelegate(fileIODelegate);
-			fileIODelegate.setFile(FiacreFile);
-			returned.setURI(FiacreFile.toURI().toString());
-			returned.setServiceManager(technologyContextManager.getTechnologyAdapter().getTechnologyAdapterService().getServiceManager());
-			returned.setTechnologyAdapter(technologyContextManager.getTechnologyAdapter());
-			returned.setTechnologyContextManager(technologyContextManager);
-			technologyContextManager.registerResource(returned);
-			return returned;
-		} catch (ModelDefinitionException e) {
-			e.printStackTrace();
-		}
-		return null;
 	}
 
 	@Override

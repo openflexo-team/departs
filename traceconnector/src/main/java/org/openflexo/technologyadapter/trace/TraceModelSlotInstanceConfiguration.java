@@ -20,16 +20,16 @@
 
 package org.openflexo.technologyadapter.trace;
 
-import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.action.ModelSlotInstanceConfiguration;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.technologyadapter.FreeModelSlotInstanceConfiguration;
 import org.openflexo.technologyadapter.trace.model.OBPTrace;
 
 public class TraceModelSlotInstanceConfiguration extends FreeModelSlotInstanceConfiguration<OBPTrace, TraceModelSlot> {
 
 	protected TraceModelSlotInstanceConfiguration(TraceModelSlot ms, AbstractVirtualModelInstance<?, ?> virtualModelInstance,
-			FlexoProject project) {
+			FlexoResourceCenter<?> project) {
 		super(ms, virtualModelInstance, project);
 	}
 

@@ -25,9 +25,9 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterResourceRepos
 import org.openflexo.technologyadapter.cdl.CDLTechnologyAdapter;
 import org.openflexo.technologyadapter.cdl.model.CDLUnit;
 
-public class CDLUnitRepository extends TechnologyAdapterResourceRepository<CDLUnitResource, CDLTechnologyAdapter, CDLUnit> {
+public class CDLUnitRepository<I> extends TechnologyAdapterResourceRepository<CDLUnitResource, CDLTechnologyAdapter, CDLUnit, I> {
 
-	public CDLUnitRepository(CDLTechnologyAdapter adapter, FlexoResourceCenter<?> resourceCenter) {
+	public CDLUnitRepository(CDLTechnologyAdapter adapter, FlexoResourceCenter<I> resourceCenter) {
 		super(adapter, resourceCenter);
 	}
 

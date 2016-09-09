@@ -25,10 +25,10 @@ import org.openflexo.foundation.technologyadapter.TechnologyAdapterResourceRepos
 import org.openflexo.technologyadapter.fiacre.FiacreTechnologyAdapter;
 import org.openflexo.technologyadapter.fiacre.model.FiacreProgram;
 
-public class FiacreProgramRepository extends
-		TechnologyAdapterResourceRepository<FiacreProgramResource, FiacreTechnologyAdapter, FiacreProgram> {
+public class FiacreProgramRepository<I>
+		extends TechnologyAdapterResourceRepository<FiacreProgramResource, FiacreTechnologyAdapter, FiacreProgram, I> {
 
-	public FiacreProgramRepository(FiacreTechnologyAdapter adapter, FlexoResourceCenter<?> resourceCenter) {
+	public FiacreProgramRepository(FiacreTechnologyAdapter adapter, FlexoResourceCenter<I> resourceCenter) {
 		super(adapter, resourceCenter);
 	}
 

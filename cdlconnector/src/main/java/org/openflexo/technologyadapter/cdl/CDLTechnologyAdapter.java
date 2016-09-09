@@ -20,24 +20,17 @@
 
 package org.openflexo.technologyadapter.cdl;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Iterator;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
 import org.openflexo.foundation.fml.annotations.DeclareRepositoryType;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
-import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterBindingFactory;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterInitializationException;
-import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
 import org.openflexo.technologyadapter.cdl.fml.bindings.CDLBindingFactory;
 import org.openflexo.technologyadapter.cdl.rm.CDLUnitRepository;
-import org.openflexo.technologyadapter.cdl.rm.CDLUnitResource;
-import org.openflexo.technologyadapter.cdl.rm.CDLUnitResourceImpl;
 
 /**
  * This class defines and implements the CDL technology adapter
@@ -49,7 +42,6 @@ import org.openflexo.technologyadapter.cdl.rm.CDLUnitResourceImpl;
 @DeclareModelSlots({ CDLModelSlot.class })
 @DeclareRepositoryType({ CDLUnitRepository.class })
 public class CDLTechnologyAdapter extends TechnologyAdapter {
-	private static String CDL_FILE_EXTENSION = ".cdl";
 
 	protected static final Logger logger = Logger.getLogger(CDLTechnologyAdapter.class.getPackage().getName());
 
@@ -74,7 +66,7 @@ public class CDLTechnologyAdapter extends TechnologyAdapter {
 	}
 
 	@Override
-	public TechnologyContextManager createTechnologyContextManager(FlexoResourceCenterService service) {
+	public CDLTechnologyContextManager createTechnologyContextManager(FlexoResourceCenterService service) {
 		return new CDLTechnologyContextManager(this, service);
 	}
 
@@ -89,16 +81,16 @@ public class CDLTechnologyAdapter extends TechnologyAdapter {
 	 * 
 	 * @param resourceCenter
 	 */
-	@Override
+	/*@Override
 	public <I> void performInitializeResourceCenter(FlexoResourceCenter<I> resourceCenter) {
-
+	
 		CDLUnitRepository cdlUnitRepository = resourceCenter.getRepository(CDLUnitRepository.class, this);
 		if (cdlUnitRepository == null) {
 			cdlUnitRepository = createCDLUnitRepository(resourceCenter);
 		}
-
+	
 		Iterator<I> it = resourceCenter.iterator();
-
+	
 		while (it.hasNext()) {
 			I item = it.next();
 			if (item instanceof File) {
@@ -109,9 +101,9 @@ public class CDLTechnologyAdapter extends TechnologyAdapter {
 		}
 		// Call it to update the current repositories
 		notifyRepositoryStructureChanged();
-	}
+	}*/
 
-	protected CDLUnitResource tryToLookupCDLUnits(FlexoResourceCenter<?> resourceCenter, File candidateFile) {
+	/*protected CDLUnitResource tryToLookupCDLUnits(FlexoResourceCenter<?> resourceCenter, File candidateFile) {
 		if (isValidCDLFile(candidateFile)) {
 			CDLUnitResource cdlUnitRes = retrieveCDLUnitResource(candidateFile);
 			CDLUnitRepository cdlUnitRepository = resourceCenter.getRepository(CDLUnitRepository.class, this);
@@ -128,29 +120,38 @@ public class CDLTechnologyAdapter extends TechnologyAdapter {
 			}
 		}
 		return null;
-	}
+	}*/
 
 	/**
 	 * Instantiate new workbook resource stored in supplied model file<br>
 	 * *
 	 */
-	public CDLUnitResource retrieveCDLUnitResource(File cdlFile) {
+	/*public CDLUnitResource retrieveCDLUnitResource(File cdlFile) {
 		CDLUnitResource cdlUnitResource = null;
-
+	
 		// TODO: try to look-up already found file
 		cdlUnitResource = CDLUnitResourceImpl.retrieveCDLUnitResource(cdlFile, getTechnologyContextManager());
-
+	
 		return cdlUnitResource;
-	}
+	}*/
 
 	/**
 	 * 
 	 * Create a cdl unit repository for current {@link TechnologyAdapter} and supplied {@link FlexoResourceCenter}
 	 * 
 	 */
-	public CDLUnitRepository createCDLUnitRepository(FlexoResourceCenter<?> resourceCenter) {
+	/*public CDLUnitRepository createCDLUnitRepository(FlexoResourceCenter<?> resourceCenter) {
 		CDLUnitRepository returned = new CDLUnitRepository(this, resourceCenter);
 		resourceCenter.registerRepository(returned, CDLUnitRepository.class, this);
+		return returned;
+	}*/
+
+	public <I> CDLUnitRepository<I> getCDLUnitRepository(FlexoResourceCenter<I> resourceCenter) {
+		CDLUnitRepository<I> returned = resourceCenter.getRepository(CDLUnitRepository.class, this);
+		if (returned == null) {
+			returned = new CDLUnitRepository<I>(this, resourceCenter);
+			resourceCenter.registerRepository(returned, CDLUnitRepository.class, this);
+		}
 		return returned;
 	}
 
@@ -161,9 +162,9 @@ public class CDLTechnologyAdapter extends TechnologyAdapter {
 	 * 
 	 * @return
 	 */
-	public boolean isValidCDLFile(File candidateFile) {
+	/*public boolean isValidCDLFile(File candidateFile) {
 		return candidateFile.getName().endsWith(CDL_FILE_EXTENSION);
-	}
+	}*/
 
 	@Override
 	public <I> boolean isIgnorable(FlexoResourceCenter<I> resourceCenter, I contents) {
@@ -171,7 +172,7 @@ public class CDLTechnologyAdapter extends TechnologyAdapter {
 		return false;
 	}
 
-	@Override
+	/*@Override
 	public <I> boolean contentsAdded(FlexoResourceCenter<I> resourceCenter, I contents) {
 		CDLUnitResource newResource = null;
 		if (contents instanceof File) {
@@ -182,25 +183,24 @@ public class CDLTechnologyAdapter extends TechnologyAdapter {
 		notifyRepositoryStructureChanged();
 		return newResource != null;
 	}
-
+	
 	@Override
 	public <I> boolean contentsModified(FlexoResourceCenter<I> resourceCenter, I contents) {
 		return false;
 	}
-
+	
 	@Override
 	public <I> boolean contentsDeleted(FlexoResourceCenter<I> resourceCenter, I contents) {
 		return false;
 	}
-
+	
 	@Override
 	public <I> boolean contentsRenamed(FlexoResourceCenter<I> resourceCenter, I contents, String oldName, String newName) {
 		return false;
-	}
+	}*/
 
 	@Override
 	public CDLTechnologyContextManager getTechnologyContextManager() {
-		// TODO Auto-generated method stub
 		return (CDLTechnologyContextManager) super.getTechnologyContextManager();
 	}
 

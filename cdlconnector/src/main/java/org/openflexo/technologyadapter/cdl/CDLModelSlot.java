@@ -23,7 +23,6 @@ package org.openflexo.technologyadapter.cdl;
 import java.lang.reflect.Type;
 import java.util.logging.Logger;
 
-import org.openflexo.foundation.FlexoProject;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
 import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
@@ -31,6 +30,7 @@ import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
 import org.openflexo.foundation.fml.annotations.FML;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
+import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.technologyadapter.FreeModelSlot;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
@@ -84,8 +84,8 @@ public interface CDLModelSlot extends FreeModelSlot<CDLUnit> {
 
 		@Override
 		public CDLModelSlotInstanceConfiguration createConfiguration(AbstractVirtualModelInstance<?, ?> virtualModelInstance,
-				FlexoProject project) {
-			return new CDLModelSlotInstanceConfiguration(this, virtualModelInstance, project);
+				FlexoResourceCenter<?> rc) {
+			return new CDLModelSlotInstanceConfiguration(this, virtualModelInstance, rc);
 		}
 
 		@Override

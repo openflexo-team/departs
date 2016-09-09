@@ -24,13 +24,13 @@ public class TestLoadFiacreProgram extends OpenflexoProjectAtRunTimeTestCase {
 
 	private static FlexoEditor editor;
 	private static FlexoProject project;
-	
+
 	@Test
 	@TestOrder(1)
 	public void testInitializeServiceManager() throws Exception {
 		instanciateTestServiceManager();
 	}
-	
+
 	@Test
 	@TestOrder(2)
 	public void testCreateProject() {
@@ -40,15 +40,15 @@ public class TestLoadFiacreProgram extends OpenflexoProjectAtRunTimeTestCase {
 		assertTrue(project.getProjectDirectory().exists());
 		assertTrue(project.getProjectDataResource().getFlexoIODelegate().exists());
 	}
-	
+
 	@Test
 	@TestOrder(3)
 	public void testLoadFiacrePrograms() {
-		FiacreTechnologyAdapter technologicalAdapter = serviceManager.getTechnologyAdapterService().getTechnologyAdapter(
-				FiacreTechnologyAdapter.class);
+		FiacreTechnologyAdapter technologicalAdapter = serviceManager.getTechnologyAdapterService()
+				.getTechnologyAdapter(FiacreTechnologyAdapter.class);
 
 		for (FlexoResourceCenter<?> resourceCenter : serviceManager.getResourceCenterService().getResourceCenters()) {
-			FiacreProgramRepository fiacreRepository = resourceCenter.getRepository(FiacreProgramRepository.class, technologicalAdapter);
+			FiacreProgramRepository<?> fiacreRepository = technologicalAdapter.getFiacreProgramRepository(resourceCenter);
 			assertNotNull(fiacreRepository);
 			Collection<FiacreProgramResource> fiacreResources = fiacreRepository.getAllResources();
 			for (FiacreProgramResource fiacreProgramResource : fiacreResources) {

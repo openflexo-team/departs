@@ -20,23 +20,16 @@
 
 package org.openflexo.technologyadapter.trace;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Iterator;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
 import org.openflexo.foundation.fml.annotations.DeclareRepositoryType;
 import org.openflexo.foundation.resource.FlexoResourceCenter;
 import org.openflexo.foundation.resource.FlexoResourceCenterService;
-import org.openflexo.foundation.resource.RepositoryFolder;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterBindingFactory;
 import org.openflexo.foundation.technologyadapter.TechnologyAdapterInitializationException;
-import org.openflexo.foundation.technologyadapter.TechnologyContextManager;
 import org.openflexo.technologyadapter.trace.rm.TraceOBPRepository;
-import org.openflexo.technologyadapter.trace.rm.TraceOBPResource;
-import org.openflexo.technologyadapter.trace.rm.TraceOBPResourceImpl;
 import org.openflexo.technologyadapter.trace.virtualmodel.bindings.TraceBindingFactory;
 
 /**
@@ -49,8 +42,6 @@ import org.openflexo.technologyadapter.trace.virtualmodel.bindings.TraceBindingF
 @DeclareModelSlots({ TraceModelSlot.class })
 @DeclareRepositoryType({ TraceOBPRepository.class })
 public class TraceTechnologyAdapter extends TechnologyAdapter {
-	private static String TRACE_FILE_EXTENSION = ".trace";
-
 	protected static final Logger logger = Logger.getLogger(TraceTechnologyAdapter.class.getPackage().getName());
 
 	private static final TraceBindingFactory BINDING_FACTORY = new TraceBindingFactory();
@@ -74,7 +65,7 @@ public class TraceTechnologyAdapter extends TechnologyAdapter {
 	}
 
 	@Override
-	public TechnologyContextManager createTechnologyContextManager(FlexoResourceCenterService service) {
+	public TraceTechnologyContextManager createTechnologyContextManager(FlexoResourceCenterService service) {
 		return new TraceTechnologyContextManager(this, service);
 	}
 
@@ -89,15 +80,15 @@ public class TraceTechnologyAdapter extends TechnologyAdapter {
 	 * 
 	 * @param resourceCenter
 	 */
-	@Override
+	/*@Override
 	public <I> void performInitializeResourceCenter(FlexoResourceCenter<I> resourceCenter) {
 		TraceOBPRepository TraceOBPRepository = resourceCenter.getRepository(TraceOBPRepository.class, this);
 		if (TraceOBPRepository == null) {
 			TraceOBPRepository = createTraceOBPRepository(resourceCenter);
 		}
-
+	
 		Iterator<I> it = resourceCenter.iterator();
-
+	
 		while (it.hasNext()) {
 			I item = it.next();
 			if (item instanceof File) {
@@ -108,9 +99,9 @@ public class TraceTechnologyAdapter extends TechnologyAdapter {
 		}
 		// Call it to update the current repositories
 		notifyRepositoryStructureChanged();
-	}
+	}*/
 
-	protected TraceOBPResource tryToLookupTraceOBPs(FlexoResourceCenter<?> resourceCenter, File candidateFile) {
+	/*protected TraceOBPResource tryToLookupTraceOBPs(FlexoResourceCenter<?> resourceCenter, File candidateFile) {
 		if (isValidTraceFile(candidateFile)) {
 			TraceOBPResource TraceOBPRes = retrieveTraceOBPResource(candidateFile);
 			TraceOBPRepository TraceOBPRepository = resourceCenter.getRepository(TraceOBPRepository.class, this);
@@ -127,29 +118,38 @@ public class TraceTechnologyAdapter extends TechnologyAdapter {
 			}
 		}
 		return null;
-	}
+	}*/
 
 	/**
 	 * Instantiate new workbook resource stored in supplied model file<br>
 	 * *
 	 */
-	public TraceOBPResource retrieveTraceOBPResource(File TraceFile) {
+	/*public TraceOBPResource retrieveTraceOBPResource(File TraceFile) {
 		TraceOBPResource TraceOBPResource = null;
-
+	
 		// TODO: try to look-up already found file
 		TraceOBPResource = TraceOBPResourceImpl.retrieveTraceOBPResource(TraceFile, getTechnologyContextManager());
-
+	
 		return TraceOBPResource;
-	}
+	}*/
 
 	/**
 	 * 
 	 * Create a Trace OBP repository for current {@link TechnologyAdapter} and supplied {@link FlexoResourceCenter}
 	 * 
 	 */
-	public TraceOBPRepository createTraceOBPRepository(FlexoResourceCenter<?> resourceCenter) {
+	/*public TraceOBPRepository createTraceOBPRepository(FlexoResourceCenter<?> resourceCenter) {
 		TraceOBPRepository returned = new TraceOBPRepository(this, resourceCenter);
 		resourceCenter.registerRepository(returned, TraceOBPRepository.class, this);
+		return returned;
+	}*/
+
+	public <I> TraceOBPRepository<I> getTraceOBPRepository(FlexoResourceCenter<I> resourceCenter) {
+		TraceOBPRepository<I> returned = resourceCenter.getRepository(TraceOBPRepository.class, this);
+		if (returned == null) {
+			returned = new TraceOBPRepository<I>(this, resourceCenter);
+			resourceCenter.registerRepository(returned, TraceOBPRepository.class, this);
+		}
 		return returned;
 	}
 
@@ -160,9 +160,9 @@ public class TraceTechnologyAdapter extends TechnologyAdapter {
 	 * 
 	 * @return
 	 */
-	public boolean isValidTraceFile(File candidateFile) {
+	/*public boolean isValidTraceFile(File candidateFile) {
 		return candidateFile.getName().endsWith(TRACE_FILE_EXTENSION);
-	}
+	}*/
 
 	@Override
 	public <I> boolean isIgnorable(FlexoResourceCenter<I> resourceCenter, I contents) {
@@ -170,7 +170,7 @@ public class TraceTechnologyAdapter extends TechnologyAdapter {
 		return false;
 	}
 
-	@Override
+	/*@Override
 	public <I> boolean contentsAdded(FlexoResourceCenter<I> resourceCenter, I contents) {
 		TraceOBPResource newResource = null;
 		if (contents instanceof File) {
@@ -181,21 +181,21 @@ public class TraceTechnologyAdapter extends TechnologyAdapter {
 		notifyRepositoryStructureChanged();
 		return newResource != null;
 	}
-
+	
 	@Override
 	public <I> boolean contentsModified(FlexoResourceCenter<I> resourceCenter, I contents) {
 		return false;
 	}
-
+	
 	@Override
 	public <I> boolean contentsDeleted(FlexoResourceCenter<I> resourceCenter, I contents) {
 		return false;
 	}
-
+	
 	@Override
 	public <I> boolean contentsRenamed(FlexoResourceCenter<I> resourceCenter, I contents, String oldName, String newName) {
 		return false;
-	}
+	}*/
 
 	@Override
 	public TraceTechnologyContextManager getTechnologyContextManager() {

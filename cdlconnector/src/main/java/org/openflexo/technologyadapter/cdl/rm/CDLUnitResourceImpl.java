@@ -33,17 +33,12 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.io.IOUtils;
 import org.openflexo.foundation.FlexoException;
-import org.openflexo.foundation.resource.FileFlexoIODelegate;
 import org.openflexo.foundation.resource.FileFlexoIODelegate.FileFlexoIODelegateImpl;
 import org.openflexo.foundation.resource.FileWritingLock;
 import org.openflexo.foundation.resource.FlexoResourceImpl;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.resource.SaveResourcePermissionDeniedException;
-import org.openflexo.model.ModelContextLibrary;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.factory.ModelFactory;
-import org.openflexo.technologyadapter.cdl.CDLTechnologyContextManager;
 import org.openflexo.technologyadapter.cdl.model.CDLUnit;
 import org.openflexo.technologyadapter.cdl.model.io.CDLModelConverter;
 import org.openflexo.toolbox.IProgress;
@@ -62,50 +57,6 @@ public abstract class CDLUnitResourceImpl extends FlexoResourceImpl<CDLUnit>impl
 
 	public void setConverter(CDLModelConverter converter) {
 		this.converter = converter;
-	}
-
-	public static CDLUnitResource makeCDLUnitResource(String modelURI, File modelFile,
-			CDLTechnologyContextManager technologyContextManager) {
-		try {
-			ModelFactory factory = new ModelFactory(
-					ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class, CDLUnitResource.class));
-			CDLUnitResourceImpl returned = (CDLUnitResourceImpl) factory.newInstance(CDLUnitResource.class);
-			FileFlexoIODelegate fileIODelegate = factory.newInstance(FileFlexoIODelegate.class);
-			returned.setFlexoIODelegate(fileIODelegate);
-			fileIODelegate.setFile(modelFile);
-			returned.initName(modelFile.getName());
-			returned.setURI(modelURI);
-			returned.setServiceManager(technologyContextManager.getTechnologyAdapter().getTechnologyAdapterService().getServiceManager());
-			returned.setTechnologyAdapter(technologyContextManager.getTechnologyAdapter());
-			returned.setTechnologyContextManager(technologyContextManager);
-			technologyContextManager.registerResource(returned);
-
-			return returned;
-		} catch (ModelDefinitionException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	public static CDLUnitResource retrieveCDLUnitResource(File cdlFile, CDLTechnologyContextManager technologyContextManager) {
-		try {
-			ModelFactory factory = new ModelFactory(
-					ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class, CDLUnitResource.class));
-			CDLUnitResourceImpl returned = (CDLUnitResourceImpl) factory.newInstance(CDLUnitResource.class);
-			FileFlexoIODelegate fileIODelegate = factory.newInstance(FileFlexoIODelegate.class);
-			returned.setFlexoIODelegate(fileIODelegate);
-			fileIODelegate.setFile(cdlFile);
-			returned.initName(cdlFile.getName());
-			returned.setURI(cdlFile.toURI().toString());
-			returned.setServiceManager(technologyContextManager.getTechnologyAdapter().getTechnologyAdapterService().getServiceManager());
-			returned.setTechnologyAdapter(technologyContextManager.getTechnologyAdapter());
-			returned.setTechnologyContextManager(technologyContextManager);
-			technologyContextManager.registerResource(returned);
-			return returned;
-		} catch (ModelDefinitionException e) {
-			e.printStackTrace();
-		}
-		return null;
 	}
 
 	@Override

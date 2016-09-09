@@ -30,14 +30,9 @@ import org.openflexo.foundation.resource.FileFlexoIODelegate;
 import org.openflexo.foundation.resource.FileFlexoIODelegate.FileFlexoIODelegateImpl;
 import org.openflexo.foundation.resource.FileWritingLock;
 import org.openflexo.foundation.resource.FlexoResourceImpl;
-import org.openflexo.foundation.resource.ResourceData;
 import org.openflexo.foundation.resource.ResourceLoadingCancelledException;
 import org.openflexo.foundation.resource.SaveResourceException;
 import org.openflexo.foundation.resource.SaveResourcePermissionDeniedException;
-import org.openflexo.model.ModelContextLibrary;
-import org.openflexo.model.exceptions.ModelDefinitionException;
-import org.openflexo.model.factory.ModelFactory;
-import org.openflexo.technologyadapter.trace.TraceTechnologyContextManager;
 import org.openflexo.technologyadapter.trace.model.OBPTrace;
 import org.openflexo.technologyadapter.trace.model.io.TraceModelConverter;
 import org.openflexo.toolbox.IProgress;
@@ -50,7 +45,7 @@ public abstract class TraceOBPResourceImpl extends FlexoResourceImpl<OBPTrace>im
 
 	private TraceModelConverter converter;
 
-	private ResourceData resourceData;
+	// private ResourceData resourceData;
 
 	@Override
 	public TraceModelConverter getConverter() {
@@ -59,50 +54,6 @@ public abstract class TraceOBPResourceImpl extends FlexoResourceImpl<OBPTrace>im
 
 	public void setConverter(TraceModelConverter converter) {
 		this.converter = converter;
-	}
-
-	public static TraceOBPResource makeTraceOBPResource(String modelURI, File modelFile,
-			TraceTechnologyContextManager technologyContextManager) {
-		try {
-			ModelFactory factory = new ModelFactory(
-					ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class, TraceOBPResource.class));
-			TraceOBPResourceImpl returned = (TraceOBPResourceImpl) factory.newInstance(TraceOBPResource.class);
-			returned.initName(modelFile.getName());
-			FileFlexoIODelegate fileIODelegate = factory.newInstance(FileFlexoIODelegate.class);
-			returned.setFlexoIODelegate(fileIODelegate);
-			fileIODelegate.setFile(modelFile);
-			returned.setURI(modelURI);
-			returned.setServiceManager(technologyContextManager.getTechnologyAdapter().getTechnologyAdapterService().getServiceManager());
-			returned.setTechnologyAdapter(technologyContextManager.getTechnologyAdapter());
-			returned.setTechnologyContextManager(technologyContextManager);
-			technologyContextManager.registerResource(returned);
-
-			return returned;
-		} catch (ModelDefinitionException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	public static TraceOBPResource retrieveTraceOBPResource(File traceFile, TraceTechnologyContextManager technologyContextManager) {
-		try {
-			ModelFactory factory = new ModelFactory(
-					ModelContextLibrary.getCompoundModelContext(FileFlexoIODelegate.class, TraceOBPResource.class));
-			TraceOBPResourceImpl returned = (TraceOBPResourceImpl) factory.newInstance(TraceOBPResource.class);
-			returned.initName(traceFile.getName());
-			FileFlexoIODelegate fileIODelegate = factory.newInstance(FileFlexoIODelegate.class);
-			returned.setFlexoIODelegate(fileIODelegate);
-			fileIODelegate.setFile(traceFile);
-			returned.setURI(traceFile.toURI().toString());
-			returned.setServiceManager(technologyContextManager.getTechnologyAdapter().getTechnologyAdapterService().getServiceManager());
-			returned.setTechnologyAdapter(technologyContextManager.getTechnologyAdapter());
-			returned.setTechnologyContextManager(technologyContextManager);
-			technologyContextManager.registerResource(returned);
-			return returned;
-		} catch (ModelDefinitionException e) {
-			e.printStackTrace();
-		}
-		return null;
 	}
 
 	@Override
