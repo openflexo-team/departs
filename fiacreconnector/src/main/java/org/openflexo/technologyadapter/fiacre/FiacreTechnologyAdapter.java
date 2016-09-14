@@ -149,7 +149,7 @@ public class FiacreTechnologyAdapter extends TechnologyAdapter {
 	}*/
 
 	public <I> FiacreProgramRepository<I> getFiacreProgramRepository(FlexoResourceCenter<I> resourceCenter) {
-		FiacreProgramRepository<I> returned = resourceCenter.getRepository(FiacreProgramRepository.class, this);
+		FiacreProgramRepository<I> returned = resourceCenter.retrieveRepository(FiacreProgramRepository.class, this);
 		if (returned == null) {
 			returned = new FiacreProgramRepository<I>(this, resourceCenter);
 			resourceCenter.registerRepository(returned, FiacreProgramRepository.class, this);

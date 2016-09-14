@@ -150,7 +150,7 @@ public class CDLTechnologyAdapter extends TechnologyAdapter {
 	}*/
 
 	public <I> CDLUnitRepository<I> getCDLUnitRepository(FlexoResourceCenter<I> resourceCenter) {
-		CDLUnitRepository<I> returned = resourceCenter.getRepository(CDLUnitRepository.class, this);
+		CDLUnitRepository<I> returned = resourceCenter.retrieveRepository(CDLUnitRepository.class, this);
 		if (returned == null) {
 			returned = new CDLUnitRepository<I>(this, resourceCenter);
 			resourceCenter.registerRepository(returned, CDLUnitRepository.class, this);

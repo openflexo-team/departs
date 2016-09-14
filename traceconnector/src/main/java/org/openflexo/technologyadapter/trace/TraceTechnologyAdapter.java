@@ -148,7 +148,7 @@ public class TraceTechnologyAdapter extends TechnologyAdapter {
 	}*/
 
 	public <I> TraceOBPRepository<I> getTraceOBPRepository(FlexoResourceCenter<I> resourceCenter) {
-		TraceOBPRepository<I> returned = resourceCenter.getRepository(TraceOBPRepository.class, this);
+		TraceOBPRepository<I> returned = resourceCenter.retrieveRepository(TraceOBPRepository.class, this);
 		if (returned == null) {
 			returned = new TraceOBPRepository<I>(this, resourceCenter);
 			resourceCenter.registerRepository(returned, TraceOBPRepository.class, this);
