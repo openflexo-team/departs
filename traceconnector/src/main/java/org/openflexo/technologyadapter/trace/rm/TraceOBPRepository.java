@@ -31,11 +31,4 @@ public class TraceOBPRepository<I> extends TechnologyAdapterResourceRepository<T
 		super(adapter, resourceCenter);
 	}
 
-	private static final String DEFAULT_BASE_URI = "http://www.openflexo.org/TraceTechnologyAdapter/Models";
-
-	@Override
-	public String getDefaultBaseURI() {
-		return DEFAULT_BASE_URI;
-	}
-
 }

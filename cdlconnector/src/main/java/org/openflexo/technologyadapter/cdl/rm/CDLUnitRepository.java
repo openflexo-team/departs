@@ -31,11 +31,4 @@ public class CDLUnitRepository<I> extends TechnologyAdapterResourceRepository<CD
 		super(adapter, resourceCenter);
 	}
 
-	private static final String DEFAULT_BASE_URI = "http://www.openflexo.org/CDLTechnologyAdapter/Models";
-
-	@Override
-	public String getDefaultBaseURI() {
-		return DEFAULT_BASE_URI;
-	}
-
 }
