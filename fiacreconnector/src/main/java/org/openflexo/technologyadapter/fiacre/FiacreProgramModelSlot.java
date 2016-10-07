@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 import org.openflexo.foundation.fml.FlexoRole;
 import org.openflexo.foundation.fml.annotations.DeclareEditionActions;
 import org.openflexo.foundation.fml.annotations.DeclareFetchRequests;
+import org.openflexo.foundation.fml.annotations.DeclareFlexoBehaviourParameters;
 import org.openflexo.foundation.fml.annotations.DeclareFlexoRoles;
 import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstance;
 import org.openflexo.foundation.fml.rt.FreeModelSlotInstance;
@@ -36,6 +37,7 @@ import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
 import org.openflexo.technologyadapter.fiacre.fml.FiacreComponentRole;
 import org.openflexo.technologyadapter.fiacre.fml.FiacreFifoRole;
+import org.openflexo.technologyadapter.fiacre.fml.FiacreProcessParameter;
 import org.openflexo.technologyadapter.fiacre.fml.FiacreProcessRole;
 import org.openflexo.technologyadapter.fiacre.fml.FiacreStateRole;
 import org.openflexo.technologyadapter.fiacre.fml.actions.AddFiacreComponent;
@@ -59,6 +61,7 @@ import org.openflexo.technologyadapter.fiacre.model.FiacreProgram;
 @DeclareFlexoRoles({ FiacreProcessRole.class, FiacreComponentRole.class, FiacreStateRole.class, FiacreFifoRole.class })
 @DeclareEditionActions({ AddFiacreProcess.class, AddFiacreComponent.class, AddFiacreState.class, AddFiacreFifo.class })
 @DeclareFetchRequests({ SelectFiacreProcess.class, SelectFiacreComponents.class, SelectFiacreStates.class })
+@DeclareFlexoBehaviourParameters({ FiacreProcessParameter.class})
 public interface FiacreProgramModelSlot extends FreeModelSlot<FiacreProgram> {
 
 	@Override

@@ -56,4 +56,20 @@ public class TestLoadFiacreProgram extends OpenflexoProjectAtRunTimeTestCase {
 			}
 		}
 	}
+	
+	@Test
+	@TestOrder(4)
+	public void testParseFiacrePrograms() {
+		FiacreTechnologyAdapter technologicalAdapter = serviceManager.getTechnologyAdapterService()
+				.getTechnologyAdapter(FiacreTechnologyAdapter.class);
+
+		for (FlexoResourceCenter<?> resourceCenter : serviceManager.getResourceCenterService().getResourceCenters()) {
+			FiacreProgramRepository<?> fiacreRepository = technologicalAdapter.getFiacreProgramRepository(resourceCenter);
+			assertNotNull(fiacreRepository);
+			Collection<FiacreProgramResource> fiacreResources = fiacreRepository.getAllResources();
+			for (FiacreProgramResource fiacreProgramResource : fiacreResources) {
+				assertNotNull(fiacreProgramResource.getLoadedResourceData());
+			}
+		}
+	}
 }
