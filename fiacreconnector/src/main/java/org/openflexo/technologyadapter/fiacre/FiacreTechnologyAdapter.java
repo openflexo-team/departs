@@ -20,6 +20,7 @@
 
 package org.openflexo.technologyadapter.fiacre;
 
+import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
@@ -204,6 +205,14 @@ public class FiacreTechnologyAdapter extends TechnologyAdapter {
 	@Override
 	public FiacreTechnologyContextManager getTechnologyContextManager() {
 		return (FiacreTechnologyContextManager) super.getTechnologyContextManager();
+	}
+
+	@Override
+	protected <I> void foundFolder(FlexoResourceCenter<I> resourceCenter, I folder) throws IOException {
+		super.foundFolder(resourceCenter, folder);
+		if (resourceCenter.isDirectory(folder)) {
+			getFiacreProgramRepository(resourceCenter).getRepositoryFolder(folder, true);
+		}
 	}
 
 }

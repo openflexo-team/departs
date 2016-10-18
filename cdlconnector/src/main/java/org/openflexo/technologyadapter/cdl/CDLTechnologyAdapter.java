@@ -20,6 +20,7 @@
 
 package org.openflexo.technologyadapter.cdl;
 
+import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
@@ -156,6 +157,14 @@ public class CDLTechnologyAdapter extends TechnologyAdapter {
 			resourceCenter.registerRepository(returned, CDLUnitRepository.class, this);
 		}
 		return returned;
+	}
+
+	@Override
+	protected <I> void foundFolder(FlexoResourceCenter<I> resourceCenter, I folder) throws IOException {
+		super.foundFolder(resourceCenter, folder);
+		if (resourceCenter.isDirectory(folder)) {
+			getCDLUnitRepository(resourceCenter).getRepositoryFolder(folder, true);
+		}
 	}
 
 	/**

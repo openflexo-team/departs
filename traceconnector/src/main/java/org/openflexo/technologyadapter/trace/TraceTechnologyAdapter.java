@@ -20,6 +20,7 @@
 
 package org.openflexo.technologyadapter.trace;
 
+import java.io.IOException;
 import java.util.logging.Logger;
 
 import org.openflexo.foundation.fml.annotations.DeclareModelSlots;
@@ -205,4 +206,13 @@ public class TraceTechnologyAdapter extends TechnologyAdapter {
 		// TODO Auto-generated method stub
 		return (TraceTechnologyContextManager) super.getTechnologyContextManager();
 	}
+
+	@Override
+	protected <I> void foundFolder(FlexoResourceCenter<I> resourceCenter, I folder) throws IOException {
+		super.foundFolder(resourceCenter, folder);
+		if (resourceCenter.isDirectory(folder)) {
+			getTraceOBPRepository(resourceCenter).getRepositoryFolder(folder, true);
+		}
+	}
+
 }
