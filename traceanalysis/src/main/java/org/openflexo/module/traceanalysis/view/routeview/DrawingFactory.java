@@ -147,7 +147,7 @@ public class DrawingFactory {
 		configurationRepresentation.setTextStyle(factory.makeTextStyle(Color.BLACK, FGEConstants.DEFAULT_TEXT_FONT.deriveFont(Font.BOLD)));
 		configurationRepresentation.setShadowStyle(factory.makeNoneShadowStyle());
 		configurationRepresentation.setBackground(factory.makeColorGradientBackground(FGEConstants.DEFAULT_BACKGROUND_COLOR, Color.white,
-				ColorGradientDirection.SOUTH_EAST_NORTH_WEST));
+				ColorGradientDirection.NORTH_WEST_SOUTH_EAST));
 		configurationRepresentation.setForeground(factory.makeForegroundStyle(Color.ORANGE));
 		configurationRepresentation.addToMouseClickControls(new MouseClickControlImpl<AbstractDianaEditor<?, ?, ?>>(
 				"toogleVisibleStateForConfiguration", MouseButton.LEFT, 2, new MouseClickControlActionImpl<AbstractDianaEditor<?, ?, ?>>() {
@@ -176,7 +176,7 @@ public class DrawingFactory {
 				.setTextStyle(factory.makeTextStyle(Color.LIGHT_GRAY, FGEConstants.DEFAULT_SMALL_TEXT_FONT.deriveFont(Font.ITALIC)));
 		intermediateConfigurationRepresentation.setShadowStyle(factory.makeNoneShadowStyle());
 		intermediateConfigurationRepresentation.setBackground(
-				factory.makeColorGradientBackground(Color.LIGHT_GRAY, Color.white, ColorGradientDirection.SOUTH_EAST_NORTH_WEST));
+				factory.makeColorGradientBackground(Color.LIGHT_GRAY, Color.white, ColorGradientDirection.NORTH_WEST_SOUTH_EAST));
 		intermediateConfigurationRepresentation.setForeground(factory.makeForegroundStyle(Color.ORANGE));
 		intermediateConfigurationRepresentation.addToMouseClickControls(
 				new MouseClickControlImpl<AbstractDianaEditor<?, ?, ?>>("toogleVisibleStateForIntermediateConfiguration", MouseButton.LEFT,
