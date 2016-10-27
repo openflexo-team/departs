@@ -53,8 +53,8 @@ import org.openflexo.technologyadapter.fiacre.model.FiacreProcess;
 @XMLElement
 public interface FiacreProcessParameter extends InnerModelSlotParameter<FiacreProgramModelSlot> {
 
-	public static abstract class FiacreProcessParameterImpl extends InnerModelSlotParameterImpl<FiacreProgramModelSlot> implements
-			FiacreProcessParameter {
+	public static abstract class FiacreProcessParameterImpl extends InnerModelSlotParameterImpl<FiacreProgramModelSlot>
+			implements FiacreProcessParameter {
 
 		public FiacreProcessParameterImpl() {
 			super();
@@ -62,7 +62,8 @@ public interface FiacreProcessParameter extends InnerModelSlotParameter<FiacrePr
 
 		@Override
 		public WidgetType getWidget() {
-			return WidgetType.TECHNOLOGY_OBJECT;
+			// return WidgetType.TECHNOLOGY_OBJECT;
+			return WidgetType.CUSTOM_WIDGET;
 		}
 
 		@Override
