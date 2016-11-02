@@ -59,6 +59,7 @@ public class FiacreProgramConverter {
 
 		FiacreProgram flexoFiacreProgram = factory.newInstance(FiacreProgram.class);
 		flexoFiacreProgram.setTechnologyAdapter(technologyAdapter);
+		flexoFiacreProgram.setFiacreProgram(fiacreProgram);
 		fiacreObjects.put(fiacreProgram, flexoFiacreProgram);
 		for (Declaration declaration : fiacreProgram.getDeclarationList()) {
 			if (declaration instanceof ProcessDecl) {
