@@ -51,6 +51,8 @@ import org.openflexo.technologyadapter.fiacre.model.FiacreProcess;
 @ModelEntity
 @ImplementationClass(FiacreProcessParameter.FiacreProcessParameterImpl.class)
 @XMLElement
+// TODO: deprecated, use generic FlexoBehaviourParameter instead
+@Deprecated
 public interface FiacreProcessParameter extends InnerModelSlotParameter<FiacreProgramModelSlot> {
 
 	public static abstract class FiacreProcessParameterImpl extends InnerModelSlotParameterImpl<FiacreProgramModelSlot>
