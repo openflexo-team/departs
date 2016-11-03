@@ -28,9 +28,11 @@ import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelObjectActorReference;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.technologyadapter.fiacre.FiacreTechnologyAdapter;
 import org.openflexo.technologyadapter.fiacre.model.FiacreState;
 
 @ModelEntity
@@ -69,6 +71,11 @@ public interface FiacreStateRole extends FlexoRole<FiacreState> {
 			returned.setFlexoConceptInstance(epi);
 			returned.setModellingElement(object);
 			return returned;
+		}
+
+		@Override
+		public Class<? extends TechnologyAdapter> getRoleTechnologyAdapterClass() {
+			return FiacreTechnologyAdapter.class;
 		}
 
 	}

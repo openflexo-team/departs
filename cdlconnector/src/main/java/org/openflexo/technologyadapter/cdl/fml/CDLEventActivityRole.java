@@ -28,9 +28,11 @@ import org.openflexo.foundation.fml.rt.AbstractVirtualModelInstanceModelFactory;
 import org.openflexo.foundation.fml.rt.ActorReference;
 import org.openflexo.foundation.fml.rt.FlexoConceptInstance;
 import org.openflexo.foundation.fml.rt.ModelObjectActorReference;
+import org.openflexo.foundation.technologyadapter.TechnologyAdapter;
 import org.openflexo.model.annotations.ImplementationClass;
 import org.openflexo.model.annotations.ModelEntity;
 import org.openflexo.model.annotations.XMLElement;
+import org.openflexo.technologyadapter.cdl.CDLTechnologyAdapter;
 import org.openflexo.technologyadapter.cdl.model.CDLEventReference;
 
 @ModelEntity
@@ -70,5 +72,11 @@ public interface CDLEventActivityRole extends FlexoRole<CDLEventReference> {
 			returned.setModellingElement(object);
 			return returned;
 		}
+
+		@Override
+		public Class<? extends TechnologyAdapter> getRoleTechnologyAdapterClass() {
+			return CDLTechnologyAdapter.class;
+		}
+
 	}
 }
